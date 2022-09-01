@@ -51,4 +51,17 @@ platform :ios do
     gym(scheme: "GaloyApp", export_method: "development", codesigning_identity: "Apple Development: Nicolas Burtey (MT977993KD)")
   end
 
+    desc "distribute firebase"
+  lane :build_ipa do
+    match(type: "adhoc", readonly: is_ci)
+    gym(scheme: "GaloyApp", export_method: "ad-hoc", codesigning_identity: "Apple Development: Nicolas Burtey (MT977993KD)")
+
+      firebase_app_distribution(
+    app: "1:108044673838:ios:c78cbbbb03f36326e850bf",
+    groups: "internal-testers",
+    release_notes: "",
+    firebase_cli_token:"1//0g_3nmmCJHaTOCgYIARAAGBASNwF-L9IrMWUbFMzdekOhB2USuasZh7tp4RKEGbCYD324JlpZznziAJ9dSqdGhKEHipjx_rRIq8M"
+    )
+    
+  end
 end
