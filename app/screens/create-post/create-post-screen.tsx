@@ -2,11 +2,11 @@ import * as React from "react"
 import { useState } from "react"
 // eslint-disable-next-line react-native/split-platform-components
 import {
+  ActivityIndicator,
   Dimensions,
+  FlatList,
   Image,
   Keyboard,
-  KeyboardAvoidingView,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -14,61 +14,119 @@ import {
   View,
 } from "react-native"
 import { Screen } from "../../components/screen"
-import { color, fontSize, GlobalStyles, typography } from "@app/theme"
+import { color, fontSize, GlobalStyles, palette, typography } from "@app/theme"
 import { HeaderComponent } from "@app/components/header"
 import { images } from "@app/assets/images"
 import { eng } from "@app/constants/en"
-import { useDispatch } from "react-redux"
-import { setTempStore } from "@app/redux/reducers/store-reducer"
-import DropDownPicker from "react-native-dropdown-picker"
+import { useDispatch, useSelector } from "react-redux"
+import { setTempPost } from "@app/redux/reducers/store-reducer"
 import { MarketPlaceParamList } from "@app/navigation/stack-param-lists"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { CustomTextInput } from "@app/components/text-input"
 import TextInputComponent from "@app/components/text-input-component"
-import { getMartketPlaceCategories } from "@app/graphql/second-graphql-client"
 import { LoadingComponent } from "@app/components/loading-component"
-import { CreatePostSuccessModal } from "@app/components/create-post-success-modal"
+import { useTranslation } from "react-i18next"
+import { Row } from "@app/components/row"
+import XSvg from '@asset/svgs/x.svg'
+import { MarketplaceTag, TemplateMarketPlaceTag } from "@app/constants/model"
+import { autoCompleteTags, getTags } from "@app/graphql/second-graphql-client"
+import { RootState } from "@app/redux"
+import { TagComponent } from "@app/components/tag-components"
 const { width, height } = Dimensions.get("window")
-const IMAGE_WIDTH = width - 32 * 2
-const IMAGE_HEIGHT = IMAGE_WIDTH * 0.635
+const FAKE_TAGS = [
+  {
+    "_id": "633868d33e3e998e4c674303",
+    "createdAt": "1664641235567",
+    "name": "restaurants",
+    "updatedAt": "1664641235567"
+  },
+  {
+    "_id": "633868c93e3e998e4c674300",
+    "createdAt": "1664641225401",
+    "name": "vehicle",
+    "updatedAt": "1664641225401"
+  },
+  {
+    "_id": "633868b33e3e998e4c6742fd",
+    "createdAt": "1664641203639",
+    "name": "Tag #2",
+    "updatedAt": "1664641203639"
+  },
+  {
+    "_id": "633842fbf55946fb0c4cc09a",
+    "createdAt": "1664631547736",
+    "name": "Tag #1",
+    "updatedAt": "1664631547736"
+  },
+  {
+    "_id": "633842fbf55946fb0c4cc09a1",
+    "createdAt": "1664631547736",
+    "name": "Tag #2",
+    "updatedAt": "1664631547736"
+  },
+  {
+    "_id": "633842fbf55946fb0c4cc09a2",
+    "createdAt": "1664631547736",
+    "name": "Tag #2",
+    "updatedAt": "1664631547736"
+  },
+  {
+    "_id": "633842fbf55946fb0c4cc09a3",
+    "createdAt": "1664631547736",
+    "name": "Tag #3",
+    "updatedAt": "1664631547736"
+  },
+  {
+    "_id": "633842fbf55946fb0c4cc09a4",
+    "createdAt": "1664631547736",
+    "name": "Tag #4",
+    "updatedAt": "1664631547736"
+  },
+  {
+    "_id": "633842fbf55946fb0c4cc09a5",
+    "createdAt": "1664631547736",
+    "name": "Tag #5",
+    "updatedAt": "1664631547736"
+  },
+  {
+    "_id": "633842fbf55946fb0c4cc09a6",
+    "createdAt": "1664631547736",
+    "name": "Tag #6",
+    "updatedAt": "1664631547736"
+  }
+]
 interface Props {
   navigation: StackNavigationProp<MarketPlaceParamList>
 }
 export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
   const dispatch = useDispatch()
   const [name, setName] = useState("")
-  const [price, setPrice] = useState("")
-  const [category, setCategory] = useState("Foods")
   const [description, setDescription] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [tagLoading, setTagLoading] = useState(false)
+  const tempPost = useSelector((state:RootState)=>state.storeReducer.tempPost)
+  const [tag, setTag] = useState("")
 
-  const [priceError, setPriceError] = useState("")
   const [nameError, setNameError] = useState("")
   const [descriptionError, setDescriptionError] = useState("")
-  const [open, setOpen] = useState(false)
-  const [items, setItems] = useState([])
+  const [filteredTags, setFilteredTags] = useState<MarketplaceTag[]>([])
+  const [selectedTags, setSelectedTags] = useState<MarketplaceTag[]>([])
+  const timeoutRef= React.useRef(null)
+  const { t } = useTranslation()
+
   const isCorrectInput = () => {
     let nameValid = false
     let descriptionValid = false
-    let priceValid = false
-    console.log("name: ", name, description)
 
-    if (!name) setNameError("Name is required")
-    else if (name?.length < 2) setNameError("Name must be more than 2 characters")
+    if (!name) setNameError(t("name_is_required"))
+    else if (name?.length < 2) setNameError(t("name_must_be_more_than_2_characters"))
     else {
       nameValid = true
       setNameError("")
     }
 
-    if (!price) setPriceError("Description is required")
-    else {
-      priceValid = true
-      setPriceError("")
-    }
-
-    if (!description) setDescriptionError("Description is required")
+    if (!description) setDescriptionError(t("description_is_required"))
     else if (description?.length < 2)
-      setDescriptionError("Description must be more than 2 characters")
+      setDescriptionError(t("description_must_be_more_than_2_characters"))
     else {
       descriptionValid = true
       setDescriptionError("")
@@ -78,26 +136,53 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
   }
   const onNext = () => {
     if (!isCorrectInput()) return
-    dispatch(setTempStore({ name, description, category, price: parseInt(price) }))
+    dispatch(setTempPost({ ...tempPost, name, description, tags: selectedTags }))
     navigation.navigate("AddImage")
+  }
+  const addTag = (item: MarketplaceTag) => {
+    if(selectedTags.findIndex(tag=>tag.name===item.name)!==-1) return
+    const newTags = [...selectedTags]
+    if (newTags.length >= 5) newTags.pop()
+    newTags.unshift(item)
+    setSelectedTags(newTags)
+  }
+  const removeTag = (index: number) => {
+
+    const newTags = [...selectedTags]
+    newTags.splice(index, 1)
+    setSelectedTags(newTags)
+  }
+  const debounceFindTags = (text: string) => {
+
+    timeoutRef.current = setTimeout(() => {
+      setTagLoading(true)
+      autoCompleteTags(text).then(data => {
+        setFilteredTags(data)
+      }).finally(() => {
+        setTagLoading(false)
+      })
+    }, 500)
+  }
+  const onChangeTags = (text: string) => {
+    setTag(text)
+    if (!text) {
+      return clearTimeout(timeoutRef.current||0)
+    }
+    if (timeoutRef.current != null) {
+      clearTimeout(timeoutRef.current)
+      debounceFindTags(text)
+    }else{
+      debounceFindTags(text)
+    }
   }
 
   React.useEffect(() => {
-    const initData = async () => {
+    const initData = () => {
       setIsLoading(true)
-      try {
-        let categories = await getMartketPlaceCategories()
-        let mappedCategory = categories.map((item) => ({
-          label: item.name,
-          value: item._id,
-        }))
-        console.log("mappedCategory: ", mappedCategory)
-        setItems(mappedCategory)
-        setCategory(mappedCategory[0].value)
-      } catch (error) {
-      } finally {
-        setIsLoading(false)
-      }
+      getTags()
+        .then(tags => setFilteredTags(tags))
+        .finally(() => setIsLoading(false))
+
     }
     initData()
   }, [])
@@ -122,48 +207,77 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
                 source={images.backgroundSimple}
                 style={{ width: 177, height: 158 }}
               />
-              <Text style={styles.title}>{eng.create_post}</Text>
+              <Text style={styles.title}>{t("create_post")}</Text>
             </View>
             <View style={{ paddingHorizontal: 30, width: "100%" }}>
+              <Text style={styles.labelStyle}>{t("name")}</Text>
               <TextInputComponent
-                title={"Name"}
-                containerStyle={[{ marginTop: 40 }]}
                 onChangeText={setName}
                 value={name}
                 placeholder={"Burger"}
                 isError={nameError !== ""}
               />
-              {nameError ? <Text style={styles.errorText}>{nameError}</Text> : null}
-              <Text style={styles.labelStyle}>Category</Text>
-              <DropDownPicker
-                style={styles.dropdownStyle}
-                textStyle={{
-                  fontFamily: typography.regular,
-                  fontSize: fontSize.font16,
-                }}
-                dropDownContainerStyle={{ borderColor: "#EBEBEB" }}
-                placeholder={"Category"}
-                placeholderStyle={{ color: "#c0c0c0" }}
-                open={open}
-                value={category}
-                items={items}
-                setOpen={setOpen}
-                setValue={setCategory}
-              />
-              <TextInputComponent
-                title={"Price"}
-                containerStyle={[{ marginTop: 40 }]}
-                onChangeText={setPrice}
-                value={price}
-                placeholder={"Price"}
-                isError={priceError !== ""}
-                keyboardType={"number-pad"}
-              />
 
+              {nameError ? (
+                <Text style={styles.errorText}>{nameError}</Text>
+              ) : null}
+
+              <Text style={styles.labelStyle}>{t("your_selected_tag")}</Text>
+              <FlatList
+                data={selectedTags}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item, index }) => {
+                  return <TagComponent
+                    title={item.name}
+                    onClear={() => removeTag(index)}
+                    disabled
+                  />
+                }}
+                ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
+                keyExtractor={(item, index) => item._id + '_' + index}
+              />
+              {selectedTags?.length>=5 ? (
+                <Text style={styles.errorText}>{"You can select up to 5 tags."}</Text>
+              ) : null}
               <TextInputComponent
-                title={"Description"}
+                containerStyle={{ marginTop: selectedTags?.length ? 12 : 0 }}
+                onChangeText={(text)=>onChangeTags(text)}
+                value={tag}
+                placeholder={t("enter_your_own_tags")}
+                isError={false}
+                
+                rightComponent={() => {
+                  const isTagNotFound = (tag && !tagLoading && !filteredTags?.length)
+                  return isTagNotFound?<Text style={[styles.text, { color: palette.orange }]}
+                  onPress={()=>{
+                  addTag({...TemplateMarketPlaceTag, name: tag })
+                  setTag('')
+                  }}
+                  >Add</Text>:null
+                }}
+              />
+              <FlatList
+                data={filteredTags}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                ListEmptyComponent={()=>{
+                  if(tagLoading) return <ActivityIndicator color={palette.orange}/>
+                  return tag?<Text>Can't find tag? Add your own</Text>:null
+                }}
+                renderItem={({ item }) => {
+                  return <TagComponent
+                  title={item.name}  
+                  onPress={() => addTag(item)}
+                />
+                }}
+                style={{ marginTop: 12 }}
+                ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
+                keyExtractor={item => item._id}
+              />
+              <Text style={styles.labelStyle}>{t("description")}</Text>
+              <TextInputComponent
                 placeholder={"Description ..."}
-                containerStyle={[{ marginTop: 20 }]}
                 textField={true}
                 onChangeText={setDescription}
                 value={description}
@@ -211,7 +325,8 @@ const styles = StyleSheet.create({
   labelStyle: {
     fontFamily: typography.regular,
     fontSize: fontSize.font16,
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 5
   },
   text: {
     fontFamily: typography.medium,
@@ -222,7 +337,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 25,
     paddingVertical: 7,
-    backgroundColor: "#3653FE",
+    backgroundColor: palette.orange,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -234,7 +349,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: palette.lighterGrey,
     alignItems: "center",
   },
 })

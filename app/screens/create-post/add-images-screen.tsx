@@ -16,7 +16,7 @@ import {
   View,
 } from "react-native"
 import { Screen } from "../../components/screen"
-import { fontSize, typography } from "@app/theme"
+import { fontSize, palette, typography } from "@app/theme"
 import { HeaderComponent } from "@app/components/header"
 import { images } from "@app/assets/images"
 import { eng } from "@app/constants/en"
@@ -26,12 +26,13 @@ import ImagePicker from "react-native-image-crop-picker"
 import { FooterCreatePost } from "./footer"
 import { MarketPlaceParamList } from "@app/navigation/stack-param-lists"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { setTempStore } from "@app/redux/reducers/store-reducer"
+import { setTempPost } from "@app/redux/reducers/store-reducer"
 
 import { ReactNativeFile } from "apollo-upload-client"
 import { gql, useMutation } from "@apollo/client"
 import { uploadImage } from "@app/graphql/second-graphql-client"
 import { LoadingComponent } from "@app/components/loading-component"
+import { useTranslation } from "react-i18next"
 const { width, height } = Dimensions.get("window")
 const IMAGE_WIDTH = width - 32 * 2
 const IMAGE_HEIGHT = IMAGE_WIDTH * 0.635
@@ -54,18 +55,16 @@ const UPLOAD_IMAGE = gql`
 `
 export const AddImageScreen: React.FC<Props> = ({ navigation }) => {
   const dispatch = useDispatch()
-  const name = useSelector((state: RootState) => state.storeReducer?.tempStore?.name)
-  const tempPost = useSelector((state: RootState) => state.storeReducer?.tempStore)
+  const name = useSelector((state: RootState) => state.storeReducer?.tempPost?.name)
+  const tempPost = useSelector((state: RootState) => state.storeReducer?.tempPost)
   const [pickedImages, setPickedImages] = useState(["", "", "", "", "", ""])
   const [remoteUrls, setRemoteUrls] = useState(["", "", "", "", "", ""])
   const [thumbnail, setThumbnail] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isShowLoading, setIsShowloading] = useState(false)
-  // const [uploadImage, { data, loading }] = useMutation(UPLOAD_IMAGE);
+  const { t } = useTranslation()
   const uploadSingle = async (uri, name, type) => {
-    const file = generateRNFile(uri, name, type)
-    // console.log('file: ',file);
-
+    const file = generateRNFile(uri, name, type) 
     try {
       const url = await uploadImage(file)
       return url
@@ -176,6 +175,19 @@ export const AddImageScreen: React.FC<Props> = ({ navigation }) => {
       handlePickSingle()
     }
   }
+
+  React.useEffect(() => {
+    if (tempPost.imagesUrls?.length) {
+      const selectedImages = new Array(5).fill('')
+      pickedImages.forEach((_,index) =>{
+        selectedImages[index] = tempPost.imagesUrls?.[index] ||''
+      }) 
+      setRemoteUrls(selectedImages)
+      setPickedImages(selectedImages)
+      setThumbnail(selectedImages[0])
+    }
+  }, [])
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Screen style={styles.container} preset="fixed">
@@ -208,7 +220,7 @@ export const AddImageScreen: React.FC<Props> = ({ navigation }) => {
                 <FlatList
                   data={pickedImages}
                   keyExtractor={(_, index) => "images" + index}
-                  renderItem={({ item }) => {
+                  renderItem={({ item,index }) => {
                     return (
                       <TouchableOpacity
                         onPress={() => {
@@ -221,7 +233,7 @@ export const AddImageScreen: React.FC<Props> = ({ navigation }) => {
                             styles.imageStyle,
                             {
                               borderColor:
-                                thumbnail && thumbnail === item ? "red" : "#EBEBEB",
+                                (!thumbnail&&pickedImages[0] &&index==0)||(thumbnail && thumbnail === item) ? "red" : "#EBEBEB",
                             },
                           ]}
                         />
@@ -238,10 +250,11 @@ export const AddImageScreen: React.FC<Props> = ({ navigation }) => {
             </ScrollView>
           </View>
           <FooterCreatePost
+            disableSkip
             onPress={() => {
-
+              // if(!getMainImgUrl())return Alert.alert(t("you_must_add_at_least_one_image"))
               dispatch(
-                setTempStore({
+                setTempPost({
                   ...tempPost,
                   imagesUrls: remoteUrls.filter((url) => url != ""),
                   mainImageUrl: getMainImgUrl(),
@@ -315,7 +328,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: palette.lighterGrey,
     alignItems: "center",
   },
 })

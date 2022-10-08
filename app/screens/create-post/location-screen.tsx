@@ -3,32 +3,30 @@ import { useState } from "react"
 // eslint-disable-next-line react-native/split-platform-components
 import {
   Dimensions,
-  FlatList,
   Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native"
 import { Screen } from "../../components/screen"
 import { fontSize, palette, typography } from "@app/theme"
 import { HeaderComponent } from "@app/components/header"
 import { images } from "@app/assets/images"
-import { eng } from "@app/constants/en"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "@app/redux"
-import ImagePicker from "react-native-image-crop-picker"
 import { FooterCreatePost } from "./footer"
 import { MarketPlaceParamList } from "@app/navigation/stack-param-lists"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { setTempStore } from "@app/redux/reducers/store-reducer"
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
+import { setTempPost } from "@app/redux/reducers/store-reducer"
+import MapView, { Marker } from "react-native-maps"
 import Geolocation from "@react-native-community/geolocation"
 import CurrentLocation from "@asset/svgs/current-location.svg"
 import { Row } from "@app/components/row"
 import { AndroidBottomSpace } from "./android-bottom-spacing"
+import useMainQuery from "@app/hooks/use-main-query"
+import { useTranslation } from "react-i18next"
 const { width, height } = Dimensions.get("window")
 const IMAGE_WIDTH = width - 30 * 2
 const IMAGE_HEIGHT = IMAGE_WIDTH * 0.61
@@ -37,21 +35,23 @@ interface Props {
 }
 export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
   const dispatch = useDispatch()
-  const name = useSelector((state: RootState) => state.storeReducer?.tempStore?.name)
-  const tempPost = useSelector((state: RootState) => state.storeReducer?.tempStore)
+  const name = useSelector((state: RootState) => state.storeReducer?.tempPost?.name)
+  const tempPost = useSelector((state: RootState) => state.storeReducer?.tempPost)
   const location = useSelector(
-    (state: RootState) => state.storeReducer?.tempStore?.location,
+    (state: RootState) => state.storeReducer?.tempPost?.location,
   )
   const thumbnail = useSelector(
-    (state: RootState) => state.storeReducer?.tempStore?.mainImageUrl,
+    (state: RootState) => state.storeReducer?.tempPost?.mainImageUrl,
   )
 
+  const { phoneNumber } = useMainQuery()
   const [position, setPosition] = useState({
     latitude: 10,
     longitude: 10,
     latitudeDelta: 0.001,
     longitudeDelta: 0.001,
   })
+  const { t } = useTranslation()
   const getLocation = () => {
     if (!location || !location?.lat || !location?.long) return ""
     return `Lat: ${location.lat}, Long: ${location.long}`
@@ -61,13 +61,11 @@ export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
       (pos) => {
         const crd = pos.coords
         dispatch(
-          setTempStore({
+          setTempPost({
             ...tempPost,
             location: {
               lat: crd.latitude,
-              long: crd.longitude,
-              // lat: 9.9227376,
-              // long: -84.0748629,
+              long: crd.longitude
             },
           }),
         )
@@ -76,11 +74,6 @@ export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
           longitude: crd.longitude,
           latitudeDelta: 0.02,
           longitudeDelta: 0.02,
-
-          // latitude: 9.9227376,
-          // longitude: -84.0748629,
-          // latitudeDelta: 0.001,
-          // longitudeDelta: 0.001,
         })
       },
       (err) => {
@@ -105,7 +98,7 @@ export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
               }}
             />
 
-            <Text style={[styles.title, { marginTop: 20 }]}>{eng.share_location}</Text>
+            <Text style={[styles.title, { marginTop: 20 }]}>{t("share_location")}</Text>
             <MapView
               style={{
                 width: IMAGE_WIDTH,
@@ -124,12 +117,8 @@ export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
                 pinColor={palette.orange}
                 draggable
                 onDragEnd={({ nativeEvent: { coordinate } }) => {
-                  // location: {
-                  //   lat: coordinate.latitude,
-                  //   long: coordinate.longitude,
-                  // },
                   dispatch(
-                    setTempStore({
+                    setTempPost({
                       ...tempPost,
                       location: {
                         lat: coordinate.latitude,
@@ -137,36 +126,32 @@ export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
                       },
                     }),
                   )
-                  // setPosition({
-                  //   latitude: coordinate.latitude,
-                  //   longitude: coordinate.longitude,
-                  //   latitudeDelta: 0.02,
-                  //   longitudeDelta: 0.02,
-                  // })
                 }}
               />
             </MapView>
             <Text style={[styles.title, { marginTop: 20 }]}>
-              {eng.use_my_current_position}
+              {t("select_your_address")}
             </Text>
             <Row
-              containerStyle={{
-                borderColor: "#EBEBEB",
-                borderWidth: 1,
-                borderRadius: 4,
-                padding: 10,
-                marginTop: 15,
-                alignItems: "center",
-              }}
+              containerStyle={styles.rowContainer}
+              onPress={()=>{}}
             >
-              <CurrentLocation />
-              <Text style={[styles.location, { marginLeft: 10 }]}>{getLocation()}</Text>
+              <CurrentLocation fill={palette.orange} />
+              <Text style={[styles.location, { marginLeft: 10 }]}>{}</Text>
             </Row>
             <AndroidBottomSpace />
           </ScrollView>
           <FooterCreatePost
+            disableSkip
             onPress={() => {
-              navigation.navigate("AddContact")
+              dispatch(
+                setTempPost({
+                  ...tempPost,
+                  email: "TestMail@gmail.com",
+                  phone: phoneNumber,
+                }),
+              )
+              navigation.navigate("ConfirmInformation", { editable: true })
             }}
             style={{ marginVertical: 20 }}
           />
@@ -177,6 +162,15 @@ export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
+  rowContainer: {
+    backgroundColor: 'white',
+    borderColor: "#EBEBEB",
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 10,
+    marginTop: 15,
+    alignItems: "center",
+  },
   selected: {
     fontFamily: typography.regular,
     fontSize: fontSize.font13,
@@ -229,7 +223,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: palette.lighterGrey,
     alignItems: "center",
   },
 })
