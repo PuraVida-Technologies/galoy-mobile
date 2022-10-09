@@ -68,3 +68,13 @@ query googleMapAutoComplete($name: String!) {
   }
 }
 `
+export const GET_LOCATION_LAT_LONG = gql`
+query googleMapPlaceCoordinates($id: String!) {
+  googleMapPlaceCoordinates(
+    id: $id 
+  ) { 
+        latitude
+        longitude
+  }
+}
+`

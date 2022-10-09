@@ -52,42 +52,55 @@ export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
     longitudeDelta: 0.001,
   })
   const { t } = useTranslation()
-  const getLocation = () => {
-    if (!location || !location?.lat || !location?.long) return ""
-    return `Lat: ${location.lat}, Long: ${location.long}`
-  }
+
   React.useEffect(() => {
-    Geolocation.getCurrentPosition(
-      (pos) => {
-        const crd = pos.coords
-        dispatch(
-          setTempPost({
-            ...tempPost,
-            location: {
-              lat: crd.latitude,
-              long: crd.longitude
-            },
-          }),
-        )
-        setPosition({
-          latitude: crd.latitude,
-          longitude: crd.longitude,
-          latitudeDelta: 0.02,
-          longitudeDelta: 0.02,
-        })
-      },
-      (err) => {
-        console.log("err: ", err)
-      },
-    )
+
+    if (!tempPost?.location?.lat) {
+
+      Geolocation.getCurrentPosition(
+        (pos) => {
+          const crd = pos.coords
+          dispatch(
+            setTempPost({
+              ...tempPost,
+              location: {
+                lat: crd.latitude,
+                long: crd.longitude
+              },
+            }),
+          )
+          setPosition({
+            latitude: crd.latitude,
+            longitude: crd.longitude,
+            latitudeDelta: 0.02,
+            longitudeDelta: 0.02,
+          })
+        },
+        (err) => {
+          console.log("err: ", err)
+        },
+      )
+    }
   }, [])
+  React.useEffect(() => {
+    
+    if (tempPost?.location?.lat) {
+      setPosition({
+        latitude: tempPost?.location?.lat,
+        longitude: tempPost?.location?.long,
+        latitudeDelta: 0.02,
+        longitudeDelta: 0.02,
+      })
+    }
+  }, [tempPost?.location?.lat])
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Screen style={styles.container}>
-        <HeaderComponent style={{ paddingHorizontal: 20 }} />
+        <HeaderComponent style={{ paddingHorizontal: 20 }} title={name}/>
         <View style={{ flex: 1, paddingHorizontal: 30, width: "100%" }}>
-          <ScrollView>
-            <Text style={[styles.title, { alignSelf: "center" }]}>{name}</Text>
+          <ScrollView
+          showsVerticalScrollIndicator={false}
+          >
             <Image
               source={thumbnail ? { uri: thumbnail } : images.landscapePlaceholderImage}
               style={{
@@ -98,7 +111,7 @@ export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
               }}
             />
 
-            <Text style={[styles.title, { marginTop: 20 }]}>{t("share_location")}</Text>
+            <Text style={[styles.title, { marginTop: 20 }]}>{t("use_my_current_position")}</Text>
             <MapView
               style={{
                 width: IMAGE_WIDTH,
@@ -124,37 +137,39 @@ export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
                         lat: coordinate.latitude,
                         long: coordinate.longitude,
                       },
+                      address:""
                     }),
                   )
                 }}
               />
+              <Text>123</Text>
             </MapView>
             <Text style={[styles.title, { marginTop: 20 }]}>
-              {t("select_your_address")}
+              {t("or_select_your_address")}
             </Text>
             <Row
               containerStyle={styles.rowContainer}
-              onPress={()=>{}}
+              onPress={() => { navigation.navigate('LocationPicker') }}
             >
               <CurrentLocation fill={palette.orange} />
-              <Text style={[styles.location, { marginLeft: 10 }]}>{}</Text>
+              <Text style={[styles.location, { marginLeft: 10,flex:1 }]}>{tempPost.address||"Tap to find your place"}</Text>
             </Row>
+            <FooterCreatePost
+              disableSkip
+              onPress={() => {
+                dispatch(
+                  setTempPost({
+                    ...tempPost,
+                    email: "TestMail@gmail.com",
+                    phone: phoneNumber,
+                  }),
+                )
+                navigation.navigate("ConfirmInformation", { editable: true })
+              }}
+              style={{ marginVertical: 20 }}
+            />
             <AndroidBottomSpace />
           </ScrollView>
-          <FooterCreatePost
-            disableSkip
-            onPress={() => {
-              dispatch(
-                setTempPost({
-                  ...tempPost,
-                  email: "TestMail@gmail.com",
-                  phone: phoneNumber,
-                }),
-              )
-              navigation.navigate("ConfirmInformation", { editable: true })
-            }}
-            style={{ marginVertical: 20 }}
-          />
         </View>
       </Screen>
     </SafeAreaView>

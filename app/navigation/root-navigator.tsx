@@ -66,6 +66,7 @@ import { MarketPlaceStacks } from "./marketplace-stack"
 import { StoreListScreen } from "@app/screens/store-list-screen"
 import { StoreListViewScreen } from "@app/screens/store-list-screen/list-view-screen"
 import { StoreDetailScreen } from "@app/screens/post-detail-screen"
+import { LocationPickerScreen } from "@app/screens/location-picker-screen"
 // Must be outside of any component LifeCycle (such as `componentDidMount`).
 PushNotification.configure({
   // (optional) Called when Token is generated (iOS and Android)
@@ -434,6 +435,13 @@ export const RootStack: NavigatorType = () => {
       <RootNavigator.Screen
         name="StoreDetail"
         component={StoreDetailScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <RootNavigator.Screen
+        name="LocationPicker"
+        component={LocationPickerScreen}
         options={{
           headerShown: false,
         }}

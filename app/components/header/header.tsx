@@ -31,11 +31,12 @@ export const HeaderComponent: React.FC<HeaderProps> = ({
         }}
       >
         <BackSvg fill={palette.orange}/>
-        <Text style={{ fontFamily: typography.regular, fontSize: fontSize.font20 }}>
+      </TouchableOpacity>
+
+      <Text style={{ fontFamily: typography.regular, fontSize: fontSize.font20 }}>
           {title}
         </Text>
-      </TouchableOpacity>
-      {rightComponent ? rightComponent : <View />}
+      {rightComponent ? rightComponent : <View style={{width:24,height:24}}/>}
     </Row>
   )
 }

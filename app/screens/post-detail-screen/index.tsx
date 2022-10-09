@@ -41,11 +41,11 @@ const { width, height } = Dimensions.get("window")
 interface Props {
   navigation: StackNavigationProp<MarketPlaceParamList>
 }
-const DetailComponent = ({editable,isHidePhone,setIsHidePhone}) => {
-  const tempPost = useSelector((state: RootState) => state.storeReducer?.tempPost)
+const DetailComponent = ({editable,isHidePhone,setIsHidePhone,post}) => {
+
   const { t } = useTranslation()
   const renderTags = ()=>{
-    return tempPost?.tags?.map((tag)=>{
+    return post?.tags?.map((tag)=>{
       return <TagComponent title={tag.name} key={tag.name} style={{marginRight:10}}/>
     })
   }
@@ -60,14 +60,14 @@ const DetailComponent = ({editable,isHidePhone,setIsHidePhone}) => {
         </ScrollView>
       </View>
       <Text style={detailStyle.label}>{t("description")}</Text>
-      <Text style={detailStyle.value}>{tempPost?.description}</Text>
+      <Text style={detailStyle.value}>{post?.description}</Text>
 
       <View style={detailStyle.rowItem}>
         <Row hc>
           <Text style={[detailStyle.label,{marginRight:5}]}>{t("phone_number")}</Text>
           {editable&&(<TouchableOpacity onPress={()=>setIsHidePhone(!isHidePhone)}>{isHidePhone ? <EyeOnSvg/> :<EyeOffSvg/>}</TouchableOpacity>)}
         </Row>
-        <Text style={detailStyle.value}>{isHidePhone?'---------':tempPost?.phone}</Text>
+        <Text style={detailStyle.value}>{isHidePhone?'---------':post?.phone}</Text>
       </View>
     </View>
   )
@@ -100,13 +100,13 @@ export const StoreDetailScreen: React.FC<Props> = ({ navigation }) => {
     return {
       ...tempPost,
       hidePhoneNumber:isHidePhone,
-      tagsIds:tempPost.tags?.map(item=>item._id),
-      latitude: tempPost.location.lat,
-      longitude: tempPost.location.long,
-      categoryId: tempPost.category,
-      price: parseFloat(tempPost.price || 0),
+      tagsIds:store.tags?.map(item=>item._id),
+      latitude: store.location.lat,
+      longitude: store.location.long,
+      categoryId: store.category,
+      price: parseFloat(store.price || 0),
       userId: "hardcoded_user_id",
-      address: "hardcoded_address",
+      address: store.address||"hardcoded_value",
     }
   }
 
@@ -125,7 +125,7 @@ export const StoreDetailScreen: React.FC<Props> = ({ navigation }) => {
     }
   }
   const getUri = ()=>{
-    if(store) return  tempPost.mainImageUrl ? { uri: tempPost.mainImageUrl } : images.landscapePlaceholderImage
+    if(store) return  store.mainImageUrl ? { uri: store.mainImageUrl } : images.landscapePlaceholderImage
     return thumbnail ? { uri: thumbnail } : images.landscapePlaceholderImage
   }
   const renderContent =()=>{
@@ -133,7 +133,7 @@ export const StoreDetailScreen: React.FC<Props> = ({ navigation }) => {
       <View style={styles.contentContainer}>
         <Row containerStyle={styles.titleRow}>
           <Text style={[styles.title,{flex:1,paddingRight:10}]}>{store.name}</Text>
-          <TouchableOpacity onPress={()=>{openMap(tempPost.location.lat,tempPost.location.long)}}>
+          <TouchableOpacity onPress={()=>{openMap(store.location.lat,store.location.long)}}>
             <Row containerStyle={styles.locationButtonContainer}>
               <Text style={styles.locationText}>{t("location")}</Text>
               <View style={styles.locationSvgContainer}>
@@ -144,10 +144,12 @@ export const StoreDetailScreen: React.FC<Props> = ({ navigation }) => {
         </Row>
         <Row containerStyle={[{ marginTop: 5, alignItems: "center" }]}>
           <LocationMarkerSvg fill={palette.orange}/>
-          <Text style={styles.addressText}>{getLocation(store.location)}</Text>
+          <Text style={styles.addressText}>{store?.address|| getLocation(store.location)}</Text>
         </Row>
         
-        <DetailComponent editable={editable} setIsHidePhone={setIsHidePhone} isHidePhone={isHidePhone}/>
+        <DetailComponent editable={editable} setIsHidePhone={setIsHidePhone} isHidePhone={isHidePhone}
+          post={store}
+        />
 
         {editable ? (
           <TouchableOpacity
@@ -196,6 +198,8 @@ export const StoreDetailScreen: React.FC<Props> = ({ navigation }) => {
   }
   useEffect(() => {
     if (route.params.storeInfor) {
+      console.log('route.params.storeInfor: ',route.params.storeInfor);
+      
       setStore(route.params.storeInfor)
     } else {
       setStore(tempPost)
