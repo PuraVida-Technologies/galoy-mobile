@@ -34,5 +34,8 @@
   "tags":"Tags",
   "your_selected_tag":"Your selected tag",
 
-  "select_your_address":"Select your address"
+  "select_your_address":"Select your address",
+  "enter_your_location":"Enter your location",
+  "search_your_location":"Search your location",
+  "or_select_your_address":"Or Select Your Address"
 }

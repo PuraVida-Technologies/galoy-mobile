@@ -252,7 +252,7 @@ export const AddImageScreen: React.FC<Props> = ({ navigation }) => {
           <FooterCreatePost
             disableSkip
             onPress={() => {
-              // if(!getMainImgUrl())return Alert.alert(t("you_must_add_at_least_one_image"))
+              if(!getMainImgUrl())return Alert.alert(t("you_must_add_at_least_one_image"))
               dispatch(
                 setTempPost({
                   ...tempPost,

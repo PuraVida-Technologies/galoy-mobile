@@ -74,6 +74,7 @@ export const MarketPlace: ScreenType = ({ navigation }: Props) => {
             <View style={{ width: 30 }} />
             <TouchableOpacity style={[styles.button, styles.secondButton]}
               onPress={() => {
+                // navigation.navigate("LocationPicker")
                 hasToken ? Alert.alert("Stay tuned") : setIsModalVisible(true)
               }}>
               <Text style={[styles.text, { color: palette.orange }]}>{t("my_post")}</Text>

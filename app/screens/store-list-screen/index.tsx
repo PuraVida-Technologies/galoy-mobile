@@ -73,7 +73,6 @@ export const StoreListScreen: ScreenType = ({ navigation }: Props) => {
       <LandscapeDataComponent
         product={item}
         onItemPress={() => {
-          dispatch(setTempPost(item))
           navigation.navigate("StoreDetail", { editable: false, storeInfor: item })
         }}
         onLocationPress={() => {

@@ -1,3 +1,4 @@
+
 export const getMarketPlaceCategoriesHandler = (res: any) => {
   return res?.data?.getMarketplaceCategories
 }
@@ -9,4 +10,10 @@ export const autoCompleteTagHandler = (res: any) => {
 }
 export const getTagsHandler = (res: any) => {
   return res?.data?.getMarketplaceTags
+}
+export const autoCompleteLocationHandler = (res: any) => {
+  return res?.data?.googleMapAutoComplete
+}
+export const getLocationLatLongHandler = (res: any) => {
+  return res?.data?.googleMapPlaceCoordinates
 }
