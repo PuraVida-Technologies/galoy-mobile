@@ -17,3 +17,6 @@ export const autoCompleteLocationHandler = (res: any) => {
 export const getLocationLatLongHandler = (res: any) => {
   return res?.data?.googleMapPlaceCoordinates
 }
+export const createTagHandle = (res: any) => {
+  return res?.data?.createMarketplaceTag
+}

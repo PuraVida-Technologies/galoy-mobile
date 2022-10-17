@@ -78,3 +78,11 @@ query googleMapPlaceCoordinates($id: String!) {
   }
 }
 `
+export const UPLOAD_IMAGE = gql`
+  mutation uploadFile($file: Upload!) {
+    uploadFile(file: $file) {
+      filename
+      url
+    }
+  }
+`

@@ -110,6 +110,7 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
   const [descriptionError, setDescriptionError] = useState("")
   const [filteredTags, setFilteredTags] = useState<MarketplaceTag[]>([])
   const [selectedTags, setSelectedTags] = useState<MarketplaceTag[]>([])
+  const [initTag, setInitTag] = useState<MarketplaceTag[]>([])
   const timeoutRef= React.useRef(null)
   const { t } = useTranslation()
 
@@ -180,7 +181,10 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
     const initData = () => {
       setIsLoading(true)
       getTags()
-        .then(tags => setFilteredTags(tags))
+        .then(tags => {
+          setFilteredTags(tags)
+          setInitTag(tags)
+        })
         .finally(() => setIsLoading(false))
 
     }
@@ -258,7 +262,7 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
                 }}
               />
               <FlatList
-                data={filteredTags}
+                data={(!filteredTags?.length && !tag) ? initTag : filteredTags}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 ListEmptyComponent={()=>{

@@ -32,7 +32,7 @@ import LocationMarkerSvg from "@asset/svgs/location-marker.svg"
 import { getLocation, openMap } from "@app/utils/helper"
 import { eng } from "@app/constants/en"
 import { RouteProp, useRoute } from "@react-navigation/native"
-import { createPost } from "@app/graphql/second-graphql-client"
+import { createPost, createTag } from "@app/graphql/second-graphql-client"
 import { LoadingComponent } from "@app/components/loading-component"
 import { CreatePostSuccessModal } from "@app/components/create-post-success-modal"
 import { useTranslation } from "react-i18next"
@@ -100,7 +100,7 @@ export const StoreDetailScreen: React.FC<Props> = ({ navigation }) => {
     return {
       ...tempPost,
       hidePhoneNumber:isHidePhone,
-      tagsIds:store.tags?.map(item=>item._id),
+      tagsIds:tempPost.tags?.map(item=>item._id),
       latitude: store.location.lat,
       longitude: store.location.long,
       categoryId: store.category,
@@ -113,8 +113,15 @@ export const StoreDetailScreen: React.FC<Props> = ({ navigation }) => {
   const onSubmit = async () => {
     try {
       setIsLoading(true)
-      let request = formatRequestObject(tempPost)
-      console.log("store: ", request)
+      let modifiedTempPost = { ...tempPost }
+      const skipCreateTag = tempPost.tags?.every(tag => tag._id)
+      if (!skipCreateTag) {
+        let requests = modifiedTempPost.tags.filter(tag=>!tag._id).map(tag=>createTag(tag.name))
+        let res = await Promise.all(requests)
+        let newTags = [...res,...tempPost.tags].filter(tag=>tag._id)
+        modifiedTempPost = {...tempPost,tags:newTags}
+      }
+      let request = formatRequestObject(modifiedTempPost)
       let res = await createPost(request)
 
       setIsVisible(true)

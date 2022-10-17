@@ -40,3 +40,14 @@ export const CREATE_POST = gql`
     }
   }
 `
+
+export const CREATE_TAG = gql`
+mutation createMarketplaceTag($name: String!) {
+  createMarketplaceTag(createMarketplaceTagInput: { name: $name })
+{
+  name
+  _id
+}
+}
+
+`

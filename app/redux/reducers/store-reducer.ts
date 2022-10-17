@@ -13,7 +13,7 @@ export interface PostAttributes {
     lat: number
     long: number
   }
-  tags:MarketplaceTag[]|[]
+  tags:MarketplaceTag[]
   mainImageUrl: string
   name: string
   openHours?: string

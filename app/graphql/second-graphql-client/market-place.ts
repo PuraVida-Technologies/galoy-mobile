@@ -1,9 +1,10 @@
 
 
 import { GoogleMapLocation, MarketplaceTag, PlaceCoordinates } from "@app/constants/model";
+import { CREATE_TAG } from "../mutations/marketplace-mutation";
 import { AUTO_COMPLETE_LOCATION, AUTO_COMPLETE_TAGS, GET_LOCATION_LAT_LONG, GET_TAGS } from "../queries/marketplace-query";
 import PuravidaClient from "./client"
-import { autoCompleteLocationHandler, autoCompleteTagHandler, getLocationLatLongHandler, getTagsHandler } from "./handler";
+import { autoCompleteLocationHandler, autoCompleteTagHandler, createTagHandle, getLocationLatLongHandler, getTagsHandler } from "./handler";
 export const autoCompleteTags = async (name:string): Promise<
   MarketplaceTag[]
 > => {
@@ -31,5 +32,11 @@ PlaceCoordinates
 > => {
   let res = await PuravidaClient.query({ query: GET_LOCATION_LAT_LONG ,variables:{id}})
   let formattedResponse = getLocationLatLongHandler(res)
+  return formattedResponse
+}
+
+export const createTag = async (name: string) => {
+  let res = await PuravidaClient.mutate({ mutation: CREATE_TAG, variables: { name } })
+  let formattedResponse = createTagHandle(res)
   return formattedResponse
 }
