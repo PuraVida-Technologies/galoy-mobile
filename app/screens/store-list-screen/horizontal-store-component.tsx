@@ -2,14 +2,7 @@ import { Row } from "@app/components/row"
 import { color, fontSize, typography } from "@app/theme"
 import * as React from "react"
 // eslint-disable-next-line react-native/split-platform-components
-import {
-  Dimensions,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native"
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import DirectionSvg from "@asset/svgs/direction-icon.svg"
 import FilledDirectionSvg from "@asset/svgs/filled-direction-icon.svg"
 import { images } from "@app/assets/images"
@@ -46,25 +39,11 @@ export const LandscapeDataComponent: React.FC<Props> = ({
             <FilledDirectionSvg />
             <Text style={styles.smallText}> {product.distance || 0}m</Text>
           </Row>
-          {/* <Row containerStyle={{ justifyContent: "space-between", alignItems: "center" }}>
-            <StarRating
-              disabled
-              maxStars={5}
-              rating={product.rating || 0}
-              emptyStarColor={"#FFC62B"}
-              fullStarColor={"#FFC62B"}
-              starSize={13}
-              containerStyle={{ width: 13 * 5 + 4 * 3, marginVertical: 10 }}
-            />
-            <Text style={styles.smallText}> {product.reviewNumber} review</Text>
-          </Row> */}
           <Text style={[styles.bigText, { fontSize: fontSize.font14 }]} numberOfLines={2}>
             {product.description}
           </Text>
           <Row containerStyle={{ marginTop: 10 }}>
-            <TouchableOpacity style={styles.buttonStyle}
-            onPress={onDirectionPress}
-            >
+            <TouchableOpacity style={styles.buttonStyle} onPress={onDirectionPress}>
               <DirectionSvg />
               <Text style={styles.buttonText}>Direction</Text>
             </TouchableOpacity>

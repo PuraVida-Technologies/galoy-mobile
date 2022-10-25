@@ -1,14 +1,7 @@
 import { fontSize, GlobalStyles, typography } from "@app/theme"
 import * as React from "react"
 // eslint-disable-next-line react-native/split-platform-components
-import {
-  Dimensions,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native"
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { images } from "@app/assets/images"
 import { PostAttributes } from "@app/redux/reducers/store-reducer"
 const { width, height } = Dimensions.get("window")

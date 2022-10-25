@@ -1,13 +1,13 @@
-import { HeaderComponent } from '@app/components/header';
-import TextInputComponent from '@app/components/text-input-component';
-import { GoogleMapLocation } from '@app/constants/model';
-import { autoComplete, getPlaceCoordinates } from '@app/graphql/second-graphql-client';
-import { RootState } from '@app/redux';
-import { setTempPost } from '@app/redux/reducers/store-reducer';
-import { palette } from '@app/theme'; 
-import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { HeaderComponent } from "@app/components/header"
+import TextInputComponent from "@app/components/text-input-component"
+import { GoogleMapLocation } from "@app/constants/model"
+import { autoComplete, getPlaceCoordinates } from "@app/graphql/second-graphql-client"
+import { RootState } from "@app/redux"
+import { setTempPost } from "@app/redux/reducers/store-reducer"
+import { palette } from "@app/theme"
+import { useNavigation } from "@react-navigation/native"
+import React, { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import {
   TouchableOpacity,
   StyleSheet,
@@ -19,47 +19,46 @@ import {
   SafeAreaView,
   Text,
   Dimensions,
-  Alert
-} from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+  Alert,
+} from "react-native"
+import { useDispatch, useSelector } from "react-redux"
 
 export interface LocationPickProps {
-  title: string;
-  subTitle?: string;
-  onSelected: Function;
-  value: string;
-  debounce?: number;
-  resultType?: 'establishment' | '(cities)';
-  inputStyle?: any;
-  searchPlaceholder?: string;
-  valueButton?: any;
-  onModalClose?: () => void;
-  currentTitle?: string;
-  onClearCurrentValue?: () => void;
+  title: string
+  subTitle?: string
+  onSelected: Function
+  value: string
+  debounce?: number
+  resultType?: "establishment" | "(cities)"
+  inputStyle?: any
+  searchPlaceholder?: string
+  valueButton?: any
+  onModalClose?: () => void
+  currentTitle?: string
+  onClearCurrentValue?: () => void
 }
-const { width } = Dimensions.get('window')
+const { width } = Dimensions.get("window")
 export const LocationPickerScreen: React.FC<LocationPickProps> = (props) => {
-
-  const { debounce = 500 } = props;
+  const { debounce = 500 } = props
   const { t } = useTranslation()
-  const [keyword, setKeyword] = useState('');
-  const [results, setResults] = useState([]);
-  const [isFetching, setIsFetching] = useState(false);
-  const [search, setSearch]: any = useState(null);
+  const [keyword, setKeyword] = useState("")
+  const [results, setResults] = useState([])
+  const [isFetching, setIsFetching] = useState(false)
+  const [search, setSearch]: any = useState(null)
   const tempPost = useSelector((state: RootState) => state.storeReducer.tempPost)
   const dispatch = useDispatch()
   const navigation = useNavigation()
   useEffect(() => {
-    clearTimeout(search);
-    setSearch(null);
+    clearTimeout(search)
+    setSearch(null)
 
     if (keyword.trim().length > 0) {
       setSearch(
         setTimeout(() => {
-          setResults([]);
-          setIsFetching(true);
+          setResults([])
+          setIsFetching(true)
           autoComplete(keyword)
-            .then(places => {
+            .then((places) => {
               setResults(places)
             })
             .catch(() => {
@@ -67,46 +66,44 @@ export const LocationPickerScreen: React.FC<LocationPickProps> = (props) => {
             })
             .finally(() => setIsFetching(false))
         }, debounce),
-      );
+      )
     }
 
     return () => {
-      clearTimeout(search);
-      setSearch(null);
-    };
-  }, [keyword]);
- 
+      clearTimeout(search)
+      setSearch(null)
+    }
+  }, [keyword])
+
   const selectLocation = async (item: GoogleMapLocation) => {
-    console.log('item: ',item);
     try {
       setIsFetching(true)
       let coords = await getPlaceCoordinates(item.id)
-      dispatch(setTempPost({
-        ...tempPost, location: {
-          lat: coords.latitude,
-          long: coords.longitude
-        },
-        address:item.name
-      }))
+      dispatch(
+        setTempPost({
+          ...tempPost,
+          location: {
+            lat: coords.latitude,
+            long: coords.longitude,
+          },
+          address: item.name,
+        }),
+      )
       navigation.goBack()
     } catch (error) {
-      
-    }finally {
+    } finally {
       setIsFetching(false)
     }
-  };
+  }
 
   return (
-
-    <SafeAreaView
-
-      style={styles.modalContainer}>
-      <HeaderComponent title={t("search_your_location")}
-        style={{ paddingHorizontal: 20, alignItems: 'center' }}
+    <SafeAreaView style={styles.modalContainer}>
+      <HeaderComponent
+        title={t("search_your_location")}
+        style={{ paddingHorizontal: 20, alignItems: "center" }}
       />
       <View style={[styles.searchPanel]}>
         <View style={[styles.textInputContainer]}>
-
           <TextInputComponent
             value={keyword}
             onChangeText={(text) => setKeyword(text)}
@@ -117,11 +114,7 @@ export const LocationPickerScreen: React.FC<LocationPickProps> = (props) => {
         </View>
       </View>
 
-      {isFetching && (
-        <Text style={styles.loadingText}>
-          Loading data...
-        </Text>
-      )}
+      {isFetching && <Text style={styles.loadingText}>Loading data...</Text>}
 
       <FlatList
         data={results}
@@ -134,40 +127,39 @@ export const LocationPickerScreen: React.FC<LocationPickProps> = (props) => {
                   borderBottomColor: palette.orange,
                 },
               ]}
-              onPress={() => selectLocation(item)}>
-              <Text numberOfLines={1}>
-                {item.name}
-              </Text>
+              onPress={() => selectLocation(item)}
+            >
+              <Text numberOfLines={1}>{item.name}</Text>
             </TouchableOpacity>
-          );
+          )
         }}
         keyExtractor={(item: any) => item.id}
         contentContainerStyle={styles.optionContentContainer}
         keyboardShouldPersistTaps="always"
       />
     </SafeAreaView>
-  );
-};
-
+  )
+}
 
 const styles = StyleSheet.create({
   textInputContainer: {
-    borderColor: palette.orange, backgroundColor: 'white',
-    flexDirection: 'row',
+    borderColor: palette.orange,
+    backgroundColor: "white",
+    flexDirection: "row",
     borderWidth: 2,
     borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden'
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
   },
   header: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     paddingHorizontal: 20,
     paddingBottom: 7,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    justifyContent: "center",
+    flexDirection: "row",
 
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 1,
@@ -179,22 +171,22 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-  }, 
+  },
   subTitleLabel: {
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
   },
   close: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     paddingLeft: 2,
     bottom: 10,
   },
   triggerPanel: {
-    position: 'relative',
+    position: "relative",
   },
   trigger: {
     zIndex: 3,
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     bottom: 0,
     left: 0,
@@ -208,7 +200,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     backgroundColor: palette.lighterGrey,
-    flex: 1
+    flex: 1,
   },
   loadingText: {
     padding: 15,
@@ -217,10 +209,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderBottomWidth: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   optionContentContainer: {
     paddingBottom: 20,
   },
-});
+})

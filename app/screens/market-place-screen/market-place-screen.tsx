@@ -1,4 +1,3 @@
-
 import { StackNavigationProp } from "@react-navigation/stack"
 import * as React from "react"
 // eslint-disable-next-line react-native/split-platform-components
@@ -72,16 +71,18 @@ export const MarketPlace: ScreenType = ({ navigation }: Props) => {
               <Text style={[styles.text]}>{t("create_post")}</Text>
             </TouchableOpacity>
             <View style={{ width: 30 }} />
-            <TouchableOpacity style={[styles.button, styles.secondButton]}
+            <TouchableOpacity
+              style={[styles.button, styles.secondButton]}
               onPress={() => {
                 // navigation.navigate("LocationPicker")
                 hasToken ? Alert.alert("Stay tuned") : setIsModalVisible(true)
-              }}>
+              }}
+            >
               <Text style={[styles.text, { color: palette.orange }]}>{t("my_post")}</Text>
             </TouchableOpacity>
           </Row>
         </View>
-        <UnAuthModal modalVisible={isModalVisible} setModalVisible={setIsModalVisible}/>
+        <UnAuthModal modalVisible={isModalVisible} setModalVisible={setIsModalVisible} />
       </Screen>
     </SafeAreaView>
   )

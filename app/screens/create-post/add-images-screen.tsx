@@ -64,7 +64,7 @@ export const AddImageScreen: React.FC<Props> = ({ navigation }) => {
   const [isShowLoading, setIsShowloading] = useState(false)
   const { t } = useTranslation()
   const uploadSingle = async (uri, name, type) => {
-    const file = generateRNFile(uri, name, type) 
+    const file = generateRNFile(uri, name, type)
     try {
       const url = await uploadImage(file)
       return url
@@ -178,10 +178,10 @@ export const AddImageScreen: React.FC<Props> = ({ navigation }) => {
 
   React.useEffect(() => {
     if (tempPost.imagesUrls?.length) {
-      const selectedImages = new Array(5).fill('')
-      pickedImages.forEach((_,index) =>{
-        selectedImages[index] = tempPost.imagesUrls?.[index] ||''
-      }) 
+      const selectedImages = new Array(5).fill("")
+      pickedImages.forEach((_, index) => {
+        selectedImages[index] = tempPost.imagesUrls?.[index] || ""
+      })
       setRemoteUrls(selectedImages)
       setPickedImages(selectedImages)
       setThumbnail(selectedImages[0])
@@ -220,7 +220,7 @@ export const AddImageScreen: React.FC<Props> = ({ navigation }) => {
                 <FlatList
                   data={pickedImages}
                   keyExtractor={(_, index) => "images" + index}
-                  renderItem={({ item,index }) => {
+                  renderItem={({ item, index }) => {
                     return (
                       <TouchableOpacity
                         onPress={() => {
@@ -233,7 +233,10 @@ export const AddImageScreen: React.FC<Props> = ({ navigation }) => {
                             styles.imageStyle,
                             {
                               borderColor:
-                                (!thumbnail&&pickedImages[0] &&index==0)||(thumbnail && thumbnail === item) ? "red" : "#EBEBEB",
+                                (!thumbnail && pickedImages[0] && index == 0) ||
+                                (thumbnail && thumbnail === item)
+                                  ? "red"
+                                  : "#EBEBEB",
                             },
                           ]}
                         />
@@ -252,7 +255,8 @@ export const AddImageScreen: React.FC<Props> = ({ navigation }) => {
           <FooterCreatePost
             disableSkip
             onPress={() => {
-              if(!getMainImgUrl())return Alert.alert(t("you_must_add_at_least_one_image"))
+              if (!getMainImgUrl())
+                return Alert.alert(t("you_must_add_at_least_one_image"))
               dispatch(
                 setTempPost({
                   ...tempPost,

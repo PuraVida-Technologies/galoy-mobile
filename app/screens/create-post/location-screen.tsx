@@ -54,9 +54,7 @@ export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
   const { t } = useTranslation()
 
   React.useEffect(() => {
-
     if (!tempPost?.location?.lat) {
-
       Geolocation.getCurrentPosition(
         (pos) => {
           const crd = pos.coords
@@ -65,7 +63,7 @@ export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
               ...tempPost,
               location: {
                 lat: crd.latitude,
-                long: crd.longitude
+                long: crd.longitude,
               },
             }),
           )
@@ -83,7 +81,6 @@ export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
     }
   }, [])
   React.useEffect(() => {
-    
     if (tempPost?.location?.lat) {
       setPosition({
         latitude: tempPost?.location?.lat,
@@ -96,11 +93,9 @@ export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Screen style={styles.container}>
-        <HeaderComponent style={{ paddingHorizontal: 20 }} title={name}/>
+        <HeaderComponent style={{ paddingHorizontal: 20 }} title={name} />
         <View style={{ flex: 1, paddingHorizontal: 30, width: "100%" }}>
-          <ScrollView
-          showsVerticalScrollIndicator={false}
-          >
+          <ScrollView showsVerticalScrollIndicator={false}>
             <Image
               source={thumbnail ? { uri: thumbnail } : images.landscapePlaceholderImage}
               style={{
@@ -111,7 +106,9 @@ export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
               }}
             />
 
-            <Text style={[styles.title, { marginTop: 20 }]}>{t("use_my_current_position")}</Text>
+            <Text style={[styles.title, { marginTop: 20 }]}>
+              {t("use_my_current_position")}
+            </Text>
             <MapView
               style={{
                 width: IMAGE_WIDTH,
@@ -137,7 +134,7 @@ export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
                         lat: coordinate.latitude,
                         long: coordinate.longitude,
                       },
-                      address:""
+                      address: "",
                     }),
                   )
                 }}
@@ -149,10 +146,14 @@ export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
             </Text>
             <Row
               containerStyle={styles.rowContainer}
-              onPress={() => { navigation.navigate('LocationPicker') }}
+              onPress={() => {
+                navigation.navigate("LocationPicker")
+              }}
             >
               <CurrentLocation fill={palette.orange} />
-              <Text style={[styles.location, { marginLeft: 10,flex:1 }]}>{tempPost.address||"Tap to find your place"}</Text>
+              <Text style={[styles.location, { marginLeft: 10, flex: 1 }]}>
+                {tempPost.address || "Tap to find your place"}
+              </Text>
             </Row>
             <FooterCreatePost
               disableSkip
@@ -178,7 +179,7 @@ export const AddLocationScreen: React.FC<Props> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   rowContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderColor: "#EBEBEB",
     borderWidth: 1,
     borderRadius: 4,

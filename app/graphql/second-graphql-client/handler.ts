@@ -1,4 +1,3 @@
-
 export const getMarketPlaceCategoriesHandler = (res: any) => {
   return res?.data?.getMarketplaceCategories
 }

@@ -26,7 +26,7 @@ import TextInputComponent from "@app/components/text-input-component"
 import { LoadingComponent } from "@app/components/loading-component"
 import { useTranslation } from "react-i18next"
 import { Row } from "@app/components/row"
-import XSvg from '@asset/svgs/x.svg'
+import XSvg from "@asset/svgs/x.svg"
 import { MarketplaceTag, TemplateMarketPlaceTag } from "@app/constants/model"
 import { autoCompleteTags, getTags } from "@app/graphql/second-graphql-client"
 import { RootState } from "@app/redux"
@@ -34,65 +34,65 @@ import { TagComponent } from "@app/components/tag-components"
 const { width, height } = Dimensions.get("window")
 const FAKE_TAGS = [
   {
-    "_id": "633868d33e3e998e4c674303",
-    "createdAt": "1664641235567",
-    "name": "restaurants",
-    "updatedAt": "1664641235567"
+    _id: "633868d33e3e998e4c674303",
+    createdAt: "1664641235567",
+    name: "restaurants",
+    updatedAt: "1664641235567",
   },
   {
-    "_id": "633868c93e3e998e4c674300",
-    "createdAt": "1664641225401",
-    "name": "vehicle",
-    "updatedAt": "1664641225401"
+    _id: "633868c93e3e998e4c674300",
+    createdAt: "1664641225401",
+    name: "vehicle",
+    updatedAt: "1664641225401",
   },
   {
-    "_id": "633868b33e3e998e4c6742fd",
-    "createdAt": "1664641203639",
-    "name": "Tag #2",
-    "updatedAt": "1664641203639"
+    _id: "633868b33e3e998e4c6742fd",
+    createdAt: "1664641203639",
+    name: "Tag #2",
+    updatedAt: "1664641203639",
   },
   {
-    "_id": "633842fbf55946fb0c4cc09a",
-    "createdAt": "1664631547736",
-    "name": "Tag #1",
-    "updatedAt": "1664631547736"
+    _id: "633842fbf55946fb0c4cc09a",
+    createdAt: "1664631547736",
+    name: "Tag #1",
+    updatedAt: "1664631547736",
   },
   {
-    "_id": "633842fbf55946fb0c4cc09a1",
-    "createdAt": "1664631547736",
-    "name": "Tag #2",
-    "updatedAt": "1664631547736"
+    _id: "633842fbf55946fb0c4cc09a1",
+    createdAt: "1664631547736",
+    name: "Tag #2",
+    updatedAt: "1664631547736",
   },
   {
-    "_id": "633842fbf55946fb0c4cc09a2",
-    "createdAt": "1664631547736",
-    "name": "Tag #2",
-    "updatedAt": "1664631547736"
+    _id: "633842fbf55946fb0c4cc09a2",
+    createdAt: "1664631547736",
+    name: "Tag #2",
+    updatedAt: "1664631547736",
   },
   {
-    "_id": "633842fbf55946fb0c4cc09a3",
-    "createdAt": "1664631547736",
-    "name": "Tag #3",
-    "updatedAt": "1664631547736"
+    _id: "633842fbf55946fb0c4cc09a3",
+    createdAt: "1664631547736",
+    name: "Tag #3",
+    updatedAt: "1664631547736",
   },
   {
-    "_id": "633842fbf55946fb0c4cc09a4",
-    "createdAt": "1664631547736",
-    "name": "Tag #4",
-    "updatedAt": "1664631547736"
+    _id: "633842fbf55946fb0c4cc09a4",
+    createdAt: "1664631547736",
+    name: "Tag #4",
+    updatedAt: "1664631547736",
   },
   {
-    "_id": "633842fbf55946fb0c4cc09a5",
-    "createdAt": "1664631547736",
-    "name": "Tag #5",
-    "updatedAt": "1664631547736"
+    _id: "633842fbf55946fb0c4cc09a5",
+    createdAt: "1664631547736",
+    name: "Tag #5",
+    updatedAt: "1664631547736",
   },
   {
-    "_id": "633842fbf55946fb0c4cc09a6",
-    "createdAt": "1664631547736",
-    "name": "Tag #6",
-    "updatedAt": "1664631547736"
-  }
+    _id: "633842fbf55946fb0c4cc09a6",
+    createdAt: "1664631547736",
+    name: "Tag #6",
+    updatedAt: "1664631547736",
+  },
 ]
 interface Props {
   navigation: StackNavigationProp<MarketPlaceParamList>
@@ -103,7 +103,7 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
   const [description, setDescription] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [tagLoading, setTagLoading] = useState(false)
-  const tempPost = useSelector((state:RootState)=>state.storeReducer.tempPost)
+  const tempPost = useSelector((state: RootState) => state.storeReducer.tempPost)
   const [tag, setTag] = useState("")
 
   const [nameError, setNameError] = useState("")
@@ -111,7 +111,7 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
   const [filteredTags, setFilteredTags] = useState<MarketplaceTag[]>([])
   const [selectedTags, setSelectedTags] = useState<MarketplaceTag[]>([])
   const [initTag, setInitTag] = useState<MarketplaceTag[]>([])
-  const timeoutRef= React.useRef(null)
+  const timeoutRef = React.useRef(null)
   const { t } = useTranslation()
 
   const isCorrectInput = () => {
@@ -141,38 +141,38 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
     navigation.navigate("AddImage")
   }
   const addTag = (item: MarketplaceTag) => {
-    if(selectedTags.findIndex(tag=>tag.name===item.name)!==-1) return
+    if (selectedTags.findIndex((tag) => tag.name === item.name) !== -1) return
     const newTags = [...selectedTags]
     if (newTags.length >= 5) newTags.pop()
     newTags.unshift(item)
     setSelectedTags(newTags)
   }
   const removeTag = (index: number) => {
-
     const newTags = [...selectedTags]
     newTags.splice(index, 1)
     setSelectedTags(newTags)
   }
   const debounceFindTags = (text: string) => {
-
     timeoutRef.current = setTimeout(() => {
       setTagLoading(true)
-      autoCompleteTags(text).then(data => {
-        setFilteredTags(data)
-      }).finally(() => {
-        setTagLoading(false)
-      })
+      autoCompleteTags(text)
+        .then((data) => {
+          setFilteredTags(data)
+        })
+        .finally(() => {
+          setTagLoading(false)
+        })
     }, 500)
   }
   const onChangeTags = (text: string) => {
     setTag(text)
     if (!text) {
-      return clearTimeout(timeoutRef.current||0)
+      return clearTimeout(timeoutRef.current || 0)
     }
     if (timeoutRef.current != null) {
       clearTimeout(timeoutRef.current)
       debounceFindTags(text)
-    }else{
+    } else {
       debounceFindTags(text)
     }
   }
@@ -181,12 +181,11 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
     const initData = () => {
       setIsLoading(true)
       getTags()
-        .then(tags => {
+        .then((tags) => {
           setFilteredTags(tags)
           setInitTag(tags)
         })
         .finally(() => setIsLoading(false))
-
     }
     initData()
   }, [])
@@ -194,7 +193,7 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
     <Screen
       style={styles.container}
       keyboardOffset={"none"}
-    //  preset="scroll"
+      //  preset="scroll"
     >
       <HeaderComponent style={{ paddingHorizontal: 20, width }} />
       <View style={{ flex: 1 }}>
@@ -222,9 +221,7 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
                 isError={nameError !== ""}
               />
 
-              {nameError ? (
-                <Text style={styles.errorText}>{nameError}</Text>
-              ) : null}
+              {nameError ? <Text style={styles.errorText}>{nameError}</Text> : null}
 
               <Text style={styles.labelStyle}>{t("your_selected_tag")}</Text>
               <FlatList
@@ -232,52 +229,55 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 renderItem={({ item, index }) => {
-                  return <TagComponent
-                    title={item.name}
-                    onClear={() => removeTag(index)}
-                    disabled
-                  />
+                  return (
+                    <TagComponent
+                      title={item.name}
+                      onClear={() => removeTag(index)}
+                      disabled
+                    />
+                  )
                 }}
                 ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
-                keyExtractor={(item, index) => item._id + '_' + index}
+                keyExtractor={(item, index) => item._id + "_" + index}
               />
-              {selectedTags?.length>=5 ? (
+              {selectedTags?.length >= 5 ? (
                 <Text style={styles.errorText}>{"You can select up to 5 tags."}</Text>
               ) : null}
               <TextInputComponent
                 containerStyle={{ marginTop: selectedTags?.length ? 12 : 0 }}
-                onChangeText={(text)=>onChangeTags(text)}
+                onChangeText={(text) => onChangeTags(text)}
                 value={tag}
                 placeholder={t("enter_your_own_tags")}
                 isError={false}
-                
                 rightComponent={() => {
-                  const isTagNotFound = (tag && !tagLoading && !filteredTags?.length)
-                  return isTagNotFound?<Text style={[styles.text, { color: palette.orange }]}
-                  onPress={()=>{
-                  addTag({...TemplateMarketPlaceTag, name: tag })
-                  setTag('')
-                  }}
-                  >Add</Text>:null
+                  const isTagNotFound = tag && !tagLoading && !filteredTags?.length
+                  return isTagNotFound ? (
+                    <Text
+                      style={[styles.text, { color: palette.orange }]}
+                      onPress={() => {
+                        addTag({ ...TemplateMarketPlaceTag, name: tag })
+                        setTag("")
+                      }}
+                    >
+                      Add
+                    </Text>
+                  ) : null
                 }}
               />
               <FlatList
-                data={(!filteredTags?.length && !tag) ? initTag : filteredTags}
+                data={!filteredTags?.length && !tag ? initTag : filteredTags}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                ListEmptyComponent={()=>{
-                  if(tagLoading) return <ActivityIndicator color={palette.orange}/>
-                  return tag?<Text>Can't find tag? Add your own</Text>:null
+                ListEmptyComponent={() => {
+                  if (tagLoading) return <ActivityIndicator color={palette.orange} />
+                  return tag ? <Text>Can't find tag? Add your own</Text> : null
                 }}
                 renderItem={({ item }) => {
-                  return <TagComponent
-                  title={item.name}  
-                  onPress={() => addTag(item)}
-                />
+                  return <TagComponent title={item.name} onPress={() => addTag(item)} />
                 }}
                 style={{ marginTop: 12 }}
                 ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
-                keyExtractor={item => item._id}
+                keyExtractor={(item) => item._id}
               />
               <Text style={styles.labelStyle}>{t("description")}</Text>
               <TextInputComponent
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     fontFamily: typography.regular,
     fontSize: fontSize.font16,
     marginTop: 10,
-    marginBottom: 5
+    marginBottom: 5,
   },
   text: {
     fontFamily: typography.medium,

@@ -8,19 +8,25 @@ interface RowProps {
   onPress?: () => void
 }
 export const Row = ({ children, containerStyle, vc, hc, onPress }: RowProps) => {
-  return <TouchableOpacity
-    activeOpacity={1}
-    disabled={!onPress}
-    onPress={onPress}
-    style={{width:'100%'}}
-  >
-    <View style={[
-      {
-        flexDirection: "row"
-      },
-      containerStyle,
-      vc && { justifyContent: 'center' },
-      hc && { alignItems: 'center' }
-    ]}>{children}</View>
-  </TouchableOpacity>
+  return (
+    <TouchableOpacity
+      activeOpacity={1}
+      disabled={!onPress}
+      onPress={onPress}
+      style={{ width: "100%" }}
+    >
+      <View
+        style={[
+          {
+            flexDirection: "row",
+          },
+          containerStyle,
+          vc && { justifyContent: "center" },
+          hc && { alignItems: "center" },
+        ]}
+      >
+        {children}
+      </View>
+    </TouchableOpacity>
+  )
 }

@@ -11,5 +11,5 @@ export interface Props extends TextInputProps {
   textField?: boolean
   disabled?: boolean
   keyboardType?: KeyboardTypeOptions
-  rightComponent?:()=>React.ReactNode
+  rightComponent?: () => React.ReactNode
 }

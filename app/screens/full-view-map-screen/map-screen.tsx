@@ -20,7 +20,7 @@ interface Props {
 }
 export const MapScreen: React.FC<Props> = ({ navigation }) => {
   const dispatch = useDispatch()
-
+  const tempPost = useSelector((state: RootState) => state.storeReducer?.tempPost)
   const location = useSelector(
     (state: RootState) => state.storeReducer?.tempPost?.location,
   )
@@ -39,6 +39,7 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
 
         dispatch(
           setTempPost({
+            ...tempPost,
             location: {
               lat: crd.latitude,
               long: crd.longitude,
@@ -75,6 +76,7 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
           onDragEnd={({ nativeEvent: { coordinate } }) => {
             dispatch(
               setTempPost({
+                ...tempPost,
                 location: {
                   lat: coordinate.latitude,
                   long: coordinate.longitude,

@@ -58,7 +58,7 @@ const TextInputComponent = (props: Props, ref) => {
     textField,
     disabled,
     keyboardType,
-    rightComponent
+    rightComponent,
   } = props
   let titleRef = useRef(null)
   let inputRef = useRef(null)
@@ -113,7 +113,7 @@ const TextInputComponent = (props: Props, ref) => {
           {title}
         </Text>
       )}
-      {rightComponent?rightComponent():null}
+      {rightComponent ? rightComponent() : null}
     </TouchableOpacity>
   )
 }
@@ -122,7 +122,7 @@ export default React.forwardRef(TextInputComponent)
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor:'white',
+    backgroundColor: "white",
     flexDirection: "row",
     width: width - 50,
     borderRadius: 4,

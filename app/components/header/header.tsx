@@ -30,13 +30,13 @@ export const HeaderComponent: React.FC<HeaderProps> = ({
           }
         }}
       >
-        <BackSvg fill={palette.orange}/>
+        <BackSvg fill={palette.orange} />
       </TouchableOpacity>
 
       <Text style={{ fontFamily: typography.regular, fontSize: fontSize.font20 }}>
-          {title}
-        </Text>
-      {rightComponent ? rightComponent : <View style={{width:24,height:24}}/>}
+        {title}
+      </Text>
+      {rightComponent ? rightComponent : <View style={{ width: 24, height: 24 }} />}
     </Row>
   )
 }

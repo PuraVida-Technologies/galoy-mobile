@@ -1,1 +1,1 @@
-export * from './TagComponent'
+export * from "./TagComponent"

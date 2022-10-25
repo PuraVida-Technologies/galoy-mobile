@@ -1,10 +1,14 @@
 import { gql } from "@apollo/client"
-import { GET_CATEGORY, GET_POSTS, UPLOAD_IMAGE } from "@app/graphql/queries/marketplace-query"
+import {
+  GET_CATEGORY,
+  GET_POSTS,
+  UPLOAD_IMAGE,
+} from "@app/graphql/queries/marketplace-query"
 import { PostAttributes } from "@app/redux/reducers/store-reducer"
 import { CREATE_POST, CREATE_TAG } from "../mutations/marketplace-mutation"
 import PuravidaClient from "./client"
 import { getMarketPlaceCategoriesHandler, getPostsHandler } from "./handler"
-export * from './market-place'
+export * from "./market-place"
 export const getMartketPlaceCategories = async (): Promise<
   { _id: string; name: string }[]
 > => {

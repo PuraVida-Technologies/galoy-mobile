@@ -35,9 +35,12 @@ import {
   PostAttributes,
   setPostList,
 } from "@app/redux/reducers/store-reducer"
-import { getListPost } from "@app/graphql/second-graphql-client"
+import { filterPosts, getListPost } from "@app/graphql/second-graphql-client"
 import { LoadingComponent } from "@app/components/loading-component"
 import { openMap } from "@app/utils/helper"
+import { debounce } from "lodash"
+import { DefaultFilterPostModel } from "@app/constants/model"
+import { EmptyComponent } from "./empty-component"
 const { width } = Dimensions.get("window")
 
 const itemWidth = 330
@@ -67,8 +70,6 @@ export const StoreListScreen: ScreenType = ({ navigation }: Props) => {
   })
 
   const renderData = ({ item, index }: { item: PostAttributes; index: number }) => {
-    console.log('item: ',item);
-    
     return (
       <LandscapeDataComponent
         product={item}
@@ -87,8 +88,8 @@ export const StoreListScreen: ScreenType = ({ navigation }: Props) => {
             offset: snapToOffsets[index],
           })
         }}
-        onDirectionPress={()=>{
-          openMap(item.location.lat,item.location.long)
+        onDirectionPress={() => {
+          openMap(item.location.lat, item.location.long)
         }}
       />
     )
@@ -111,7 +112,7 @@ export const StoreListScreen: ScreenType = ({ navigation }: Props) => {
           })
         }}
       >
-        <View style={{ width: 63, height: 60, alignItems: "center" }}>
+        {/* <View style={{ width: 63, height: 60, alignItems: "center" }}>
           <MapIconSvg />
           <Row
             containerStyle={{
@@ -134,20 +135,53 @@ export const StoreListScreen: ScreenType = ({ navigation }: Props) => {
               {0}
             </Text>
           </Row>
-        </View>
+        </View> */}
       </Marker>
     ))
   }
+  const searchPostDebounce = React.useMemo(
+    () =>
+      debounce(async () => {
+        console.log("test debouce")
+        const { latitude, longitude } = position
+        let res = await filterPosts({
+          latitude,
+          longitude,
+          maxDistance: 20000,
+          minDistance: 0,
+          tagId: "",
+          text: searchText,
+        })
+      }, 300),
+    [searchText],
+  )
+
+  React.useEffect(() => {
+    searchPostDebounce()
+    return () => searchPostDebounce.cancel()
+  }, [searchPostDebounce])
 
   useEffect(() => {
+    const initData = async (latitude, longitude) => {
+      try {
+        setIsLoading(true)
+        let posts = await filterPosts({ ...DefaultFilterPostModel, latitude, longitude })
+        dispatch(setPostList(posts))
+      } catch (error) {
+      } finally {
+        setIsLoading(false)
+      }
+    }
     Geolocation.getCurrentPosition(
-      ({ coords }) => {
+      ({ coords: { latitude, longitude } }) => {
         setPosition({
-          latitude: coords.latitude,
-          longitude: coords.longitude,
+          latitude,
+          longitude,
           latitudeDelta: 0.02,
           longitudeDelta: 0.02,
         })
+
+        initData(latitude, longitude)
       },
       (err) => {
         console.log("err: ", err)
@@ -155,21 +189,6 @@ export const StoreListScreen: ScreenType = ({ navigation }: Props) => {
     )
   }, [])
 
-  useEffect(() => {
-    const initData = async () => {
-      try {
-        setIsLoading(true)
-        let posts = await getListPost()
-        console.log("posts: ", posts)
-        console.log("storeList: ", storeList)
-        dispatch(setPostList(posts))
-      } catch (error) {
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    initData()
-  }, [])
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <View style={{ flex: 1 }}>
@@ -203,14 +222,16 @@ export const StoreListScreen: ScreenType = ({ navigation }: Props) => {
             <FilterSvg />
           </Row>
         </SafeAreaView>
-        <View style={{ position: "absolute", bottom: 20 }}>
-          <TouchableOpacity
-            style={styles.listViewButton}
-            onPress={() => navigation.navigate("StoreListView", { searchText })}
-          >
-            <ListIconSvg />
-            <Text style={styles.listViewText}>List View</Text>
-          </TouchableOpacity>
+        <View style={{ position: "absolute", bottom: 20, width: "100%" }}>
+          {storeList?.length ? (
+            <TouchableOpacity
+              style={styles.listViewButton}
+              onPress={() => navigation.navigate("StoreListView", { searchText })}
+            >
+              <ListIconSvg />
+              <Text style={styles.listViewText}>List View</Text>
+            </TouchableOpacity>
+          ) : null}
           <FlatList
             ref={flatlistRef}
             data={storeList}
@@ -223,10 +244,11 @@ export const StoreListScreen: ScreenType = ({ navigation }: Props) => {
             pagingEnabled
             snapToOffsets={snapToOffsets}
             snapToAlignment={"start"}
+            ListEmptyComponent={() => <EmptyComponent />}
           />
         </View>
       </View>
-      <LoadingComponent isLoading={isLoading} />
+      {/* <LoadingComponent isLoading={isLoading} /> */}
     </View>
   )
 }
@@ -264,5 +286,6 @@ const styles = StyleSheet.create({
     paddingVertical: 9,
     alignItems: "center",
     marginHorizontal: 18,
+    marginTop: 15,
   },
 })

@@ -1,8 +1,16 @@
 export const TemplateMarketPlaceTag = {
-  _id: '',
-  createdAt: '',
-  name: '',
-  updatedAt: '',
+  _id: "",
+  createdAt: "",
+  name: "",
+  updatedAt: "",
+}
+export const DefaultFilterPostModel = {
+  latitude: 0,
+  longitude: 0,
+  maxDistance: 20000,
+  minDistance: 0,
+  tagId: "",
+  text: "",
 }
 export interface MarketplaceTag {
   _id: string
@@ -13,7 +21,7 @@ export interface MarketplaceTag {
 enum POST_STATUS {
   APPROVED = "APPROVED",
   DECLINED = "DECLINED",
-  PENDING = "PENDING"
+  PENDING = "PENDING",
 }
 export interface MarketplacePost {
   _id: string

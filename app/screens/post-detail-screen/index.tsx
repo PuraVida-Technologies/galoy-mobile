@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useState,useEffect } from "react"
+import { useState, useEffect } from "react"
 // eslint-disable-next-line react-native/split-platform-components
 import {
   Alert,
@@ -41,20 +41,21 @@ const { width, height } = Dimensions.get("window")
 interface Props {
   navigation: StackNavigationProp<MarketPlaceParamList>
 }
-const DetailComponent = ({editable,isHidePhone,setIsHidePhone,post}) => {
-
+const DetailComponent = ({ editable, isHidePhone, setIsHidePhone, post }) => {
   const { t } = useTranslation()
-  const renderTags = ()=>{
-    return post?.tags?.map((tag)=>{
-      return <TagComponent title={tag.name} key={tag.name} style={{marginRight:10}}/>
+  const renderTags = () => {
+    return post?.tags?.map((tag) => {
+      return <TagComponent title={tag.name} key={tag.name} style={{ marginRight: 10 }} />
     })
   }
   return (
     <View style={{ width: "100%" }}>
       <View style={detailStyle.rowItem}>
-        <Text style={detailStyle.label}>{t("tags")}</Text> 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}
-        style={{marginTop:10}}
+        <Text style={detailStyle.label}>{t("tags")}</Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ marginTop: 10 }}
         >
           {renderTags()}
         </ScrollView>
@@ -64,10 +65,14 @@ const DetailComponent = ({editable,isHidePhone,setIsHidePhone,post}) => {
 
       <View style={detailStyle.rowItem}>
         <Row hc>
-          <Text style={[detailStyle.label,{marginRight:5}]}>{t("phone_number")}</Text>
-          {editable&&(<TouchableOpacity onPress={()=>setIsHidePhone(!isHidePhone)}>{isHidePhone ? <EyeOnSvg/> :<EyeOffSvg/>}</TouchableOpacity>)}
+          <Text style={[detailStyle.label, { marginRight: 5 }]}>{t("phone_number")}</Text>
+          {editable && (
+            <TouchableOpacity onPress={() => setIsHidePhone(!isHidePhone)}>
+              {isHidePhone ? <EyeOnSvg /> : <EyeOffSvg />}
+            </TouchableOpacity>
+          )}
         </Row>
-        <Text style={detailStyle.value}>{isHidePhone?'---------':post?.phone}</Text>
+        <Text style={detailStyle.value}>{isHidePhone ? "---------" : post?.phone}</Text>
       </View>
     </View>
   )
@@ -94,19 +99,18 @@ export const StoreDetailScreen: React.FC<Props> = ({ navigation }) => {
   const thumbnail = useSelector(
     (state: RootState) => state.storeReducer?.tempPost?.mainImageUrl,
   )
-  const {t}=useTranslation()
+  const { t } = useTranslation()
   const formatRequestObject = (tempPost) => {
-
     return {
       ...tempPost,
-      hidePhoneNumber:isHidePhone,
-      tagsIds:tempPost.tags?.map(item=>item._id),
+      hidePhoneNumber: isHidePhone,
+      tagsIds: tempPost.tags?.map((item) => item._id),
       latitude: store.location.lat,
       longitude: store.location.long,
       categoryId: store.category,
       price: parseFloat(store.price || 0),
       userId: "hardcoded_user_id",
-      address: store.address||"hardcoded_value",
+      address: store.address || "hardcoded_value",
     }
   }
 
@@ -114,12 +118,14 @@ export const StoreDetailScreen: React.FC<Props> = ({ navigation }) => {
     try {
       setIsLoading(true)
       let modifiedTempPost = { ...tempPost }
-      const skipCreateTag = tempPost.tags?.every(tag => tag._id)
+      const skipCreateTag = tempPost.tags?.every((tag) => tag._id)
       if (!skipCreateTag) {
-        let requests = modifiedTempPost.tags.filter(tag=>!tag._id).map(tag=>createTag(tag.name))
+        let requests = modifiedTempPost.tags
+          .filter((tag) => !tag._id)
+          .map((tag) => createTag(tag.name))
         let res = await Promise.all(requests)
-        let newTags = [...res,...tempPost.tags].filter(tag=>tag._id)
-        modifiedTempPost = {...tempPost,tags:newTags}
+        let newTags = [...res, ...tempPost.tags].filter((tag) => tag._id)
+        modifiedTempPost = { ...tempPost, tags: newTags }
       }
       let request = formatRequestObject(modifiedTempPost)
       let res = await createPost(request)
@@ -131,63 +137,71 @@ export const StoreDetailScreen: React.FC<Props> = ({ navigation }) => {
       setIsLoading(false)
     }
   }
-  const getUri = ()=>{
-    if(store) return  store.mainImageUrl ? { uri: store.mainImageUrl } : images.landscapePlaceholderImage
+  const getUri = () => {
+    if (store)
+      return store.mainImageUrl
+        ? { uri: store.mainImageUrl }
+        : images.landscapePlaceholderImage
     return thumbnail ? { uri: thumbnail } : images.landscapePlaceholderImage
   }
-  const renderContent =()=>{
+  const renderContent = () => {
     return (
       <View style={styles.contentContainer}>
         <Row containerStyle={styles.titleRow}>
-          <Text style={[styles.title,{flex:1,paddingRight:10}]}>{store.name}</Text>
-          <TouchableOpacity onPress={()=>{openMap(store.location.lat,store.location.long)}}>
+          <Text style={[styles.title, { flex: 1, paddingRight: 10 }]}>{store.name}</Text>
+          <TouchableOpacity
+            onPress={() => {
+              openMap(store.location.lat, store.location.long)
+            }}
+          >
             <Row containerStyle={styles.locationButtonContainer}>
               <Text style={styles.locationText}>{t("location")}</Text>
               <View style={styles.locationSvgContainer}>
-                <LocationSvg fill={palette.orange}/>
+                <LocationSvg fill={palette.orange} />
               </View>
             </Row>
           </TouchableOpacity>
         </Row>
         <Row containerStyle={[{ marginTop: 5, alignItems: "center" }]}>
-          <LocationMarkerSvg fill={palette.orange}/>
-          <Text style={styles.addressText}>{store?.address|| getLocation(store.location)}</Text>
+          <LocationMarkerSvg fill={palette.orange} />
+          <Text style={styles.addressText}>
+            {store?.address || getLocation(store.location)}
+          </Text>
         </Row>
-        
-        <DetailComponent editable={editable} setIsHidePhone={setIsHidePhone} isHidePhone={isHidePhone}
+
+        <DetailComponent
+          editable={editable}
+          setIsHidePhone={setIsHidePhone}
+          isHidePhone={isHidePhone}
           post={store}
         />
 
         {editable ? (
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={onSubmit}
-          >
+          <TouchableOpacity style={styles.submitButton} onPress={onSubmit}>
             <Text style={styles.locationText}>{t("submit")}</Text>
           </TouchableOpacity>
         ) : null}
-      </View>)
+      </View>
+    )
   }
-  const renderHeader = ()=>{
+  const renderHeader = () => {
     return (
-      <ImageBackground
-        source={getUri()}
-        style={styles.imageBackground}
-      >
+      <ImageBackground source={getUri()} style={styles.imageBackground}>
         <HeaderComponent
           style={{ paddingHorizontal: 20, marginTop: 10 }}
           rightComponent={
             editable ? (
-              <TouchableOpacity activeOpacity={1} 
-              onPress={()=>navigation.navigate("AddImage")}
+              <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => navigation.navigate("AddImage")}
               >
-              <Row containerStyle={styles.headerRow}>
-                <Text style={styles.headerText}>{t("update_cover_image")}</Text>
-                <Image
-                  source={images.uploadIcon}
-                  style={{ width: 25, height: 19, marginLeft: 5 }}
-                />
-              </Row>
+                <Row containerStyle={styles.headerRow}>
+                  <Text style={styles.headerText}>{t("update_cover_image")}</Text>
+                  <Image
+                    source={images.uploadIcon}
+                    style={{ width: 25, height: 19, marginLeft: 5 }}
+                  />
+                </Row>
               </TouchableOpacity>
             ) : null
           }
@@ -197,7 +211,7 @@ export const StoreDetailScreen: React.FC<Props> = ({ navigation }) => {
             style={styles.editButtonContainer}
             onPress={() => navigation.navigate("CreatePost")}
           >
-            <EditSvg fill={palette.orange}/>
+            <EditSvg fill={palette.orange} />
           </TouchableOpacity>
         ) : null}
       </ImageBackground>
@@ -205,8 +219,8 @@ export const StoreDetailScreen: React.FC<Props> = ({ navigation }) => {
   }
   useEffect(() => {
     if (route.params.storeInfor) {
-      console.log('route.params.storeInfor: ',route.params.storeInfor);
-      
+      console.log("route.params.storeInfor: ", route.params.storeInfor)
+
       setStore(route.params.storeInfor)
     } else {
       setStore(tempPost)
@@ -229,7 +243,7 @@ export const StoreDetailScreen: React.FC<Props> = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
-  submitButton:{
+  submitButton: {
     backgroundColor: palette.orange,
     alignSelf: "flex-end",
     paddingHorizontal: 15,
@@ -237,14 +251,25 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     borderRadius: 22,
   },
-  contentContainer: { flex: 1, paddingHorizontal: 30, width: "100%",backgroundColor:palette.lighterGrey },
+  contentContainer: {
+    flex: 1,
+    paddingHorizontal: 30,
+    width: "100%",
+    backgroundColor: palette.lighterGrey,
+  },
   locationSvgContainer: {
     borderRadius: 100,
     padding: 6,
     backgroundColor: "white",
     marginLeft: 7,
   },
-  imageBackground: { width, height: height * 0.3, borderRadius: 8, marginTop: 10,zIndex:1 },
+  imageBackground: {
+    width,
+    height: height * 0.3,
+    borderRadius: 8,
+    marginTop: 10,
+    zIndex: 1,
+  },
   value: {
     color: "#9499A5",
     fontFamily: typography.regular,

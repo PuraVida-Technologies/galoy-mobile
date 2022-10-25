@@ -13,10 +13,8 @@ export const CREATE_POST = gql`
     $openHours: String
     $phoneNumber: String
     $userId: String!
-    
     $tagsIds: [String!]
     $hidePhoneNumber: Boolean!
-
   ) {
     createMarketplacePost(
       createMarketplacePostInput: {
@@ -42,12 +40,10 @@ export const CREATE_POST = gql`
 `
 
 export const CREATE_TAG = gql`
-mutation createMarketplaceTag($name: String!) {
-  createMarketplaceTag(createMarketplaceTagInput: { name: $name })
-{
-  name
-  _id
-}
-}
-
+  mutation createMarketplaceTag($name: String!) {
+    createMarketplaceTag(createMarketplaceTagInput: { name: $name }) {
+      name
+      _id
+    }
+  }
 `

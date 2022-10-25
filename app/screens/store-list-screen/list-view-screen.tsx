@@ -11,23 +11,11 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native"
-import {
-  MarketPlaceParamList,
-  RootStackParamList,
-} from "../../navigation/stack-param-lists"
-import { ScreenType } from "../../types/jsx"
+import { RootStackParamList } from "../../navigation/stack-param-lists"
 import FilterSvg from "@asset/svgs/filter.svg"
 import { eng } from "@app/constants/en"
-import MapView, { Marker } from "react-native-maps"
-import Geolocation from "@react-native-community/geolocation"
-import { LandscapeDataComponent } from "./horizontal-store-component"
-import ListIconSvg from "@asset/svgs/list-icon.svg"
-import MapIconSvg from "@asset/svgs/map-indicator.svg"
-import SpoonSvg from "@asset/svgs/spoon.svg"
-import BottomSheet from "@gorhom/bottom-sheet"
 import { useSelector } from "react-redux"
 import { RootState } from "@app/redux"
 import { PostAttributes } from "@app/redux/reducers/store-reducer"
@@ -85,6 +73,9 @@ export const StoreListViewScreen: React.FC<Props> = ({ navigation }) => {
           ListFooterComponent={() => <View style={{ height: 20 }} />}
           pagingEnabled
           snapToAlignment={"start"}
+          ListEmptyComponent={() => (
+            <Text style={styles.emptyText}>There are no posts around you</Text>
+          )}
         />
       </View>
     </View>
@@ -92,6 +83,13 @@ export const StoreListViewScreen: React.FC<Props> = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
+  emptyText: {
+    fontFamily: typography.medium,
+    fontSize: fontSize.font18,
+    color: "#9499A5",
+    alignSelf: "center",
+    marginTop: 150,
+  },
   listViewText: {
     marginLeft: 7,
     color: "#3653FE",
@@ -124,5 +122,6 @@ const styles = StyleSheet.create({
     paddingVertical: 9,
     alignItems: "center",
     marginHorizontal: 18,
+    marginTop: 15,
   },
 })
