@@ -233,7 +233,7 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
                     <TagComponent
                       title={item.name}
                       onClear={() => removeTag(index)}
-                      disabled
+
                     />
                   )
                 }}

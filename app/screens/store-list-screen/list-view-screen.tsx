@@ -16,11 +16,14 @@ import {
 import { RootStackParamList } from "../../navigation/stack-param-lists"
 import FilterSvg from "@asset/svgs/filter.svg"
 import { eng } from "@app/constants/en"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "@app/redux"
-import { PostAttributes } from "@app/redux/reducers/store-reducer"
+import { PostAttributes, setPostList } from "@app/redux/reducers/store-reducer"
 import { VerticalDataComponent } from "./vertical-store-component"
 import { RouteProp, useRoute } from "@react-navigation/native"
+import { debounce } from "lodash"
+import { filterPosts } from "@app/graphql/second-graphql-client"
+import { LoadingComponent } from "@app/components/loading-component"
 const { width } = Dimensions.get("window")
 type Props = {
   navigation: StackNavigationProp<RootStackParamList>
@@ -29,8 +32,33 @@ type Props = {
 export const StoreListViewScreen: React.FC<Props> = ({ navigation }) => {
   const route = useRoute<RouteProp<RootStackParamList, "StoreListView">>()
   const storeList = useSelector((state: RootState) => state.storeReducer.postList)
+  const position = useSelector((state:RootState)=>state.userReducer.location)
   const [searchText, setSearchText] = React.useState("")
   const flatlistRef = React.useRef<FlatList>()
+  const [isLoading, setIsLoading] = React.useState(false)
+const dispatch = useDispatch()
+  const searchPostDebounce = React.useMemo(
+    () =>
+      debounce(async () => {
+        setIsLoading(true)
+        const { lat:latitude, long:longitude } = position
+        let res = await filterPosts({
+          latitude,
+          longitude,
+          maxDistance: 20000,
+          minDistance: 0, 
+          text: searchText,
+        })
+        dispatch(setPostList(res))
+        setIsLoading(false)
+      }, 500),
+    [searchText],
+  )
+
+  React.useEffect(() => {
+    searchPostDebounce()
+    return () => searchPostDebounce.cancel()
+  }, [searchPostDebounce])
 
   const renderData = ({ item }: { item: PostAttributes; index: number }) => {
     return (
@@ -78,6 +106,7 @@ export const StoreListViewScreen: React.FC<Props> = ({ navigation }) => {
           )}
         />
       </View>
+      <LoadingComponent isLoading={isLoading} />
     </View>
   )
 }

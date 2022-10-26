@@ -13,6 +13,7 @@ import {
   autoCompleteLocationHandler,
   autoCompleteTagHandler,
   createTagHandle,
+  filterPostHandler,
   getLocationLatLongHandler,
   getTagsHandler,
 } from "./handler"
@@ -64,6 +65,6 @@ export const filterPosts = async (
     query: FILTER_MARKET_PLACE_POST,
     variables: params,
   })
-  console.log("filterPosts res: ", res)
-  return []
+  const formattedResponse = filterPostHandler(res)
+  return formattedResponse
 }

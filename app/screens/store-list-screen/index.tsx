@@ -41,6 +41,7 @@ import { openMap } from "@app/utils/helper"
 import { debounce } from "lodash"
 import { DefaultFilterPostModel } from "@app/constants/model"
 import { EmptyComponent } from "./empty-component"
+import { setLocation } from "@app/redux/reducers/user-reducer"
 const { width } = Dimensions.get("window")
 
 const itemWidth = 330
@@ -50,7 +51,7 @@ type Props = {
 }
 
 export const StoreListScreen: ScreenType = ({ navigation }: Props) => {
-  const storeList = useSelector((state: RootState) => state.storeReducer.postList)
+  const postList = useSelector((state: RootState) => state.storeReducer.postList)
   const [isLoading, setIsLoading] = useState(false)
   const dispatch = useDispatch()
   const mapRef = useRef<MapView>()
@@ -64,7 +65,7 @@ export const StoreListScreen: ScreenType = ({ navigation }: Props) => {
     longitudeDelta: 0.001,
   })
 
-  const snapToOffsets = storeList.map((x, i) => {
+  const snapToOffsets = postList.map((x, i) => {
     if (i == 0) return i * itemWidth
     return i * (itemWidth + 20)
   })
@@ -96,7 +97,7 @@ export const StoreListScreen: ScreenType = ({ navigation }: Props) => {
   }
 
   const renderMarkers = () => {
-    return storeList.map((data, index) => (
+    return postList.map((data, index) => (
       <Marker
         // ref={markerRefs[index]}
         title={data.name}
@@ -143,16 +144,18 @@ export const StoreListScreen: ScreenType = ({ navigation }: Props) => {
     () =>
       debounce(async () => {
         console.log("test debouce")
+        setIsLoading(true)
         const { latitude, longitude } = position
         let res = await filterPosts({
           latitude,
           longitude,
           maxDistance: 20000,
-          minDistance: 0,
-          tagId: "",
+          minDistance: 0, 
           text: searchText,
         })
-      }, 300),
+        dispatch(setPostList(res))
+        setIsLoading(false)
+      }, 500),
     [searchText],
   )
 
@@ -180,7 +183,7 @@ export const StoreListScreen: ScreenType = ({ navigation }: Props) => {
           latitudeDelta: 0.02,
           longitudeDelta: 0.02,
         })
-
+        dispatch(setLocation({ lat: latitude, long: longitude }))
         initData(latitude, longitude)
       },
       (err) => {
@@ -223,7 +226,7 @@ export const StoreListScreen: ScreenType = ({ navigation }: Props) => {
           </Row>
         </SafeAreaView>
         <View style={{ position: "absolute", bottom: 20, width: "100%" }}>
-          {storeList?.length ? (
+          {postList?.length ? (
             <TouchableOpacity
               style={styles.listViewButton}
               onPress={() => navigation.navigate("StoreListView", { searchText })}
@@ -234,7 +237,7 @@ export const StoreListScreen: ScreenType = ({ navigation }: Props) => {
           ) : null}
           <FlatList
             ref={flatlistRef}
-            data={storeList}
+            data={postList}
             renderItem={renderData}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -248,7 +251,7 @@ export const StoreListScreen: ScreenType = ({ navigation }: Props) => {
           />
         </View>
       </View>
-      {/* <LoadingComponent isLoading={isLoading} /> */}
+      <LoadingComponent isLoading={isLoading} />
     </View>
   )
 }

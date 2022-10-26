@@ -4,13 +4,8 @@ export const TemplateMarketPlaceTag = {
   name: "",
   updatedAt: "",
 }
-export const DefaultFilterPostModel = {
-  latitude: 0,
-  longitude: 0,
-  maxDistance: 20000,
-  minDistance: 0,
-  tagId: "",
-  text: "",
+export const DefaultFilterPostModel = { 
+  maxDistance: 20000, 
 }
 export interface MarketplaceTag {
   _id: string

@@ -38,10 +38,10 @@ export const FILTER_MARKET_PLACE_POST = gql`
   query filterMarketplacePosts(
     $latitude: Float
     $longitude: Float
-    $maxDistance: Float!
-    $minDistance: Float!
-    $tagId: String!
-    $text: String!
+    $maxDistance: Float
+    $minDistance: Float
+    $tagId: String
+    $text: String
   ) {
     filterMarketplacePosts(
       filterPostsInput: {
@@ -69,10 +69,6 @@ export const FILTER_MARKET_PLACE_POST = gql`
       status
       updatedAt
       userId
-      tags {
-        _id
-        name
-      }
       # hidePhoneNumber
     }
   }

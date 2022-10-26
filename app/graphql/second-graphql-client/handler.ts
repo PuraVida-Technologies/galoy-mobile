@@ -19,3 +19,7 @@ export const getLocationLatLongHandler = (res: any) => {
 export const createTagHandle = (res: any) => {
   return res?.data?.createMarketplaceTag
 }
+export const filterPostHandler = (res: any) => {
+  return res?.data?.filterMarketplacePosts
+}
+
