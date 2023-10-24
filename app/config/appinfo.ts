@@ -1,6 +1,6 @@
 import { AndroidMarket } from "react-native-rate"
 
-export const WHATSAPP_CONTACT_NUMBER = "+16787722551"
+export const WHATSAPP_CONTACT_NUMBER = "+50685048290"
 export const BLOCKCHAIN_EXPLORER_URL = "https://mempool.space/tx/"
 export const CONTACT_EMAIL_ADDRESS = "support@puravidabitcoin.io"
 export const APP_STORE_LINK =
@@ -19,7 +19,7 @@ export const PREFIX_LINKING = [
 export const LNURL_DOMAINS = ["ln.bitcoinbeach.com", "pay.bbw.sv", "blink.sv"]
 
 export const ratingOptions = {
-  AppleAppID: "1531383905",
+  AppleAppID: "6443837514",
   GooglePackageName: "com.galoyapp",
   preferredAndroidMarket: AndroidMarket.Google,
   preferInApp: true,
