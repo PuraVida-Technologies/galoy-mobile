@@ -11,8 +11,10 @@ import {
 } from "react-native"
 import {
   Camera,
-  CameraPermissionStatus,
-  useCameraDevices,
+  CameraRuntimeError,
+  useCameraDevice,
+  useCameraPermission,
+  useCodeScanner,
 } from "react-native-vision-camera"
 import Svg, { Circle } from "react-native-svg"
 import Icon from "react-native-vector-icons/Ionicons"
@@ -24,7 +26,7 @@ import { StackNavigationProp } from "@react-navigation/stack"
 import Clipboard from "@react-native-clipboard/clipboard"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import RNQRGenerator from "rn-qr-generator"
-import { BarcodeFormat, useScanBarcodes } from "vision-camera-code-scanner"
+
 import ImagePicker from "react-native-image-crop-picker"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { gql } from "@apollo/client"
@@ -127,14 +129,17 @@ export const ScanningQRCodeScreen: React.FC<ScanningQRCodeScreenProps> = ({
   })
 
   const { LL } = useI18nContext()
-  const devices = useCameraDevices()
+
   const [cameraPermissionStatus, setCameraPermissionStatus] =
     React.useState<CameraPermissionStatus>("not-determined")
   const isFocused = useIsFocused()
-  const [frameProcessor, barcodes] = useScanBarcodes([BarcodeFormat.QR_CODE], {
-    checkInverted: true,
-  })
-  const device = devices.back
+  // const [frameProcessor, barcodes] = useScanBarcodes([BarcodeFormat.QR_CODE], {
+  //   checkInverted: true,
+  // })
+
+  const device = useCameraDevice("back")
+
+  const { hasPermission, requestPermission } = useCameraPermission()
 
   const requestCameraPermission = React.useCallback(async () => {
     const permission = await Camera.requestCameraPermission()
@@ -143,10 +148,12 @@ export const ScanningQRCodeScreen: React.FC<ScanningQRCodeScreenProps> = ({
   }, [])
 
   React.useEffect(() => {
-    if (cameraPermissionStatus !== "authorized") {
-      requestCameraPermission()
+    console.log("===:hasPermission",hasPermission);
+    
+    if (!hasPermission) {
+      requestPermission()
     }
-  }, [cameraPermissionStatus, navigation, requestCameraPermission])
+  }, [hasPermission, requestPermission])
 
   const decodeInvoice = React.useMemo(() => {
     return async (data: string) => {
@@ -167,12 +174,13 @@ export const ScanningQRCodeScreen: React.FC<ScanningQRCodeScreenProps> = ({
 
         if (destination.valid) {
           if (destination.destinationDirection === DestinationDirection.Send) {
-            return navigation.replace("sendBitcoinDetails", {
+            navigation.replace("sendBitcoinDetails", {
               paymentDestination: destination,
             })
+            return
           }
 
-          return navigation.reset({
+          navigation.reset({
             routes: [
               {
                 name: "Primary",
@@ -185,6 +193,7 @@ export const ScanningQRCodeScreen: React.FC<ScanningQRCodeScreenProps> = ({
               },
             ],
           })
+          return
         }
 
         Alert.alert(
@@ -224,12 +233,20 @@ export const ScanningQRCodeScreen: React.FC<ScanningQRCodeScreenProps> = ({
     wallets,
     accountDefaultWalletQuery,
   ])
+  
+  const codeScanner = useCodeScanner({
+    codeTypes: ["qr", "ean-13"],
+    onCodeScanned: (codes) => {
+      codes.forEach((code) => decodeInvoice(code.value))
+      console.log(`Scanned ${codes.length} codes!`)
+    },
+  })
 
-  React.useEffect(() => {
-    if (barcodes.length > 0 && barcodes[0].rawValue && isFocused) {
-      decodeInvoice(barcodes[0].rawValue)
-    }
-  }, [barcodes, decodeInvoice, isFocused])
+  // React.useEffect(() => {
+  //   if (barcodes.length > 0 && barcodes[0].rawValue && isFocused) {
+  //     decodeInvoice(barcodes[0].rawValue)
+  //   }
+  // }, [barcodes, decodeInvoice, isFocused])
 
   const handleInvoicePaste = async () => {
     try {
@@ -265,63 +282,53 @@ export const ScanningQRCodeScreen: React.FC<ScanningQRCodeScreenProps> = ({
       }
     }
   }
-
-  if (cameraPermissionStatus !== "authorized") {
+  
+  const onError = React.useCallback((error: CameraRuntimeError) => {
+    console.error(error)
+  }, [])
+  if (device === null || device === undefined)
     return <View style={styles.noPermissionsView} />
-  }
-
   return (
     <Screen unsafe>
-      <View style={StyleSheet.absoluteFill}>
-        {device && (
-          <Reanimated.View style={StyleSheet.absoluteFill}>
-            <Camera
-              style={StyleSheet.absoluteFill}
-              device={device}
-              isActive={isFocused}
-              frameProcessor={frameProcessor}
-              frameProcessorFps={5}
-            />
-          </Reanimated.View>
-        )}
-        <View style={styles.rectangleContainer}>
-          <View style={styles.rectangle} />
-        </View>
-        <Pressable onPress={navigation.goBack}>
-          <View style={styles.close}>
-            <Svg viewBox="0 0 100 100">
-              <Circle cx={50} cy={50} r={50} fill={palette.white} opacity={0.5} />
-            </Svg>
-            <Icon
-              name="ios-close"
-              size={64}
-              // eslint-disable-next-line react-native/no-inline-styles
-              style={{ position: "absolute", top: -2 }}
-            />
-          </View>
-        </Pressable>
-        <View style={styles.openGallery}>
-          <Pressable onPress={showImagePicker}>
-            <Icon
-              name="image"
-              size={64}
-              color={palette.lightGrey}
-              // eslint-disable-next-line react-native/no-inline-styles
-              style={{ opacity: 0.8 }}
-            />
-          </Pressable>
-          <Pressable onPress={handleInvoicePaste}>
-            {/* we could Paste from "FontAwesome" but as svg*/}
-            <Icon
-              name="ios-clipboard-outline"
-              size={64}
-              color={palette.lightGrey}
-              // eslint-disable-next-line react-native/no-inline-styles
-              style={{ opacity: 0.8, position: "absolute", bottom: "5%", right: "15%" }}
-            />
-          </Pressable>
-        </View>
+    <View style={StyleSheet.absoluteFill}>
+      <Camera
+        style={StyleSheet.absoluteFill}
+        device={device}
+        isActive={isFocused}
+        onError={onError}
+        codeScanner={codeScanner}
+      />
+      <View style={styles.rectangleContainer}>
+        <View style={styles.rectangle} />
       </View>
+      <Pressable onPress={navigation.goBack}>
+        <View style={styles.close}>
+          <Svg viewBox="0 0 100 100">
+            <Circle cx={50} cy={50} r={50} fill={"white"} opacity={0.5} />
+          </Svg>
+          <Icon name="ios-close" size={64} style={styles.iconClose} />
+        </View>
+      </Pressable>
+      <View style={styles.openGallery}>
+        <Pressable onPress={showImagePicker}>
+          <Icon
+            name="image"
+            size={64}
+            color={"#CFD9E2"}
+            style={styles.iconGalery}
+          />
+        </Pressable>
+        <Pressable onPress={handleInvoicePaste}>
+          {/* we could Paste from "FontAwesome" but as svg*/}
+          <Icon
+            name="ios-clipboard-outline"
+            size={64}
+            color={"#CFD9E2"}
+            style={styles.iconClipboard}
+          />
+        </Pressable>
+      </View>
+    </View>
     </Screen>
   )
 }

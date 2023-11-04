@@ -87,23 +87,6 @@ PODS:
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleMLKit/BarcodeScanning (4.0.0):
-    - GoogleMLKit/MLKitCore
-    - MLKitBarcodeScanning (~> 3.0.0)
-  - GoogleMLKit/MLKitCore (4.0.0):
-    - MLKitCommon (~> 9.0.0)
-  - GoogleToolboxForMac/DebugUtils (2.3.2):
-    - GoogleToolboxForMac/Defines (= 2.3.2)
-  - GoogleToolboxForMac/Defines (2.3.2)
-  - GoogleToolboxForMac/Logger (2.3.2):
-    - GoogleToolboxForMac/Defines (= 2.3.2)
-  - "GoogleToolboxForMac/NSData+zlib (2.3.2)":
-    - GoogleToolboxForMac/Defines (= 2.3.2)
-  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.3.2)":
-    - GoogleToolboxForMac/DebugUtils (= 2.3.2)
-    - GoogleToolboxForMac/Defines (= 2.3.2)
-    - "GoogleToolboxForMac/NSString+URLArguments (= 2.3.2)"
-  - "GoogleToolboxForMac/NSString+URLArguments (2.3.2)"
   - GoogleUtilities/AppDelegateSwizzler (7.11.1):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
@@ -123,34 +106,13 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.11.1):
     - GoogleUtilities/Logger
-  - GoogleUtilitiesComponents (1.1.0):
-    - GoogleUtilities/Logger
   - GT3Captcha-iOS (0.15.8.1)
-  - GTMSessionFetcher/Core (2.3.0)
   - hermes-engine (0.71.6):
     - hermes-engine/Pre-built (= 0.71.6)
   - hermes-engine/Pre-built (0.71.6)
   - JWT (3.0.0-beta.14):
     - Base64 (~> 1.1.2)
   - libevent (2.1.12)
-  - MLImage (1.0.0-beta4)
-  - MLKitBarcodeScanning (3.0.0):
-    - MLKitCommon (~> 9.0)
-    - MLKitVision (~> 5.0)
-  - MLKitCommon (9.0.0):
-    - GoogleDataTransport (~> 9.0)
-    - GoogleToolboxForMac/Logger (~> 2.1)
-    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
-    - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
-    - GoogleUtilities/UserDefaults (~> 7.0)
-    - GoogleUtilitiesComponents (~> 1.0)
-    - GTMSessionFetcher/Core (< 3.0, >= 1.1)
-  - MLKitVision (5.0.0):
-    - GoogleToolboxForMac/Logger (~> 2.1)
-    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
-    - GTMSessionFetcher/Core (< 3.0, >= 1.1)
-    - MLImage (= 1.0.0-beta4)
-    - MLKitCommon (~> 9.0)
   - nanopb (2.30909.0):
     - nanopb/decode (= 2.30909.0)
     - nanopb/encode (= 2.30909.0)
@@ -417,7 +379,7 @@ PODS:
     - React-Core
   - react-native-geolocation (2.1.0):
     - React-Core
-  - react-native-maps (1.7.1):
+  - react-native-maps (1.8.0):
     - React-Core
   - react-native-safe-area-context (4.7.4):
     - React-Core
@@ -513,7 +475,7 @@ PODS:
     - React-Core
   - RNCAsyncStorage (1.19.4):
     - React-Core
-  - RNCClipboard (1.11.2):
+  - RNCClipboard (1.12.1):
     - React-Core
   - RNDateTimePicker (6.7.5):
     - React-Core
@@ -555,7 +517,7 @@ PODS:
     - ZXingObjC
   - RNRate (1.2.12):
     - React-Core
-  - RNReactNativeHapticFeedback (2.0.3):
+  - RNReactNativeHapticFeedback (2.2.0):
     - React-Core
   - RNReanimated (2.17.0):
     - DoubleConversion
@@ -595,10 +557,7 @@ PODS:
     - React-Core
   - SSZipArchive (2.2.3)
   - TOCropViewController (2.6.1)
-  - vision-camera-code-scanner (0.2.0):
-    - GoogleMLKit/BarcodeScanning
-    - React-Core
-  - VisionCamera (2.16.5):
+  - VisionCamera (3.6.4):
     - React
     - React-callinvoker
     - React-Core
@@ -672,7 +631,6 @@ DEPENDENCIES:
   - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
-  - vision-camera-code-scanner (from `../node_modules/vision-camera-code-scanner`)
   - VisionCamera (from `../node_modules/react-native-vision-camera`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -691,18 +649,10 @@ SPEC REPOS:
     - fmt
     - GoogleAppMeasurement
     - GoogleDataTransport
-    - GoogleMLKit
-    - GoogleToolboxForMac
     - GoogleUtilities
-    - GoogleUtilitiesComponents
     - GT3Captcha-iOS
-    - GTMSessionFetcher
     - JWT
     - libevent
-    - MLImage
-    - MLKitBarcodeScanning
-    - MLKitCommon
-    - MLKitVision
     - nanopb
     - PromisesObjC
     - PromisesSwift
@@ -835,8 +785,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-svg"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
-  vision-camera-code-scanner:
-    :path: "../node_modules/vision-camera-code-scanner"
   VisionCamera:
     :path: "../node_modules/react-native-vision-camera"
   Yoga:
@@ -844,10 +792,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
-  boost: a7c83b31436843459a1961bfd74b96033dc77234
+  boost: 57d2868c099736d80fcd648bf211b4431e51a558
   BVLinearGradient: 880f91a7854faff2df62518f0281afb1c60d49a3
   CodePush: 255d7607f428dcbec39085f81a206b170e01d012
-  DoubleConversion: 831926d9b8bf8166fd87886c4abab286c2422662
+  DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
   FBLazyVector: a83ceaa8a8581003a623facdb3c44f6d4f342ac5
   FBReactNativeSpec: 85eee79837cb797ab6176f0243a2b40511c09158
   Firebase: 0219acf760880eeec8ce479895bd7767466d9f81
@@ -860,22 +808,14 @@ SPEC CHECKSUMS:
   FirebaseMessaging: ac9062bcc35ed56e15a0241d8fd317022499baf8
   FirebaseSessions: 44a6782502eb279a214d4adca20891353278760c
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
-  glog: 5337263514dd6f09803962437687240c5dc39aa4
+  glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
   GoogleAppMeasurement: fe17c92a32207dd5cdd4e8d742767f2da74857f6
   GoogleDataTransport: 8378d1fa8ac49753ea6ce70d65a7cb70ce5f66e6
-  GoogleMLKit: 2bd0dc6253c4d4f227aad460f69215a504b2980e
-  GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
   GoogleUtilities: 9aa0ad5a7bc171f8bae016300bfcfa3fb8425749
-  GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
   GT3Captcha-iOS: d9cdc6fcd8eac43d374eacf7079a2c420a25cafc
-  GTMSessionFetcher: 3a63d75eecd6aa32c2fc79f578064e1214dfdec2
   hermes-engine: b434cea529ad0152c56c7cb6486b0c4c0b23b5de
   JWT: ef71dfb03e1f842081e64dc42eef0e164f35d251
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  MLImage: 7bb7c4264164ade9bf64f679b40fb29c8f33ee9b
-  MLKitBarcodeScanning: 04e264482c5f3810cb89ebc134ef6b61e67db505
-  MLKitCommon: c1b791c3e667091918d91bda4bba69a91011e390
-  MLKitVision: 8baa5f46ee3352614169b85250574fde38c36f49
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PromisesObjC: 09985d6d70fbe7878040aa746d78236e6946d2ef
   PromisesSwift: cf9eb58666a43bbe007302226e510b16c1e10959
@@ -896,7 +836,7 @@ SPEC CHECKSUMS:
   react-native-fingerprint-scanner: ac6656f18c8e45a7459302b84da41a44ad96dbbe
   react-native-geetest-module: ed6a20774a7975640b79a2f639327c674a488cb5
   react-native-geolocation: 69f4fd37650b8e7fee91816d395e62dd16f5ab8d
-  react-native-maps: 667f9b975549c6fa9b1631bf859440f68ebd3b8f
+  react-native-maps: f699e0753c22c4d5c3a44d03895b193a4dbca6c2
   react-native-safe-area-context: 2cd91d532de12acdb0a9cbc8d43ac72a8e4c897c
   react-native-secure-key-store: 910e6df6bc33cb790aba6ee24bc7818df1fe5898
   react-native-slider: 1cdd6ba29675df21f30544253bf7351d3c2d68c4
@@ -915,7 +855,7 @@ SPEC CHECKSUMS:
   ReactCommon: 0c43eaeaaee231d7d8dc24fc5a6e4cf2b75bf196
   RNBootSplash: 85f6b879c080e958afdb4c62ee04497b05fd7552
   RNCAsyncStorage: 3a8f7145d17cdd9f88e7b77666c94a09e4f759c8
-  RNCClipboard: 3f0451a8100393908bea5c5c5b16f96d45f30bfc
+  RNCClipboard: d77213bfa269013bf4b857b7a9ca37ee062d8ef1
   RNDateTimePicker: 65e1d202799460b286ff5e741d8baf54695e8abd
   RNDeviceInfo: bf8a32acbcb875f568217285d1793b0e8588c974
   RNFBAnalytics: e7e2e0610813ddd8129f551ecb5e0c44c35912c8
@@ -927,7 +867,7 @@ SPEC CHECKSUMS:
   RNLocalize: d4b8af4e442d4bcca54e68fc687a2129b4d71a81
   RNQrGenerator: 90461ba3ca88c1d38ef73da50fade35d9648215d
   RNRate: ef3bcff84f39bb1d1e41c5593d3eea4aab2bd73a
-  RNReactNativeHapticFeedback: afa5bf2794aecbb2dba2525329253da0d66656df
+  RNReactNativeHapticFeedback: ec56a5f81c3941206fd85625fa669ffc7b4545f9
   RNReanimated: f186e85d9f28c9383d05ca39e11dd194f59093ec
   RNScreens: 3c2d122f5e08c192e254c510b212306da97d2581
   RNShare: d82e10f6b7677f4b0048c23709bd04098d5aee6c
@@ -935,8 +875,7 @@ SPEC CHECKSUMS:
   RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
-  vision-camera-code-scanner: dda884a7f3ec8243a2a6d6489b91860648371bca
-  VisionCamera: 99dc0cb2770ab1a4bb0d8dc35d5961bb640767cd
+  VisionCamera: 1910a51e4c6f6b049650086d343090f267b4c260
   Yoga: ba09b6b11e6139e3df8229238aa794205ca6a02a
   ZXingObjC: fdbb269f25dd2032da343e06f10224d62f537bdb
 
