@@ -3,7 +3,7 @@ import { Linking, Text, TouchableWithoutFeedback, View } from "react-native"
 import Icon from "react-native-vector-icons/Ionicons"
 
 // eslint-disable-next-line camelcase
-import { useFragment_experimental } from "@apollo/client"
+import { useFragment } from "@apollo/client"
 import { TransactionDate } from "@app/components/transaction-date"
 import { descriptionDisplay } from "@app/components/transaction-item"
 import { WalletSummary } from "@app/components/wallet-summary"
@@ -162,7 +162,7 @@ export const TransactionDetailScreen: React.FC<Props> = ({ route }) => {
   const viewInExplorer = (hash: string): Promise<Linking> =>
     Linking.openURL(galoyInstance.blockExplorer + hash)
 
-  const { data: tx } = useFragment_experimental<TransactionFragment>({
+  const { data: tx } = useFragment<TransactionFragment>({
     fragment: TransactionFragmentDoc,
     fragmentName: "Transaction",
     from: {

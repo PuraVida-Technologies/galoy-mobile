@@ -100,8 +100,8 @@ android {
         applicationId "io.puravidabitcoin.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 13
-        versionName "1.0.1"
+        versionCode 23110401
+        versionName "1.0.5"
         missingDimensionStrategy 'react-native-camera', 'general' // React native camera
     }
     splits {

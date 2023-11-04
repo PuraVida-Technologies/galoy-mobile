@@ -73,7 +73,7 @@ const ContactModal: React.FC<Props> = ({
   }
 
   // TODO: extract in Instance
-  const openTelegramAction = () => Linking.openURL(`https://t.me/blinkbtc`)
+  const openTelegramAction = () => Linking.openURL(`https://t.me/pvbtc`)
 
   const contactOptionList = [
     {
@@ -87,7 +87,7 @@ const ContactModal: React.FC<Props> = ({
       ),
       action: () => {
         // TODO: extract in Instance
-        Linking.openURL(`https://blink.statuspage.io/`)
+        Linking.openURL(`https://pvbtc.statuspage.io/`)
       },
       hidden: !showStatusPage,
     },
