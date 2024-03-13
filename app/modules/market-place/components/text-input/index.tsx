@@ -1,18 +1,19 @@
-import * as React from "react"
+import * as React from "react";
 // eslint-disable-next-line react-native/split-platform-components
-import { StyleSheet, Text, TextInput, View, ViewStyle } from "react-native"
-import { fontSize, typography } from "../../theme/typography"
-import { Row } from "../row"
+import { StyleSheet, Text, TextInput, View, ViewStyle } from "react-native";
+import { fontSize, typography } from "../../theme/typography";
+import { Row } from "../row";
 
 interface TextInputProps {
-  onChangeText?: ((text: string) => void) | undefined
-  value?: string
-  placeHolder: string
-  title: string
-  textField?: boolean
-  disabled?: boolean
-  containerStyle?: ViewStyle
-  rightComponent?: React.ReactNode
+  onChangeText?: ((text: string) => void) | undefined;
+  onBlur?: () => void | undefined;
+  value?: string;
+  placeHolder: string;
+  title: string;
+  textField?: boolean;
+  disabled?: boolean;
+  containerStyle?: ViewStyle;
+  rightComponent?: React.ReactNode;
 }
 
 export const CustomTextInput: React.FC<TextInputProps> = ({
@@ -24,6 +25,7 @@ export const CustomTextInput: React.FC<TextInputProps> = ({
   disabled,
   containerStyle,
   rightComponent,
+  onBlur,
 }) => {
   return (
     <View style={[{ width: "100%" }, containerStyle]}>
@@ -31,6 +33,7 @@ export const CustomTextInput: React.FC<TextInputProps> = ({
       <Row>
         <TextInput
           onChangeText={onChangeText}
+          onBlur={onBlur}
           style={[styles.textInputStyle, textField ? { height: 120 } : {}]}
           multiline={textField}
           placeholder={placeHolder}
@@ -41,8 +44,8 @@ export const CustomTextInput: React.FC<TextInputProps> = ({
         {rightComponent ? rightComponent : null}
       </Row>
     </View>
-  )
-}
+  );
+};
 const styles = StyleSheet.create({
   textInputStyle: {
     borderWidth: 1,
@@ -58,4 +61,4 @@ const styles = StyleSheet.create({
     fontSize: fontSize.font16,
     marginVertical: 10,
   },
-})
+});
