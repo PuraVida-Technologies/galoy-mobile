@@ -1,5 +1,5 @@
-import * as React from "react"
-import { useState } from "react"
+import * as React from "react";
+import { useState } from "react";
 // eslint-disable-next-line react-native/split-platform-components
 import {
   Dimensions,
@@ -9,56 +9,63 @@ import {
   StyleSheet,
   Text,
   View,
-} from "react-native"
-import { Screen } from "@app/components/screen"
-import { color, palette } from "@app/theme"
-import { HeaderComponent } from "../../components/header"
-import { images } from "@app/modules/market-place/assets/images"
-import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "@app/modules/market-place/redux"
-import { FooterCreatePost } from "../../components/footer-create-post/footer"
-import { StackNavigationProp } from "@react-navigation/stack"
-import { setTempPost } from "@app/modules/market-place/redux/reducers/store-reducer"
-import MapView, { Marker } from "react-native-maps"
-import Geolocation from "@react-native-community/geolocation"
-import CurrentLocation from "@app/modules/market-place/assets/svgs/current-location.svg"
-import { AndroidBottomSpace } from "../../components/android-bottom-spacing/android-bottom-spacing"
-import { useFocusEffect } from "@react-navigation/native"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { Row } from "../../components/row"
-import { fontSize, typography } from "../../theme/typography"
-import { useAccountScreenQuery } from "@app/graphql/generated"
-import { useIsAuthed } from "@app/graphql/is-authed-context"
-const { width } = Dimensions.get("window")
-const IMAGE_WIDTH = width - 30 * 2
-const IMAGE_HEIGHT = IMAGE_WIDTH * 0.61
+} from "react-native";
+import { Screen } from "@app/components/screen";
+import { color, palette } from "@app/theme";
+import { HeaderComponent } from "../../components/header";
+import { images } from "@app/modules/market-place/assets/images";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@app/modules/market-place/redux";
+import { FooterCreatePost } from "../../components/footer-create-post/footer";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { setTempPost } from "@app/modules/market-place/redux/reducers/store-reducer";
+import MapView, { Marker } from "react-native-maps";
+import Geolocation from "@react-native-community/geolocation";
+import CurrentLocation from "@app/modules/market-place/assets/svgs/current-location.svg";
+import { AndroidBottomSpace } from "../../components/android-bottom-spacing/android-bottom-spacing";
+import { useFocusEffect } from "@react-navigation/native";
+import { useI18nContext } from "@app/i18n/i18n-react";
+import { Row } from "../../components/row";
+import { fontSize, typography } from "../../theme/typography";
+import { useAccountScreenQuery } from "@app/graphql/generated";
+import { useIsAuthed } from "@app/graphql/is-authed-context";
+const { width } = Dimensions.get("window");
+const IMAGE_WIDTH = width - 30 * 2;
+const IMAGE_HEIGHT = IMAGE_WIDTH * 0.61;
 interface Props {
-  navigation: StackNavigationProp<any>
+  navigation: StackNavigationProp<any>;
 }
 export const FindLocationScreen: React.FC<Props> = ({ navigation }) => {
-  const isAuthed = useIsAuthed()
-  const dispatch = useDispatch()
-  const name = useSelector((state: RootState) => state.storeReducer?.tempPost?.name)
-  const tempPost = useSelector((state: RootState) => state.storeReducer?.tempPost)
+  const isAuthed = useIsAuthed();
+  const dispatch = useDispatch();
+  const name = useSelector((state: RootState) =>
+    state.storeReducer?.tempPost?.name
+  );
+  const tempPost = useSelector((state: RootState) =>
+    state.storeReducer?.tempPost
+  );
   const thumbnail = useSelector(
     (state: RootState) => state.storeReducer?.tempPost?.mainImageUrl,
-  )
+  );
 
-  const { data } = useAccountScreenQuery({ fetchPolicy: "cache-first", skip: !isAuthed })
-  
+  const { data } = useAccountScreenQuery({
+    fetchPolicy: "cache-first",
+    skip: !isAuthed,
+  });
+
   const [position, setPosition] = useState({
     latitude: 10,
     longitude: 10,
     latitudeDelta: 0.001,
     longitudeDelta: 0.001,
-  })
-  const { LL: t } = useI18nContext()
+  });
+  const { LL: t } = useI18nContext();
 
   React.useEffect(() => {
     if (!tempPost?.location?.lat) {
       Geolocation.getCurrentPosition(
         (pos) => {
-          const crd = pos.coords
+          const crd = pos.coords;
           dispatch(
             setTempPost({
               ...tempPost,
@@ -67,30 +74,30 @@ export const FindLocationScreen: React.FC<Props> = ({ navigation }) => {
                 long: crd.longitude,
               },
             }),
-          )
+          );
           setPosition({
             latitude: crd.latitude,
             longitude: crd.longitude,
             latitudeDelta: 0.02,
             longitudeDelta: 0.02,
-          })
+          });
         },
         (err) => {
-          console.log("err when fetch location: ", err)
+          console.log("err when fetch location: ", err);
         },
-      )
+      );
     }
-  }, [])
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
       if (tempPost?.location?.lat) {
-        const { lat, long } = tempPost.location
+        const { lat, long } = tempPost.location;
 
-        setPosition({ ...position, latitude: lat, longitude: long })
+        setPosition({ ...position, latitude: lat, longitude: long });
       }
     }, [tempPost.location?.lat]),
-  )
+  );
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Screen style={styles.container}>
@@ -98,7 +105,9 @@ export const FindLocationScreen: React.FC<Props> = ({ navigation }) => {
         <View style={{ flex: 1, paddingHorizontal: 30, width: "100%" }}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <Image
-              source={thumbnail ? { uri: thumbnail } : images.landscapePlaceholderImage}
+              source={thumbnail
+                ? { uri: thumbnail }
+                : images.landscapePlaceholderImage}
               style={{
                 width: IMAGE_WIDTH,
                 height: IMAGE_HEIGHT,
@@ -119,7 +128,7 @@ export const FindLocationScreen: React.FC<Props> = ({ navigation }) => {
               }}
               region={position}
               onPress={() => {
-                navigation.navigate("MapScreen")
+                navigation.navigate("MapScreen");
               }}
             >
               <Marker
@@ -136,7 +145,7 @@ export const FindLocationScreen: React.FC<Props> = ({ navigation }) => {
                       },
                       address: "",
                     }),
-                  )
+                  );
                 }}
               />
             </MapView>
@@ -146,7 +155,7 @@ export const FindLocationScreen: React.FC<Props> = ({ navigation }) => {
             <Row
               containerStyle={styles.rowContainer}
               onPress={() => {
-                navigation.navigate("LocationPicker")
+                navigation.navigate("LocationPicker");
               }}
             >
               <CurrentLocation fill={color.primary} />
@@ -160,11 +169,10 @@ export const FindLocationScreen: React.FC<Props> = ({ navigation }) => {
                 dispatch(
                   setTempPost({
                     ...tempPost,
-                    email: "TestMail@gmail.com",
                     phone: data?.me?.phone,
                   }),
-                )
-                navigation.navigate("ConfirmInformation", { editable: true })
+                );
+                navigation.navigate("ConfirmInformation", { editable: true });
               }}
               style={{ marginVertical: 20 }}
             />
@@ -173,8 +181,8 @@ export const FindLocationScreen: React.FC<Props> = ({ navigation }) => {
         </View>
       </Screen>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   rowContainer: {
@@ -205,11 +213,11 @@ const styles = StyleSheet.create({
     fontSize: fontSize.font16,
     borderRadius: 4,
   },
-  labelStyle: { 
+  labelStyle: {
     fontSize: fontSize.font16,
     marginVertical: 10,
   },
-  text: { 
+  text: {
     fontSize: fontSize.font16,
     color: "white",
   },
@@ -235,4 +243,4 @@ const styles = StyleSheet.create({
     backgroundColor: palette.lighterGrey,
     alignItems: "center",
   },
-})
+});

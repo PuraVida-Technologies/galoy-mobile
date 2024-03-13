@@ -1,5 +1,5 @@
-import * as React from "react"
-import { useState, useEffect, useMemo, useRef } from "react"
+import * as React from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 // eslint-disable-next-line react-native/split-platform-components
 import {
   ActivityIndicator,
@@ -12,191 +12,226 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native"
+} from "react-native";
 
-import { color, palette } from "@app/theme"
-import { HeaderComponent } from "../../components/header"
-import { images } from "@app/modules/market-place/assets/images"
-import { useDispatch, useSelector } from "react-redux"
-import { setTempPost } from "@app/modules/market-place/redux/reducers/store-reducer"
-import { MarketPlaceParamList } from "@app/modules/market-place/navigation/param-list"
-import { StackNavigationProp } from "@react-navigation/stack"
-import { LoadingComponent } from "@app/modules/market-place/components/loading-component"
-import { autoCompleteTags, getTags } from "@app/modules/market-place/graphql"
-import { RootState } from "@app/modules/market-place/redux"
-import { Screen } from "@app/components/screen"
-import { MarketPlaceCommonStyle } from "../../theme/style"
-import { fontSize, typography } from "../../theme/typography"
-import { TagComponent } from "../../components/tag-components"
-import { MarketplaceTag, TemplateMarketPlaceTag } from "../../models"
-import TextInputComponent from "../../components/text-input-component"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { marketPlaceColor } from "../../theme/color"
-const { width, height } = Dimensions.get("window")
+import { color, palette } from "@app/theme";
+import { HeaderComponent } from "../../components/header";
+import { images } from "@app/modules/market-place/assets/images";
+import { useDispatch, useSelector } from "react-redux";
+import { setTempPost } from "@app/modules/market-place/redux/reducers/store-reducer";
+import { MarketPlaceParamList } from "@app/modules/market-place/navigation/param-list";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { LoadingComponent } from "@app/modules/market-place/components/loading-component";
+import { autoCompleteTags, getTags } from "@app/modules/market-place/graphql";
+import { RootState } from "@app/modules/market-place/redux";
+import { Screen } from "@app/components/screen";
+import { MarketPlaceCommonStyle } from "../../theme/style";
+import { fontSize, typography } from "../../theme/typography";
+import { TagComponent } from "../../components/tag-components";
+import { MarketplaceTag, TemplateMarketPlaceTag } from "../../models";
+import TextInputComponent from "../../components/text-input-component";
+import { useI18nContext } from "@app/i18n/i18n-react";
+import { marketPlaceColor } from "../../theme/color";
+const { width, height } = Dimensions.get("window");
 interface Props {
-  navigation: StackNavigationProp<MarketPlaceParamList>
+  navigation: StackNavigationProp<MarketPlaceParamList>;
 }
 export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
-  const dispatch = useDispatch()
-  const [name, setName] = useState("")
-  const [description, setDescription] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [tagLoading, setTagLoading] = useState(false)
-  const tempPost = useSelector((state: RootState) => state.storeReducer.tempPost)
-  const [tag, setTag] = useState("")
+  const dispatch = useDispatch();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [description, setDescription] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [tagLoading, setTagLoading] = useState(false);
+  const tempPost = useSelector((state: RootState) =>
+    state.storeReducer.tempPost
+  );
+  const [tag, setTag] = useState("");
 
-  const [nameError, setNameError] = useState("")
-  const [descriptionError, setDescriptionError] = useState("")
-  const [filteredTags, setFilteredTags] = useState<MarketplaceTag[]>([])
-  const [selectedTags, setSelectedTags] = useState<MarketplaceTag[]>([])
-  const [initTag, setInitTag] = useState<MarketplaceTag[]>([])
-  const timeoutRef = useRef(null)
-  const { LL: t } = useI18nContext()
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [descriptionError, setDescriptionError] = useState("");
+  const [filteredTags, setFilteredTags] = useState<MarketplaceTag[]>([]);
+  const [selectedTags, setSelectedTags] = useState<MarketplaceTag[]>([]);
+  const [initTag, setInitTag] = useState<MarketplaceTag[]>([]);
+  const timeoutRef = useRef(null);
+  const { LL: t } = useI18nContext();
 
   const isCorrectInput = () => {
-    let nameValid = false
-    let descriptionValid = false
+    let nameValid = false;
+    let emailValid = false;
+    let descriptionValid = false;
 
-    if (!name) setNameError(t.marketPlace.name_is_required())
+    if (!name) setNameError(t.marketPlace.name_is_required());
     //check if name is full of spaces or less than 2 characters
-    else if (name?.trim().length < 2)
-      setNameError(t.marketPlace.name_length_validation())
-    else {
-      nameValid = true
-      setNameError("")
+    else if (name?.trim().length < 2) {
+      setNameError(t.marketPlace.name_length_validation());
+    } else {
+      nameValid = true;
+      setNameError("");
     }
 
-    if (!description) setDescriptionError(t.marketPlace.description_is_required())
-    //check if description is full of spaces or less than 2 characters
-    else if (description?.trim().length < 2)
-      setDescriptionError(t.marketPlace.description_must_be_more_than_2_characters())
-    else {
-      descriptionValid = true
-      setDescriptionError("")
+    if (!email) {
+      setEmailError(t.marketPlace.email_is_required());
+    } else if (
+      /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/.test(email) === false
+    ) {
+      setEmailError(t.marketPlace.email_is_invalid());
+    } else {
+      emailValid = true;
+      setEmailError("");
     }
 
-    return Boolean(nameValid && descriptionValid)
-  }
+    if (!description) {
+      setDescriptionError(t.marketPlace.description_is_required());
+    } //check if description is full of spaces or less than 2 characters
+    else if (description?.trim().length < 2) {
+      setDescriptionError(
+        t.marketPlace.description_must_be_more_than_2_characters(),
+      );
+    } else {
+      descriptionValid = true;
+      setDescriptionError("");
+    }
+
+    return Boolean(nameValid && descriptionValid && emailValid);
+  };
   const onNext = () => {
-    if (!isCorrectInput()) return
+    if (!isCorrectInput()) return;
 
-    dispatch(setTempPost({ ...tempPost, name, description, tags: selectedTags }))
+    dispatch(
+      setTempPost({
+        ...tempPost,
+        name,
+        email,
+        description,
+        tags: selectedTags,
+      }),
+    );
 
-    navigation.navigate("AddImage")
-  }
+    navigation.navigate("AddImage");
+  };
   const addTag = (item: MarketplaceTag) => {
-    const newTags = [...selectedTags]
+    const newTags = [...selectedTags];
 
     if (selectedTags.findIndex((tag) => tag.name === item.name) !== -1) {
-      setSelectedTags(newTags)
-      return
+      setSelectedTags(newTags);
+      return;
     }
-    if (newTags.length >= 5) newTags.pop()
+    if (newTags.length >= 5) newTags.pop();
 
-    newTags.unshift(item)
+    newTags.unshift(item);
 
-    setSelectedTags(newTags)
-    setTag('')
-  }
-  const removeSelectedTag = (index:number) => {
+    setSelectedTags(newTags);
+    setTag("");
+  };
+  const removeSelectedTag = (index: number) => {
     //remove tag at index
-    const newTags = [...selectedTags]
-    newTags.splice(index, 1)
-    setSelectedTags(newTags)
-  }
+    const newTags = [...selectedTags];
+    newTags.splice(index, 1);
+    setSelectedTags(newTags);
+  };
 
   const debounceFindTags = (text: string) => {
     timeoutRef.current = setTimeout(() => {
-      setTagLoading(true)
+      setTagLoading(true);
       autoCompleteTags(text)
         .then((data) => {
-          setFilteredTags(data)
+          setFilteredTags(data);
         })
         .finally(() => {
-          setTagLoading(false)
-        })
-    }, 500)
-  }
+          setTagLoading(false);
+        });
+    }, 500);
+  };
   const onChangeTags = (text: string) => {
-    setTag(text)
-    if (!text) return clearTimeout(timeoutRef.current || 0)
+    setTag(text);
+    if (!text) return clearTimeout(timeoutRef.current || 0);
 
     if (timeoutRef.current != null) {
-      clearTimeout(timeoutRef.current)
-      debounceFindTags(text)
+      clearTimeout(timeoutRef.current);
+      debounceFindTags(text);
     } else {
-      debounceFindTags(text)
+      debounceFindTags(text);
     }
-  }
+  };
   const renderEmptyTagList = () => {
-    if (tagLoading) return <ActivityIndicator color={color.primary} />
-    return tag ? <Text>{t.marketPlace.cant_find_tag_Add_your_own()}</Text> : null
-  }
+    if (tagLoading) return <ActivityIndicator color={color.primary} />;
+    return tag
+      ? <Text>{t.marketPlace.cant_find_tag_Add_your_own()}</Text>
+      : null;
+  };
 
-  const renderTagItem = ({ item }:{item:MarketplaceTag}) => {
-    const onTagPress = () => addTag(item)
+  const renderTagItem = ({ item }: { item: MarketplaceTag }) => {
+    const onTagPress = () => addTag(item);
 
-    return <TagComponent title={item.name} onPress={onTagPress} />
-  }
+    return <TagComponent title={item.name} onPress={onTagPress} />;
+  };
 
   const renderAddTagText = () => {
-    const isTagNotFound = tag && !tagLoading && !filteredTags?.length
-    return isTagNotFound ? (
-      <Text
-        style={[styles.text, { color: color.primary }]}
-        onPress={() => {
-          addTag({ ...TemplateMarketPlaceTag, name: tag })
-          setTag("")
-        }}
-      >
-        {t.marketPlace.add()}
-      </Text>
-    ) : null
-  }
+    const isTagNotFound = tag && !tagLoading && !filteredTags?.length;
+    return isTagNotFound
+      ? (
+        <Text
+          style={[styles.text, { color: color.primary }]}
+          onPress={() => {
+            addTag({ ...TemplateMarketPlaceTag, name: tag });
+            setTag("");
+          }}
+        >
+          {t.marketPlace.add()}
+        </Text>
+      )
+      : null;
+  };
 
   const filterTags = useMemo(() => {
-    const displayTags = !filteredTags?.length && !tag ? initTag : filteredTags
+    const displayTags = !filteredTags?.length && !tag ? initTag : filteredTags;
     return displayTags.filter((tag) => {
-      const index = selectedTags.findIndex((selectedTag) => tag.name === selectedTag.name)
-      return index === -1
-    })
-  }, [selectedTags, filteredTags])
+      const index = selectedTags.findIndex((selectedTag) =>
+        tag.name === selectedTag.name
+      );
+      return index === -1;
+    });
+  }, [selectedTags, filteredTags]);
 
-  const renderSelectedTag = ({ item, index }:{item:MarketplaceTag,index:number}) => {
-    const onClearTag = () => removeSelectedTag(index)
+  const renderSelectedTag = (
+    { item, index }: { item: MarketplaceTag; index: number },
+  ) => {
+    const onClearTag = () => removeSelectedTag(index);
     return (
       <TagComponent
         title={item.name}
         onClear={onClearTag}
       />
-    )
-  }
+    );
+  };
 
   useEffect(() => {
     const initData = () => {
-      setIsLoading(true)
+      setIsLoading(true);
       getTags()
         .then((tags) => {
-          setFilteredTags(tags)
-          setInitTag(tags)
+          setFilteredTags(tags);
+          setInitTag(tags);
         })
-        .finally(() => setIsLoading(false))
-    }
-    initData()
-  }, [])
+        .finally(() => setIsLoading(false));
+    };
+    initData();
+  }, []);
   return (
     <Screen
       style={styles.container}
       keyboardOffset={"none"}
-    //  preset="scroll"
+      //  preset="scroll"
     >
       <HeaderComponent style={{ paddingHorizontal: 20, width }} />
       <View style={{ flex: 1 }}>
-        <ScrollView>
+        <ScrollView automaticallyAdjustKeyboardInsets={true}>
           <TouchableOpacity
             style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
             onPress={() => {
-              Keyboard.dismiss()
+              Keyboard.dismiss();
             }}
             activeOpacity={1}
           >
@@ -216,9 +251,25 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
                 isError={nameError !== ""}
               />
 
-              {nameError ? <Text style={styles.errorText}>{nameError}</Text> : null}
+              {nameError
+                ? <Text style={styles.errorText}>{nameError}</Text>
+                : null}
 
-              <Text style={styles.labelStyle}>{t.marketPlace.your_selected_tag()}</Text>
+              <Text style={styles.labelStyle}>{t.marketPlace.email()}</Text>
+              <TextInputComponent
+                onChangeText={setEmail}
+                value={email}
+                placeholder={t.marketPlace.email()}
+                isError={emailError !== ""}
+              />
+
+              {emailError
+                ? <Text style={styles.errorText}>{emailError}</Text>
+                : null}
+
+              <Text style={styles.labelStyle}>
+                {t.marketPlace.your_selected_tag()}
+              </Text>
               <FlatList
                 data={selectedTags}
                 horizontal
@@ -227,9 +278,13 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
                 ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
                 keyExtractor={(item, index) => item._id + "_" + index}
               />
-              {selectedTags?.length >= 5 ? (
-                <Text style={styles.errorText}>{t.marketPlace.you_can_select_up_to_5_tags()}</Text>
-              ) : null}
+              {selectedTags?.length >= 5
+                ? (
+                  <Text style={styles.errorText}>
+                    {t.marketPlace.you_can_select_up_to_5_tags()}
+                  </Text>
+                )
+                : null}
               <TextInputComponent
                 containerStyle={{ marginTop: selectedTags?.length ? 12 : 0 }}
                 onChangeText={(text) => onChangeTags(text)}
@@ -248,7 +303,9 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
                 ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
                 keyExtractor={(item) => item._id}
               />
-              <Text style={styles.labelStyle}>{t.marketPlace.description()}</Text>
+              <Text style={styles.labelStyle}>
+                {t.marketPlace.description()}
+              </Text>
               <TextInputComponent
                 placeholder={t.marketPlace.description()}
                 textField={true}
@@ -256,9 +313,9 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
                 value={description}
                 isError={descriptionError !== ""}
               />
-              {descriptionError ? (
-                <Text style={styles.errorText}>{descriptionError}</Text>
-              ) : null}
+              {descriptionError
+                ? <Text style={styles.errorText}>{descriptionError}</Text>
+                : null}
               <View style={{ alignItems: "flex-end", marginVertical: 15 }}>
                 <TouchableOpacity style={styles.button} onPress={onNext}>
                   <Text style={styles.text}>{t.marketPlace.next()}</Text>
@@ -270,13 +327,14 @@ export const CreatePostScreen: React.FC<Props> = ({ navigation }) => {
       </View>
       <LoadingComponent isLoading={isLoading} />
     </Screen>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   errorText: {
     fontSize: fontSize.font12,
     color: marketPlaceColor.darkPink,
+    marginTop: 5,
   },
   dropdownStyle: {
     borderWidth: 1,
@@ -320,4 +378,4 @@ const styles = StyleSheet.create({
     backgroundColor: palette.lighterGrey,
     alignItems: "center",
   },
-})
+});
