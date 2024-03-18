@@ -1,9 +1,9 @@
-import { HeaderComponent } from "../../components/header"
+import { HeaderComponent } from "../../components/header";
 
-import { color, spacing } from "@app/theme"
-import { StackNavigationProp } from "@react-navigation/stack"
-import * as React from "react"
-import { useState, useEffect, useRef } from "react"
+import { color, spacing } from "@app/theme";
+import { StackNavigationProp } from "@react-navigation/stack";
+import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 // eslint-disable-next-line react-native/split-platform-components
 import {
   Dimensions,
@@ -15,96 +15,103 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native"
+} from "react-native";
 
-import FilterSvg from "@app/modules/market-place/assets/svgs/filter.svg"
-import MapView, { Marker } from "react-native-maps"
-import Geolocation from "@react-native-community/geolocation"
-import { HorizontalPostComponent } from "../../components/horizontal-post/horizontal-post-component"
-import ListIconSvg from "@app/modules/market-place/assets/svgs/list-icon.svg"
-import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "@app/modules/market-place/redux"
-import { clearTempStore, PostAttributes, setPostList } from "@app/modules/market-place/redux/reducers/store-reducer"
-import { filterPosts } from "@app/modules/market-place/graphql"
-import { LoadingComponent } from "@app/modules/market-place/components/loading-component"
-import { debounce } from "lodash"
-import { EmptyComponent } from "./components/empty-component"
-import { setLocation } from "@app/modules/market-place/redux/reducers/user-reducer"
-import { MarketPlaceCommonStyle } from "@app/modules/market-place/theme/style"
-import { openMap } from "../../utils/helper"
-import { DefaultFilterPostModel } from "../../models"
-import { Row } from "../../components/row"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { fontSize, typography } from "../../theme/typography"
-import { useFocusEffect } from "@react-navigation/native"
-import { DEFAULT_LOCATION } from "../../config/constant"
-import { ExpandableFloatingAction } from "./components/components/ExpandableFAB"
-import { useIsAuthed } from "@app/graphql/is-authed-context"
-import { MarketPlaceParamList } from "../../navigation/param-list"
-import { UnAuthModal } from "../../components/UnAuthModal"
-import { GeolocationResponse } from "@react-native-community/geolocation"
-const { width } = Dimensions.get("window")
+import FilterSvg from "@app/modules/market-place/assets/svgs/filter.svg";
+import MapView, { Marker } from "react-native-maps";
+import Geolocation from "@react-native-community/geolocation";
+import { HorizontalPostComponent } from "../../components/horizontal-post/horizontal-post-component";
+import ListIconSvg from "@app/modules/market-place/assets/svgs/list-icon.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@app/modules/market-place/redux";
+import {
+  clearTempStore,
+  PostAttributes,
+  setPostList,
+} from "@app/modules/market-place/redux/reducers/store-reducer";
+import { filterPosts } from "@app/modules/market-place/graphql";
+import { LoadingComponent } from "@app/modules/market-place/components/loading-component";
+import { debounce } from "lodash";
+import { EmptyComponent } from "./components/empty-component";
+import { setLocation } from "@app/modules/market-place/redux/reducers/user-reducer";
+import { MarketPlaceCommonStyle } from "@app/modules/market-place/theme/style";
+import { openMap } from "../../utils/helper";
+import { DefaultFilterPostModel } from "../../models";
+import { Row } from "../../components/row";
+import { useI18nContext } from "@app/i18n/i18n-react";
+import { fontSize, typography } from "../../theme/typography";
+import { useFocusEffect } from "@react-navigation/native";
+import { DEFAULT_LOCATION } from "../../config/constant";
+import { ExpandableFloatingAction } from "./components/components/ExpandableFAB";
+import { useIsAuthed } from "@app/graphql/is-authed-context";
+import { MarketPlaceParamList } from "../../navigation/param-list";
+import { UnAuthModal } from "../../components/UnAuthModal";
+import { GeolocationResponse } from "@react-native-community/geolocation";
+const { width } = Dimensions.get("window");
 
-const itemWidth = 330
+const itemWidth = 330;
 
 type Props = {
-  navigation: StackNavigationProp<any>
-}
+  navigation: StackNavigationProp<any>;
+};
 
 export const PostListScreen = ({ navigation }: Props) => {
-  const [isModalVisible, setIsModalVisible] = React.useState(false)
-  const [postList, setPostList] = useState<PostAttributes[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const dispatch = useDispatch()
-  const mapRef = useRef<MapView>()
-  const flatlistRef = useRef<FlatList>()
+  const [isModalVisible, setIsModalVisible] = React.useState(false);
+  const [postList, setPostList] = useState<PostAttributes[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const mapRef = useRef<MapView>();
+  const flatlistRef = useRef<FlatList>();
 
-  const [searchText, setSearchText] = useState("")
-  const [markerRefs, setMarkerRef] = useState([])
-  const [position, setPosition] = useState<any>(DEFAULT_LOCATION)
-  const [firstLoad, setFirstLoad] = useState(false)
-  const [sortBy, setSortBy] = useState("distance")
+  const [searchText, setSearchText] = useState("");
+  const [markerRefs, setMarkerRef] = useState([]);
+  const [position, setPosition] = useState<any>(DEFAULT_LOCATION);
+  const [firstLoad, setFirstLoad] = useState(false);
+  const [sortBy, setSortBy] = useState("distance");
 
-  const { LL: t } = useI18nContext()
-  const isAuthed = useIsAuthed()
+  const { LL: t } = useI18nContext();
+  const isAuthed = useIsAuthed();
 
   const snapToOffsets = postList?.map((x, i) => {
-    if (i == 0) return i * itemWidth
-    return i * (itemWidth + 20)
-  })
+    if (i == 0) return i * itemWidth;
+    return i * (itemWidth + 20);
+  });
 
   const renderData = ({ item, index }: { item: any; index: number }) => {
-    const { coordinates } = item?.location || {}
+    const { coordinates } = item?.location || {};
     return (
       <HorizontalPostComponent
         product={item}
         onItemPress={() => {
-          navigation.navigate("PostDetail", { editable: false, postInfo: item })
+          navigation.navigate("PostDetail", {
+            editable: false,
+            postInfo: item,
+          });
         }}
         onLocationPress={() => {
-          if (!coordinates || coordinates.length < 2) return
+          if (!coordinates || coordinates.length < 2) return;
           mapRef.current?.animateCamera({
             center: { latitude: coordinates[1], longitude: coordinates[0] },
-          })
-          markerRefs[index]?.current?.showCallout()
-          console.log(markerRefs)
+          });
+          markerRefs[index]?.current?.showCallout();
+          console.log(markerRefs);
 
           flatlistRef.current?.scrollToOffset({
             animated: true,
             offset: snapToOffsets[index],
-          })
+          });
         }}
         onDirectionPress={() => {
-          if (!coordinates || coordinates.length < 2) return
-          openMap(coordinates[1], coordinates[0])
+          if (!coordinates || coordinates.length < 2) return;
+          openMap(coordinates[1], coordinates[0]);
         }}
       />
-    )
-  }
+    );
+  };
 
   const renderMarkers = () => {
     return postList?.map((data, index) => {
-      if (!data.location) return null
+      if (!data.location) return null;
       return (
         <Marker
           key={`${data.name}_${index}`}
@@ -118,99 +125,117 @@ export const PostListScreen = ({ navigation }: Props) => {
             flatlistRef.current.scrollToOffset({
               animated: true,
               offset: snapToOffsets[index],
-            })
+            });
           }}
-        ></Marker>
-      )
-    })
-  }
+        >
+        </Marker>
+      );
+    });
+  };
   const filter = async () => {
-    if (!position) return
+    if (!position) return;
 
     try {
-
-      setIsLoading(true)
+      setIsLoading(true);
       const res = await filterPosts({
         ...position,
         text: searchText,
-        sortBy
-      })
-      setPostList(res)
+        sortBy,
+      });
+      setPostList(res);
     } catch (error) {
-
     } finally {
-      setIsLoading(false)
-
+      setIsLoading(false);
     }
-  }
+  };
   const searchPostDebounce = React.useMemo(
     () =>
       debounce(async () => {
-        await filter()
+        await filter();
       }, 500),
     [searchText],
-  )
+  );
 
-  const initData = async (coords: GeolocationResponse['coords'], isFocusing?: boolean) => {
+  const initData = async (
+    coords: GeolocationResponse["coords"],
+    isFocusing?: boolean,
+  ) => {
     try {
-      if (!isFocusing) setIsLoading(true)
-      const posts = await filterPosts({ ...DefaultFilterPostModel, ...coords, sortBy })
+      if (!isFocusing) setIsLoading(true);
+      const posts = await filterPosts({
+        ...DefaultFilterPostModel,
+        ...coords,
+        sortBy,
+      });
 
-      setPostList(posts)
+      setPostList(posts);
     } catch (error) {
-      setIsLoading(false)
+      setIsLoading(false);
     } finally {
-      setIsLoading(false)
-      setFirstLoad(true)
+      setIsLoading(false);
+      setFirstLoad(true);
     }
-  }
-
-
-  useEffect(() => {
-    if (firstLoad) searchPostDebounce()
-    return () => searchPostDebounce.cancel()
-  }, [searchPostDebounce, sortBy])
+  };
 
   useEffect(() => {
-    filter()
-  }, [sortBy,position])
+    if (firstLoad) searchPostDebounce();
+    return () => searchPostDebounce.cancel();
+  }, [searchPostDebounce, sortBy]);
+
+  useEffect(() => {
+    filter();
+  }, [sortBy, position]);
 
   useFocusEffect(
     React.useCallback(() => {
       Geolocation.getCurrentPosition(
-        ({ coords  }) => {
+        ({ coords }) => {
           setPosition({
-            ...coords
-          })
-          dispatch(setLocation({ lat: coords.latitude, long: coords.longitude }))
-          initData(coords, true)
-
+            ...coords,
+            longitudeDelta: 0.02,
+            latitudeDelta: 0.02,
+          });
+          dispatch(
+            setLocation({ lat: coords.latitude, long: coords.longitude }),
+          );
+          initData(coords, true);
         },
-        (err) => { 
-          const {latitude,longitude } = position
-          dispatch(setLocation({ lat: latitude, long: longitude }))
-          initData(position, true)
-          
-          console.log("err when fetch location: ", err)
-        }, 
-      )
-    }, [DEFAULT_LOCATION])
+        (err) => {
+          const { latitude, longitude } = position;
+          dispatch(setLocation({ lat: latitude, long: longitude }));
+          initData(position, true);
+
+          console.log("err when fetch location: ", err);
+        },
+      );
+    }, [DEFAULT_LOCATION]),
   );
 
   const onCreatePostPress = () => {
-    dispatch(clearTempStore())
-    isAuthed ? navigation.navigate("CreatePost") : setIsModalVisible(true)
-  }
+    dispatch(clearTempStore());
+    isAuthed ? navigation.navigate("CreatePost") : setIsModalVisible(true);
+  };
 
   const onMyPostPress = () => {
-    isAuthed ? navigation.navigate("MyPost") : setIsModalVisible(true)
-  }
+    isAuthed ? navigation.navigate("MyPost") : setIsModalVisible(true);
+  };
 
-  if (!position) return (
-    <View style={{ flex: 1, backgroundColor: "white", justifyContent: 'center', alignItems: 'center' }}>
-      <Text>{t.marketPlace.you_need_to_enable_location_to_see_posts_around_you()}</Text>
-    </View>
-  )
+  if (!position) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "white",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text>
+          {t.marketPlace.you_need_to_enable_location_to_see_posts_around_you()}
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -218,6 +243,7 @@ export const PostListScreen = ({ navigation }: Props) => {
         <MapView
           style={styles.map}
           region={position}
+          initialRegion={DEFAULT_LOCATION}
           showsCompass={true}
           scrollEnabled={true}
           zoomEnabled={true}
@@ -225,10 +251,8 @@ export const PostListScreen = ({ navigation }: Props) => {
           rotateEnabled={true}
           ref={mapRef}
           onRegionChangeComplete={(region) => {
-            setPosition(region)
-
+            setPosition(region);
           }}
-
         >
           {renderMarkers()}
         </MapView>
@@ -246,17 +270,35 @@ export const PostListScreen = ({ navigation }: Props) => {
 
           <Row containerStyle={styles.buttonRow}>
             <TouchableOpacity
-              style={[styles.button, sortBy === 'distance' && { backgroundColor: color.primary }]}
-              onPress={() => setSortBy('distance')}
+              style={[
+                styles.button,
+                sortBy === "distance" && { backgroundColor: color.primary },
+              ]}
+              onPress={() => setSortBy("distance")}
             >
-              <Text style={[styles.text, sortBy === 'distance' && { color: "white" }]}>{t.marketPlace.distance()}</Text>
+              <Text
+                style={[
+                  styles.text,
+                  sortBy === "distance" && { color: "white" },
+                ]}
+              >
+                {t.marketPlace.distance()}
+              </Text>
             </TouchableOpacity>
             <View style={{ width: 30 }} />
             <TouchableOpacity
-              style={[styles.button, sortBy === 'relevance' && { backgroundColor: color.primary }]}
-              onPress={() => setSortBy('relevance')}
+              style={[
+                styles.button,
+                sortBy === "relevance" && { backgroundColor: color.primary },
+              ]}
+              onPress={() => setSortBy("relevance")}
             >
-              <Text style={[styles.text, sortBy === 'relevance' && { color: "white" }]}>
+              <Text
+                style={[
+                  styles.text,
+                  sortBy === "relevance" && { color: "white" },
+                ]}
+              >
                 {t.marketPlace.relevance()}
               </Text>
             </TouchableOpacity>
@@ -264,36 +306,45 @@ export const PostListScreen = ({ navigation }: Props) => {
         </SafeAreaView>
         <View style={{ position: "absolute", bottom: 20, width: "100%" }}>
           <ExpandableFloatingAction
-            closeIcon={<View style={{ width: 50, height: 50, backgroundColor: 'red' }} />}
-            openIcon={<View style={{ width: 50, height: 50, backgroundColor: 'red' }} />}
+            closeIcon={
+              <View style={{ width: 50, height: 50, backgroundColor: "red" }} />
+            }
+            openIcon={
+              <View style={{ width: 50, height: 50, backgroundColor: "red" }} />
+            }
             menuIcons={[
               {
-                name: 'myposts',
+                name: "myposts",
                 text: t.marketPlace.my_post(),
-                callback: onMyPostPress
+                callback: onMyPostPress,
               },
               {
-                name: 'createpost',
+                name: "createpost",
                 text: t.marketPlace.create_post(),
-                callback: onCreatePostPress
-              }
+                callback: onCreatePostPress,
+              },
             ]}
           />
-          {postList?.length ? (
-            <TouchableOpacity
-              style={styles.listViewButton}
-              onPress={() => navigation.navigate("StoreListView", { searchText })}
-            >
-              <ListIconSvg />
-              <Text style={styles.listViewText}>{t.marketPlace.list_view()}</Text>
-            </TouchableOpacity>
-          ) : null}
+          {postList?.length
+            ? (
+              <TouchableOpacity
+                style={styles.listViewButton}
+                onPress={() =>
+                  navigation.navigate("StoreListView", { searchText })}
+              >
+                <ListIconSvg />
+                <Text style={styles.listViewText}>
+                  {t.marketPlace.list_view()}
+                </Text>
+              </TouchableOpacity>
+            )
+            : null}
 
           <FlatList
             ref={flatlistRef}
             data={postList}
             renderItem={renderData}
-            keyExtractor={item => item._id}
+            keyExtractor={(item) => item._id}
             horizontal
             showsHorizontalScrollIndicator={false}
             ListHeaderComponent={() => <View style={{ width: 20 }} />}
@@ -306,15 +357,23 @@ export const PostListScreen = ({ navigation }: Props) => {
           />
         </View>
       </View>
-      <UnAuthModal modalVisible={isModalVisible} setModalVisible={setIsModalVisible} />
+      <UnAuthModal
+        modalVisible={isModalVisible}
+        setModalVisible={setIsModalVisible}
+      />
       <LoadingComponent isLoading={isLoading} />
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   secondButton: { backgroundColor: "white", borderColor: color.primary },
-  buttonRow: { justifyContent: "space-between", width: "100%", paddingHorizontal: 15, marginTop: 15 },
+  buttonRow: {
+    justifyContent: "space-between",
+    width: "100%",
+    paddingHorizontal: 15,
+    marginTop: 15,
+  },
   button: {
     borderRadius: 20,
     paddingVertical: 7,
@@ -356,9 +415,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingHorizontal: 30,
     paddingRight: spacing[3],
-    paddingVertical: Platform.OS === 'android' ? 0 : 9,
+    paddingVertical: Platform.OS === "android" ? 0 : 9,
     alignItems: "center",
     marginHorizontal: 18,
     marginTop: 15,
   },
-})
+});

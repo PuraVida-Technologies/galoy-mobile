@@ -1,40 +1,42 @@
-import * as React from "react"
-import { useState } from "react"
+import * as React from "react";
+import { useState } from "react";
 // eslint-disable-next-line react-native/split-platform-components
-import { Dimensions, SafeAreaView, StyleSheet, Text, View } from "react-native"
-import { palette } from "@app/theme"
-import { MarketPlaceParamList } from "@app/modules/market-place/navigation/param-list"
-import { StackNavigationProp } from "@react-navigation/stack"
-import MapView, { Callout, Marker } from "react-native-maps"
-import Geolocation from "@react-native-community/geolocation"
-import { HeaderComponent } from "../../components/header"
-import { useDispatch, useSelector } from "react-redux"
-import { setTempPost } from "@app/modules/market-place/redux/reducers/store-reducer"
-import { RootState } from "@app/modules/market-place/redux"
-import { getLocation } from "../../utils/helper"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { DEFAULT_LOCATION } from "../../config/constant"
+import { Dimensions, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { palette } from "@app/theme";
+import { MarketPlaceParamList } from "@app/modules/market-place/navigation/param-list";
+import { StackNavigationProp } from "@react-navigation/stack";
+import MapView, { Callout, Marker } from "react-native-maps";
+import Geolocation from "@react-native-community/geolocation";
+import { HeaderComponent } from "../../components/header";
+import { useDispatch, useSelector } from "react-redux";
+import { setTempPost } from "@app/modules/market-place/redux/reducers/store-reducer";
+import { RootState } from "@app/modules/market-place/redux";
+import { getLocation } from "../../utils/helper";
+import { useI18nContext } from "@app/i18n/i18n-react";
+import { DEFAULT_LOCATION } from "../../config/constant";
 
-const { width, height } = Dimensions.get("window")
-const IMAGE_WIDTH = width - 30 * 2
-const IMAGE_HEIGHT = IMAGE_WIDTH * 0.61
+const { width, height } = Dimensions.get("window");
+const IMAGE_WIDTH = width - 30 * 2;
+const IMAGE_HEIGHT = IMAGE_WIDTH * 0.61;
 interface Props {
-  navigation: StackNavigationProp<MarketPlaceParamList>
+  navigation: StackNavigationProp<MarketPlaceParamList>;
 }
 export const MapScreen: React.FC<Props> = ({ navigation }) => {
-  const dispatch = useDispatch()
-  const tempPost = useSelector((state: RootState) => state.storeReducer?.tempPost)
+  const dispatch = useDispatch();
+  const tempPost = useSelector((state: RootState) =>
+    state.storeReducer?.tempPost
+  );
   const location = useSelector(
     (state: RootState) => state.storeReducer?.tempPost?.location,
-  )
-  const [position, setPosition] = useState<any>(DEFAULT_LOCATION)
+  );
+  const [position, setPosition] = useState<any>(DEFAULT_LOCATION);
 
-const { LL: t } = useI18nContext();
+  const { LL: t } = useI18nContext();
 
   React.useEffect(() => {
     Geolocation.getCurrentPosition(
       (pos) => {
-        const crd = pos.coords
+        const crd = pos.coords;
 
         dispatch(
           setTempPost({
@@ -44,19 +46,19 @@ const { LL: t } = useI18nContext();
               long: crd.longitude,
             },
           }),
-        )
+        );
         setPosition({
           latitude: crd.latitude,
           longitude: crd.longitude,
           latitudeDelta: 0.02,
           longitudeDelta: 0.02,
-        })
+        });
       },
       (err) => {
-        console.log("err when fetch location: ", err)
+        console.log("err when fetch location: ", err);
       },
-    )
-  }, [])
+    );
+  }, []);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <MapView
@@ -81,15 +83,16 @@ const { LL: t } = useI18nContext();
                   long: coordinate.longitude,
                 },
               }),
-            )
+            );
             setPosition({
               latitude: coordinate.latitude,
               longitude: coordinate.longitude,
               latitudeDelta: 0.02,
               longitudeDelta: 0.02,
-            })
+            });
           }}
-        ></Marker>
+        >
+        </Marker>
       </MapView>
 
       <HeaderComponent style={{ paddingHorizontal: 20 }} />
@@ -106,11 +109,11 @@ const { LL: t } = useI18nContext();
         {getLocation(location)}
       </Text>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject,
   },
-})
+});
