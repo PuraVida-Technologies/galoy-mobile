@@ -1,26 +1,26 @@
-import { useFocusEffect } from "@react-navigation/native"
-import { StackNavigationProp } from "@react-navigation/stack"
-import * as React from "react"
-import { useCallback } from "react"
+import { useFocusEffect } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import * as React from "react";
+import { useCallback } from "react";
 // eslint-disable-next-line react-native/split-platform-components
-import { PermissionsAndroid, StyleSheet, Text, View } from "react-native"
-import { Button } from "@rneui/base"
+import { PermissionsAndroid, StyleSheet, Text, View } from "react-native";
+import { Button } from "@rneui/base";
 import MapView, {
   Callout,
   CalloutSubview,
   MapMarkerProps,
   Marker,
-} from "react-native-maps"
-import { Screen } from "../../components/screen"
-import { RootStackParamList } from "../../navigation/stack-param-lists"
-import { isIos } from "../../utils/helper"
-import { palette } from "../../theme/palette"
-import { toastShow } from "../../utils/toast"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import crashlytics from "@react-native-firebase/crashlytics"
-import { useBusinessMapMarkersQuery } from "@app/graphql/generated"
-import { gql } from "@apollo/client"
-import { useIsAuthed } from "@app/graphql/is-authed-context"
+} from "react-native-maps";
+import { Screen } from "../../components/screen";
+import { RootStackParamList } from "../../navigation/stack-param-lists";
+import { isIos } from "../../utils/helper";
+import { palette } from "../../theme/palette";
+import { toastShow } from "../../utils/toast";
+import { useI18nContext } from "@app/i18n/i18n-react";
+import crashlytics from "@react-native-firebase/crashlytics";
+import { useBusinessMapMarkersQuery } from "@app/graphql/generated";
+import { gql } from "@apollo/client";
+import { useIsAuthed } from "@app/graphql/is-authed-context";
 
 const styles = StyleSheet.create({
   android: { marginTop: 18 },
@@ -38,11 +38,11 @@ const styles = StyleSheet.create({
   },
 
   title: { color: palette.darkGrey, fontSize: 18 },
-})
+});
 
 type Props = {
-  navigation: StackNavigationProp<RootStackParamList, "Primary">
-}
+  navigation: StackNavigationProp<RootStackParamList, "Primary">;
+};
 
 gql`
   query businessMapMarkers {
@@ -57,30 +57,30 @@ gql`
       }
     }
   }
-`
+`;
 
 export const MapScreen: React.FC<Props> = ({ navigation }) => {
-  const isAuthed = useIsAuthed()
+  const isAuthed = useIsAuthed();
 
-  const [isRefreshed, setIsRefreshed] = React.useState(false)
+  const [isRefreshed, setIsRefreshed] = React.useState(false);
   const { data, error, refetch } = useBusinessMapMarkersQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "cache-and-network",
-  })
-  const { LL } = useI18nContext()
+  });
+  const { LL } = useI18nContext();
 
   useFocusEffect(() => {
     if (!isRefreshed) {
-      setIsRefreshed(true)
-      refetch()
+      setIsRefreshed(true);
+      refetch();
     }
-  })
+  });
 
   if (error) {
-    toastShow({ message: error.message })
+    toastShow({ message: error.message });
   }
 
-  const maps = data?.businessMapMarkers ?? []
+  const maps = data?.businessMapMarkers ?? [];
 
   const requestLocationPermission = useCallback(() => {
     const asyncRequestLocationPermission = async () => {
@@ -94,36 +94,38 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
             buttonNegative: LL.MapScreen.locationPermissionNegative(),
             buttonPositive: LL.MapScreen.locationPermissionPositive(),
           },
-        )
+        );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.debug("You can use the location")
+          console.debug("You can use the location");
         } else {
-          console.debug("Location permission denied")
+          console.debug("Location permission denied");
         }
       } catch (err: unknown) {
         if (err instanceof Error) {
-          crashlytics().recordError(err)
+          crashlytics().recordError(err);
         }
-        console.debug(err)
+        console.debug(err);
       }
-    }
-    asyncRequestLocationPermission()
+    };
+    asyncRequestLocationPermission();
     // disable eslint because we don't want to re-run this function when the language changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
-  useFocusEffect(requestLocationPermission)
+  useFocusEffect(requestLocationPermission);
 
-  const markers: ReturnType<React.FC<MapMarkerProps>>[] = []
+  const markers: ReturnType<React.FC<MapMarkerProps>>[] = [];
   maps.forEach((item) => {
     if (item) {
       const onPress = () => {
         if (isAuthed && item?.username) {
-          navigation.navigate("sendBitcoinDestination", { username: item.username })
+          navigation.navigate("sendBitcoinDestination", {
+            username: item.username,
+          });
         } else {
-          navigation.navigate("phoneFlow")
+          navigation.navigate("phoneFlow");
         }
-      }
+      };
 
       markers.push(
         <Marker
@@ -134,7 +136,9 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
           <Callout
             // alphaHitTest
             // tooltip
-            onPress={() => (Boolean(item.username) && !isIos ? onPress() : null)}
+            onPress={() => (Boolean(item.username) && !isIos
+              ? onPress()
+              : null)}
           >
             <View style={styles.customView}>
               <Text style={styles.title}>{item.mapInfo.title}</Text>
@@ -145,18 +149,23 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
                 />
               )}
               {isIos && (
-                <CalloutSubview onPress={() => (item.username ? onPress() : null)}>
+                <CalloutSubview
+                  onPress={() => (item.username ? onPress() : null)}
+                >
                   {Boolean(item.username) && (
-                    <Button style={styles.ios} title={LL.MapScreen.payBusiness()} />
+                    <Button
+                      style={styles.ios}
+                      title={LL.MapScreen.payBusiness()}
+                    />
                   )}
                 </CalloutSubview>
               )}
             </View>
           </Callout>
         </Marker>,
-      )
+      );
     }
-  })
+  });
 
   return (
     <Screen>
@@ -173,5 +182,5 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
         {markers}
       </MapView>
     </Screen>
-  )
-}
+  );
+};
