@@ -75,7 +75,9 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>8</string>
+	<string>2</string>
+	<key>CodePushDeploymentKey</key>
+	<string>DjhmHxhMEdODpeZ_-R33L3cFMUgX0TCiKGemo</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -95,8 +97,12 @@
 	<string>Activate your camera to scan QR codes</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>$(PRODUCT_NAME) requires FaceID access for quick and secure authentication.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>The app uses your location to show you relevant Bitcoin Marketplace postings around you.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>The app uses your location to show you relevant Bitcoin Marketplace postings around you.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Find Merchant who accepts Lightning payments</string>
+	<string>The app uses your location to show you relevant Bitcoin Marketplace postings around you.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Import a screenshot with a QR code</string>
 	<key>UIAppFonts</key>
@@ -128,16 +134,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>The app uses your location to show you relevant Bitcoin Marketplace postings around you.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>The app uses your location to show you relevant Bitcoin Marketplace postings around you.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>The app uses your location to show you relevant Bitcoin Marketplace postings around you.</string>
-
-	<key>CodePushDeploymentKey</key>
-	<string>DjhmHxhMEdODpeZ_-R33L3cFMUgX0TCiKGemo</string>
-
 </dict>
 </plist>

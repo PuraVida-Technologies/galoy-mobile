@@ -60,7 +60,7 @@ react {
  * use App Bundles (https://developer.android.com/guide/app-bundle/)
  * and want to have separate APKs to upload to the Play Store.
  */
-def enableSeparateBuildPerCPUArchitecture = true
+def enableSeparateBuildPerCPUArchitecture = false
 
 /**
  * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
@@ -100,8 +100,8 @@ android {
         applicationId "io.puravidabitcoin.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 23110401
-        versionName "1.0.5"
+        versionCode 23110803
+        versionName "1.0.6"
         missingDimensionStrategy 'react-native-camera', 'general' // React native camera
     }
     splits {

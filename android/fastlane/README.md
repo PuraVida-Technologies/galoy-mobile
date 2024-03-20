@@ -31,6 +31,14 @@ Build Releasable APK
 
 Deploy a new version to the Google Play
 
+### android build_bundle
+
+```sh
+[bundle exec] fastlane android build_bundle
+```
+
+Build releasable bundle
+
 ### android huawei_store_upload
 
 ```sh

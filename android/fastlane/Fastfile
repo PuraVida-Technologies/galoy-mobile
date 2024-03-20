@@ -30,17 +30,23 @@ platform :android do
   desc "Deploy a new version to the Google Play"
   lane :play_store_upload do
     upload_to_play_store(
-      apk_paths: [
-        "./app/build/outputs/apk/release/app-arm64-v8a-release.apk",
-        "./app/build/outputs/apk/release/app-armeabi-v7a-release.apk",
-        "./app/build/outputs/apk/release/app-universal-release.apk",
-        "./app/build/outputs/apk/release/app-x86-release.apk",
-        "./app/build/outputs/apk/release/app-x86_64-release.apk",
+      aab_paths: [
+        "./app/build/outputs/bundle/release/app-release.aab",
       ],
-      metadata_path: "./app/build/outputs/apk/release",
+      metadata_path: "./app/build/outputs/bundle/release",
       track: "internal",
       skip_upload_changelogs: true,
       skip_upload_images: true,
+    )
+  end
+
+  desc "Build releasable bundle"
+  lane :build_bundle do
+    gradle(task: "clean")
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      flags: "--no-daemon --stacktrace --info",
     )
   end
 
