@@ -1,65 +1,40 @@
 import { WalletCurrency } from "@app/graphql/generated"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { palette } from "@app/theme"
 import { WalletAmount } from "@app/types/amounts"
 import React, { FunctionComponent } from "react"
-import { StyleSheet, Text, View } from "react-native"
+import { View } from "react-native"
 import { CurrencyTag } from "../currency-tag"
+import { Text, makeStyles } from "@rneui/themed"
 
 type WalletSummaryProps = {
   settlementAmount: WalletAmount<WalletCurrency>
   txDisplayAmount: string | number
   txDisplayCurrency: string
-  amountType: "RECEIVE" | "SEND" | "BALANCE"
+  amountType: "RECEIVE" | "SEND"
 }
 
 const amountTypeToSymbol = {
   RECEIVE: "+",
   SEND: "-",
-  BALANCE: "",
-}
+} as const
 
-const styles = StyleSheet.create({
-  walletSummaryContainer: {
-    backgroundColor: palette.white,
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 10,
-  },
-  amountsContainer: {
-    margin: 8,
-  },
-  currencyTagContainer: {
-    margin: 8,
-  },
-  walletTitle: {
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-})
-
+// TODO: this code should be refactored
+// it's just used in transaction details
 export const WalletSummary: FunctionComponent<WalletSummaryProps> = ({
   settlementAmount,
   txDisplayAmount,
   txDisplayCurrency,
-  amountType = "BALANCE",
+  amountType,
 }) => {
+  const styles = useStyles()
   const { LL } = useI18nContext()
 
   const { formatMoneyAmount, formatCurrency } = useDisplayCurrency()
-  const currencySpecificValues =
+  const walletName =
     settlementAmount.currency === WalletCurrency.Btc
-      ? {
-          currencyName: "BTC",
-          currencyColor: palette.btcPrimary,
-          walletName: LL.common.btcAccount(),
-        }
-      : {
-          currencyName: "USD",
-          currencyColor: palette.usdPrimary,
-          walletName: LL.common.usdAccount(),
-        }
+      ? LL.common.btcAccount()
+      : LL.common.usdAccount()
 
   const formattedDisplayAmount = formatCurrency({
     amountInMajorUnits: txDisplayAmount,
@@ -83,12 +58,27 @@ export const WalletSummary: FunctionComponent<WalletSummaryProps> = ({
         <CurrencyTag walletCurrency={settlementAmount.currency} />
       </View>
       <View style={styles.amountsContainer}>
-        <Text style={styles.walletTitle}>{currencySpecificValues.walletName}</Text>
+        <Text type={"p2"}>{walletName}</Text>
         <Text>
-          {amountTypeToSymbol[amountType] ? `${amountTypeToSymbol[amountType]} ` : ""}
+          {amountTypeToSymbol[amountType]}
           {amounts}
         </Text>
       </View>
     </View>
   )
 }
+
+const useStyles = makeStyles(({ colors }) => ({
+  walletSummaryContainer: {
+    backgroundColor: colors.grey5,
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 10,
+  },
+  amountsContainer: {
+    margin: 8,
+  },
+  currencyTagContainer: {
+    margin: 8,
+  },
+}))

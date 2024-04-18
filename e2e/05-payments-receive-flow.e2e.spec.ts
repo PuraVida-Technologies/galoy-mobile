@@ -1,7 +1,21 @@
 import { i18nObject } from "../app/i18n/i18n-util"
 import { loadLocale } from "../app/i18n/i18n-util.sync"
-import { enter2CentsIntoNumberPad, goBack, selector } from "./utils"
-import { payAmountInvoice, payNoAmountInvoice } from "./utils/graphql"
+import {
+  enter2CentsIntoNumberPad,
+  scrollDown,
+  selector,
+  clickBackButton,
+  clickButton,
+  clickIcon,
+  payAmountInvoice,
+  payNoAmountInvoice,
+  clickPressable,
+  waitTillPressableDisplayed,
+  waitTillOnHomeScreen,
+} from "./utils"
+
+import jimp from "jimp"
+import jsQR from "jsqr"
 
 loadLocale("en")
 const LL = i18nObject("en")
@@ -12,17 +26,13 @@ describe("Receive BTC Amount Payment Flow", () => {
   const memo = "memo"
 
   it("Click Receive", async () => {
-    const receiveButton = await $(selector(LL.HomeScreen.receive(), "Other"))
-    await receiveButton.waitForDisplayed({ timeout })
-    await receiveButton.click()
+    await clickIcon(LL.HomeScreen.receive())
   })
 
   it("Click Request Specific Amount", async () => {
-    const requestSpecificAmountButton = await $(
-      selector(LL.ReceiveWrapperScreen.addAmount(), "Other"),
-    )
-    await requestSpecificAmountButton.waitForDisplayed({ timeout })
-    await requestSpecificAmountButton.click()
+    await waitTillPressableDisplayed("Amount Input Button")
+    await clickPressable("Amount Input Button")
+
     // we need to wait for the notifications permissions pop up
     // and click allow before we can continue
     await browser.pause(4000)
@@ -33,43 +43,26 @@ describe("Receive BTC Amount Payment Flow", () => {
   })
 
   it("Checks that the invoice is updated", async () => {
-    const btcMoneyAmount = await $(selector("btc-payment-amount", "StaticText"))
-    await btcMoneyAmount.waitForDisplayed({ timeout })
-    expect(btcMoneyAmount).toBeDisplayed()
+    const lnInvoiceReadableText = await $(selector("readable-payment-request", "Other"))
+    await lnInvoiceReadableText.waitForDisplayed({ timeout })
+    expect(lnInvoiceReadableText).toBeDisplayed()
   })
 
   it("clicks on set a note button", async () => {
-    const setNoteButton = await $(selector(LL.ReceiveWrapperScreen.setANote(), "Other"))
-    await setNoteButton.waitForDisplayed({ timeout })
-    await setNoteButton.click()
+    await scrollDown()
+    await clickPressable("add-note")
   })
 
   it("sets a memo or note", async () => {
-    let memoInput: WebdriverIO.Element
-    const updateInvoiceButton = await $(
-      selector(LL.ReceiveWrapperScreen.updateInvoice(), "Button"),
-    )
-    if (process.env.E2E_DEVICE === "ios") {
-      memoInput = await $(selector(LL.SendBitcoinScreen.note(), "Other"))
-    } else {
-      const select = `new UiSelector().text("${LL.SendBitcoinScreen.note()}").className("android.widget.EditText")`
-      memoInput = await $(`android=${select}`)
-    }
-    await memoInput.waitForDisplayed({ timeout })
-    await memoInput.click()
+    const memoInput = await $(selector("add-note", "Other"))
     await memoInput.setValue(memo)
-    await updateInvoiceButton.waitForDisplayed({ timeout })
-    await updateInvoiceButton.waitForEnabled()
-    await updateInvoiceButton.click()
+
+    // tap outside
+    await browser.touchAction({ action: "tap", x: 10, y: 250 })
   })
 
   it("Click Copy BTC Invoice", async () => {
-    let copyInvoiceButton
-    if (process.env.E2E_DEVICE === "ios") {
-      copyInvoiceButton = await $('(//XCUIElementTypeOther[@name="Copy Invoice"])[2]')
-    } else {
-      copyInvoiceButton = await $(selector("Copy Invoice", "Button"))
-    }
+    const copyInvoiceButton = await $(selector("Copy Invoice", "StaticText"))
     await copyInvoiceButton.waitForDisplayed({ timeout })
     await copyInvoiceButton.click()
   })
@@ -78,7 +71,7 @@ describe("Receive BTC Amount Payment Flow", () => {
     if (process.env.E2E_DEVICE === "ios") {
       // on ios, get invoice from share link because copy does not
       // work on physical device for security reasons
-      const shareButton = await $('(//XCUIElementTypeOther[@name="Share Invoice"])[2]')
+      const shareButton = await $(selector("Share Invoice", "StaticText"))
       await shareButton.waitForDisplayed({ timeout })
       await shareButton.click()
       const invoiceSharedScreen = await $('//*[contains(@name,"lntbs")]')
@@ -86,15 +79,29 @@ describe("Receive BTC Amount Payment Flow", () => {
         timeout: 8000,
       })
       invoice = await invoiceSharedScreen.getAttribute("name")
-      const closeShareButton = await $(selector("Close", "Button"))
-      await closeShareButton.waitForDisplayed({ timeout })
-      await closeShareButton.click()
+      await clickButton("Close")
     } else {
       // get from clipboard in android
       const invoiceBase64 = await browser.getClipboard()
       invoice = Buffer.from(invoiceBase64, "base64").toString()
       expect(invoice).toContain("lntbs")
     }
+  })
+
+  it("Capture screenshot and decode QR code to match with invoice", async () => {
+    const screenshot = await browser.takeScreenshot()
+    const buffer = Buffer.from(screenshot, "base64")
+    const image = await jimp.read(buffer)
+
+    const imageData = {
+      data: new Uint8ClampedArray(image.bitmap.data),
+      height: image.bitmap.height,
+      width: image.bitmap.width,
+    }
+
+    const code = jsQR(imageData.data, imageData.width, imageData.height)
+    expect(code).not.toBeNull()
+    expect(code?.data).toBe(invoice.toUpperCase())
   })
 
   it("External User Pays the BTC Invoice through API", async () => {
@@ -109,9 +116,7 @@ describe("Receive BTC Amount Payment Flow", () => {
   })
 
   it("Go back to main screen", async () => {
-    const backButton = await $(goBack())
-    await backButton.waitForDisplayed({ timeout })
-    await backButton.click()
+    await clickBackButton()
   })
 })
 
@@ -119,26 +124,11 @@ describe("Receive BTC Amountless Invoice Payment Flow", () => {
   let invoice: string
 
   it("Click Receive", async () => {
-    const receiveButton = await $(selector(LL.HomeScreen.receive(), "Other"))
-    await receiveButton.waitForDisplayed({ timeout })
-    await receiveButton.click()
-  })
-
-  it("checks if this is a no amount invoice", async () => {
-    const flexibleAmount = await $(
-      selector(LL.ReceiveWrapperScreen.flexibleAmountInvoice(), "StaticText"),
-    )
-    await flexibleAmount.waitForDisplayed({ timeout })
-    expect(flexibleAmount).toBeDisplayed()
+    await clickIcon(LL.HomeScreen.receive())
   })
 
   it("Click Copy BTC Invoice", async () => {
-    let copyInvoiceButton
-    if (process.env.E2E_DEVICE === "ios") {
-      copyInvoiceButton = await $('(//XCUIElementTypeOther[@name="Copy Invoice"])[2]')
-    } else {
-      copyInvoiceButton = await $(selector("Copy Invoice", "Button"))
-    }
+    const copyInvoiceButton = await $(selector("Copy Invoice", "StaticText"))
     await copyInvoiceButton.waitForDisplayed({ timeout })
     await copyInvoiceButton.click()
   })
@@ -147,7 +137,7 @@ describe("Receive BTC Amountless Invoice Payment Flow", () => {
     if (process.env.E2E_DEVICE === "ios") {
       // on ios, get invoice from share link because copy does not
       // work on physical device for security reasons
-      const shareButton = await $('(//XCUIElementTypeOther[@name="Share Invoice"])[2]')
+      const shareButton = await $(selector("Share Invoice", "StaticText"))
       await shareButton.waitForDisplayed({ timeout })
       await shareButton.click()
       const invoiceSharedScreen = await $('//*[contains(@name,"lntbs")]')
@@ -164,6 +154,22 @@ describe("Receive BTC Amountless Invoice Payment Flow", () => {
       invoice = Buffer.from(invoiceBase64, "base64").toString()
       expect(invoice).toContain("lntbs")
     }
+  })
+
+  it("Capture screenshot and decode QR code to match with invoice", async () => {
+    const screenshot = await browser.takeScreenshot()
+    const buffer = Buffer.from(screenshot, "base64")
+    const image = await jimp.read(buffer)
+
+    const imageData = {
+      data: new Uint8ClampedArray(image.bitmap.data),
+      height: image.bitmap.height,
+      width: image.bitmap.width,
+    }
+
+    const code = jsQR(imageData.data, imageData.width, imageData.height)
+    expect(code).not.toBeNull()
+    expect(code?.data).toBe(invoice.toUpperCase())
   })
 
   it("External User Pays the BTC Invoice through API", async () => {
@@ -177,36 +183,34 @@ describe("Receive BTC Amountless Invoice Payment Flow", () => {
 
   it("Wait for Green check for BTC Payment", async () => {
     const successCheck = await $(selector("Success Icon", "Other"))
-    await successCheck.waitForDisplayed({ timeout })
+    await successCheck.waitForExist({ timeout })
   })
 })
 
 describe("Receive USD Payment Flow", () => {
   let invoice: string
 
+  it("Click Receive", async () => {
+    await clickIcon(LL.HomeScreen.receive())
+  })
+
   it("Click USD invoice button", async () => {
-    const usdInvoiceButton = await $(selector("USD Invoice Button", "Other"))
+    const usdInvoiceButton = await $(selector(LL.ReceiveScreen.stablesats(), "Other"))
     await usdInvoiceButton.waitForDisplayed({ timeout })
     await usdInvoiceButton.click()
   })
 
-  it("Click Copy USD Invoice", async () => {
-    let copyInvoiceButton
-    if (process.env.E2E_DEVICE === "ios") {
-      copyInvoiceButton = await $('(//XCUIElementTypeOther[@name="Copy Invoice"])[2]')
-    } else {
-      copyInvoiceButton = await $(selector("Copy Invoice", "Button"))
-    }
+  it("Click Copy BTC Invoice", async () => {
+    const copyInvoiceButton = await $(selector("Copy Invoice", "StaticText"))
     await copyInvoiceButton.waitForDisplayed({ timeout })
     await copyInvoiceButton.click()
   })
 
-  it("Get USD Invoice from clipboard (android) or share link (ios)", async () => {
-    await browser.pause(2000)
+  it("Get BTC Invoice from clipboard (android) or share link (ios)", async () => {
     if (process.env.E2E_DEVICE === "ios") {
       // on ios, get invoice from share link because copy does not
       // work on physical device for security reasons
-      const shareButton = await $('(//XCUIElementTypeOther[@name="Share Invoice"])[2]')
+      const shareButton = await $(selector("Share Invoice", "StaticText"))
       await shareButton.waitForDisplayed({ timeout })
       await shareButton.click()
       const invoiceSharedScreen = await $('//*[contains(@name,"lntbs")]')
@@ -225,24 +229,193 @@ describe("Receive USD Payment Flow", () => {
     }
   })
 
-  it("External User Pays the USD Invoice through API", async () => {
+  it("Capture screenshot and decode QR code to match with invoice", async () => {
+    const screenshot = await browser.takeScreenshot()
+    const buffer = Buffer.from(screenshot, "base64")
+    const image = await jimp.read(buffer)
+
+    const imageData = {
+      data: new Uint8ClampedArray(image.bitmap.data),
+      height: image.bitmap.height,
+      width: image.bitmap.width,
+    }
+
+    const code = jsQR(imageData.data, imageData.width, imageData.height)
+    expect(code).not.toBeNull()
+    expect(code?.data).toBe(invoice.toUpperCase())
+  })
+
+  it("External User Pays the BTC Invoice through API", async () => {
     const { result, paymentStatus } = await payNoAmountInvoice({
       invoice,
-      walletCurrency: "USD",
+      walletCurrency: "BTC",
     })
     expect(paymentStatus).toBe("SUCCESS")
     expect(result).toBeTruthy()
   })
 
-  it("Wait for Green Check for USD Payment", async () => {
+  it("Wait for Green check for BTC Payment", async () => {
     const successCheck = await $(selector("Success Icon", "Other"))
-    await successCheck.waitForDisplayed({ timeout })
+    await successCheck.waitForExist({ timeout })
   })
 
   it("Go back to main screen", async () => {
-    const backButton = await $(goBack())
-    await backButton.waitForDisplayed({ timeout })
-    await backButton.click()
-    await browser.pause(2000)
+    await clickBackButton()
+    await waitTillOnHomeScreen()
+  })
+})
+
+describe("Receive via Onchain", () => {
+  let invoice: string
+
+  it("Click Receive", async () => {
+    await clickIcon(LL.HomeScreen.receive())
+  })
+
+  it("Click Onchain button", async () => {
+    const onchainButton = await $(selector(LL.ReceiveScreen.onchain(), "StaticText"))
+    await onchainButton.waitForDisplayed({ timeout })
+    await onchainButton.click()
+  })
+
+  it("Click Copy BTC Invoice", async () => {
+    const copyInvoiceButton = await $(selector("Copy Invoice", "StaticText"))
+    await copyInvoiceButton.waitForDisplayed({ timeout })
+    await copyInvoiceButton.click()
+  })
+
+  it("Get BTC Invoice from clipboard (android) or share link (ios)", async () => {
+    if (process.env.E2E_DEVICE === "ios") {
+      // on ios, get invoice from share link because copy does not
+      // work on physical device for security reasons
+      const shareButton = await $(selector("Share Invoice", "StaticText"))
+      await shareButton.waitForDisplayed({ timeout })
+      await shareButton.click()
+      const invoiceSharedScreen = await $('//*[contains(@name,"bitcoin:tb1")]')
+      await invoiceSharedScreen.waitForDisplayed({
+        timeout: 8000,
+      })
+      invoice = await invoiceSharedScreen.getAttribute("name")
+      const closeShareButton = await $(selector("Close", "Button"))
+      await closeShareButton.waitForDisplayed({ timeout })
+      await closeShareButton.click()
+    } else {
+      // get from clipboard in android
+      const invoiceBase64 = await browser.getClipboard()
+      invoice = Buffer.from(invoiceBase64, "base64").toString()
+      expect(invoice).toContain("bitcoin:tb1")
+    }
+  })
+
+  it("Capture screenshot and decode QR code to match with invoice", async () => {
+    const screenshot = await browser.takeScreenshot()
+    const buffer = Buffer.from(screenshot, "base64")
+    const image = await jimp.read(buffer)
+
+    const imageData = {
+      data: new Uint8ClampedArray(image.bitmap.data),
+      height: image.bitmap.height,
+      width: image.bitmap.width,
+    }
+
+    const code = jsQR(imageData.data, imageData.width, imageData.height)
+    expect(code).not.toBeNull()
+    expect(code?.data).toBe(invoice)
+  })
+
+  it("Go back to main screen", async () => {
+    await clickBackButton()
+    await waitTillOnHomeScreen()
+  })
+})
+
+describe("Receive via Onchain on USD", () => {
+  let invoice: string
+
+  it("Click Receive", async () => {
+    await clickIcon(LL.HomeScreen.receive())
+    await browser.pause(5000)
+  })
+
+  it("Click Onchain button", async () => {
+    const onchainButton = await $(selector(LL.ReceiveScreen.onchain(), "StaticText"))
+    await onchainButton.waitForDisplayed({ timeout })
+    await onchainButton.click()
+  })
+
+  it("Click USD invoice button", async () => {
+    const usdInvoiceButton = await $(selector(LL.ReceiveScreen.stablesats(), "Other"))
+    await usdInvoiceButton.waitForDisplayed({ timeout })
+    await usdInvoiceButton.click()
+  })
+
+  it("Click Copy BTC Invoice", async () => {
+    const copyInvoiceButton = await $(selector("Copy Invoice", "StaticText"))
+    await copyInvoiceButton.waitForDisplayed({ timeout })
+    await copyInvoiceButton.click()
+  })
+
+  it("Get BTC Invoice from clipboard (android) or share link (ios)", async () => {
+    if (process.env.E2E_DEVICE === "ios") {
+      // on ios, get invoice from share link because copy does not
+      // work on physical device for security reasons
+      const shareButton = await $(selector("Share Invoice", "StaticText"))
+      await shareButton.waitForDisplayed({ timeout })
+      await shareButton.click()
+      const invoiceSharedScreen = await $('//*[contains(@name,"bitcoin:tb1")]')
+      await invoiceSharedScreen.waitForDisplayed({
+        timeout: 8000,
+      })
+      invoice = await invoiceSharedScreen.getAttribute("name")
+      const closeShareButton = await $(selector("Close", "Button"))
+      await closeShareButton.waitForDisplayed({ timeout })
+      await closeShareButton.click()
+    } else {
+      // get from clipboard in android
+      const invoiceBase64 = await browser.getClipboard()
+      invoice = Buffer.from(invoiceBase64, "base64").toString()
+      expect(invoice).toContain("bitcoin:tb1")
+    }
+  })
+
+  it("Capture screenshot and decode QR code to match with invoice", async () => {
+    const screenshot = await browser.takeScreenshot()
+    const buffer = Buffer.from(screenshot, "base64")
+    const image = await jimp.read(buffer)
+
+    const imageData = {
+      data: new Uint8ClampedArray(image.bitmap.data),
+      height: image.bitmap.height,
+      width: image.bitmap.width,
+    }
+
+    const code = jsQR(imageData.data, imageData.width, imageData.height)
+    expect(code).not.toBeNull()
+    expect(code?.data).toBe(invoice)
+  })
+
+  it("Go back to main screen", async () => {
+    await clickBackButton()
+    await waitTillOnHomeScreen()
+  })
+})
+
+describe("Receive via Paycode", () => {
+  it("Click Receive", async () => {
+    await clickIcon(LL.HomeScreen.receive())
+  })
+
+  it("Click Paycode button", async () => {
+    const paycodeButton = await $(selector(LL.ReceiveScreen.paycode(), "StaticText"))
+    await paycodeButton.waitForDisplayed({ timeout })
+    await paycodeButton.click()
+  })
+
+  // we can't reliably test paycode qr because username needs to have been set
+  // which is conditional - can be set or for new accounts might not be set
+
+  it("Go back to main screen", async () => {
+    await clickBackButton()
+    await waitTillOnHomeScreen()
   })
 })

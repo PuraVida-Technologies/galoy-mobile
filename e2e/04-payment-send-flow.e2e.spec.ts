@@ -1,8 +1,18 @@
 import { bech32 } from "bech32"
 import { i18nObject } from "../app/i18n/i18n-util"
 import { loadLocale } from "../app/i18n/i18n-util.sync"
-import { selector, goBack, addSmallAmount } from "./utils"
-import { getInvoice } from "./utils/graphql"
+import {
+  clickBackButton,
+  clickButton,
+  clickIcon,
+  waitTillOnHomeScreen,
+  waitTillTextDisplayed,
+  getInvoice,
+  selector,
+  addSmallAmount,
+  waitTillButtonDisplayed,
+  waitTillPressableDisplayed,
+} from "./utils"
 
 loadLocale("en")
 const LL = i18nObject("en")
@@ -12,42 +22,34 @@ describe("Lightning address flow", () => {
   const lightningAddress = "extheo@testlnurl.netlify.app"
 
   it("Click Send", async () => {
-    const sendButton = await $(selector(LL.HomeScreen.send(), "Other"))
-    await sendButton.waitForDisplayed({ timeout })
-    await sendButton.click()
+    await clickIcon(LL.HomeScreen.send())
   })
 
   it("Paste Lnurl", async () => {
-    const lnurlInput = await $(selector(LL.SendBitcoinScreen.input(), "Other", "[1]"))
+    const lnurlInput = await $(
+      selector(LL.SendBitcoinScreen.placeholder(), "Other", "[1]"),
+    )
     await lnurlInput.waitForDisplayed({ timeout })
     await lnurlInput.click()
     await lnurlInput.setValue(lightningAddress)
   })
 
   it("Click Next", async () => {
-    const nextButton = await $(selector(LL.common.next(), "Button"))
-    await nextButton.waitForDisplayed({ timeout })
-    await nextButton.waitForEnabled()
-    await nextButton.click()
+    await clickButton(LL.common.next())
   })
 
   it("Checks if on the SendBitcoinDetails screen", async () => {
-    const amountInput = await $(selector("Amount Input Button", "Other"))
-    await amountInput.waitForDisplayed()
+    await waitTillPressableDisplayed("Amount Input Button")
   })
 
   it("Go back", async () => {
-    const backButton = await $(goBack())
-    await backButton.waitForDisplayed({ timeout })
-    await backButton.click()
-    // we need to wait for the back button to be displayed in the DOM again
-    await browser.pause(3000)
+    await clickBackButton()
+    await waitTillTextDisplayed(LL.SendBitcoinScreen.destination())
   })
 
   it("Go back home", async () => {
-    const backHomeButton = await $(goBack())
-    await backHomeButton.waitForDisplayed({ timeout })
-    await backHomeButton.click()
+    await clickBackButton()
+    await waitTillOnHomeScreen()
   })
 })
 
@@ -57,44 +59,37 @@ describe("Lnurl Pay Flow", () => {
     Buffer.from("https://testlnurl.netlify.app:443/.well-known/lnurlp/extheo", "utf-8"),
   )
   const lnurlp = bech32.encode("lnurl", words, 1000)
+  // lnurl1dp68gurn8ghj7ar9wd6xcmn4wfkzumn9w3kxjene9eshqup6xs6rxtewwajkcmpdddhx7amw9akxuatjd3cz7etcw35x2mcql20cc
 
   it("Click Send", async () => {
-    const sendButton = await $(selector(LL.HomeScreen.send(), "Other"))
-    await sendButton.waitForDisplayed({ timeout })
-    await sendButton.click()
+    await clickIcon(LL.HomeScreen.send())
   })
 
   it("Paste Lnurl", async () => {
-    const lnurlInput = await $(selector(LL.SendBitcoinScreen.input(), "Other", "[1]"))
+    const lnurlInput = await $(
+      selector(LL.SendBitcoinScreen.placeholder(), "Other", "[1]"),
+    )
     await lnurlInput.waitForDisplayed({ timeout })
     await lnurlInput.click()
     await lnurlInput.setValue(lnurlp)
   })
 
   it("Click Next", async () => {
-    const nextButton = await $(selector(LL.common.next(), "Button"))
-    await nextButton.waitForDisplayed({ timeout })
-    await nextButton.waitForEnabled()
-    await nextButton.click()
+    await clickButton(LL.common.next())
   })
 
   it("Checks if on the SendBitcoinDetails screen", async () => {
-    const amountInput = await $(selector("Amount Input Button", "Other"))
-    await amountInput.waitForDisplayed()
+    await waitTillPressableDisplayed("Amount Input Button")
   })
 
   it("Go back", async () => {
-    const backButton = await $(goBack())
-    await backButton.waitForDisplayed({ timeout })
-    await backButton.click()
-    // we need to wait for the back button to be displayed in the DOM again
-    await browser.pause(3000)
+    await clickBackButton()
+    await waitTillTextDisplayed(LL.SendBitcoinScreen.destination())
   })
 
   it("Go back home", async () => {
-    const backHomeButton = await $(goBack())
-    await backHomeButton.waitForDisplayed({ timeout })
-    await backHomeButton.click()
+    await clickBackButton()
+    await waitTillOnHomeScreen()
   })
 })
 
@@ -109,46 +104,36 @@ describe("Lnurl Withdraw Flow", () => {
   const lnurlWithdraw = bech32.encode("lnurl", words, 1000)
 
   it("Click Send", async () => {
-    const sendButton = await $(selector(LL.HomeScreen.send(), "Other"))
-    await sendButton.waitForDisplayed({ timeout })
-    await sendButton.click()
+    await clickIcon(LL.HomeScreen.send())
   })
 
   it("Paste Lnurl", async () => {
-    const lnurlInput = await $(selector(LL.SendBitcoinScreen.input(), "Other", "[1]"))
+    const lnurlInput = await $(
+      selector(LL.SendBitcoinScreen.placeholder(), "Other", "[1]"),
+    )
     await lnurlInput.waitForDisplayed({ timeout })
     await lnurlInput.click()
     await lnurlInput.setValue(lnurlWithdraw)
   })
 
   it("Click Next", async () => {
-    const nextButton = await $(selector(LL.common.next(), "Button"))
-    await nextButton.waitForDisplayed({ timeout })
-    await nextButton.waitForEnabled()
-    await nextButton.click()
+    await clickButton(LL.common.next())
   })
 
   it("Checks if lnwithdraw details are displayed", async () => {
     const description = await $(selector("description", "StaticText"))
-    const redeemBitcoinButton = await $(selector("Redeem Bitcoin", "Button"))
     await description.waitForDisplayed({ timeout })
-    await redeemBitcoinButton.waitForDisplayed({ timeout })
-    expect(description).toBeDisplayed()
-    expect(redeemBitcoinButton).toBeEnabled()
+    await waitTillButtonDisplayed("Redeem Bitcoin")
   })
 
   it("Go back", async () => {
-    const backButton = await $(goBack())
-    await backButton.waitForDisplayed({ timeout })
-    await backButton.click()
-    // we need to wait for the back button to be displayed in the DOM again
-    await browser.pause(3000)
+    await clickBackButton()
+    await waitTillTextDisplayed(LL.SendBitcoinScreen.destination())
   })
 
   it("Go back home", async () => {
-    const backHomeButton = await $(goBack())
-    await backHomeButton.waitForDisplayed({ timeout })
-    await backHomeButton.click()
+    await clickBackButton()
+    await waitTillOnHomeScreen()
   })
 })
 
@@ -156,9 +141,7 @@ describe("Lightning Payments Flow", () => {
   let invoice: string
 
   it("Click Send", async () => {
-    const sendButton = await $(selector(LL.HomeScreen.send(), "Other"))
-    await sendButton.waitForDisplayed({ timeout })
-    await sendButton.click()
+    await clickIcon(LL.HomeScreen.send())
   })
 
   it("Create Invoice from API", async () => {
@@ -167,17 +150,16 @@ describe("Lightning Payments Flow", () => {
   })
 
   it("Paste Invoice", async () => {
-    const invoiceInput = await $(selector(LL.SendBitcoinScreen.input(), "Other", "[1]"))
+    const invoiceInput = await $(
+      selector(LL.SendBitcoinScreen.placeholder(), "Other", "[1]"),
+    )
     await invoiceInput.waitForDisplayed({ timeout })
     await invoiceInput.click()
     await invoiceInput.setValue(invoice)
   })
 
   it("Click Next", async () => {
-    const nextButton = await $(selector(LL.common.next(), "Button"))
-    await nextButton.waitForDisplayed({ timeout })
-    await nextButton.waitForEnabled()
-    await nextButton.click()
+    await clickButton(LL.common.next())
   })
 
   it("Add amount", async () => {
@@ -185,10 +167,7 @@ describe("Lightning Payments Flow", () => {
   })
 
   it("Click Next again", async () => {
-    const nextButton = await $(selector(LL.common.next(), "Button"))
-    await nextButton.waitForDisplayed({ timeout })
-    await nextButton.waitForEnabled()
-    await nextButton.click()
+    await clickButton(LL.common.next())
   })
 
   it("Wait for fee calculation to return", async () => {
@@ -197,12 +176,7 @@ describe("Lightning Payments Flow", () => {
   })
 
   it("Click 'Confirm Payment' and navigate to move money screen", async () => {
-    const confirmPaymentButton = await $(
-      selector(LL.SendBitcoinConfirmationScreen.title(), "Button"),
-    )
-    await confirmPaymentButton.waitForDisplayed({ timeout })
-    await confirmPaymentButton.click()
-    const currentBalanceHeader = await $(selector("Current Balance Header", "StaticText"))
-    await currentBalanceHeader.waitForDisplayed({ timeout })
+    await clickButton(LL.SendBitcoinConfirmationScreen.title())
+    await waitTillOnHomeScreen()
   })
 })

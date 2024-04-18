@@ -1,7 +1,7 @@
 import * as React from "react"
 import { StoryScreen } from "../../../.storybook/views"
 import { DefaultWalletScreen } from "./default-wallet"
-import { ComponentMeta } from "@storybook/react"
+import { Meta } from "@storybook/react"
 import { IsAuthedContextProvider } from "../../graphql/is-authed-context"
 import { MockedProvider } from "@apollo/client/testing"
 import { createCache } from "../../graphql/cache"
@@ -19,14 +19,6 @@ const mocksDefaultWallet = [
           defaultAccount: {
             id: "84b26b88-89b0-5c6f-9d3d-fbead08f79d8",
             defaultWalletId: "f79792e3-282b-45d4-85d5-7486d020def5",
-            btcWallet: {
-              id: "f79792e3-282b-45d4-85d5-7486d020def5",
-              __typename: "BTCWallet",
-            },
-            usdWallet: {
-              id: "f091c102-6277-4cc6-8d81-87ebf6aaad1b",
-              __typename: "UsdWallet",
-            },
             wallets: [
               {
                 id: "f79792e3-282b-45d4-85d5-7486d020def5",
@@ -54,7 +46,7 @@ export default {
   title: "DefaultWallet Screen",
   component: DefaultWalletScreen,
   decorators: [(Story) => <StoryScreen>{Story()}</StoryScreen>],
-} as ComponentMeta<typeof DefaultWalletScreen>
+} as Meta<typeof DefaultWalletScreen>
 
 export const Default = () => (
   <MockedProvider mocks={[...mocksDefaultWallet]} cache={createCache()}>

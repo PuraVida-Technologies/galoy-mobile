@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useReducer } from "react"
-import { Text, TextInput, TouchableWithoutFeedback, View } from "react-native"
+import { TextInput, TouchableWithoutFeedback, View } from "react-native"
 import Icon from "react-native-vector-icons/Ionicons"
 import { Screen } from "@app/components/screen"
 import { gql } from "@apollo/client"
@@ -11,10 +11,9 @@ import {
 } from "@app/graphql/generated"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import { palette } from "@app/theme"
 import { logParseDestinationResult } from "@app/utils/analytics"
 import { toastShow } from "@app/utils/toast"
-import { PaymentType } from "@galoymoney/client/dist/parsing-v2"
+import { PaymentType } from "@galoymoney/client"
 import Clipboard from "@react-native-clipboard/clipboard"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { StackNavigationProp } from "@react-navigation/stack"
@@ -22,12 +21,15 @@ import { StackNavigationProp } from "@react-navigation/stack"
 import { LNURL_DOMAINS } from "@app/config"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { RouteProp, useNavigation } from "@react-navigation/native"
-import { makeStyles } from "@rneui/themed"
+import { makeStyles, useTheme, Text } from "@rneui/themed"
 import { testProps } from "../../utils/testProps"
 import { ConfirmDestinationModal } from "./confirm-destination-modal"
 import { DestinationInformation } from "./destination-information"
 import { parseDestination } from "./payment-destination"
-import { DestinationDirection } from "./payment-destination/index.types"
+import {
+  DestinationDirection,
+  InvalidDestinationReason,
+} from "./payment-destination/index.types"
 import {
   DestinationState,
   SendBitcoinActions,
@@ -35,94 +37,6 @@ import {
   SendBitcoinDestinationState,
 } from "./send-bitcoin-reducer"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
-
-const usestyles = makeStyles((theme) => ({
-  backgroundColor: {
-    backgroundColor: theme.colors.lighterGreyOrBlack,
-  },
-  screenStyle: {
-    padding: 20,
-    flexGrow: 1,
-  },
-  scrollView: {
-    flexDirection: "column",
-    padding: 20,
-    flex: 1,
-    backgroundColor: theme.colors.lighterGreyOrBlack,
-  },
-  contentContainer: {
-    flexGrow: 1,
-  },
-  errorContainer: {
-    margin: 20,
-  },
-  errorText: {
-    textAlign: "center",
-  },
-  sendBitcoinDestinationContainer: {
-    flex: 1,
-  },
-  fieldBackground: {
-    flexDirection: "row",
-    borderStyle: "solid",
-    overflow: "hidden",
-    backgroundColor: palette.white,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    height: 60,
-    marginBottom: 10,
-  },
-  enteringInputContainer: {},
-  errorInputContainer: {
-    borderColor: palette.red,
-    borderWidth: 1,
-  },
-  validInputContainer: {
-    borderColor: palette.green,
-    borderWidth: 1,
-  },
-  warningInputContainer: {
-    borderColor: palette.orange,
-    borderWidth: 1,
-  },
-  buttonContainer: {
-    flex: 1,
-    justifyContent: "flex-end",
-  },
-  input: {
-    flex: 1,
-    paddingHorizontal: 12,
-  },
-  button: {
-    height: 50,
-    borderRadius: 10,
-  },
-  disabledButtonStyle: {
-    backgroundColor: palette.disabledButtonStyle,
-  },
-  disabledButtonTitleStyle: {
-    color: palette.lightBlue,
-    fontWeight: "600",
-  },
-  activeButtonStyle: {
-    backgroundColor: palette.lightBlue,
-  },
-  activeButtonTitleStyle: {
-    color: palette.white,
-    fontWeight: "bold",
-  },
-  fieldTitleText: {
-    fontWeight: "bold",
-    color: theme.colors.lapisLazuliOrLightGrey,
-    marginBottom: 5,
-  },
-  iconContainer: {
-    width: 50,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-}))
 
 gql`
   query sendBitcoinDestination {
@@ -162,6 +76,9 @@ type Props = {
 
 const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   const styles = usestyles()
+  const {
+    theme: { colors },
+  } = useTheme()
 
   const navigation =
     useNavigation<StackNavigationProp<RootStackParamList, "sendBitcoinDestination">>()
@@ -221,13 +138,25 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
       logParseDestinationResult(destination)
 
       if (destination.valid === false) {
-        return dispatchDestinationStateAction({
+        if (destination.invalidReason === InvalidDestinationReason.SelfPayment) {
+          dispatchDestinationStateAction({
+            type: SendBitcoinActions.SetUnparsedDestination,
+            payload: {
+              unparsedDestination: rawInput,
+            },
+          })
+          navigation.navigate("conversionDetails")
+          return
+        }
+
+        dispatchDestinationStateAction({
           type: SendBitcoinActions.SetInvalid,
           payload: {
             invalidDestination: destination,
             unparsedDestination: rawInput,
           },
         })
+        return
       }
 
       if (
@@ -239,7 +168,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
             .map((contact) => contact.username.toLowerCase())
             .includes(destination.validDestination.handle.toLowerCase())
         ) {
-          return dispatchDestinationStateAction({
+          dispatchDestinationStateAction({
             type: SendBitcoinActions.SetRequiresConfirmation,
             payload: {
               validDestination: destination,
@@ -250,10 +179,11 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
               },
             },
           })
+          return
         }
       }
 
-      return dispatchDestinationStateAction({
+      dispatchDestinationStateAction({
         type: SendBitcoinActions.SetValid,
         payload: {
           validDestination: destination,
@@ -268,6 +198,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     destinationState.destinationState,
     accountDefaultWalletQuery,
     dispatchDestinationStateAction,
+    navigation,
   ])
 
   const handleChangeText = useCallback(
@@ -292,9 +223,10 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     if (destinationState.destination.destinationDirection === DestinationDirection.Send) {
       // go to send bitcoin details screen
       setGoToNextScreenWhenValid(false)
-      return navigation.navigate("sendBitcoinDetails", {
+      navigation.navigate("sendBitcoinDetails", {
         paymentDestination: destinationState.destination,
       })
+      return
     }
 
     if (
@@ -302,7 +234,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     ) {
       // go to redeem bitcoin screen
       setGoToNextScreenWhenValid(false)
-      return navigation.navigate("redeemBitcoinDetail", {
+      navigation.navigate("redeemBitcoinDetail", {
         receiveDestination: destinationState.destination,
       })
     }
@@ -316,14 +248,20 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     })
 
   useEffect(() => {
-    // If we scan a QR code encoded with a payment url for a specific user e.g. https://{domain}/{username}
-    // then we want to detect the username as the destination
     if (route.params?.payment) {
       handleChangeText(route.params?.payment)
     }
   }, [route.params?.payment, handleChangeText])
 
   useEffect(() => {
+    if (route.params?.autoValidate) {
+      initiateGoToNextScreen && initiateGoToNextScreen()
+    }
+  }, [route.params?.autoValidate, initiateGoToNextScreen])
+
+  useEffect(() => {
+    // If we scan a QR code encoded with a payment url for a specific user e.g. https://{domain}/{username}
+    // then we want to detect the username as the destination
     if (route.params?.username) {
       handleChangeText(route.params?.username)
     }
@@ -352,7 +290,6 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   return (
     <Screen
       preset="scroll"
-      backgroundColor={styles.backgroundColor.backgroundColor}
       style={styles.screenStyle}
       keyboardOffset="navigationHeader"
       keyboardShouldPersistTaps="handled"
@@ -362,13 +299,19 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
         dispatchDestinationStateAction={dispatchDestinationStateAction}
       />
       <View style={styles.sendBitcoinDestinationContainer}>
-        <Text style={styles.fieldTitleText}>{LL.SendBitcoinScreen.destination()}</Text>
+        <Text
+          {...testProps(LL.SendBitcoinScreen.destination())}
+          style={styles.fieldTitleText}
+        >
+          {LL.SendBitcoinScreen.destination()}
+        </Text>
 
         <View style={[styles.fieldBackground, inputContainerStyle]}>
           <TextInput
-            {...testProps(LL.SendBitcoinScreen.input())}
+            {...testProps(LL.SendBitcoinScreen.placeholder())}
             style={styles.input}
-            placeholder={LL.SendBitcoinScreen.input()}
+            placeholder={LL.SendBitcoinScreen.placeholder()}
+            placeholderTextColor={colors.grey2}
             onChangeText={handleChangeText}
             value={destinationState.unparsedDestination}
             onSubmitEditing={() =>
@@ -381,7 +324,7 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           />
           <TouchableWithoutFeedback onPress={() => navigation.navigate("scanningQRCode")}>
             <View style={styles.iconContainer}>
-              <ScanIcon />
+              <ScanIcon fill={colors.primary} />
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
@@ -410,18 +353,13 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
           >
             <View style={styles.iconContainer}>
               {/* we could Paste from "FontAwesome" but as svg*/}
-              <Icon
-                name="ios-clipboard-outline"
-                color={palette.primaryButtonColor}
-                size={22}
-              />
+              <Icon name="ios-clipboard-outline" color={colors.primary} size={22} />
             </View>
           </TouchableWithoutFeedback>
         </View>
         <DestinationInformation destinationState={destinationState} />
         <View style={styles.buttonContainer}>
           <GaloyPrimaryButton
-            {...testProps(LL.common.next())}
             title={
               destinationState.unparsedDestination
                 ? LL.common.next()
@@ -429,7 +367,6 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
             }
             loading={destinationState.destinationState === "validating"}
             disabled={
-              destinationState.destinationState === "validating" ||
               destinationState.destinationState === "invalid" ||
               !destinationState.unparsedDestination ||
               !initiateGoToNextScreen
@@ -443,3 +380,55 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
 }
 
 export default SendBitcoinDestinationScreen
+
+const usestyles = makeStyles(({ colors }) => ({
+  screenStyle: {
+    padding: 20,
+    flexGrow: 1,
+  },
+  sendBitcoinDestinationContainer: {
+    flex: 1,
+  },
+  fieldBackground: {
+    flexDirection: "row",
+    borderStyle: "solid",
+    overflow: "hidden",
+    backgroundColor: colors.grey5,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 60,
+    marginBottom: 10,
+  },
+  enteringInputContainer: {},
+  errorInputContainer: {
+    borderColor: colors.error,
+    borderWidth: 1,
+  },
+  validInputContainer: {
+    borderColor: colors.green,
+    borderWidth: 1,
+  },
+  warningInputContainer: {
+    borderColor: colors.warning,
+    borderWidth: 1,
+  },
+  buttonContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  input: {
+    flex: 1,
+    paddingHorizontal: 12,
+    color: colors.black,
+  },
+  fieldTitleText: {
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  iconContainer: {
+    width: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+}))

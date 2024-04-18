@@ -6,6 +6,7 @@ import { useI18nContext } from "@app/i18n/i18n-react"
 import { toastShow } from "@app/utils/toast"
 import Clipboard from "@react-native-clipboard/clipboard"
 import { makeStyles, Text, useTheme } from "@rneui/themed"
+import React from "react"
 
 const addressTypes = {
   lightning: "lightning",
@@ -29,8 +30,10 @@ const AddressComponent: React.FC<AddressComponentprops> = ({
   useGlobeIcon,
 }) => {
   const { LL } = useI18nContext()
-  const theme = useTheme()
-  const styles = useStyles(theme)
+  const {
+    theme: { colors },
+  } = useTheme()
+  const styles = useStyles()
   const { appConfig } = useAppConfig()
   const { name: bankName } = appConfig.galoyInstance
   const trimmedUrl =
@@ -76,11 +79,11 @@ const AddressComponent: React.FC<AddressComponentprops> = ({
         <View style={styles.iconsContainer}>
           {useGlobeIcon && (
             <Pressable onPress={() => Linking.openURL(address)}>
-              <GaloyIcon name="globe" size={20} color={styles.icons.color} />
+              <GaloyIcon name="globe" size={20} color={colors.black} />
             </Pressable>
           )}
           <Pressable onPress={copyToClipboard}>
-            <GaloyIcon name="copy-paste" size={20} color={styles.icons.color} />
+            <GaloyIcon name="copy-paste" size={20} color={colors.black} />
           </Pressable>
           <Pressable
             onPress={() => {
@@ -90,7 +93,7 @@ const AddressComponent: React.FC<AddressComponentprops> = ({
               })
             }}
           >
-            <GaloyIcon name="share" size={20} color={styles.icons.color} />
+            <GaloyIcon name="share" size={20} color={colors.black} />
           </Pressable>
         </View>
       </View>
@@ -115,9 +118,9 @@ const useStyles = makeStyles(({ colors }) => ({
     width: "100%",
   },
   addressTitle: {
-    color: colors.grey1,
     fontSize: 16,
     lineHeight: 24,
+    flexShrink: 1,
   },
   infoContainer: {
     display: "flex",
@@ -125,14 +128,14 @@ const useStyles = makeStyles(({ colors }) => ({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    backgroundColor: colors.primary10,
+    backgroundColor: colors.grey5,
     paddingVertical: 16,
     paddingHorizontal: 8,
     borderRadius: 8,
     columnGap: 20,
   },
   address: {
-    color: colors.primary5,
+    color: colors.black,
     fontSize: 14,
     lineHeight: 24,
   },
@@ -144,7 +147,7 @@ const useStyles = makeStyles(({ colors }) => ({
     columnGap: 5,
   },
   descriptionText: {
-    color: colors.primary5,
+    color: colors.primary,
     textDecorationLine: "underline",
     fontSize: 14,
     lineHeight: 18,
@@ -156,8 +159,5 @@ const useStyles = makeStyles(({ colors }) => ({
     justifyContent: "space-between",
     alignItems: "center",
     columnGap: 20,
-  },
-  icons: {
-    color: colors.primary5,
   },
 }))

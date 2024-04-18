@@ -1,13 +1,3 @@
-fragment MyWallets on ConsumerAccount {
-  wallets {
-    id
-    balance
-    walletCurrency
-    __typename
-  }
-  __typename
-}
-
 fragment Transaction on Transaction {
   __typename
   id
@@ -81,6 +71,17 @@ fragment TransactionList on TransactionConnection {
   __typename
 }
 
+mutation accountDelete {
+  accountDelete {
+    errors {
+      message
+      __typename
+    }
+    success
+    __typename
+  }
+}
+
 mutation accountUpdateDefaultWalletId($input: AccountUpdateDefaultWalletIdInput!) {
   accountUpdateDefaultWalletId(input: $input) {
     errors {
@@ -132,6 +133,7 @@ mutation captchaRequestAuthCode($input: CaptchaRequestAuthCodeInput!) {
   captchaRequestAuthCode(input: $input) {
     errors {
       message
+      code
       __typename
     }
     success
@@ -141,6 +143,17 @@ mutation captchaRequestAuthCode($input: CaptchaRequestAuthCodeInput!) {
 
 mutation deviceNotificationTokenCreate($input: DeviceNotificationTokenCreateInput!) {
   deviceNotificationTokenCreate(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    success
+    __typename
+  }
+}
+
+mutation feedbackSubmit($input: FeedbackSubmitInput!) {
+  feedbackSubmit(input: $input) {
     errors {
       message
       __typename
@@ -321,6 +334,17 @@ mutation onChainPaymentSend($input: OnChainPaymentSendInput!) {
   }
 }
 
+mutation onChainPaymentSendAll($input: OnChainPaymentSendAllInput!) {
+  onChainPaymentSendAll(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    status
+    __typename
+  }
+}
+
 mutation onChainUsdPaymentSend($input: OnChainUsdPaymentSendInput!) {
   onChainUsdPaymentSend(input: $input) {
     errors {
@@ -373,13 +397,194 @@ mutation userContactUpdateAlias($input: UserContactUpdateAliasInput!) {
   }
 }
 
-mutation userLogin($input: UserLoginInput!) {
-  userLogin(input: $input) {
+mutation userEmailDelete {
+  userEmailDelete {
     errors {
       message
       __typename
     }
+    me {
+      id
+      phone
+      totpEnabled
+      email {
+        address
+        verified
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+mutation userEmailRegistrationInitiate($input: UserEmailRegistrationInitiateInput!) {
+  userEmailRegistrationInitiate(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    emailRegistrationId
+    me {
+      id
+      email {
+        address
+        verified
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+mutation userEmailRegistrationValidate($input: UserEmailRegistrationValidateInput!) {
+  userEmailRegistrationValidate(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    me {
+      id
+      email {
+        address
+        verified
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+mutation userLogin($input: UserLoginInput!) {
+  userLogin(input: $input) {
+    errors {
+      message
+      code
+      __typename
+    }
     authToken
+    totpRequired
+    __typename
+  }
+}
+
+mutation userLoginUpgrade($input: UserLoginUpgradeInput!) {
+  userLoginUpgrade(input: $input) {
+    errors {
+      message
+      code
+      __typename
+    }
+    success
+    authToken
+    __typename
+  }
+}
+
+mutation userPhoneDelete {
+  userPhoneDelete {
+    errors {
+      message
+      __typename
+    }
+    me {
+      id
+      phone
+      totpEnabled
+      email {
+        address
+        verified
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+mutation userPhoneRegistrationInitiate($input: UserPhoneRegistrationInitiateInput!) {
+  userPhoneRegistrationInitiate(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    success
+    __typename
+  }
+}
+
+mutation userPhoneRegistrationValidate($input: UserPhoneRegistrationValidateInput!) {
+  userPhoneRegistrationValidate(input: $input) {
+    errors {
+      message
+      code
+      __typename
+    }
+    me {
+      id
+      phone
+      email {
+        address
+        verified
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+mutation userTotpDelete($input: UserTotpDeleteInput!) {
+  userTotpDelete(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    me {
+      id
+      phone
+      totpEnabled
+      email {
+        address
+        verified
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+mutation userTotpRegistrationInitiate($input: UserTotpRegistrationInitiateInput!) {
+  userTotpRegistrationInitiate(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    totpRegistrationId
+    totpSecret
+    __typename
+  }
+}
+
+mutation userTotpRegistrationValidate($input: UserTotpRegistrationValidateInput!) {
+  userTotpRegistrationValidate(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    me {
+      totpEnabled
+      phone
+      email {
+        address
+        verified
+        __typename
+      }
+      __typename
+    }
     __typename
   }
 }
@@ -402,12 +607,51 @@ mutation userUpdateLanguage($input: UserUpdateLanguageInput!) {
 mutation userUpdateUsername($input: UserUpdateUsernameInput!) {
   userUpdateUsername(input: $input) {
     errors {
-      message
+      code
       __typename
     }
     user {
       id
       username
+      __typename
+    }
+    __typename
+  }
+}
+
+query Circles {
+  me {
+    username
+    defaultAccount {
+      id
+      ... on ConsumerAccount {
+        welcomeProfile {
+          allTimePoints
+          allTimeRank
+          innerCircleAllTimeCount
+          innerCircleThisMonthCount
+          outerCircleAllTimeCount
+          outerCircleThisMonthCount
+          thisMonthPoints
+          thisMonthRank
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+query ContactsCard {
+  me {
+    id
+    contacts {
+      id
+      username
+      alias
+      transactionsCount
       __typename
     }
     __typename
@@ -457,6 +701,23 @@ query accountScreen {
   me {
     id
     phone
+    totpEnabled
+    email {
+      address
+      verified
+      __typename
+    }
+    defaultAccount {
+      id
+      level
+      wallets {
+        id
+        balance
+        walletCurrency
+        __typename
+      }
+      __typename
+    }
     __typename
   }
 }
@@ -486,14 +747,10 @@ query balanceHeader {
     id
     defaultAccount {
       id
-      btcWallet @client {
+      wallets {
         id
         balance
-        __typename
-      }
-      usdWallet @client {
-        id
-        balance
+        walletCurrency
         __typename
       }
       __typename
@@ -558,13 +815,7 @@ query conversionScreen {
     id
     defaultAccount {
       id
-      usdWallet @client {
-        id
-        balance
-        walletCurrency
-        __typename
-      }
-      btcWallet @client {
+      wallets {
         id
         balance
         walletCurrency
@@ -587,6 +838,17 @@ query currencyList {
   }
 }
 
+query debugScreen {
+  me {
+    id
+    defaultAccount {
+      id
+      __typename
+    }
+    __typename
+  }
+}
+
 query displayCurrency {
   me {
     id
@@ -597,6 +859,14 @@ query displayCurrency {
     }
     __typename
   }
+}
+
+query feedbackModalShown {
+  feedbackModalShown @client
+}
+
+query hasPromptedSetDefaultAccount {
+  hasPromptedSetDefaultAccount @client
 }
 
 query hiddenBalanceToolTip {
@@ -613,8 +883,14 @@ query homeAuthed {
     language
     username
     phone
+    email {
+      address
+      verified
+      __typename
+    }
     defaultAccount {
       id
+      level
       defaultWalletId
       transactions(first: 20) {
         ...TransactionList
@@ -647,10 +923,37 @@ query homeUnauthed {
   }
 }
 
+query innerCircleValue {
+  innerCircleValue @client
+}
+
+query introducingCirclesModalShown {
+  introducingCirclesModalShown @client
+}
+
+query invite {
+  me {
+    username
+    __typename
+  }
+}
+
 query language {
   me {
     id
     language
+    __typename
+  }
+}
+
+query level {
+  me {
+    id
+    defaultAccount {
+      id
+      level
+      __typename
+    }
     __typename
   }
 }
@@ -684,19 +987,72 @@ query myQuizQuestions {
   }
 }
 
-query newNameBlinkCounter {
-  newNameBlinkCounter @client
+query myUserId {
+  me {
+    id
+    __typename
+  }
 }
 
-query onChainTxFee($walletId: WalletId!, $address: OnChainAddress!, $amount: SatAmount!, $targetConfirmations: TargetConfirmations) {
-  onChainTxFee(
+query network {
+  globals {
+    network
+    __typename
+  }
+}
+
+query onChainTxFee($walletId: WalletId!, $address: OnChainAddress!, $amount: SatAmount!) {
+  onChainTxFee(walletId: $walletId, address: $address, amount: $amount) {
+    amount
+    __typename
+  }
+}
+
+query onChainUsdTxFee($walletId: WalletId!, $address: OnChainAddress!, $amount: CentAmount!) {
+  onChainUsdTxFee(walletId: $walletId, address: $address, amount: $amount) {
+    amount
+    __typename
+  }
+}
+
+query onChainUsdTxFeeAsBtcDenominated($walletId: WalletId!, $address: OnChainAddress!, $amount: SatAmount!) {
+  onChainUsdTxFeeAsBtcDenominated(
     walletId: $walletId
     address: $address
     amount: $amount
-    targetConfirmations: $targetConfirmations
   ) {
     amount
-    targetConfirmations
+    __typename
+  }
+}
+
+query paymentRequest {
+  globals {
+    network
+    feesInformation {
+      deposit {
+        minBankFee
+        minBankFeeThreshold
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+  me {
+    id
+    username
+    defaultAccount {
+      id
+      wallets {
+        id
+        balance
+        walletCurrency
+        __typename
+      }
+      defaultWalletId
+      __typename
+    }
     __typename
   }
 }
@@ -762,59 +1118,6 @@ query realtimePrice {
   }
 }
 
-query receiveBtc {
-  globals {
-    network
-    __typename
-  }
-  me {
-    id
-    defaultAccount {
-      id
-      btcWallet @client {
-        id
-        __typename
-      }
-      __typename
-    }
-    __typename
-  }
-}
-
-query receiveUsd {
-  globals {
-    network
-    __typename
-  }
-  me {
-    id
-    defaultAccount {
-      id
-      usdWallet @client {
-        id
-        __typename
-      }
-      __typename
-    }
-    __typename
-  }
-}
-
-query receiveWrapperScreen {
-  me {
-    id
-    defaultAccount {
-      id
-      defaultWallet @client {
-        walletCurrency
-        __typename
-      }
-      __typename
-    }
-    __typename
-  }
-}
-
 query scanningQRCodeScreen {
   globals {
     network
@@ -844,12 +1147,10 @@ query sendBitcoinConfirmationScreen {
     id
     defaultAccount {
       id
-      btcWallet @client {
+      wallets {
+        id
         balance
-        __typename
-      }
-      usdWallet @client {
-        balance
+        walletCurrency
         __typename
       }
       __typename
@@ -892,27 +1193,68 @@ query sendBitcoinDetailsScreen {
     defaultAccount {
       id
       defaultWalletId
-      defaultWallet @client {
-        id
-        walletCurrency
-        __typename
-      }
-      btcWallet @client {
-        id
-        walletCurrency
-        balance
-        __typename
-      }
-      usdWallet @client {
-        id
-        walletCurrency
-        balance
-        __typename
-      }
       wallets {
         id
         walletCurrency
         balance
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+query sendBitcoinInternalLimits {
+  me {
+    id
+    defaultAccount {
+      id
+      limits {
+        internalSend {
+          totalLimit
+          remainingLimit
+          interval
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+query sendBitcoinWithdrawalLimits {
+  me {
+    id
+    defaultAccount {
+      id
+      limits {
+        withdrawal {
+          totalLimit
+          remainingLimit
+          interval
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+query setDefaultAccountModal {
+  me {
+    id
+    defaultAccount {
+      id
+      defaultWalletId
+      wallets {
+        id
+        balance
+        walletCurrency
         __typename
       }
       __typename
@@ -927,12 +1269,10 @@ query setDefaultWalletScreen {
     defaultAccount {
       id
       defaultWalletId
-      btcWallet @client {
+      wallets {
         id
-        __typename
-      }
-      usdWallet @client {
-        id
+        balance
+        walletCurrency
         __typename
       }
       __typename
@@ -950,16 +1290,32 @@ query settingsScreen {
     defaultAccount {
       id
       defaultWalletId
-      btcWallet @client {
+      wallets {
         id
-        __typename
-      }
-      usdWallet @client {
-        id
+        balance
+        walletCurrency
         __typename
       }
       __typename
     }
+    __typename
+  }
+}
+
+query supportedCountries {
+  globals {
+    supportedCountries {
+      id
+      supportedAuthChannels
+      __typename
+    }
+    __typename
+  }
+}
+
+query totpRegistrationScreen {
+  me {
+    username
     __typename
   }
 }
@@ -1010,14 +1366,10 @@ query walletOverviewScreen {
     id
     defaultAccount {
       id
-      btcWallet @client {
+      wallets {
         id
         balance
-        __typename
-      }
-      usdWallet @client {
-        id
-        balance
+        walletCurrency
         __typename
       }
       __typename
@@ -1034,6 +1386,24 @@ query wallets {
       wallets {
         walletCurrency
         id
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+query warningSecureAccount {
+  me {
+    id
+    defaultAccount {
+      level
+      id
+      wallets {
+        id
+        balance
+        walletCurrency
         __typename
       }
       __typename

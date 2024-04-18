@@ -3,7 +3,7 @@ import {
   ConvertMoneyAmount,
   GetFeeParams,
   PaymentDetail,
-  SendPaymentParams,
+  SendPaymentMutationParams,
 } from "@app/screens/send-bitcoin-screen/payment-details"
 import {
   ZeroBtcMoneyAmount,
@@ -72,7 +72,7 @@ export const expectCannotSendPayment = (
   paymentDetails: PaymentDetail<WalletCurrency>,
 ) => {
   expect(paymentDetails.canSendPayment).toBeFalsy()
-  expect(paymentDetails.sendPayment).toBeUndefined()
+  expect(paymentDetails.sendPaymentMutation).toBeUndefined()
 }
 
 export const getTestSetMemo: CreateFunctionWithSpy = () => (params) => {
@@ -125,13 +125,14 @@ export const createGetFeeMocks = (): GetFeeParams => {
   }
 }
 
-export const createSendPaymentMocks = (): SendPaymentParams => {
+export const createSendPaymentMocks = (): SendPaymentMutationParams => {
   return {
     lnInvoicePaymentSend: jest.fn(),
     lnNoAmountInvoicePaymentSend: jest.fn(),
     lnNoAmountUsdInvoicePaymentSend: jest.fn(),
     onChainPaymentSend: jest.fn(),
     onChainUsdPaymentSend: jest.fn(),
+    onChainPaymentSendAll: jest.fn(),
     onChainUsdPaymentSendAsBtcDenominated: jest.fn(),
     intraLedgerPaymentSend: jest.fn(),
     intraLedgerUsdPaymentSend: jest.fn(),

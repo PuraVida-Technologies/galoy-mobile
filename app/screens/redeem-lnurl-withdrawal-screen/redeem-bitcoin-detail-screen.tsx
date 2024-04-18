@@ -1,11 +1,12 @@
 import { AmountInput } from "@app/components/amount-input"
+import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { Screen } from "@app/components/screen"
-import { useReceiveBtcQuery, WalletCurrency } from "@app/graphql/generated"
+import { usePaymentRequestQuery, WalletCurrency } from "@app/graphql/generated"
+import { getBtcWallet } from "@app/graphql/wallets-utils"
 import { usePriceConversion } from "@app/hooks"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import { palette } from "@app/theme"
 import {
   DisplayCurrency,
   MoneyAmount,
@@ -15,130 +16,10 @@ import {
 import { testProps } from "@app/utils/testProps"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { Button, Text } from "@rneui/base"
-import { makeStyles } from "@rneui/themed"
+import { makeStyles, Text } from "@rneui/themed"
 import React, { useEffect, useState } from "react"
 import { View } from "react-native"
 import { TouchableWithoutFeedback } from "react-native-gesture-handler"
-
-const useStyles = makeStyles((theme) => ({
-  tabRow: {
-    flexDirection: "row",
-    flexWrap: "nowrap",
-    justifyContent: "center",
-    marginTop: 14,
-  },
-  usdActive: {
-    backgroundColor: palette.usdSecondary,
-    borderRadius: 7,
-    justifyContent: "center",
-    alignItems: "center",
-    width: 150,
-    height: 30,
-    margin: 5,
-  },
-  btcActive: {
-    backgroundColor: palette.btcSecondary,
-    borderRadius: 7,
-    justifyContent: "center",
-    alignItems: "center",
-    width: 150,
-    height: 30,
-    margin: 5,
-  },
-  activeTabText: {
-    color: palette.darkGrey,
-  },
-  inactiveTab: {
-    backgroundColor: theme.colors.white,
-    borderRadius: 7,
-    justifyContent: "center",
-    alignItems: "center",
-    width: 150,
-    height: 30,
-    margin: 5,
-  },
-  inactiveTabText: {
-    color: palette.coolGrey,
-  },
-
-  container: {
-    marginTop: 14,
-    marginLeft: 20,
-    marginRight: 20,
-  },
-  inputForm: {
-    marginVertical: 20,
-  },
-  currencyInputContainer: {
-    padding: 10,
-    marginTop: 10,
-    borderRadius: 10,
-  },
-  infoText: {
-    color: palette.midGrey,
-    fontSize: 14,
-  },
-  withdrawalErrorText: {
-    color: palette.red,
-    fontSize: 14,
-  },
-  withdrawableDescriptionText: {
-    color: theme.colors.grey0,
-    fontSize: 16,
-    textAlign: "center",
-  },
-  withdrawableAmountToRedeemText: {
-    color: theme.colors.grey0,
-    fontSize: 16,
-    textAlign: "center",
-  },
-  walletBalanceInput: {
-    color: palette.lapisLazuli,
-    fontSize: 20,
-    fontWeight: "600",
-  },
-  convertedAmountText: {
-    color: palette.coolGrey,
-    fontSize: 14,
-  },
-  switchCurrencyIconContainer: {
-    width: 50,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  currencyInput: {
-    flexDirection: "column",
-    flex: 1,
-  },
-  toggle: {
-    justifyContent: "flex-end",
-  },
-  button: {
-    height: 60,
-    borderRadius: 10,
-    marginTop: 40,
-  },
-  activeButtonStyle: {
-    backgroundColor: palette.lightBlue,
-  },
-  activeButtonTitleStyle: {
-    color: palette.white,
-    fontWeight: "bold",
-  },
-  disabledButtonStyle: {
-    backgroundColor: palette.lighterGrey,
-  },
-  disabledButtonTitleStyle: {
-    color: palette.lightBlue,
-    fontWeight: "600",
-  },
-  contentContainer: {
-    backgroundColor: theme.colors.lighterGreyOrBlack,
-    padding: 20,
-    flexGrow: 1,
-  },
-}))
 
 type Prop = {
   route: RouteProp<RootStackParamList, "redeemBitcoinDetail">
@@ -167,8 +48,11 @@ const RedeemBitcoinDetailScreen: React.FC<Prop> = ({ route }) => {
   )
 
   const { LL } = useI18nContext()
-  const { data } = useReceiveBtcQuery({ fetchPolicy: "cache-first" })
-  const btcWalletId = data?.me?.defaultAccount?.btcWallet?.id
+  const { data } = usePaymentRequestQuery({ fetchPolicy: "cache-first" })
+
+  const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
+
+  const btcWalletId = btcWallet?.id
 
   const usdWalletId = null // TODO: enable receiving USD when USD invoices support satoshi amounts
 
@@ -229,43 +113,15 @@ const RedeemBitcoinDetailScreen: React.FC<Prop> = ({ route }) => {
           <TouchableWithoutFeedback
             onPress={() => setReceiveCurrency(WalletCurrency.Btc)}
           >
-            <View
-              style={
-                receiveCurrency === WalletCurrency.Btc
-                  ? styles.btcActive
-                  : styles.inactiveTab
-              }
-            >
-              <Text
-                style={
-                  receiveCurrency === WalletCurrency.Btc
-                    ? styles.activeTabText
-                    : styles.inactiveTabText
-                }
-              >
-                BTC
-              </Text>
+            <View>
+              <Text>BTC</Text>
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
             onPress={() => setReceiveCurrency(WalletCurrency.Usd)}
           >
-            <View
-              style={
-                receiveCurrency === WalletCurrency.Usd
-                  ? styles.usdActive
-                  : styles.inactiveTab
-              }
-            >
-              <Text
-                style={
-                  receiveCurrency === WalletCurrency.Usd
-                    ? styles.activeTabText
-                    : styles.inactiveTabText
-                }
-              >
-                USD
-              </Text>
+            <View>
+              <Text>USD</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -310,13 +166,8 @@ const RedeemBitcoinDetailScreen: React.FC<Prop> = ({ route }) => {
           )}
         </View>
 
-        <Button
-          {...testProps(LL.RedeemBitcoinScreen.redeemBitcoin())}
+        <GaloyPrimaryButton
           title={LL.RedeemBitcoinScreen.redeemBitcoin()}
-          buttonStyle={[styles.button, styles.activeButtonStyle]}
-          titleStyle={styles.activeButtonTitleStyle}
-          disabledStyle={[styles.button, styles.disabledButtonStyle]}
-          disabledTitleStyle={styles.disabledButtonTitleStyle}
           disabled={!validAmount}
           onPress={navigate}
         />
@@ -326,3 +177,56 @@ const RedeemBitcoinDetailScreen: React.FC<Prop> = ({ route }) => {
 }
 
 export default RedeemBitcoinDetailScreen
+
+const useStyles = makeStyles(({ colors }) => ({
+  tabRow: {
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    justifyContent: "center",
+    marginTop: 14,
+  },
+  container: {
+    marginTop: 14,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  inputForm: {
+    marginVertical: 20,
+  },
+  currencyInputContainer: {
+    padding: 20,
+    borderRadius: 10,
+  },
+  infoText: {
+    color: colors.grey2,
+    fontSize: 14,
+  },
+  withdrawalErrorText: {
+    color: colors.error,
+    fontSize: 14,
+  },
+  withdrawableDescriptionText: {
+    fontSize: 16,
+    textAlign: "center",
+  },
+  withdrawableAmountToRedeemText: {
+    fontSize: 16,
+    textAlign: "center",
+  },
+  currencyInput: {
+    flexDirection: "column",
+    flex: 1,
+  },
+  toggle: {
+    justifyContent: "flex-end",
+  },
+  button: {
+    height: 60,
+    borderRadius: 10,
+    marginTop: 40,
+  },
+  contentContainer: {
+    padding: 20,
+    flexGrow: 1,
+  },
+}))

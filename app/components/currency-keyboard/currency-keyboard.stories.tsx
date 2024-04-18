@@ -7,12 +7,10 @@ export default {
   component: CurrencyKeyboard,
 }
 
-export const StylePresets = () => (
+export const Default = () => (
   <Story>
     <UseCase text="Currency Keyboard">
       <CurrencyKeyboard onPress={(pressed) => console.log(pressed)} />
     </UseCase>
   </Story>
 )
-
-StylePresets.storyName = "Style Presets"

@@ -1,5 +1,5 @@
 import { MockedProvider } from "@apollo/client/testing"
-import { ComponentMeta } from "@storybook/react"
+import { Meta } from "@storybook/react"
 import React from "react"
 import { StoryScreen } from "../../../.storybook/views"
 import { createCache } from "../../graphql/cache"
@@ -8,7 +8,7 @@ import SendBitcoinConfirmationScreen from "./send-bitcoin-confirmation-screen"
 import * as PaymentDetails from "./payment-details/intraledger"
 import mocks from "../../graphql/mocks"
 import { WalletCurrency } from "../../graphql/generated"
-import { ConvertMoneyAmount } from "../receive-bitcoin-screen/payment-requests/index.types"
+import { ConvertMoneyAmount } from "./payment-details/index.types"
 import { DisplayCurrency, toUsdMoneyAmount } from "@app/types/amounts"
 
 export default {
@@ -23,7 +23,7 @@ export default {
       </IsAuthedContextProvider>
     ),
   ],
-} as ComponentMeta<typeof SendBitcoinConfirmationScreen>
+} as Meta<typeof SendBitcoinConfirmationScreen>
 
 const btcSendingWalletDescriptor = {
   currency: WalletCurrency.Usd,

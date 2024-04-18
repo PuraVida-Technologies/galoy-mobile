@@ -1,12 +1,17 @@
 import { i18nObject } from "../app/i18n/i18n-util"
 import { loadLocale } from "../app/i18n/i18n-util.sync"
-import { selector } from "./utils"
-import { payTestUsername, resetDisplayCurrency, resetLanguage } from "./utils/graphql"
+import {
+  clickButton,
+  clickIcon,
+  payTestUsername,
+  resetDisplayCurrency,
+  resetEmail,
+  resetLanguage,
+} from "./utils"
 
 describe("Welcome Screen Flow", () => {
   loadLocale("en")
   const LL = i18nObject("en")
-  const timeout = 30000
 
   // having an invoice or bitcoin address would popup a modal
   it("Clear the clipboard", async () => {
@@ -17,6 +22,13 @@ describe("Welcome Screen Flow", () => {
     const result = await resetLanguage()
     expect(result).toBeTruthy()
     expect(result.data?.userUpdateLanguage.user?.language).toBeFalsy()
+  })
+
+  it("reset email in case previous test has failed", async () => {
+    const result = await resetEmail()
+    expect(result).toBeTruthy()
+    expect(result.data?.userEmailDelete.me?.email?.address).toBeFalsy()
+    expect(result.data?.userEmailDelete.me?.email?.verified).toBeFalsy()
   })
 
   it("Pays Test Username to Create a Contact", async () => {
@@ -31,15 +43,14 @@ describe("Welcome Screen Flow", () => {
     expect(result.data?.accountUpdateDisplayCurrency.account?.displayCurrency).toBe("USD")
   })
 
-  it("loads and clicks 'Get Started button'", async () => {
-    const getStartedButton = await $(selector(LL.GetStartedScreen.getStarted(), "Button"))
-    await getStartedButton.waitForDisplayed({ timeout })
-    await getStartedButton.click()
+  it("resets display currency to USD", async () => {
+    const result = await resetDisplayCurrency()
+    expect(result.data?.accountUpdateDisplayCurrency.account?.displayCurrency).toBe("USD")
   })
 
-  it("skip blink renaming", async () => {
-    const getStartedButton = await $(selector(LL.NewNameBlinkModal.ok(), "Button"))
-    await getStartedButton.waitForDisplayed({ timeout })
-    await getStartedButton.click()
+  it("loads and clicks 'Explore wallet instead'", async () => {
+    await clickButton(LL.GetStartedScreen.exploreWallet())
+
+    await clickIcon("close")
   })
 })

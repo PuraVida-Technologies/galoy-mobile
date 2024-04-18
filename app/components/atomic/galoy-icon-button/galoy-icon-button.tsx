@@ -6,6 +6,7 @@ import {
   IconNamesType,
   circleDiameterThatContainsSquare,
 } from "../galoy-icon/galoy-icon"
+import { testProps } from "@app/utils/testProps"
 
 export type GaloyIconButtonProps = {
   name: IconNamesType
@@ -17,7 +18,7 @@ export type GaloyIconButtonProps = {
 const sizeMapping = {
   small: 16,
   medium: 24,
-  large: 32,
+  large: 36,
 }
 
 export const GaloyIconButton = ({
@@ -28,7 +29,9 @@ export const GaloyIconButton = ({
   disabled,
   ...remainingProps
 }: GaloyIconButtonProps & PressableProps) => {
-  const { theme } = useTheme()
+  const {
+    theme: { colors },
+  } = useTheme()
 
   const iconContainerSize = circleDiameterThatContainsSquare(sizeMapping[size])
 
@@ -50,34 +53,36 @@ export const GaloyIconButton = ({
       case iconOnly && disabled:
         return {
           opacity: 0.7,
-          color: theme.colors.grey5,
-          backgroundColor: "transparent",
+          color: colors.primary,
+          backgroundColor: colors.transparent,
         }
       case iconOnly && pressed:
         return {
-          color: theme.colors.grey5,
-          backgroundColor: theme.colors.grey10,
+          opacity: 0.7,
+          color: colors.primary,
+          backgroundColor: colors.grey4,
         }
       case iconOnly && !pressed:
         return {
-          color: theme.colors.grey5,
-          backgroundColor: "transparent",
+          color: colors.primary,
+          backgroundColor: colors.transparent,
         }
       case !iconOnly && disabled:
         return {
-          backgroundColor: theme.colors.primary9,
-          color: theme.colors.primary5,
-          opacity: 0.6,
+          opacity: 0.7,
+          color: colors.primary,
+          backgroundColor: colors.grey4,
         }
       case !iconOnly && pressed:
         return {
-          color: theme.colors.primary5,
-          backgroundColor: theme.colors.primary8,
+          opacity: 0.7,
+          color: colors.primary,
+          backgroundColor: colors.grey4,
         }
       case !iconOnly && !pressed:
         return {
-          color: theme.colors.primary5,
-          backgroundColor: theme.colors.primary9,
+          color: colors.primary,
+          backgroundColor: colors.grey4,
         }
       default:
         return {}
@@ -89,14 +94,18 @@ export const GaloyIconButton = ({
       marginTop: 8,
       opacity: disabled ? 0.7 : 1,
       textAlign: "center",
+      fontSize: 11,
     }
   }
+
+  const testPropId = text || name
 
   return (
     <Pressable
       hitSlop={text ? 0 : iconContainerSize / 2}
       style={pressableStyle}
       disabled={disabled}
+      {...testProps(testPropId)}
       {...remainingProps}
     >
       {({ pressed }) => {
@@ -107,11 +116,7 @@ export const GaloyIconButton = ({
               size={sizeMapping[size]}
               {...iconProps(pressed, Boolean(iconOnly), Boolean(disabled))}
             />
-            {text && (
-              <Text type="p3" style={fontStyle(Boolean(disabled))}>
-                {text}
-              </Text>
-            )}
+            {text && <Text style={fontStyle(Boolean(disabled))}>{text}</Text>}
           </>
         )
       }}
@@ -120,14 +125,16 @@ export const GaloyIconButton = ({
 }
 
 export const GaloyEditButton = ({ disabled, ...remainingProps }: PressableProps) => {
-  const { theme } = useTheme()
+  const {
+    theme: { colors },
+  } = useTheme()
   const pressableStyle = ({ pressed }: { pressed: boolean }): StyleProp<ViewStyle> => {
     return {
       width: 32,
       height: 32,
       borderRadius: 8,
-      opacity: disabled ? 0.5 : 1,
-      backgroundColor: pressed ? theme.colors.primary9 : theme.colors.primary10,
+      opacity: disabled ? 0.7 : 1,
+      backgroundColor: pressed ? colors.grey4 : colors.grey5,
       alignItems: "center",
       justifyContent: "center",
     }
@@ -144,7 +151,7 @@ export const GaloyEditButton = ({ disabled, ...remainingProps }: PressableProps)
         <GaloyIcon
           name="pencil"
           size={20}
-          color={theme.colors.primary5}
+          color={colors.primary}
           opacity={pressed ? 0.7 : 1}
         />
       )}

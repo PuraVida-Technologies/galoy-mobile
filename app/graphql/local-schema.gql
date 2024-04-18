@@ -16,7 +16,10 @@ extend type Query {
   price: String # FIXME test only?
   beta: Boolean!
   colorScheme: String!
-  newNameBlinkCounter: Int!
+  feedbackModalShown: Boolean!
+  hasPromptedSetDefaultAccount: Boolean!
+  introducingCirclesModalShown: Boolean!
+  innerCircleValue: Int!
 }
 
 extend type Account {

@@ -40,6 +40,8 @@ import { NetworkError } from "@apollo/client/errors"
 import { initPuravidaMarketPlaceClient } from "@app/modules/market-place/graphql/puravida-market-client"
 
 export let marketplaceClient: any = undefined
+import { LevelContainer } from "./level-component"
+import { getAppCheckToken } from "@app/screens/get-started-screen/use-device-token"
 
 const noRetryOperations = [
   "intraLedgerPaymentSend",
@@ -97,13 +99,36 @@ const GaloyClient: React.FC<PropsWithChildren> = ({ children }) => {
         }`,
       )
 
+      const appCheckLink = setContext(async (_, { headers }) => {
+        const appCheckToken = await getAppCheckToken()
+        return appCheckToken
+          ? {
+              headers: {
+                ...headers,
+                Appcheck: appCheckToken,
+              },
+            }
+          : {
+              headers,
+            }
+      })
+
+      const wsLinkConnectionParams = async () => {
+        const authHeaders = token ? { Authorization: getAuthorizationHeader(token) } : {}
+        const appCheckToken = await getAppCheckToken()
+        const appCheckHeaders = appCheckToken ? { Appcheck: appCheckToken } : {}
+
+        return {
+          ...authHeaders,
+          ...appCheckHeaders,
+        }
+      }
+
       const wsLink = new GraphQLWsLink(
         createClient({
           url: appConfig.galoyInstance.graphqlWsUri,
-          connectionParams: token
-            ? { Authorization: getAuthorizationHeader(token) }
-            : undefined,
           retryAttempts: 12,
+          connectionParams: wsLinkConnectionParams,
           shouldRetry: (errOrCloseEvent) => {
             console.warn(
               { errOrCloseEvent },
@@ -177,12 +202,22 @@ const GaloyClient: React.FC<PropsWithChildren> = ({ children }) => {
         },
       })
 
-      const authLink = setContext((request, { headers }) => ({
-        headers: {
-          ...headers,
-          authorization: token ? getAuthorizationHeader(token) : "",
-        },
-      }))
+      let authLink: ApolloLink
+      if (token) {
+        authLink = setContext((request, { headers }) => ({
+          headers: {
+            ...headers,
+            authorization: getAuthorizationHeader(token),
+          },
+        }))
+      } else {
+        authLink = setContext((request, { headers }) => ({
+          headers: {
+            ...headers,
+            authorization: "",
+          },
+        }))
+      }
 
       // persistedQuery provide client side bandwidth optimization by returning a hash
       // of the uery instead of the whole query
@@ -213,8 +248,9 @@ const GaloyClient: React.FC<PropsWithChildren> = ({ children }) => {
         ApolloLink.from([
           errorLink,
           retryLink,
-          retry401ErrorLink,
+          appCheckLink,
           authLink,
+          retry401ErrorLink,
           persistedQueryLink,
           httpLink,
         ]),
@@ -267,12 +303,15 @@ const GaloyClient: React.FC<PropsWithChildren> = ({ children }) => {
 
       client.onClearStore(persistor.purge)
 
-      setApolloClient({ client, isAuthed: Boolean(token) })
+      setApolloClient({
+        client,
+        isAuthed: Boolean(token),
+      })
       clearNetworkError()
 
       return () => client.cache.reset()
     })()
-  }, [appConfig.token, appConfig.galoyInstance, saveToken, clearNetworkError])
+  }, [appConfig.token, appConfig.galoyInstance, clearNetworkError])
 
   // Before we show the app, we have to wait for our state to be ready.
   // In the meantime, don't render anything. This will be the background
@@ -289,18 +328,20 @@ const GaloyClient: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <ApolloProvider client={apolloClient.client}>
       <IsAuthedContextProvider value={apolloClient.isAuthed}>
-        <NetworkErrorContextProvider
-          value={{
-            networkError,
-            clearNetworkError,
-          }}
-        >
-          <MessagingContainer />
-          <LanguageSync />
-          <AnalyticsContainer />
-          <MyPriceUpdates />
-          {children}
-        </NetworkErrorContextProvider>
+        <LevelContainer>
+          <NetworkErrorContextProvider
+            value={{
+              networkError,
+              clearNetworkError,
+            }}
+          >
+            <MessagingContainer />
+            <LanguageSync />
+            <AnalyticsContainer />
+            <MyPriceUpdates />
+            {children}
+          </NetworkErrorContextProvider>
+        </LevelContainer>
       </IsAuthedContextProvider>
     </ApolloProvider>
   )

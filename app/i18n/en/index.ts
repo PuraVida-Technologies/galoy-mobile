@@ -5,7 +5,7 @@ import { BaseTranslation } from "../i18n-types";
 const en: BaseTranslation = {
   GaloyAddressScreen: {
     title: "Receive payment by using:",
-    buttonTitle: "Set your {bankName: string} address",
+    buttonTitle: "Set your address",
     yourAddress: "Your {bankName: string} address",
     notAbleToChange:
       "You won't be able to change your {bankName: string} address after it's set.",
@@ -24,9 +24,19 @@ const en: BaseTranslation = {
     howToUseYourAddressExplainer:
       "Share with someone that has a compatible wallet, such as:",
     howToUseYourPaycodeExplainer:
-      "You can print your Paycode (which is an amountless invoice) and display it in your business to receive payments. Individuals can pay you by scanning it with a Lightning-enabled wallet.\n\nHowever, be aware that some wallets can’t scan an amountless invoice such as:",
+      "You can print your Paycode (technically, this is an lnurl-pay address) and display it in your business to receive payments. Individuals can pay you by scanning it with a Lightning-enabled wallet.\n\nHowever, be aware that some wallets can’t scan a Paycode such as:",
     howToUseYourCashRegisterExplainer:
-      "Allow people to collect payments via the Cash Register link, without accessing your wallet. They can create invoices and payments will be sent directly to your {bankName: string} Wallet.",
+      "Allow people to collect payments via the Cash Register link, without accessing your wallet.\n\nThey can create invoices and payments will be sent directly to your {bankName: string} Wallet.",
+  },
+  SetAccountModal: {
+    title: "Set default account",
+    description:
+      "This account will be initially selected for sending and receiving payments. It can be changed at any time.",
+    stablesatsTag: "Choose this to maintain a stable USD value.",
+    bitcoinTag: "Choose this to be on a Bitcoin standard.",
+  },
+  NoteInput: {
+    addNote: "Add note",
   },
   AuthenticationScreen: {
     authenticationDescription: "Authenticate to continue",
@@ -36,16 +46,16 @@ const en: BaseTranslation = {
     unlock: "Unlock",
     usePin: "Use PIN",
   },
-  BalanceHeader: {
-    currentBalance: "Current Balance",
-    hiddenBalanceToolTip: "Tap to reveal your balance",
-  },
-  ContactsScreen: {
+  PeopleScreen: {
+    title: "People",
+    copy: "Copy",
     noContactsTitle: "No Contacts Found",
     noContactsYet:
       "Send or receive a payment using a username and contacts will automatically be added here",
     noMatchingContacts: "No contacts matching your search were found.",
-    title: "Contacts",
+    allContacts: "All Contacts",
+    viewAllContacts: "View all contacts",
+    frequentContacts: "Frequent Contacts",
   },
   ContactDetailsScreen: {
     title: "Transactions with {username: string}",
@@ -216,12 +226,10 @@ const en: BaseTranslation = {
               "Incorrect. That may be true, but alone are not great characteristics of money.",
               "Not quite. Although these items were surely portable, that alone was not the reason to be used as money.",
             ],
-            question:
-              "Why were stones, seashells and gold used as units of money?",
+            question: "Why were stones, seashells and gold used as units of money?",
             text:
               "Well, these items all had some -- but not all -- of the characteristics of good money. \n\nSo what characteristics make for “good” money? \nScarce: not abundant, nor easy to reproduce or copy \nAccepted: relatively easy for people to verify its authenticity \nDurable: easy to maintain, and does not perish or fall apart\nUniform: readily interchangeable with another item of the same form\nPortable: easy to transport\nDivisible: can be split and shared in smaller pieces",
-            title:
-              "Why were stones, shells and gold commonly used as money in the past?",
+            title: "Why were stones, shells and gold commonly used as money in the past?",
           },
           moneyIsImportant: {
             answers: [
@@ -271,8 +279,7 @@ const en: BaseTranslation = {
               "Incorrect. A local bank can only manage money that has been previously created by the government.",
               "Nope. Try again!",
             ],
-            question:
-              "Who creates fiat money, such as US Dollars or Swiss Francs?",
+            question: "Who creates fiat money, such as US Dollars or Swiss Francs?",
             text:
               "All national currencies in circulation today are called “fiat” money. This includes US Dollars, Japanese Yen, Swiss Francs, and so forth. \n\nThe word “fiat” is latin for “by decree” -- which means “by official order”. \n\nThis means that all fiat money -- including the US Dollar -- is simply created by the order of the national government.",
             title: "Fiat Currency: What is that?",
@@ -288,12 +295,10 @@ const en: BaseTranslation = {
               "Nope, that is certainly not the case.",
               "Wrong. Please try again.",
             ],
-            question:
-              "Why should I care about the government controlling fiat money?",
+            question: "Why should I care about the government controlling fiat money?",
             text:
               "As shared in a prior quiz, the US Central Bank is the Federal Reserve, or the “Fed”.\n\nThe Fed can print more dollars at any time -- and does not need permission from the President, nor Congress, and certainly not from US citizens.  \n\nHaving control of money can be very tempting for authorities to abuse -- and often time leads to massive inflation, arbitrary confiscation and corruption. \n\nIn fact, Alan Greenspan, the famous former chairman of The Fed, famously said the US “can pay any debt that it has, because we can always print more to do that”.",
-            title:
-              "I trust my government. \nWhy should I care about fiat money?",
+            title: "I trust my government. \nWhy should I care about fiat money?",
           },
           GovernementCanPrintMoney: {
             answers: [
@@ -309,8 +314,7 @@ const en: BaseTranslation = {
             question: "What does it mean when the government prints money?",
             text:
               "Well, everybody should care! \n\nThe practice of government printing money -- or increasing the supply of dollars -- leads to inflation.\n\nInflation is an increase in the price of goods and services. In other words, the price for something in the future will be more expensive than today.\n\nSo what does inflation mean for citizens? \n\nIn the United Kingdom, the Pound Sterling has lost 99.5% of its value since being introduced over 300 years ago. \n\nIn the United States, the dollar has lost 97% of its value since the end of WWI, about 100 years ago. \n\nThis means a steak that cost $0.30 in 1920... was $3 in 1990… and about $15 today, in the year 2020!",
-            title:
-              "Who should care that the government can print unlimited money?",
+            title: "Who should care that the government can print unlimited money?",
           },
           FiatLosesValueOverTime: {
             answers: [
@@ -342,8 +346,7 @@ const en: BaseTranslation = {
             question: "What are some other issues that exist with fiat money?",
             text:
               "Yes, there are many other issues that exist with modern fiat money. \n\nFirst, it can be extremely difficult to move money around the world. Often, governments will outright restrict the movement -- and sometimes even confiscate money -- without a valid reason or explanation. And even when you can send money, high transaction fees make it very expensive.\n\nSecond, even in the US, there has been a complete loss of privacy, as the majority of commerce takes places with debit and credit cards, as well as online with other systems such as PayPal and Apple Pay.\n\nEver notice how an ad appears in your social media or Gmail just moments after searching for a certain product or service? This is known as “surveillance capitalism”, and is based on companies selling your personal financial data.",
-            title:
-              "OK, fiat money loses value over time. Are there other issues?",
+            title: "OK, fiat money loses value over time. Are there other issues?",
           },
         },
       },
@@ -409,8 +412,7 @@ const en: BaseTranslation = {
               "Wrong. Bitcoin is highly divisible. You can easily use a very small fraction of a bitcoin.",
               "Incorrect. Although the smallest unit of US currency is one penny, a bitcoin is divisible by much more than 100x.",
             ],
-            question:
-              "What is the smallest amount of Bitcoin one can own, or use?",
+            question: "What is the smallest amount of Bitcoin one can own, or use?",
             text:
               'Old-fashioned fiat money can only be spent in amounts as small as one penny — or two decimal places for one US Dollar ($0.01).\n\nOn the other hand, Bitcoin can be divided 100,000,000 times over. This means that you could spend as little as ₿0.00000001. You will note the "₿" symbol, which is the Bitcoin equivalent of "$". Sometimes you will also see the use of BTC, instead of ₿.\n\nBy way of contrast, Bitcoin can handle very small payments — even those less than one US penny!',
             title: "Special Characteristic #4: \nHighly Divisible",
@@ -463,10 +465,27 @@ const en: BaseTranslation = {
     title: "Earn",
     unlockQuestion: "To unlock, answer the question:",
     youEarned: "You Earned",
+    registerTitle: "Need to upgrade your account",
+    registerContent: "Register with your phone number to receive sats",
   },
   GetStartedScreen: {
-    getStarted: "Get Started",
+    logInCreateAccount: "Log in / create account",
+    createAccount: "Create new account",
+    exploreWallet: "Explore wallet",
+    logBackInWith: "Log back in with",
     headline: "Wallet powered by Galoy",
+    startTrialAccount: "Start with a trial account",
+    startWithTrialAccount: "Start with trial account",
+    registerPhoneAccount: "Register phone account",
+    trialAccountCreationFailed: "Trial account creation failed",
+    trialAccountCreationFailedMessage:
+      "Unfortunately, we were unable to create your trial account. Try again later or create an account with a phone number.",
+    trialAccountHasLimits: "Trial account has limits",
+    trialAccountLimits: {
+      noBackup: "No backup option",
+      sendingLimit: "Reduced daily sending limit",
+      noOnchain: "No receiving bitcoin onchain",
+    },
   },
   MapScreen: {
     locationPermissionMessage:
@@ -482,6 +501,7 @@ const en: BaseTranslation = {
     receive: "Receive",
     send: "Send",
     title: "Home",
+    scan: "Scan",
     updateAvailable: "An update is available.\nTap to update now",
     useLightning: "We use the Lightning Network.",
     myAccounts: "My Accounts",
@@ -512,20 +532,20 @@ const en: BaseTranslation = {
   PrimaryScreen: {
     title: "Home",
   },
-  ReceiveWrapperScreen: {
+  ReceiveScreen: {
     activateNotifications:
       "Do you want to activate notifications to be notified when the payment has arrived?",
     copyClipboard: "Invoice has been copied in the clipboard",
     copyClipboardBitcoin: "Bitcoin address has been copied in the clipboard",
+    copyClipboardPaycode: "Paycode/LNURL has been copied in the clipboard",
     invoicePaid: "This invoice has been paid",
     setNote: "set a note",
     tapQrCodeCopy: "Tap QR Code to Copy",
     title: "Receive Bitcoin",
     usdTitle: "Receive USD",
-    error:
-      "Failed to generate invoice. Please contact support if this problem persists.",
-    copyInvoice: "Copy Invoice",
-    shareInvoice: "Share Invoice",
+    error: "Failed to generate invoice. Please contact support if this problem persists.",
+    copyInvoice: "Copy",
+    shareInvoice: "Share",
     addAmount: "Request Specific Amount",
     expired: "The invoice has expired",
     expiresIn: "Expires in",
@@ -539,12 +559,38 @@ const en: BaseTranslation = {
     useALightningInvoice: "Use a Lightning Invoice",
     setANote: "Set a Note",
     invoiceAmount: "Invoice Amount",
+    fees:
+      "{minBankFee: string} sats fees for onchain payment below {minBankFeeThreshold: string} sats",
+    lightning: "Lightning",
+    paycode: "Paycode",
+    onchain: "Onchain",
+    bitcoin: "Bitcoin",
+    stablesats: "Stablesats",
+    regenerateInvoiceButtonTitle: "Regenerate Invoice",
+    setUsernameButtonTitle: "Set Username",
+    invoiceHasExpired: "Invoice has expired",
+    setUsernameToAcceptViaPaycode:
+      "Set your username to accept via Paycode QR (LNURL) and Lightning Address",
+    singleUse: "Single Use",
+    invoiceExpired: "Expired Invoice",
+    invoiceValidity: {
+      validFor1Day: "Valid for 1 day",
+      validForNext: "Valid for next {duration: string}",
+      validBefore: "Valid before {time: string}",
+      expiresIn: "Expires in {duration: string}",
+      expiresNow: "Expires now",
+    },
+    invoiceHasBeenPaid: "Invoice has been paid",
+    onChainAddress: "Onchain Address",
+    receiveViaInvoice: "Receive via Lightning",
+    receiveViaPaycode: "Receive via Paycode",
+    receiveViaOnchain: "Receive via Onchain",
+    payCodeOrLNURL: "Paycode / LNURL",
   },
   RedeemBitcoinScreen: {
     title: "Redeem Bitcoin",
     usdTitle: "Redeem for USD",
-    error:
-      "Failed to generate invoice. Please contact support if this problem persists.",
+    error: "Failed to generate invoice. Please contact support if this problem persists.",
     redeemingError:
       "Failed to redeem Bitcoin. Please contact support if this problem persists.",
     submissionError:
@@ -561,23 +607,19 @@ const en: BaseTranslation = {
     invalidTitle: "Invalid QR Code",
     noQrCode: "We could not find a QR code in the image",
     title: "Scan QR",
-    invalidContentLnurl:
-      "We found:\n\n{found: string}\n\n is not currently supported",
+    invalidContentLnurl: "We found:\n\n{found: string}\n\n is not currently supported",
   },
   SecurityScreen: {
     biometricDescription: "Unlock with fingerprint or facial recognition.",
-    biometricSubtitle: "Enable biometric authentication",
     biometricTitle: "Biometric",
     biometryNotAvailable: "Biometric sensor is not available.",
     biometryNotEnrolled:
       "Please register at least one biometric sensor in order to use biometric based authentication.",
     hideBalanceDescription:
       "Hides your balance on the home screen by default, so you don't reveal it to anyone looking at your screen.",
-    hideBalanceSubtitle: "Hide balance",
-    hideBalanceTitle: "Balance",
+    hideBalanceTitle: "Hide Balance",
     pinDescription:
       "PIN is used as the backup authentication method for biometric authentication.",
-    pinSubtitle: "Enable PIN",
     pinTitle: "PIN Code",
     setPin: "Set PIN",
   },
@@ -622,15 +664,13 @@ const en: BaseTranslation = {
       "We can't reach this Lightning address. If you are sure it exists, you can try again later.",
     lnAddressAdvice:
       "Either make sure the spelling is right or ask the recipient for an invoice or BTC address instead.",
-    unknownLightning:
-      "We can't parse this Lightning address. Please try again.",
+    unknownLightning: "We can't parse this Lightning address. Please try again.",
     unknownOnchain: "We can't parse this Bitcoin address. Please try again.",
     newBankAddressUsername:
       "{lnAddress: string} exists as a {bankName: string} address, but you've never sent money to it.",
     confirmModal: {
-      title: 'You\'ve never sent money to "{lnAddress: string}" before.',
-      body1:
-        "Please make sure the recipient gave you a {bankName: string} address,",
+      title: "You've never sent money to this address",
+      body1: "Please make sure the recipient gave you a {bankName: string} address,",
       bold2bold: "not a username from another wallet.",
       body3:
         "Otherwise, the money will go to a {bankName: string} Account that has the “{lnAddress: string}” address.\n\nCheck the spelling of the first part of the address as well. e.g. jackie and jack1e are 2 different addresses",
@@ -644,13 +684,15 @@ const en: BaseTranslation = {
   SendBitcoinScreen: {
     amount: "Amount",
     amountExceed: "Amount exceeds your balance of {balance: string}",
+    amountExceedsLimit: "Amount exceeds your remaining daily limit of {limit: string}",
+    upgradeAccountToIncreaseLimit: "Upgrade your account to increase your limit",
     amountIsRequired: "Amount is required",
     cost: "Cost",
     destination: "Destination",
     destinationIsRequired: "Destination is required",
     fee: "network fee",
     feeCalculationUnsuccessful: "Calculation unsuccessful ⚠️",
-    input: "Username, invoice, or address",
+    placeholder: "Username, invoice, or address",
     invalidUsername: "Invalid username",
     noAmount:
       "This invoice doesn't have an amount, so you need to manually specify how much money you want to send",
@@ -658,6 +700,9 @@ const en: BaseTranslation = {
       "Payment has been sent\nbut is not confirmed yet\n\nYou can check the status\nof the payment in Transactions",
     note: "Note or label",
     success: "Payment has been sent successfully",
+    suggestionInput: "Enter your suggestion",
+    max: "Max",
+    maxAmount: "Max Amount",
     title: "Send Bitcoin",
     failedToFetchLnurlInvoice: "Failed to fetch lnurl invoice",
     lnurlInvoiceIncorrectAmount:
@@ -667,7 +712,6 @@ const en: BaseTranslation = {
   },
   SettingsScreen: {
     activated: "Activated",
-    tapLogIn: "Tap to log in",
     addressScreen: "Ways to get paid",
     tapUserName: "Tap to set username",
     title: "Settings",
@@ -681,17 +725,97 @@ const en: BaseTranslation = {
     lnurlNoUsername:
       "To generate an lnurl address you must first set a username.  Do you want to set a username now?",
     copyClipboardLnurl: "Lnurl address has been copied in the clipboard",
-    deleteAccount: "Delete Account",
     defaultWallet: "Default Account",
     rateUs: "Rate us on {storeName: string}",
+    theme: "Theme",
+    nfc: "Receive from NFC",
+    nfcError: "Error reading NFC tag. Please try again.",
+    nfcNotCompatible:
+      "The information fetch from the card is not a compatible lnurl-withdraw link.",
+    nfcOnlyReceive: "Only receive from NFC is available for now",
+    nfcScanNow: "Scan NFC Now",
+    nfcNotSupported: "NFC is not supported on this device",
+    logInOrCreateAccount: "Log in or create account",
+  },
+  AccountScreen: {
+    accountLevel: "Account Level",
+    upgrade: "Upgrade your account",
+    logOutAndDeleteLocalData: "Log out and clear all local data",
+    IUnderstand: "I understand. Please log me out.",
+    logoutAlertTitle: "Are you sure you want to log out and delete all local data?",
+    logoutAlertContentPhone:
+      "You will need to re-enter your phone number to log back in.\nyour phone number is {phoneNumber: string} so make sure you have access to it to log back in",
+    logoutAlertContentEmail:
+      "You will need to re-enter your email to log back in.\nyour email is {email: string} so make sure you have access to it to log back in",
+    logoutAlertContentPhoneEmail:
+      "You will need to re-enter either your phone number or email to log back in.\nyour phone number is {phoneNumber: string} and your email is {email: string} so make sure you have access to those to log back in",
+    usdBalanceWarning: "You have a Stablesats balance of {balance: string}.",
+    btcBalanceWarning: "You have a bitcoin balance of {balance: string}.",
+    secureYourAccount: "Register to secure your account",
+    tapToAdd: "Tap to add",
+    deleteEmailPromptTitle: "Delete email",
+    deleteEmailPromptContent:
+      "Are you sure you want to delete your email address? you will only be able to log back in with your phone number.",
+    deletePhonePromptTitle: "Delete phone",
+    deletePhonePromptContent:
+      "Are you sure you want to delete your phone number? you will only be able to log in back with your email.",
+    addEmailFirst: "Add an email first",
+    addPhoneFirst: "Add a phone first",
+    phoneNumberAuthentication: "Phone number (for login)",
+    emailAuthentication: "Email (for login)",
+    removePhone: "Remove phone",
+    removeEmail: "Remove email",
+    unverified: "Email is unverified",
+    unverifiedContent: "Secure your account by verifying your email.",
+    confirmEmail: "Confirm email",
+    emailUnverified: "Your email is unverified",
+    emailUnverifiedContent:
+      "Ensure you can log back into your account by verifying your email. Do you want to do the verification now?",
+    totp: "Two-factor authentication",
+    totpDeactivated: "Two-factor authentication has been deactivated",
+    totpDeleteAlertTitle: "Delete two-factor authentication",
+    totpDeleteAlertContent:
+      "Are you sure you want to delete your two-factor authentication?",
+    copiedAccountId: "Copied your account ID to clipboard",
+    yourAccountId: "Your Account ID",
+    copy: "Copy"
+  },
+  TotpRegistrationInitiateScreen: {
+    title: "Two-factor authentication",
+    content:
+      "Scan this QR code with your authenticator app. Alternatively, you can manually copy/paste the secret into your authenticator app.",
+  },
+  TotpRegistrationValidateScreen: {
+    title: "Two-factor authentication",
+    enter6digitCode:
+      "Enter the 6-digit code from your authenticator app to validate your two-factor authentication.",
+    success:
+      "Two-factor authentication has been enabled. You will now only be able to log back in with your phone or email AND your two factor authentication.\n\nOnly full KYC accounts may be recovered in the case a user has lost access to their two-factor authentication.",
+  },
+  TotpLoginValidateScreen: {
+    title: "Two-factor authentication",
+    content:
+      "Enter the 6-digit code from your authenticator app to log in. This code changes every 30 seconds.",
+  },
+  CopySecretComponent: {
+    button: "Copy secret",
+    toastMessage: "Secret copied to clipboard!",
   },
   DefaultWalletScreen: {
     title: "Default Account",
     info:
-      "Your default account is the account that is selected by default when sending and receiving payments. You can change this setting for individual payments on the mobile app. However, payments received through the cash register or your Lightning address will always go to the default account.\n\nTo avoid Bitcoin's volatility, choose Stablesats. This allows you to maintain a stable amount of money while still being able to send and receive payments.\n\nYou can change this setting at any time, and it won't affect your current balance.",
+      "Pick which account to set as default for receiving and sending. You can adjust the send and receive account for individual payments in the mobile app. Payments received through the cash register or your Lightning address will always go to the default account.\n\nTo avoid Bitcoin's volatility, choose Stablesats. This allows you to maintain a stable amount of money while still being able to send and receive payments.\n\nYou can change this setting at any time, and it won't affect your current balance.",
+  },
+  ThemeScreen: {
+    title: "Theme",
+    info:
+      "Pick your preferred theme for using Blink, or choose to keep it synced with your system settings.",
+    system: "Use System setting",
+    light: "Use Light Mode",
+    dark: "Use Dark Mode",
   },
   Languages: {
-    "DEFAULT": "Default (OS)",
+    DEFAULT: "Default (OS)",
   },
   StablesatsModal: {
     header: "With Stablesats, you now have a USD account added to your wallet!",
@@ -700,24 +824,18 @@ const en: BaseTranslation = {
     termsAndConditions: "Read the Terms & Conditions.",
     learnMore: "Learn more about Stablesats",
   },
-  NewNameBlinkModal: {
-    header: "Coming soon: BBW is being renamed to Blink!",
-    body:
-      "BBW launched in 2021 in El Zonte, El Salvador to support the creation of a circular Bitcoin economy. Now, it’s growing into the everyday Lightning wallet for people around the globe. This year, we are renaming to Blink to better serve our growing customer base.",
-    ok: "Sounds good!",
-    learnMore: "Learn more at blink.sv",
-  },
   SplashScreen: {
     update:
       "Your app is outdated. An update is needed before the app can be used.\n\nThis can be done from the PlayStore for Android and Testflight for iOS",
   },
   TransactionDetailScreen: {
-    detail: "Transaction Details",
     paid: "Paid to/from",
     received: "You received",
     spent: "You spent",
     receivingAccount: "Receiving Account",
     sendingAccount: "Sending Account",
+    txNotBroadcast:
+      "Your transaction is currently pending and will be broadcasted to the Bitcoin network in a moment.",
   },
   TransactionLimitsScreen: {
     receive: "Receive",
@@ -732,7 +850,9 @@ const en: BaseTranslation = {
     contactUsMessageBody:
       "Hi, I will like to increase the transaction limits of my {bankName: string} account.",
     contactUsMessageSubject: "Request To Increase Transaction Limits",
-    howToIncreaseLimits: "How can I increase my transaction limits?",
+    contactSupportToPerformKyc:
+      "Contact support to perform manual KYC to increase your limit",
+    increaseLimits: "Increase your limits",
   },
   TransactionScreen: {
     noTransaction: "No transaction to show",
@@ -744,20 +864,27 @@ const en: BaseTranslation = {
     title: "Transfer",
     percentageToConvert: "% to convert",
   },
-  UsernameScreen: {
-    "3CharactersMinimum": "at least 3 characters are necessary",
-    "50CharactersMaximum": "Username cannot be longer than 50 characters",
-    "available": "✅  {username: string} is available",
-    "confirmSubtext": "The username is permanent and can not be changed later",
-    "confirmTitle": "Set {username: string} as your username?",
-    "forbiddenStart":
-      "Cannot start with lnbc1, bc1, 1, or 3 and cannot be a Bitcoin address or Lightning invoice",
-    "letterAndNumber":
-      "Only lowercase letter, number and underscore (_) are accepted",
-    "emailAddress": "Username must not be email address",
-    "notAvailable": "❌  {username: string} is not available",
-    "success": "{username: string} is now your username!",
-    "usernameToUse": "What username do you want to use?",
+  UpgradeAccountModal: {
+    title: "Upgrade your account",
+    backUpFunds: "Back up your funds",
+    higherLimits: "Increase your transaction limits",
+    receiveOnchain: "Receive bitcoin onchain",
+    onlyAPhoneNumber: "Quick and easy phone number verification",
+    letsGo: "Let's go!",
+    stayInTrialMode: "Stay in trial mode",
+  },
+  SetAddressModal: {
+    title: "Set {bankName: string} address",
+    Errors: {
+      tooShort: "Address must be at least 3 characters long",
+      tooLong: "Address must be at most 50 characters long",
+      invalidCharacter: "Address can only contain letters, numbers, and underscores",
+      addressUnavailable: "Sorry, this address is already taken",
+      unknownError: "An unknown error occurred, please try again later",
+    },
+    receiveMoney:
+      "Receive money from other lightning wallets and {bankName: string} users with this address.",
+    itCannotBeChanged: "It can't be changed later.",
   },
   WelcomeFirstScreen: {
     bank:
@@ -769,26 +896,75 @@ const en: BaseTranslation = {
       "I don't mean to badger you, but there's lot more to learn, dig in...",
     learnToEarn: "Learn to Earn",
   },
-  PhoneInputScreen: {
+  PhoneLoginInitiateScreen: {
+    title: "Account set up",
     header: "Enter your phone number, and we'll text you an access code.",
     headerVerify: "Verify you are human",
     errorRequestingCaptcha:
       "Something went wrong verifying you are human, please try again later.",
+    errorRequestingCode:
+      "Something went wrong requesting the phone code, please try again later.",
+    errorInvalidPhoneNumber:
+      "Invalid phone number. Are you sure you entered the right number?",
+    errorUnsupportedCountry: "We are unable to support customers in your country.",
     placeholder: "Phone Number",
     verify: "Click to Verify",
     sms: "Send via SMS",
     whatsapp: "Send via WhatsApp",
   },
-  PhoneValidationScreen: {
+  PhoneLoginValidationScreen: {
     errorLoggingIn: "Error logging in. Did you use the right code?",
+    errorTooManyAttempts: "Too many attempts. Please try again later.",
+    errorCannotUpgradeToExistingAccount:
+      "This phone account already exists. Please log out of your trial account and then log in with your phone number.",
     header:
       "To confirm your phone number, enter the code we just sent you by {channel: string} on {phoneNumber: string}",
-    need6Digits: "The code needs to have 6 digits",
     placeholder: "6 Digit Code",
     sendAgain: "Send Again",
     tryAgain: "Try Again",
     sendViaOtherChannel:
-      "You used {channel: string} to receive the code.\n\nYou can try receiving via {other: string} instead",
+      "You selected to receive the code via {channel: string}. You can try receiving via {other: string} instead",
+  },
+  PhoneRegistrationInitiateScreen: {
+    title: "Phone set up",
+    header: "Enter your phone number, and we'll text you an access code.",
+    headerVerify: "Verify you are human",
+    errorRequestingCode:
+      "Something went wrong requesting the phone code, please try again later.",
+    errorInvalidPhoneNumber:
+      "Invalid phone number. Are you sure you entered the right number?",
+    errorUnsupportedCountry: "We are unable to support customers in your country.",
+    placeholder: "Phone Number",
+    verify: "Click to Verify",
+    sms: "Send via SMS",
+    whatsapp: "Send via WhatsApp",
+  },
+  PhoneRegistrationValidateScreen: {
+    successTitle: "Phone number confirmed",
+  },
+  EmailRegistrationInitiateScreen: {
+    title: "Add your email",
+    header: "Enter your email address, and we'll send you an access code.",
+    invalidEmail: "Invalid email address. Are you sure you entered the right email?",
+    send: "Send code",
+    missingEmailRegistrationId: "Missing email registration id",
+    placeholder: "hal@finney.org",
+  },
+  EmailRegistrationValidateScreen: {
+    header:
+      "To confirm your email address, enter the code we just sent you on {email: string}",
+    success: "Email {email: string} confirmed successfully",
+  },
+  EmailLoginInitiateScreen: {
+    title: "Login via email",
+    header: "Enter your email address, and we'll send you an access code.",
+    invalidEmail: "Invalid email address. Are you sure you entered the right email?",
+    send: "Send code",
+  },
+  EmailLoginValidateScreen: {
+    header:
+      "If there is an account attached to {email: string}, you should have received 6 digits code to enter below.\n\nIf you are not receiving anything, it's probably either because this is not the right email, the email is in your spam folder.",
+    success: "Email {email: string} confirmed successfully",
   },
   common: {
     account: "Account",
@@ -809,6 +985,7 @@ const en: BaseTranslation = {
     close: "Close",
     confirm: "Confirm",
     convert: "Convert",
+    codeConfirmation: "Code Confirmation",
     currency: "Currency",
     currencySyncIssue: "Currency issue. Refresh needed",
     csvExport: "Export transactions as CSV",
@@ -833,13 +1010,16 @@ const en: BaseTranslation = {
     loggedOut: "You have been logged out.",
     logout: "Log Out",
     minutes: "minutes",
-    needWallet: "Validate your phone to open your wallet",
+    errorAuthToken: "Missing auth token",
+    needWallet: "Log in or create an account to access your wallet",
     next: "Next",
     No: "No",
     note: "Note",
     notification: "Notification",
     ok: "OK",
+    or: "or",
     openWallet: "Open Wallet",
+    phone: "Phone",
     phoneNumber: "Phone Number",
     rate: "Rate",
     reauth: "Your session has expired. Please log in again.",
@@ -853,7 +1033,9 @@ const en: BaseTranslation = {
     shareBitcoin: "Share Bitcoin Address",
     shareLightning: "Share Lightning Invoice",
     soon: "Coming soon!",
+    submit: "Submit",
     success: "Success!",
+    stablesatsUsd: "Stablesats USD",
     to: "To",
     total: "Total",
     transactions: "Transactions",
@@ -863,6 +1045,7 @@ const en: BaseTranslation = {
     usdAccount: "USD Account",
     username: "Username",
     usernameRequired: "Username is required",
+    backupAccount: "Backup/upgrade account",
     viewTransaction: "View transaction",
     yes: "Yes",
     pending: "pending",
@@ -872,6 +1055,7 @@ const en: BaseTranslation = {
     prevMonths: "Previous months",
     problemMaybeReauth:
       "There was a problem with your request. Please retry in one minute. If the problem persist, we recommend that you log out and log back in. You can log out by going into Settings > Account > Log out",
+    warning: "Warning",
   },
   errors: {
     generic: "There was an error.\nPlease try again later.",
@@ -899,18 +1083,34 @@ const en: BaseTranslation = {
     },
   },
   support: {
-    contactUs: "Need help?  Contact us.",
+    contactUs: "Need help? Contact us.",
+    joinTheCommunity: "Join the community",
     whatsapp: "WhatsApp",
     email: "Email",
+    enjoyingApp: "Enjoying the app?",
     statusPage: "Status Page",
-    telegram: "Telegram (community)",
+    telegram: "Telegram",
+    mattermost: "Mattermost",
+    thankYouText: "Thank you for the feedback, would you like to suggest an improvement?",
     defaultEmailSubject: "{bankName: string} - Support",
     defaultSupportMessage:
       "Hey there! I need some help with {bankName: string}, I'm using the version {version: string} on {os: string}.",
-    deleteAccount: "Hello. Please delete my account.",
-    deleteAccountEmailSubject:
-      "Account deletion request: {phoneNumber: string}",
     emailCopied: "email {email: string} copied to clipboard",
+    deleteAccount: "Delete account",
+    delete: "delete",
+    typeDelete: 'Please type "{delete: string}" to confirm account deletion',
+    finalConfirmationAccountDeletionTitle: "Final Confirmation Required",
+    finalConfirmationAccountDeletionMessage:
+      "Are you sure you want to delete your account? This action is irreversible.",
+    deleteAccountBalanceWarning:
+      "Deleting your account will cause you to lose access to your current balance. Are you sure you want to proceed?",
+    deleteAccountConfirmation:
+      "Your account has been written for deletion.\n\nWhen the probation period related to regulatory requirement is over, the remaining data related to your account will be permanently deleted.",
+    deleteAccountFromPhone:
+      "Hey there!, please delete my account. My phone number is {phoneNumber: string}.",
+    deleteAccountError:
+      "Something went wrong. Contact {email: string} for further assistance.",
+    bye: "Bye!",
   },
   lnurl: {
     overLimit: "You can't send more than max amount",
@@ -928,7 +1128,7 @@ const en: BaseTranslation = {
     minAmountNotMet: "Amount must be at least {minAmount: string}.",
   },
   AmountInputButton: {
-    tapToSetAmount: "Tap to set amount",
+    tapToSetAmount: "Set amount",
   },
   AppUpdate: {
     needToUpdateSupportMessage:
@@ -938,75 +1138,64 @@ const en: BaseTranslation = {
     tapHereUpdate: "Tap here to update now",
     contactSupport: "Contact Support",
   },
-  marketPlace: {
-    add: "Add",
-    name: "Name",
-    direction: "Direction",
-    marketPlace: "Marketplace",
-    report: "Report",
-    search: "Search",
-    distance: "Distance",
-    relevance: "Relevance",
-    post_what_would_you_like_too_offer_for_bitcoin:
-      "Post what would you like too offer for bitcoin",
-    create_post: "Create Post",
-    my_post: "My Posts",
-    register_store: "Register Store",
-    next: "Next",
-    skip: "Skip",
-    share_location: "Share location",
-    use_my_current_position: "Use My Current Location",
-    open_hour: "Open Hour",
-    cuisines: "Cuisines",
-    description: "Description",
-    update_cover_image: "Update cover Image",
-    location: "Location",
-    submit: "Submit",
-    upload_image: "Upload Image",
-    image_uploaded: "Image uploaded",
-    account_contact_will_be_filled: "Account contact will be filled",
-    use_existing_information: "Use Existing Information",
-    phone: "Phone",
-    phone_number: "Phone number",
-    email: "Email",
-    email_is_required: "Email is required",
-    email_is_invalid: "Email is invalid",
-    price: "Price",
-    name_is_required: "Name is required",
-    name_length_validation: "Name must be more than 2 characters",
-    description_is_required: "Description is required",
-    description_must_be_more_than_2_characters:
-      "Description must be more than 2 characters",
-    you_must_add_at_least_one_image: "You must add at least one image",
-    enter_your_own_tags: "Enter your own tags",
-    tags: "Tags",
-    your_selected_tag: "Your selected tag",
-    select_your_address: "Select your address",
-    enter_your_location: "Enter your location",
-    search_your_location: "Search your location",
-    or_select_your_address: "Or Select Your Address",
-    there_are_no_posts: "There are no posts around you",
-    cant_find_tag_Add_your_own: "Can't find tag? Add your own",
-    you_can_select_up_to_5_tags: "You can select up to 5 tags.",
-    something_wrong_when_upload_image: "Something wrong when upload image",
-    tap_to_find_your_place: "Tap to find your place",
-    you_are_here: "You are here",
-    something_wrong_when_find_location: "Something wrong when find location",
-    loading_data: "Loading data...",
-    my_posts: "My posts",
-    you_dont_have_any_post: "You don't have any post",
-    you_need_to_enable_location_to_see_posts_around_you:
-      "You need to enable location to see posts around you",
-    list_view: "List View",
-    your_post_is_submitted_to_review: "Your post is submitted to review",
-    this_post_has_been_reported: "This post has been reported",
-    thank_you_for_submitting_this_post: "Thank you for submitting this post",
-    we_will_review_it_shortly:
-      "We will review it shortly and remove if it violate any of our policy",
-    tell_us_what_is_wrong_with_this_post:
-      "Tell us what is wrong with this post",
-    whats_going_on: `What's going on`,
+  Circles: {
+    title: "My Circles",
+    titleBlinkCircles: "Blink Circles",
+    fetchingLatestCircles: "Fetching latest circles",
+    circles: "circles",
+    circlesExplainer:
+      "Your circles grow as you welcome others to Blink - by sending somebody their first sats.",
+    viewMyCircles: "View My Circles",
+    introducingCircles: "Introducing Circles",
+    copiedInviteLink: "Copied Invite Link",
+    inviteFriendToBlink: "Invite a friend to Blink",
+    shareCircles: "Share your circles",
+    share: "Share",
+    circlesGrowingSatsExplainer: {
+      your: "Your",
+      grow: "grow when you send a new Blink user their first sats!",
+    },
+    circlesGrowingKeepGoing:
+      "Your circles grow as you welcome people to Blink – keep going!",
+    points: "points",
+    innerCircleGrow:
+      "Your inner circle grows when you send a Blink user their first sats!",
+    calculatingYourCircles: "Calculating your circles...",
+    innerCircleExplainer: "You're driving Bitcoin adoption with Blink, keep it up!",
+    innerCircleExplainerCard: "I'm driving Bitcoin adoption with Blink!",
+    innerCircle: "Inner Circle",
+    peopleYouWelcomed: "people you welcomed",
+    peopleIWelcomed: "people \nI welcomed",
+    thisMonth: "this month",
+    outerCircle: "Outer Circle",
+    peopleWelcomedByYourCircle: "people welcomed by your circle",
+    peopleWelcomedByMyCircle: "people welcomed by my circle",
+    yourSphere: "Your Sphere",
+    mySphere: "My Sphere",
+    yourRankMessage:
+      "You're #{thisMonthRank: number} this month and #{allTimeRank: number} all time!",
+    rankMessage:
+      "#{thisMonthRank: number} this month and #{allTimeRank: number} all time!",
+    inviteFriends: "Invite a friend",
+    buildYourCircle: "Build your circles",
+    myBlinkCircles: "My Blink Circles",
+    someones: "{username: string}'s",
+    groupEffort:
+      "Bitcoin adoption is a group effort.\nInvite a friend and send them sats to start building your circles.",
+    drivingAdoption: "I'm driving Bitcoin adoption using Blink.",
+    septChallenge: {
+      title: "September Challenge!",
+      description:
+        "Inner Circle {innerCircle: number}/21 - Earn $21\nTop 3 - Win tickets to Adopting Bitcoin!",
+      details:
+        "Grow your inner circle by 21 people in September and share on social with #blinkcircles to get $21 to your Stablesats account. Top 3 win tickets to Adopting Bitcoin!",
+      peopleWelcomedSoFar: "people welcomed so far",
+      yourRank: "your rank",
+      reminder:
+        "Reminder: Your inner circle grows when you send a new Blink user their first sats",
+      fullDetails: "Full details at",
+    },
   },
-};
+}
 
 export default en;

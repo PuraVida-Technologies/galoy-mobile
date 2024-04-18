@@ -1,4 +1,4 @@
-import { useIsFocused } from "@react-navigation/native"
+import { useIsFocused, useNavigation } from "@react-navigation/native"
 import * as React from "react"
 import {
   Alert,
@@ -11,22 +11,19 @@ import {
 } from "react-native"
 import {
   Camera,
-  CameraRuntimeError,
-  useCameraDevice,
-  useCameraPermission,
-  useCodeScanner,
+  CameraPermissionStatus,
+  useCameraDevices,
 } from "react-native-vision-camera"
 import Svg, { Circle } from "react-native-svg"
 import Icon from "react-native-vector-icons/Ionicons"
 import { Screen } from "../../components/screen"
-import { palette } from "../../theme/palette"
 import Reanimated from "react-native-reanimated"
 import { RootStackParamList } from "../../navigation/stack-param-lists"
 import { StackNavigationProp } from "@react-navigation/stack"
 import Clipboard from "@react-native-clipboard/clipboard"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import RNQRGenerator from "rn-qr-generator"
-
+import { BarcodeFormat, useScanBarcodes } from "vision-camera-code-scanner"
 import ImagePicker from "react-native-image-crop-picker"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { gql } from "@apollo/client"
@@ -40,11 +37,12 @@ import { DestinationDirection } from "./payment-destination/index.types"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { logParseDestinationResult } from "@app/utils/analytics"
 import { LNURL_DOMAINS } from "@app/config"
+import { makeStyles, useTheme } from "@rneui/themed"
 
 const { width: screenWidth } = Dimensions.get("window")
 const { height: screenHeight } = Dimensions.get("window")
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors }) => ({
   close: {
     alignSelf: "flex-end",
     height: 64,
@@ -61,10 +59,8 @@ const styles = StyleSheet.create({
     width: screenWidth,
   },
 
-  // eslint-disable-next-line react-native/no-color-literals
   rectangle: {
-    backgroundColor: "transparent",
-    borderColor: palette.blue,
+    borderColor: colors.primary,
     borderWidth: 2,
     height: screenWidth * 0.65,
     width: screenWidth * 0.65,
@@ -82,13 +78,14 @@ const styles = StyleSheet.create({
 
   noPermissionsView: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: palette.black,
   },
-})
 
-type ScanningQRCodeScreenProps = {
-  navigation: StackNavigationProp<RootStackParamList, "sendBitcoinDestination">
-}
+  iconClose: { position: "absolute", top: -2, color: colors._black },
+
+  iconGalery: { opacity: 0.8 },
+
+  iconClipboard: { opacity: 0.8, position: "absolute", bottom: "5%", right: "15%" },
+}))
 
 gql`
   query scanningQRCodeScreen {
@@ -111,13 +108,18 @@ gql`
   }
 `
 
-export const ScanningQRCodeScreen: React.FC<ScanningQRCodeScreenProps> = ({
-  navigation,
-}) => {
+export const ScanningQRCodeScreen: React.FC = () => {
+  const navigation =
+    useNavigation<StackNavigationProp<RootStackParamList, "sendBitcoinDestination">>()
+
   // forcing price refresh
   useRealtimePriceQuery({
     fetchPolicy: "network-only",
   })
+
+  const {
+    theme: { colors },
+  } = useTheme()
 
   const [pending, setPending] = React.useState(false)
 
@@ -129,17 +131,14 @@ export const ScanningQRCodeScreen: React.FC<ScanningQRCodeScreenProps> = ({
   })
 
   const { LL } = useI18nContext()
-
+  const devices = useCameraDevices()
   const [cameraPermissionStatus, setCameraPermissionStatus] =
     React.useState<CameraPermissionStatus>("not-determined")
   const isFocused = useIsFocused()
-  // const [frameProcessor, barcodes] = useScanBarcodes([BarcodeFormat.QR_CODE], {
-  //   checkInverted: true,
-  // })
-
-  const device = useCameraDevice("back")
-
-  const { hasPermission, requestPermission } = useCameraPermission()
+  const [frameProcessor, barcodes] = useScanBarcodes([BarcodeFormat.QR_CODE], {
+    checkInverted: true,
+  })
+  const device = devices.back
 
   const requestCameraPermission = React.useCallback(async () => {
     const permission = await Camera.requestCameraPermission()
@@ -148,12 +147,10 @@ export const ScanningQRCodeScreen: React.FC<ScanningQRCodeScreenProps> = ({
   }, [])
 
   React.useEffect(() => {
-    console.log("===:hasPermission",hasPermission);
-    
-    if (!hasPermission) {
-      requestPermission()
+    if (cameraPermissionStatus !== "authorized") {
+      requestCameraPermission()
     }
-  }, [hasPermission, requestPermission])
+  }, [cameraPermissionStatus, navigation, requestCameraPermission])
 
   const decodeInvoice = React.useMemo(() => {
     return async (data: string) => {
@@ -233,20 +230,13 @@ export const ScanningQRCodeScreen: React.FC<ScanningQRCodeScreenProps> = ({
     wallets,
     accountDefaultWalletQuery,
   ])
-  
-  const codeScanner = useCodeScanner({
-    codeTypes: ["qr", "ean-13"],
-    onCodeScanned: (codes) => {
-      codes.forEach((code) => decodeInvoice(code.value))
-      console.log(`Scanned ${codes.length} codes!`)
-    },
-  })
+  const styles = useStyles()
 
-  // React.useEffect(() => {
-  //   if (barcodes.length > 0 && barcodes[0].rawValue && isFocused) {
-  //     decodeInvoice(barcodes[0].rawValue)
-  //   }
-  // }, [barcodes, decodeInvoice, isFocused])
+  React.useEffect(() => {
+    if (barcodes.length > 0 && barcodes[0].rawValue && isFocused) {
+      decodeInvoice(barcodes[0].rawValue)
+    }
+  }, [barcodes, decodeInvoice, isFocused])
 
   const handleInvoicePaste = async () => {
     try {
@@ -282,53 +272,56 @@ export const ScanningQRCodeScreen: React.FC<ScanningQRCodeScreenProps> = ({
       }
     }
   }
-  
-  const onError = React.useCallback((error: CameraRuntimeError) => {
-    console.error(error)
-  }, [])
-  if (device === null || device === undefined)
+
+  if (cameraPermissionStatus !== "authorized") {
     return <View style={styles.noPermissionsView} />
+  }
+
   return (
     <Screen unsafe>
-    <View style={StyleSheet.absoluteFill}>
-      <Camera
-        style={StyleSheet.absoluteFill}
-        device={device}
-        isActive={isFocused}
-        onError={onError}
-        codeScanner={codeScanner}
-      />
-      <View style={styles.rectangleContainer}>
-        <View style={styles.rectangle} />
-      </View>
-      <Pressable onPress={navigation.goBack}>
-        <View style={styles.close}>
-          <Svg viewBox="0 0 100 100">
-            <Circle cx={50} cy={50} r={50} fill={"white"} opacity={0.5} />
-          </Svg>
-          <Icon name="ios-close" size={64} style={styles.iconClose} />
+      <View style={StyleSheet.absoluteFill}>
+        {device && (
+          <Reanimated.View style={StyleSheet.absoluteFill}>
+            <Camera
+              style={StyleSheet.absoluteFill}
+              device={device}
+              isActive={isFocused}
+              frameProcessor={frameProcessor}
+              frameProcessorFps={5}
+            />
+          </Reanimated.View>
+        )}
+        <View style={styles.rectangleContainer}>
+          <View style={styles.rectangle} />
         </View>
-      </Pressable>
-      <View style={styles.openGallery}>
-        <Pressable onPress={showImagePicker}>
-          <Icon
-            name="image"
-            size={64}
-            color={"#CFD9E2"}
-            style={styles.iconGalery}
-          />
+        <Pressable onPress={navigation.goBack}>
+          <View style={styles.close}>
+            <Svg viewBox="0 0 100 100">
+              <Circle cx={50} cy={50} r={50} fill={colors._white} opacity={0.5} />
+            </Svg>
+            <Icon name="ios-close" size={64} style={styles.iconClose} />
+          </View>
         </Pressable>
-        <Pressable onPress={handleInvoicePaste}>
-          {/* we could Paste from "FontAwesome" but as svg*/}
-          <Icon
-            name="ios-clipboard-outline"
-            size={64}
-            color={"#CFD9E2"}
-            style={styles.iconClipboard}
-          />
-        </Pressable>
+        <View style={styles.openGallery}>
+          <Pressable onPress={showImagePicker}>
+            <Icon
+              name="image"
+              size={64}
+              color={colors._lightGrey}
+              style={styles.iconGalery}
+            />
+          </Pressable>
+          <Pressable onPress={handleInvoicePaste}>
+            {/* we could Paste from "FontAwesome" but as svg*/}
+            <Icon
+              name="ios-clipboard-outline"
+              size={64}
+              color={colors._lightGrey}
+              style={styles.iconClipboard}
+            />
+          </Pressable>
+        </View>
       </View>
-    </View>
     </Screen>
   )
 }

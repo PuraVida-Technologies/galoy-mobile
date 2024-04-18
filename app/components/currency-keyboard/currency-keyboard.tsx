@@ -1,11 +1,10 @@
 import React from "react"
 import { Pressable, StyleProp, View, ViewStyle } from "react-native"
-import { Text } from "@rneui/base"
-import { makeStyles, useTheme } from "@rneui/themed"
+import { makeStyles, useTheme, Text } from "@rneui/themed"
 import { Key as KeyType } from "../amount-input-screen/number-pad-reducer"
 import { testProps } from "@app/utils/testProps"
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ colors }) => ({
   container: {},
   keyRow: {
     flexDirection: "row",
@@ -19,10 +18,17 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
   },
   keyText: {
+    color: colors.grey2,
     fontSize: 24,
     fontWeight: "bold",
     textAlignVertical: "center",
-    color: theme.colors.grey5,
+  },
+  pressedKeyText: {
+    color: colors.grey2,
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlignVertical: "center",
+    opacity: 0.7,
   },
   pressedKeyText: {
     color: theme.colors.primary5,
@@ -37,8 +43,7 @@ type CurrencyKeyboardProps = {
 }
 
 export const CurrencyKeyboard: React.FC<CurrencyKeyboardProps> = ({ onPress }) => {
-  const { theme } = useTheme()
-  const styles = useStyles(theme)
+  const styles = useStyles()
   return (
     <View style={styles.container}>
       <View style={styles.keyRow}>
@@ -72,8 +77,10 @@ const Key = ({
   numberPadKey: KeyType
   handleKeyPress: (key: KeyType) => void
 }) => {
-  const { theme } = useTheme()
-  const styles = useStyles(theme)
+  const {
+    theme: { colors },
+  } = useTheme()
+  const styles = useStyles()
   const pressableStyle = ({ pressed }: { pressed: boolean }): StyleProp<ViewStyle> => {
     const baseStyle: StyleProp<ViewStyle> = {
       height: 40,
@@ -87,7 +94,7 @@ const Key = ({
     if (pressed) {
       return {
         ...baseStyle,
-        backgroundColor: theme.colors.primary9,
+        backgroundColor: colors.grey4,
       }
     }
     return baseStyle

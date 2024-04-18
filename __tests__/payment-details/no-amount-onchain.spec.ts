@@ -22,6 +22,7 @@ const defaultParams: PaymentDetails.CreateNoAmountOnchainPaymentDetailsParams<Wa
     convertMoneyAmount: convertMoneyAmountMock,
     sendingWalletDescriptor: btcSendingWalletDescriptor,
     unitOfAccountAmount: testAmount,
+    isSendingMax: false,
   }
 
 const spy = jest.spyOn(PaymentDetails, "createNoAmountOnchainPaymentDetails")
@@ -94,7 +95,7 @@ describe("no amount lightning payment details", () => {
       }
 
       try {
-        await paymentDetails.sendPayment(sendPaymentMocks)
+        await paymentDetails.sendPaymentMutation(sendPaymentMocks)
       } catch {
         // do nothing as function is expected to throw since we are not mocking the send payment response
       }
@@ -151,7 +152,7 @@ describe("no amount lightning payment details", () => {
       }
 
       try {
-        await paymentDetails.sendPayment(sendPaymentMocks)
+        await paymentDetails.sendPaymentMutation(sendPaymentMocks)
       } catch {
         // do nothing as function is expected to throw since we are not mocking the send payment response
       }

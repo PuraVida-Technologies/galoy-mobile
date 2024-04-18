@@ -4,21 +4,29 @@ import { LocalizedString } from "typesafe-i18n"
 
 import { Screen } from "@app/components/screen"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { palette } from "@app/theme"
 import { useAccountLimitsQuery } from "@app/graphql/generated"
 import { gql } from "@apollo/client"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
 import { useAppConfig, usePriceConversion } from "@app/hooks"
 import { DisplayCurrency, toUsdMoneyAmount } from "@app/types/amounts"
-import { makeStyles, Text } from "@rneui/themed"
-import ContactModal from "@app/components/contact-modal/contact-modal"
+import { makeStyles, Text, useTheme } from "@rneui/themed"
+import ContactModal, {
+  SupportChannels,
+} from "@app/components/contact-modal/contact-modal"
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
+import { UpgradeAccountModal } from "@app/components/upgrade-account-modal"
+import { AccountLevel, useLevel } from "@app/graphql/level-context"
+import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ colors }) => ({
   limitWrapper: {
     padding: 20,
-    backgroundColor: theme.colors.white,
+    backgroundColor: colors.white,
+  },
+  increaseLimitsButtonContainer: {
+    marginVertical: 20,
+    paddingHorizontal: 20,
   },
   contentTextBox: {
     flexDirection: "row",
@@ -29,22 +37,21 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     fontSize: 15,
     paddingBottom: 8,
-    color: theme.colors.darkGreyOrWhite,
   },
   valueRemaining: {
     fontWeight: "bold",
-    color: palette.green,
+    color: colors.green,
     maxWidth: "50%",
   },
   valueTotal: {
     fontWeight: "bold",
-    color: palette.midGrey,
+    color: colors.grey3,
     maxWidth: "50%",
   },
   divider: {
     marginVertical: 0,
     borderWidth: 1,
-    borderColor: theme.colors.grey10,
+    borderColor: colors.grey4,
   },
   errorWrapper: {
     justifyContent: "center",
@@ -53,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "50%",
   },
   errorText: {
-    color: palette.error,
+    color: colors.error,
     fontWeight: "bold",
     fontSize: 18,
     marginBottom: 20,
@@ -71,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 20,
   },
   increaseLimitsText: {
-    color: theme.colors.primary,
+    color: colors.primary,
     fontWeight: "600",
     fontSize: 15,
     textDecorationLine: "underline",
@@ -113,6 +120,9 @@ gql`
 
 export const TransactionLimitsScreen = () => {
   const styles = useStyles()
+  const {
+    theme: { colors },
+  } = useTheme()
 
   const { LL } = useI18nContext()
   const { data, loading, error, refetch } = useAccountLimitsQuery({
@@ -122,11 +132,18 @@ export const TransactionLimitsScreen = () => {
 
   const { appConfig } = useAppConfig()
   const { name: bankName } = appConfig.galoyInstance
+  const { currentLevel } = useLevel()
 
   const [isContactModalVisible, setIsContactModalVisible] = React.useState(false)
+  const [isUpgradeAccountModalVisible, setIsUpgradeAccountModalVisible] =
+    React.useState(false)
 
   const toggleIsContactModalVisible = () => {
     setIsContactModalVisible(!isContactModalVisible)
+  }
+
+  const toggleIsUpgradeAccountModalVisible = () => {
+    setIsUpgradeAccountModalVisible(!isUpgradeAccountModalVisible)
   }
 
   const messageBody = LL.TransactionLimitsScreen.contactUsMessageBody({
@@ -144,7 +161,7 @@ export const TransactionLimitsScreen = () => {
           <Button
             title="reload"
             disabled={loading}
-            color={palette.error}
+            color={colors.error}
             onPress={() => refetch()}
           />
         </View>
@@ -156,7 +173,7 @@ export const TransactionLimitsScreen = () => {
     return (
       <Screen>
         <View style={styles.loadingWrapper}>
-          <ActivityIndicator animating size="large" color={palette.lightBlue} />
+          <ActivityIndicator animating size="large" color={colors.primary} />
         </View>
       </Screen>
     )
@@ -209,21 +226,34 @@ export const TransactionLimitsScreen = () => {
           <TransactionLimitsPeriod key={index} {...data} />
         ))}
       </View>
-      <Pressable
-        style={styles.increaseLimitsContainer}
-        onPress={toggleIsContactModalVisible}
-      >
-        <Text style={styles.increaseLimitsText}>
-          {LL.TransactionLimitsScreen.howToIncreaseLimits()}
-        </Text>
-        <GaloyIcon name="question" size={20} color={styles.increaseLimitsText.color} />
-      </Pressable>
+      {currentLevel === AccountLevel.Zero ? (
+        <GaloyPrimaryButton
+          title={LL.TransactionLimitsScreen.increaseLimits()}
+          onPress={toggleIsUpgradeAccountModalVisible}
+          containerStyle={styles.increaseLimitsButtonContainer}
+        />
+      ) : (
+        <Pressable
+          style={styles.increaseLimitsContainer}
+          onPress={toggleIsContactModalVisible}
+        >
+          <Text style={styles.increaseLimitsText}>
+            {LL.TransactionLimitsScreen.contactSupportToPerformKyc()}
+          </Text>
+          <GaloyIcon name="question" size={20} color={styles.increaseLimitsText.color} />
+        </Pressable>
+      )}
+
       <ContactModal
         isVisible={isContactModalVisible}
         toggleModal={toggleIsContactModalVisible}
         messageBody={messageBody}
         messageSubject={messageSubject}
-        showStatusPage={false}
+        supportChannelsToHide={[SupportChannels.StatusPage, SupportChannels.Telegram]}
+      />
+      <UpgradeAccountModal
+        isVisible={isUpgradeAccountModalVisible}
+        closeModal={toggleIsUpgradeAccountModalVisible}
       />
     </Screen>
   )
@@ -252,17 +282,16 @@ const TransactionLimitsPeriod = ({
     DisplayCurrency,
   )
 
-  const usdRemainingLimitMoneyAmount = convertMoneyAmount(
-    toUsdMoneyAmount(totalLimit),
-    DisplayCurrency,
-  )
-
-  const remainingLimitText =
+  const usdRemainingLimitMoneyAmount =
     typeof remainingLimit === "number"
-      ? `${formatMoneyAmount({
-          moneyAmount: usdRemainingLimitMoneyAmount,
-        })} ${LL.TransactionLimitsScreen.remaining().toLocaleLowerCase()}`
-      : ""
+      ? convertMoneyAmount(toUsdMoneyAmount(remainingLimit), DisplayCurrency)
+      : null
+
+  const remainingLimitText = usdRemainingLimitMoneyAmount
+    ? `${formatMoneyAmount({
+        moneyAmount: usdRemainingLimitMoneyAmount,
+      })} ${LL.TransactionLimitsScreen.remaining().toLocaleLowerCase()}`
+    : ""
 
   const getLimitDuration = (period: number): LocalizedString | null => {
     const interval = (period / (60 * 60)).toString()

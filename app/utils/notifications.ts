@@ -3,6 +3,8 @@ import messaging from "@react-native-firebase/messaging"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { DeviceNotificationTokenCreateDocument } from "@app/graphql/generated"
 import { uploadDeviceToken } from "@app/modules/market-place/graphql"
+// eslint-disable-next-line react-native/split-platform-components
+import { Platform, PermissionsAndroid } from "react-native"
 
 // No op if the permission has already been requested
 export const requestNotificationPermission = () => messaging().requestPermission()
@@ -38,10 +40,20 @@ export const addDeviceToken = async (client: ApolloClient<unknown>): Promise<voi
 }
 
 export const hasNotificationPermission = async (): Promise<boolean> => {
-  const authorizationStatus = await messaging().hasPermission()
+  if (Platform.OS === "ios") {
+    const authorizationStatus = await messaging().hasPermission()
+    return (
+      authorizationStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authorizationStatus === messaging.AuthorizationStatus.PROVISIONAL
+    )
+  }
 
-  return (
-    authorizationStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authorizationStatus === messaging.AuthorizationStatus.PROVISIONAL
-  )
+  if (Platform.OS === "android") {
+    const authorizationStatusAndroid = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+    )
+    return authorizationStatusAndroid === PermissionsAndroid.RESULTS.GRANTED || false
+  }
+
+  return false
 }

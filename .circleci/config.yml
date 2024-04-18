@@ -85,6 +85,8 @@ jobs:
             SESSION_ID=$(cat browserstack_output.log | grep sessionId | head -n1 | sed -n "s/^.*'\(.*\)'.*$/\1/ p")
             echo "Session ID"
             echo $SESSION_ID
+            echo "Browserstack URL"
+            echo "https://app-automate.browserstack.com/dashboard/v2/builds/$BROWSERSTACK_ANDROID_BUILD/sessions/$SESSION_ID"
             VIDEO_URL=$(curl -s -u "$BROWSERSTACK_USER:$BROWSERSTACK_ACCESS_KEY" -X GET "https://api-cloud.browserstack.com/app-automate/sessions/$SESSION_ID.json" | jq -r '.automation_session.video_url')
             echo "Video URL"
             echo $VIDEO_URL
@@ -93,6 +95,7 @@ jobs:
   test_ios_in_pr:
     macos:
       xcode: 14.2.0
+    resource_class: macos.x86.medium.gen2
     working_directory: ~/galoy-mobile
     environment:
       FL_OUTPUT_DIR: output
@@ -144,6 +147,11 @@ jobs:
             - node_modules
             - ios/Pods
       - run:
+          name: Import Apple Certificates
+          command: |
+            tmpfile=$(mktemp /tmp/wwdr-cert.cer)
+            curl -f -o $tmpfile https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer && security import $tmpfile ~/Library/Keychains/login.keychain-db
+      - run:
           name: Browserstack Testing
           command: |
             set -o pipefail
@@ -152,6 +160,8 @@ jobs:
             SESSION_ID=$(cat browserstack_output.log | grep sessionId | head -n1 | sed -n "s/^.*'\(.*\)'.*$/\1/ p")
             echo "Session ID"
             echo $SESSION_ID
+            echo "Browserstack URL"
+            echo "https://app-automate.browserstack.com/dashboard/v2/builds/$BROWSERSTACK_IOS_BUILD/sessions/$SESSION_ID"
             VIDEO_URL=$(curl -s -u "$BROWSERSTACK_USER:$BROWSERSTACK_ACCESS_KEY" -X GET "https://api-cloud.browserstack.com/app-automate/sessions/$SESSION_ID.json" | jq -r '.automation_session.video_url')
             echo "Video URL"
             echo $VIDEO_URL
@@ -244,6 +254,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "19:7e:f3:6c:be:a7:17:01:7d:09:ca:39:c3:98:86:90"
+      - run: brew update
       - run: HOMEBREW_NO_AUTO_UPDATE=1 brew install --cask google-cloud-sdk
       - run: echo $GCLOUD_BUCKET_KEY | base64 --decode > key.json
       - run: gcloud auth activate-service-account --key-file key.json
@@ -266,6 +277,11 @@ jobs:
             - node_modules
             - ios/Pods
       - run:
+          name: Import Apple Certificates
+          command: |
+            tmpfile=$(mktemp /tmp/wwdr-cert.cer)
+            curl -f -o $tmpfile https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer && security import $tmpfile ~/Library/Keychains/login.keychain-db
+      - run:
           name: build
           command: |
             cd ios
@@ -276,8 +292,8 @@ jobs:
           name: upload to gcs
           command: |
             timestamp=$(date +%s)
-            gsutil cp -r ~/galoy-mobile/ios/Bitcoin\ Beach.ipa gs://galoy-build-artifacts/galoy-mobile/$GCS_DIRECTORY/galoy-mobile-$timestamp-v${PUBLIC_VERSION}/
-            gsutil cp -r ~/galoy-mobile/ios/Bitcoin\ Beach.app.dSYM.zip gs://galoy-build-artifacts/galoy-mobile/$GCS_DIRECTORY/galoy-mobile-$timestamp-v${PUBLIC_VERSION}/
+            gsutil cp -r ~/galoy-mobile/ios/Blink.ipa gs://galoy-build-artifacts/galoy-mobile/$GCS_DIRECTORY/galoy-mobile-$timestamp-v${PUBLIC_VERSION}/
+            gsutil cp -r ~/galoy-mobile/ios/Blink.app.dSYM.zip gs://galoy-build-artifacts/galoy-mobile/$GCS_DIRECTORY/galoy-mobile-$timestamp-v${PUBLIC_VERSION}/
       - store_artifacts:
           path: ios/ios_build_output.log
 
@@ -298,6 +314,7 @@ jobs:
       - gh/install
       - checkout:
           path: ~/galoy-mobile
+      - run: brew update
       - run: HOMEBREW_NO_AUTO_UPDATE=1 brew install --cask google-cloud-sdk
       - run: echo $GCLOUD_BUCKET_KEY | base64 --decode > key.json
       - run: gcloud auth activate-service-account --key-file key.json
@@ -310,6 +327,11 @@ jobs:
           key: 1-gem-{{ checksum "ios/Gemfile.lock" }}
           paths:
             - ios/vendor
+      - run:
+          name: Import Apple Certificates
+          command: |
+            tmpfile=$(mktemp /tmp/wwdr-cert.cer)
+            curl -f -o $tmpfile https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer && security import $tmpfile ~/Library/Keychains/login.keychain-db
       - run: cd ios && bundle exec fastlane app_store_upload
 
 workflows:

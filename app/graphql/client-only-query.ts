@@ -4,12 +4,17 @@ import {
   BetaQuery,
   ColorSchemeDocument,
   ColorSchemeQuery,
+  FeedbackModalShownDocument,
+  FeedbackModalShownQuery,
+  HasPromptedSetDefaultAccountDocument,
   HiddenBalanceToolTipDocument,
   HiddenBalanceToolTipQuery,
   HideBalanceDocument,
   HideBalanceQuery,
-  NewNameBlinkCounterDocument,
-  NewNameBlinkCounterQuery,
+  InnerCircleValueDocument,
+  InnerCircleValueQuery,
+  IntroducingCirclesModalShownDocument,
+  IntroducingCirclesModalShownQuery,
 } from "./generated"
 
 export default gql`
@@ -26,11 +31,23 @@ export default gql`
   }
 
   query colorScheme {
-    colorScheme @client
+    colorScheme @client # "system" | "light" | "dark"
   }
 
-  query newNameBlinkCounter {
-    newNameBlinkCounter @client
+  query feedbackModalShown {
+    feedbackModalShown @client
+  }
+
+  query hasPromptedSetDefaultAccount {
+    hasPromptedSetDefaultAccount @client
+  }
+
+  query introducingCirclesModalShown {
+    introducingCirclesModalShown @client
+  }
+
+  query innerCircleValue {
+    innerCircleValue @client
   }
 `
 
@@ -98,16 +115,61 @@ export const updateColorScheme = (client: ApolloClient<unknown>, colorScheme: st
   }
 }
 
-export const updateNewNameBlink = (client: ApolloClient<unknown>, counter: number) => {
+export const setFeedbackModalShown = (client: ApolloClient<unknown>, shown: boolean) => {
   try {
-    client.writeQuery<NewNameBlinkCounterQuery>({
-      query: NewNameBlinkCounterDocument,
+    client.writeQuery<FeedbackModalShownQuery>({
+      query: FeedbackModalShownDocument,
       data: {
         __typename: "Query",
-        newNameBlinkCounter: counter + 1,
+        feedbackModalShown: shown,
       },
     })
   } catch {
-    console.warn("impossible to update beta")
+    console.warn("unable to update feedbackModalShown")
+  }
+}
+
+export const setHasPromptedSetDefaultAccount = (client: ApolloClient<unknown>) => {
+  try {
+    client.writeQuery({
+      query: HasPromptedSetDefaultAccountDocument,
+      data: {
+        __typename: "Query",
+        hasPromptedSetDefaultAccount: true,
+      },
+    })
+  } catch {
+    console.warn("impossible to update hasPromptedSetDefaultAccount")
+  }
+}
+
+export const setIntroducingCirclesModalShown = (client: ApolloClient<unknown>) => {
+  try {
+    client.writeQuery<IntroducingCirclesModalShownQuery>({
+      query: IntroducingCirclesModalShownDocument,
+      data: {
+        __typename: "Query",
+        introducingCirclesModalShown: true,
+      },
+    })
+  } catch {
+    console.warn("unable to update introducingCirclesModalShown")
+  }
+}
+
+export const setInnerCircleCachedValue = (
+  client: ApolloClient<unknown>,
+  innerCircleValue: number,
+) => {
+  try {
+    client.writeQuery<InnerCircleValueQuery>({
+      query: InnerCircleValueDocument,
+      data: {
+        __typename: "Query",
+        innerCircleValue,
+      },
+    })
+  } catch {
+    console.warn("unable to update InnerCircleValueDocument")
   }
 }

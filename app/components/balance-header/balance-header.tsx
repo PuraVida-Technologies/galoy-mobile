@@ -7,11 +7,8 @@ import { useBalanceHeaderQuery } from "@app/graphql/generated"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { usePriceConversion } from "@app/hooks"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
-import { useI18nContext } from "@app/i18n/i18n-react"
 import { makeStyles, Text } from "@rneui/themed"
 
-import { palette } from "../../theme/palette"
-import { testProps } from "../../utils/testProps"
 import HideableArea from "../hideable-area/hideable-area"
 import {
   DisplayCurrency,
@@ -19,54 +16,7 @@ import {
   toBtcMoneyAmount,
   toUsdMoneyAmount,
 } from "@app/types/amounts"
-
-const useStyles = makeStyles((theme) => ({
-  balanceHeaderContainer: {
-    flex: 1,
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  header: {
-    height: 24,
-  },
-  balancesContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  footer: {
-    height: 24,
-  },
-  headerText: {
-    color: palette.midGrey,
-    fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  marginBottom: {
-    marginBottom: 4,
-  },
-  hiddenBalanceTouchableOpacity: {
-    alignItems: "center",
-    flexGrow: 1,
-    justifyContent: "center",
-  },
-  primaryBalanceText: {
-    color: theme.colors.grey1,
-    fontSize: 32,
-  },
-  loaderBackground: {
-    color: theme.colors.loaderBackground,
-  },
-  loaderForefound: {
-    color: theme.colors.loaderForeground,
-  },
-  balanceHiddenText: {
-    color: theme.colors.grey1,
-    fontSize: 32,
-    fontWeight: "bold",
-  },
-}))
+import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
 
 const Loader = () => {
   const styles = useStyles()
@@ -89,13 +39,10 @@ gql`
       id
       defaultAccount {
         id
-        btcWallet @client {
+        wallets {
           id
           balance
-        }
-        usdWallet @client {
-          id
-          balance
+          walletCurrency
         }
       }
     }
@@ -130,13 +77,12 @@ export const BalanceHeader: React.FC<Props> = ({
   let balanceInDisplayCurrency = "$0.00"
 
   if (isAuthed) {
-    const usdWalletBalance = toUsdMoneyAmount(
-      data?.me?.defaultAccount?.usdWallet?.balance,
-    )
+    const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
+    const usdWallet = getUsdWallet(data?.me?.defaultAccount?.wallets)
 
-    const btcWalletBalance = toBtcMoneyAmount(
-      data?.me?.defaultAccount?.btcWallet?.balance,
-    )
+    const usdWalletBalance = toUsdMoneyAmount(usdWallet?.balance)
+
+    const btcWalletBalance = toBtcMoneyAmount(btcWallet?.balance)
 
     const btcBalanceInDisplayCurrency =
       convertMoneyAmount && convertMoneyAmount(btcWalletBalance, DisplayCurrency)
@@ -154,19 +100,12 @@ export const BalanceHeader: React.FC<Props> = ({
     }
   }
 
-  const { LL } = useI18nContext()
-
   const toggleIsContentVisible = () => {
     setIsContentVisible((prevState) => !prevState)
   }
 
   return (
     <View style={styles.balanceHeaderContainer}>
-      <View style={styles.header}>
-        <Text {...testProps("Current Balance Header")} style={styles.headerText}>
-          {LL.BalanceHeader.currentBalance()}
-        </Text>
-      </View>
       <HideableArea
         isContentVisible={isContentVisible}
         hiddenContent={
@@ -190,7 +129,45 @@ export const BalanceHeader: React.FC<Props> = ({
           </TouchableOpacity>
         </View>
       </HideableArea>
-      <View style={styles.footer} />
     </View>
   )
 }
+
+const useStyles = makeStyles(({ colors }) => ({
+  balanceHeaderContainer: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  balancesContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  marginBottom: {
+    marginBottom: 4,
+  },
+  hiddenBalanceTouchableOpacity: {
+    alignItems: "center",
+    flexGrow: 1,
+    justifyContent: "center",
+  },
+  primaryBalanceText: {
+    fontSize: 32,
+  },
+  loaderBackground: {
+    color: colors.loaderBackground,
+  },
+  loaderForefound: {
+    color: colors.loaderForeground,
+  },
+  balanceHiddenText: {
+    fontSize: 32,
+    fontWeight: "bold",
+  },
+}))

@@ -1,807 +1,911 @@
 {
-  "GaloyAddressScreen": {
-    "title": "Erhalte Zahlungen durch:",
-    "buttonTitle": "Lege deine {bankName: string} Adresse fest",
-    "yourAddress": "Deine {bankName: string} Adresse",
-    "notAbleToChange": "Du kannst deine {bankName: string} Adresse nicht ändern, sobald sie einmal gesetzt wurde.",
-    "addressNotAvailable": "Diese {bankName: string} Adresse ist bereits vergeben.",
-    "somethingWentWrong": "Es ist ein Fehler aufgetreten. Bitte versuche es später noch einmal.",
-    "merchantTitle": "Für Händler",
-    "yourCashRegister": "Deine Lightning-Kasse",
-    "yourPaycode": "Dein Zahlungscode",
-    "copiedAddressToClipboard": "Deine {bankName: string} Adresse wurde in die Zwischenablage kopiert",
-    "copiedPaycodeToClipboard": "Dein Zahlungscode wurde kopiert",
-    "copiedCashRegisterLinkToClipboard": "Kassen-Link in die Zwischenablage kopiert",
-    "howToUseIt": "Wie funktioniert das?",
-    "howToUseYourAddress": "Wie man eine Lightning-Adresse verwendet",
-    "howToUseYourPaycode": "Wie der Zahlungscode funktioniert",
-    "howToUseYourCashRegister": "Wie deine Kasse funktioniert",
-    "howToUseYourAddressExplainer": "Mit jemandem teilen, der eine kompatible Wallet verwendet, wie zum Beispiel:",
-    "howToUseYourPaycodeExplainer": "Du kannst deinen Zahlungscode (welcher eine Invoice ohne Betrag ist) ausdrucken und im Geschäft nutzen, um Zahlungen zu empfangen. Käufer können dich bezahlen, indem sie den Zahlungscode mit einer Lightning Wallet scannen.\n\nBedenke dabei, dass bspw. die folgenden Wallets keine Rechnungen ohne fixen Betrag unterstützen:",
-    "howToUseYourCashRegisterExplainer": "Erlaube Menschen, Zahlungen über den Kassen-Link zu empfangen, ohne Zugriff auf deine Wallet zu gewähren. Sie können Invoices erstellen, sodass Zahlungen direkt an deine {bankName: string} Wallet gesendet werden."
-  },
-  "AuthenticationScreen": {
-    "authenticationDescription": "Authentifizieren zum Fortfahren",
-    "setUp": "Biometrische Authentifizierung einrichten",
-    "setUpAuthenticationDescription": "Biometrie zur Authentifizierung verwenden",
-    "skip": "Überspringen",
-    "unlock": "Entsperren",
-    "usePin": "PIN nutzen"
-  },
-  "BalanceHeader": {
-    "currentBalance": "Aktueller Kontostand",
-    "hiddenBalanceToolTip": "Tippen, um den Kontostand anzuzeigen"
-  },
-  "ContactsScreen": {
-    "noContactsTitle": "Bislang keine Kontakte",
-    "noContactsYet": "Benutze einen Usernamen, um Zahlungen zu senden oder zu empfangen. Nutzer, die etwas gesendet oder empfangen haben, werden hier automatisch hinzugefügt",
-    "noMatchingContacts": "Es konnten keine passenden Kontakte gefunden werden.",
-    "title": "Kontakte"
-  },
-  "ContactDetailsScreen": {
-    "title": "Transaktionen mit {username}"
-  },
-  "ConversionDetailsScreen": {
-    "title": "Umtauschen",
-    "percentageToConvert": "% umtauschen"
-  },
-  "ConversionConfirmationScreen": {
-    "title": "Umtausch prüfen",
-    "youreConverting": "Umtausch läuft",
-    "receivingAccount": "Empfangendes Konto"
-  },
-  "ConversionSuccessScreen": {
-    "title": "Umtausch erfolgreich",
-    "message": "Das hat geklappt!"
-  },
-  "EarnScreen": {
-    "earnSats": "Verdiene {formattedNumber|sats}",
-    "earnSections": {
-      "bitcoinWhatIsIt": {
-        "title": "Was ist Bitcoin?",
-        "questions": {
-          "whatIsBitcoin": {
-            "answers": [
-              "Digitales Geld",
-              "Ein Videospiel",
-              "Eine neue Zeichentrickfigur"
-            ],
-            "feedback": [
-              "Korrekt. Du hast gerade 1 “Sat” verdient!",
-              "Nicht ganz, versuche es erneut.",
-              "Nein, zumindest nicht soweit wir wissen!"
-            ],
-            "question": "Was genau ist Bitcoin?",
-            "text": "Bitcoin ist digitales Geld.\n\nEs kann schnell und sicher zwischen Menschen auf der ganzen Welt übertragen werden — ohne eine Bank oder andere Instanz dazwischen.",
-            "title": "Was genau ist Bitcoin?"
-          },
-          "sat": {
-            "answers": [
-              "Die kleinste Einheit von Bitcoin",
-              "Ein kleiner Satellit",
-              "Eine Weltraumkatze 🐱🚀"
-            ],
-            "feedback": [
-              "Korrekt. Du hast 2 weitere Sats verdient!!",
-              "Vielleicht, aber das ist nicht die richtige Antwort in diesem Kontext 🙂",
-              "Hmmm… nicht ganz!"
-            ],
-            "question": "Ich habe gerade einen “Sat\" verdient. Was ist das?",
-            "text": "Ein “Sat” ist die kleinste Einheit von Bitcoin. \n\nWir wissen alle, dass man einen US Dollar in 100 Cents aufteilen kann. Genauso kann auch ein Bitcoin in 100.000.000 Sats aufgeteilt werden. \n\nDu musst also keinen ganzen Bitcoin besitzen, um Bitcoin nutzen zu können. Du kannst Bitcoin nutzen, ganz egal ob Du nun 20 Sats, 3000 Sats oder gar 100.000.000 Sats besitzt (wobei Du jetzt weißt, dass diese Menge einem ganzen Bitcoin entspricht).",
-            "title": "Ich habe gerade einen “Sat\" verdient. Was ist das?"
-          },
-          "whereBitcoinExist": {
-            "answers": [
-              "Im Internet",
-              "Auf dem Mond",
-              "Auf einem Bankkonto"
-            ],
-            "feedback": [
-              "Korrekt. Du hast weitere 5 Sats verdient!",
-              "Falsch. Also… zumindest bis jetzt nicht ;)",
-              "Nicht ganz, versuche es erneut."
-            ],
-            "question": "Wo existieren Bitcoins?",
-            "text": "Bitcoin ist eine neue Form von Geld. Es kann immer und überall von jedem genutzt werden.\n\nEs ist nicht an eine spezielle Region oder einen Herausgeber gebunden (wie z.B. der Euro). Es gibt auch keine Geldscheine, Münzen oder (Bank-) Karten.\n\nAlles ist 100% digital. Bitcoin besteht aus einem Netzwerk  vieler Computer.\n\nDeine Bitcoin kannst Du einfach mit einer App auf deinem Handy oder auf deinem Computer verwalten.",
-            "title": "Wo existieren Bitcoins?"
-          },
-          "whoControlsBitcoin": {
-            "answers": [
-              "Eine freiwillige Gemeinschaft von Benutzern auf der ganzen Welt",
-              "Mister Burns aus \"Die Simpsons\"",
-              "Die französische Regierung"
-            ],
-            "feedback": [
-              "Das ist richtig. Bitcoin wird ermöglicht durch Menschen auf der ganzen Welt, die auf ihren Computern und Handys die Bitcoin Software laufen lassen.",
-              "Ein amüsanter Gedanke - aber leider nicht richtig.",
-              "Falsch. Bitcoin wird weder durch Unternehmen noch durch Regierungen kontrolliert."
-            ],
-            "question": "Wer kontrolliert Bitcoin?",
-            "text": "Bitcoin wird durch keine einzelne Person, keinem einzelnen Unternehmen und keiner Regierung gesteuert.\n\nEs wird betrieben von seinen Nutzern - Menschen und Unternehmen auf der ganzen Welt - die freiwillig die Bitcoin Software auf Ihren Computern und Handys laufen lassen.",
-            "title": "Wer kontrolliert Bitcoin?"
-          },
-          "copyBitcoin": {
-            "answers": [
-              "Nein - Es ist nicht möglich, Bitcoin zu kopieren oder zu vervielfältigen",
-              "Ja, man kann Bitcoin genauso einfach kopieren, wie man ein digitales Foto kopieren kann",
-              "Ja, aber um Bitcoin zu vervielfältigen, benötigt man spezielle Computer"
-            ],
-            "feedback": [
-              "Das ist absolut richtig!",
-              "Du weißt, dass das nicht richtig ist. Versuch's nochmal.",
-              "Falsch. Es gibt kein Möglichkeit, Bitcoin zu kopieren."
-            ],
-            "question": "Wenn Bitcoin digitales Geld ist, kann man es dann nicht einfach kopieren - und so neues Geld erschaffen?",
-            "text": "Der Wert eines Bitcoin kann niemals kopiert werden. Das ist einer der Hauptgründe, warum Bitcoin so eine mächtige Erfindung ist!\n\nDie meisten digitalen Dateien - wie zum Beispiel ein Foto auf dem iPhone, ein MP3 Song oder ein Microsoft Word Dokument - können sehr einfach kopiert oder mit jemandem geteilt werden.\n\nDie Bitcoin Software verhindert diese Vervielfältigung - auch \"Double Spending\" genannt - von digitalem Geld. Wie das funktioniert, zeigen wir Dir später!",
-            "title": "Wenn Bitcoin digitales Geld ist, kann man es dann nicht einfach kopieren - und so neues Geld erschaffen?"
-          }
-        }
-      },
-      "WhatIsMoney": {
-        "title": "Was ist Geld?",
-        "questions": {
-          "moneySocialAggrement": {
-            "answers": [
-              "Weil Menschen darauf vertrauen, dass andere Personen dem Geld den gleichen Wert beimessen",
-              "Weil Deine Mutter es dir gesagt hat",
-              "Weil ein Dollar Geldschein den Wert seines eigenen Gewichts in Gold hat"
-            ],
-            "feedback": [
-              "Genau. Deshalb funktioniert Geld!",
-              "Das mag schon sein. Aber das ist hier nicht die richtige Antwort!",
-              "Nein. In der Vergangenheit konnte man US Dollars in Gold tauschen. Aber das ist heute nicht mehr der Fall."
-            ],
-            "question": "Warum hat Geld einen Wert?",
-            "text": "Geld benötigt das Vertrauen der Menschen. \n\nDie Menschen vertrauen den Papiergeldscheinen in ihren Taschen. Sie vertrauen dem digitalen Kontostand beim Online-Banking. Sie vertrauen darauf, dass ein Gutschein zu dem Wert eingelöst werden kann, der darauf abgedruckt ist. \n\nGeld befähigt Menschen dazu, schnell und einfach Handel zu treiben und es jederzeit gegen Güter oder Dienstleistungen tauschen zu können.",
-            "title": "Geld ist eine soziale Vereinbarung. "
-          },
-          "coincidenceOfWants": {
-            "answers": [
-              "Gleichzeitiges Bestehen von Bedürfnissen",
-              "Gleichzeitigkeit von Tag und Nacht",
-              "Die Gleichzeitigkeit, dass der Mond die Sonne verdeckt."
-            ],
-            "feedback": [
-              "Das ist richtig. Geld erlaubt es dir, etwas zu kaufen, ohne die Form der Bezahlung verhandeln zu müssen",
-              "Nein, du Dummerchen. Du weißt, dass das nicht die richtige Antwort ist.",
-              "Nicht wirklich. Wir nennen das eine Sonnenfinsternis 🌚"
-            ],
-            "question": "Wie wird das Problem der Gleichzeitigkeit durch Geld gelöst?",
-            "text": "Vor Jahrhunderten, als die Menschen noch kein Geld hatten, da war der Tauschhandel mit Waren die einzige Möglichkeit des Handels. Sie mussten jedes Mal feilschen, in welchem Verhältnis ein Gut gegen ein anderes Gut getauscht werden sollte. \n\nAngenommen, Du hättest gerne ein Mittagessen in einem Restaurant und bietest dem Besitzer einen Besen als Bezahlung an. Der Besitzer könnte einfach \"Nein\" sagen -- aber vielleicht akzeptiert er drei Hüte, solltest Du welche besitzen. \n\nDu kannst Dir vorstellen, wie schwierig und ineffizient eine \"Tauschwirtschaft\" wäre!\n\nIm Gegensatz dazu kannst Du einfach einen 20 Euro Schein zücken und Du weißt, dass der Restaurantbesitzer bereit ist, diesen zu akzeptieren.",
-            "title": "Geld löst das Problem der \"Gleichzeitigkeit von Bedürfnissen\"... Was bedeutet das?"
-          },
-          "moneyEvolution": {
-            "answers": [
-              "Steine, Muscheln und Gold",
-              "Kleine Monopoly Häuser aus Plastik",
-              "Münzen, die aus Schokolade bestehen"
-            ],
-            "feedback": [
-              "Richtig. Dinge, die selten und schwierig zu vervielfältigen sind, wurden oft als Geld genutzt.",
-              "Falsch. Sie können einen Wert im Spiel haben -- aber nicht in der echten Welt.",
-              "Nein. Sie sind vielleicht lecker, aber als Geld sind sie unbrauchbar."
-            ],
-            "question": "Welche Dinge wurden in der Vergangenheit als Geld verwendet?",
-            "text": "Vor Tausenden von Jahren benutzte die Gesellschaft in Mikronesien sehr große und seltene Steine als eine Art gemeinsame Währung. \n\nAb 1500 wurden seltene Kaurimuscheln (die im Meer gefunden wurden) in vielen Ländern als Geld verwendet.\n\nUnd seit Jahrtausenden wird Gold in Ländern auf der ganzen Welt als Geld verwendet - auch in den Vereinigten Staaten (bis 1971).",
-            "title": "Geld hat sich bereits vor sehr langer Zeit entwickelt."
-          },
-          "whyStonesShellGold": {
-            "answers": [
-              "Weil sie die Schlüsseleigenschaften besitzen -- wie zum Beispiel Langlebigkeit, Einheitlichkeit und Teilbarkeit.",
-              "Weil sie hübsch sind und funkeln.",
-              "Weil sie in deine Hosentasche passen."
-            ],
-            "feedback": [
-              "Richtig. Weitere wichtige Eigenschaften sind Begrenztheit und Transportierbarkeit.",
-              "Falsch. Das mag zwar wahr sein, aber das alleine ist noch keine gute Eigenschaft für Geld.",
-              "Nicht ganz. Auch wenn diese Dinge sicher gut zu transportieren sind, so ist das alleine noch keine gute Eigenschaft für Geld."
-            ],
-            "question": "Warum wurden Steine, Muscheln und Gold als Geld genutzt?",
-            "text": "Na ja, all diese Dinge haben manche -- wenn auch nicht alle -- Eigenschaften eines guten Geldes.\n\nAber welche Eigenschaften zeichnen \"gutes\" Geld aus?\nBegrenztheit: Es darf nicht beliebig neu erzeugt oder kopiert werden können\nAkzeptanz: Die Echtheit muss überprüfbar sein\nLanglebigkeit: Einfach zu lagern. Es darf nicht verderben oder zerfallen\nEinheitlichkeit: Es muss austauschbar sein mit einer gleichwertigen Einheit\nTransportabel: Einfach von A nach B zu bewegen\nTeilbarkeit: Es kann in kleinere Einheiten unterteilt werden ",
-            "title": "Warum wurden Steine, Muscheln und Gold in der Vergangenheit so häufig als Geld verwendet?"
-          },
-          "moneyIsImportant": {
-            "answers": [
-              "Geld erlaubt es Menschen, Güter und Dienstleistungen zu kaufen -- sowohl heute, als auch morgen.",
-              "Geld gibt dir die Möglichkeit, zum Mond zu fliegen.",
-              "Geld ist die Lösung aller Probleme."
-            ],
-            "feedback": [
-              "Das ist richtig!",
-              "Das ist leider falsch. Auch wenn es in der Zukunft so sein könnte :)",
-              "Nicht ganz. Auch, wenn manche Menschen das glauben: Das ist nicht der hauptsächliche Zweck von Geld."
-            ],
-            "question": "Was ist der hauptsächliche Grund, warum Geld so wichtig ist?",
-            "text": "Jeder weiß, dass Geld wichtig ist.\n\nDie meisten Menschen tauschen ihre Zeit und ihre Energie -- in Form von Arbeit -- um Geld zu erhalten. Die Menschen tun dies, um sich Güter und Dienstleistungen kaufen zu können -- heute und in der Zukunft.",
-            "title": "Geld ist wichtig für jeden Einzelnen."
-          },
-          "moneyImportantGovernement": {
-            "answers": [
-              "Die US Notenbank (Federal Reserve)",
-              "Mr Burns aus \"Die Simpsons\"",
-              "Ein Typ mit einer Notenpresse im Keller"
-            ],
-            "feedback": [
-              "Richtig. Die US Regierung kann jederzeit soviel Geld drucken, wie sie will.",
-              "Falsch. Auch wenn es so aussah, als hätte er immer schon viel Geld gehabt.",
-              "Nein. Auch, wenn einige Leute Falschgeld herstellen, so ist es trotzdem nicht legal!"
-            ],
-            "question": "Wer kann auf legalem Wege US Dollars drucken, wann immer er will?",
-            "text": "Moderne Volkswirtschaften werden durch Staaten gelenkt: USA, Japan, Schweiz, Brasilien, Norwegen, China, etc.\n\nEntsprechend hat in den meisten Staaten die jeweilige Regierung die Gewalt darüber, ob neues Geld erschaffen wird.\n\nIn den Vereinigten Staaten kann die Zentralbank (auch bekannt als Federal Reserve, kurz \"FED\") beliebig viel Geld erschaffen und beliebig viele neue US Dollars drucken, wann immer sie möchte.\n\nDie \"FED\" benötigt dazu weder die Erlaubnis vom Präsidenten, noch vom Kongress -- und ganz sicher nicht von der Bevölkerung.\n\nStell Dir vor, Du hättest die Möglichkeit, so viele US Dollars zu drucken, wie Du möchtest -- was würdest Du tun?",
-            "title": "Geld ist auch wichtig für Regierungen"
-          }
-        }
-      },
-      "HowDoesMoneyWork": {
-        "title": "Wie funktioniert Geld?",
-        "questions": {
-          "WhatIsFiat": {
-            "answers": [
-              "Es wird geschaffen auf Anweisung der nationalen Regierung des jeweiligen Landes.",
-              "Von dem Manager einer lokalen Bank-Filiale.",
-              "Der Monopoly-Geld-Mann."
-            ],
-            "feedback": [
-              "Richtig, Die Zentralbank einer Regierung erschafft neues Fiatgeld.",
-              "Falsch. Eine Bank kann nur das Geld verwalten, das vorher von der Regierung gedruckt wurde.",
-              "Nein. Versuch's nochmal!"
-            ],
-            "question": "Wer erschafft Fiatgeld, wie beispielsweise US Dollars oder Schweizer Franken?",
-            "text": "Alle nationalen Währungen, die heutzutage im Umlauf sind, sind sogenannte \"Fiat\"-Währungen. Darunter fallen zum Beispiel  der US Dollar, der Japanische Yen, der Schweizer Franken, und so weiter.\n\nDas Wort \"fiat\" ist Lateinisch und bedeutet \"Es werde!\" -- in dem Sinne, dass es offiziell angeordnet wird. \n\nDas bedeutet, dass alles Fiatgeld -- inklusive des US Dollars -- einfach auf Anordnung der nationalen Regierung erschaffen wird. ",
-            "title": "Fiatgeld: Was ist das?"
-          },
-          "whyCareAboutFiatMoney": {
-            "answers": [
-              "Alle Fiatwährungen werden schlussendlich von staatlichen Behörden missbraucht.",
-              "Die Banken vor Ort verfügen möglicherweise nicht über genügend Tresorraum, um alle Dollarscheine aufzubewahren.",
-              "Möglicherweise gibt es nicht genug Bäume, um Papier für alle zusätzlichen Dollarscheine herzustellen."
-            ],
-            "feedback": [
-              "Richtig. Im Laufe der Geschichte konnten die Regierungen der Möglichkeit, Geld zu drucken, nicht widerstehen, da sie im Endeffekt nicht verpflichtet sind, dieses Geld zurückzuzahlen.",
-              "Nein, das ist sicher nicht der Fall.",
-              "Falsch. Versuche es bitte noch einmal."
-            ],
-            "question": "Warum sollte es mich kümmern, dass die Regierung das Fiatgeld kontrolliert?",
-            "text": "Wie bereits im vorherigen Quiz erwähnt, ist die US Zentralbank die Federal Reserve, kurz \"FED\".\n\nDie FED kann US Dollars drucken, wann immer sie will -- und sie braucht keine Erlaubnis vom Präsidenten oder dem Kongress -- und ganz sicher nicht von der Bevölkerung.\n\nDie Gewalt über das Geldsystem zu haben, kann Regierungen zum Missbrauch verleiten -- und hat in der Vergangenheit schon oft zu massiver Inflation, willkürlicher Enteignung und Korruption geführt. \n\nTatsächlich hat Alan Greenspan, der ehemalige Vorsitzende der FED, einmal gesagt, dass die Vereinigten Staaten \"alle Schulden, die sie haben, bezahlen können, weil sie einfach mehr Geld drucken können\".",
-            "title": "Ich vertraue meiner Regierung.\nWarum sollte mich Fiatgeld kümmern?"
-          },
-          "GovernementCanPrintMoney": {
-            "answers": [
-              "Das Drucken von zusätzlichem Geld führt zu Inflation.",
-              "Die Menschen müssen jedes Jahr alte Dollarscheine bei der Bank umtauschen.",
-              "Das Aussehen des Dollar Geldscheins verändert sich."
-            ],
-            "feedback": [
-              "Richtig. Das bedeutet, dass Güter und Dienstleistungen in der Zukunft mehr kosten.",
-              "Nein. Alte Geldscheine haben die gleiche Gültigkeit wie neue Geldscheine.",
-              "Das ist nicht richtig. Auch wenn die Regierung das Aussehen der Geldscheine verändern kann, so hat es doch nichts zu tun mit der Ausweitung der Geldmenge."
-            ],
-            "question": "Was bedeutet es, wenn die Regierung neues Geld druckt?",
-            "text": "Nun ja, das sollte eigentlich jeden kümmern! \n\nDie Tatsache, dass Regierungen Dollars drucken -- also die Erhöhung der Geldmenge -- führt zu Inflation.\n\nInflation bedeutet, dass die Preise von Gütern und Dienstleistungen steigen. In anderen Worten: Der Preis von etwas wird in der Zukunft höher liegen als in der Gegenwart.\n\nAber was bedeutet Inflation für die Bevölkerung? \n\nDas Britische Pfund hat seit seiner Einführung vor 300 Jahren 99,5% seines Wertes verloren.   \n\nIn den Vereinigten Staaten hat der US Dollar seit dem Ende des Ersten Weltkrieges vor rund 100 Jahren 97% seines Wertes verloren. \n\nDas bedeutet, dass ein Steak, das 1920 $0,30 gekostet hat... 1990 bereits bei $3 lag.... und im Jahr 2020 ungefähr $15 kostet!",
-            "title": "Warum sollte es jemanden kümmern, ob die Regierung unbegrenzt Geld drucken kann?"
-          },
-          "FiatLosesValueOverTime": {
-            "answers": [
-              "Jede Fiatwährung, die jemals existiert hat, hat einen Großteil ihres Wertes verloren.",
-              "Der Wert bleibt für immer gleich.",
-              "Das Aussehen und das Design von Papiergeld ändert sich ungefähr alle 10 Jahre."
-            ],
-            "feedback": [
-              "Richtig. Das stimmt selbst für den US Dollar, der in den letzten 100 Jahren 97% seines Wertes verloren hat.",
-              "Falsch. Versuch's bitte noch einmal.",
-              "Nicht wirklich. Auch, wenn sich das Aussehen der Scheine verändert, so hat dies doch nichts mit seinem Wert zu tun."
-            ],
-            "question": "Was passiert mit dem Wert aller Fiatwährungen über einen langen Zeitraum?",
-            "text": "Das ist korrekt. \n\nIn der Geschichte der Menschheit wurden 775 Fiatwährungen erschaffen. Die meisten existieren heute nicht mehr und die durchschnittliche Lebensdauer von Fiatgeld liegt bei nur 27 Jahren.\n\nDas Britische Pfund ist die älteste, noch bestehende, Fiatwährung und hat seit seiner Einführung im Jahre 1694 mehr als 99% seines Wertes verloren. \n\nEs gibt keinen einzigen Fall, dass eine Fiatwährung ihren Wert über die Zeit beibehalten hat. Das ist Inflation.\nInflation ist im Endeffekt eine Art des Diebstahls deines hart verdienten Geldes!",
-            "title": "Bedeutet das, dass jede Fiatwährung mit der Zeit an Wert verliert?"
-          },
-          "OtherIssues": {
-            "answers": [
-              "Geld um die Welt zu bewegen ist schwierig. Außerdem können Transaktionen überwacht werden.",
-              "Geld wird im 21. Jahrhundert nicht mehr benötigt.",
-              "Geld ist die Wurzel des Bösen."
-            ],
-            "feedback": [
-              "Richtig. Wir werden im weiteren Verlauf dieses Quizzes auf diese Thematik eingehen. Mach weiter!",
-              "Falsche Antwort. Du weißt, dass das nicht richtig ist.",
-              "Obwohl manche das glauben, so ist es doch nicht die Antwort, die wir hier suchen."
-            ],
-            "question": "Welche Probleme gibt es außerdem noch mit Fiatgeld?",
-            "text": "Ja, es gibt noch viele andere Probleme, die mit dem modernen Fiatgeld verbunden sind. \n\nErstens kann es extrem schwierig sein, Geld auf der ganzen Welt zu bewegen. Oft schränken die Regierungen den Geldverkehr ohne triftigen Grund oder Erklärung ein und beschlagnahmen das Geld manchmal sogar. Und selbst wenn es möglich ist, Geld zu überweisen, wird dies durch hohe Transaktionsgebühren sehr teuer.\n\nZweitens: Selbst in den USA ist die Privatsphäre völlig verloren gegangen, da der Großteil des Handels mit Debit- und Kreditkarten sowie online mit anderen Systemen wie PayPal und Apple Pay abgewickelt wird.\n\nIst dir schon einmal aufgefallen, dass nur wenige Augenblicke nach der Suche nach einem bestimmten Produkt oder einer Dienstleistung eine Anzeige in deinen sozialen Medien oder in Google Mail erscheint? Dies wird als \"Überwachungskapitalismus\" bezeichnet und basiert auf Unternehmen, die deine persönlichen Finanzdaten verkaufen.",
-            "title": "Okay, Fiatgeld verliert seinen Wert mit der Zeit. Gibt es noch weitere Probleme?"
-          }
-        }
-      },
-      "BitcoinWhySpecial": {
-        "title": "Bitcoin: Warum ist es besonders?",
-        "questions": {
-          "LimitedSupply": {
-            "answers": [
-              "Ja. Es wird niemals mehr als 21 Millionen Bitcoin geben.",
-              "Nein. Die Regierung kann neue Bitcoin erschaffen, wann immer sie will.",
-              "Nein, die Bitcoin Software kann geändert werden, sodass mehr Bitcoin geschaffen werden können."
-            ],
-            "feedback": [
-              "Korrekt. Dadurch, dass Bitcoin in seiner Menge begrenzt ist, wächst sein Wert tendenziell mit der Zeit.",
-              "Falsche Antwort. Die Regierung hat keine Gewalt über Bitcoin.",
-              "Falsch. Eine der Haupteigenschaften von Bitcoin ist, dass die Geldmenge für immer limitiert ist."
-            ],
-            "question": "Ist die Geldmenge von Bitcoin für immer begrenzt?",
-            "text": "Regierungen können Fiatgeld in unbegrenzten Mengen drucken. \n\nIm Gegensatz dazu ist das Angebot von Bitcoin fix - und kann nie 21 Millionen Coins überschreiten. \n\nEin ständig wachsendes Angebot an Papiergeld schafft Inflation. Das bedeutet, dass das Geld, das Du heute besitzen, in Zukunft weniger wert ist. \n\nEin einfaches Beispiel: \nEin Laib Brot, der im Jahr 1920 etwa 8 Cent kostete. Im Jahr 1990 kostete ein Laib etwa $1,00 und heute liegt der Preis eher bei $2,50! \n\nDas begrenzte Angebot an Bitcoin hat den gegenteiligen Effekt, nämlich eine Deflation. \n\nDas bedeutet, dass der Bitcoin, den Du heute besitzen, in der Zukunft wertvoller sein wird - weil er knapp ist.",
-            "title": "Spezialfähigkeit #1:\nBegrenzte Menge"
-          },
-          "Decentralized": {
-            "answers": [
-              "Nein. Bitcoin ist vollständig \"dezentralisiert\".",
-              "Ja. Es wird zentral gesteuert durch die Vereinten Nationen.",
-              "Ja. Es wird zentral gesteuert durch die weltgrößten Banken."
-            ],
-            "feedback": [
-              "Das ist korrekt. Es gibt kein Unternehmen, keine Regierung und keine Institution, die Bitcoin kontrolliert. Jeder kann Bitcoin nutzen - alles, was man dafür braucht, ist ein Smartphone und eine Internetverbindung.",
-              "Falsche Antwort. Versuche es nochmal.",
-              "Falsch. Du weißt bereits, dass das nicht wahr ist!"
-            ],
-            "question": "Ist Bitcoin zentralisiert?",
-            "text": "Fiatgeld wird von Banken und Regierungen kontrolliert - deshalb spricht man von einer \"zentralisierten\" Währung.\n\nBitcoin wird von keiner Person, Regierung oder Firma kontrolliert - was es \"dezentral\" macht. \n\nDa keine Banken involviert sind, kann dir niemand den Zugang zu Bitcoin verwehren - aufgrund von Rasse, Geschlecht, Einkommen, Kreditgeschichte, geografischer Lage - oder irgendeinem anderen Faktor. \n\nJeder - überall auf der Welt - kann jederzeit auf Bitcoin zugreifen und es nutzen. Alles, was Du brauchst, ist ein Computer oder Smartphone und eine Internetverbindung!",
-            "title": "Spezialfähigkeit #2: Dezentralisiert"
-          },
-          "NoCounterfeitMoney": {
-            "answers": [
-              "Nein. Es ist unmöglich, Bitcoin zu fälschen.",
-              "Ja. Obwohl man spezielle Computer braucht, um Bitcoin zu fälschen.",
-              "Ja. Die Regierung kann so viele Bitcoin erschaffen, wie sie will."
-            ],
-            "feedback": [
-              "Das ist die richtige Antwort. In einem späteren Quiz wird Honey Badger genauer erklären, warum das so ist!",
-              "Falsch. Es gibt keine Möglichkeit, Bitcoin zu kopieren oder seinen Wert zu duplizieren.",
-              "Falsch. Auch, wenn Regierungen unendlich viele Dollars drucken können, so können sie doch keine Bitcoin drucken."
-            ],
-            "question": "Kann man Bitcoin fälschen?",
-            "text": "Papiergeld, Schecks und Kreditkartentransaktionen können alle gefälscht werden. \n\nDie Software, mit der das Bitcoin-Netzwerk betrieben wird, verhindert, dass Falschgeld in Umlauf gebracht werden kann. \n\nNeue Bitcoin können nur ausgegeben werden, wenn die Teilnehmer des Netzwerks zustimmen. Das sind die Menschen, die freiwillig die Bitcoin-Software auf ihren eigenen Computern und Smartphones ausführen.\n\nDadurch wird sichergestellt, dass keine gefälschten Bitcoin in Umlauf geraten.",
-            "title": "Spezialfähigkeit #3: \nKeine Geldfälschung"
-          },
-          "HighlyDivisible": {
-            "answers": [
-              "0,00000001 BTC",
-              "Ein ganzer Bitcoin. Es ist nicht möglich, weniger zu nutzen.",
-              "0,01 BTC"
-            ],
-            "feedback": [
-              "Ja. Du kannst einen Bitcoin in 100.000.000 kleinere Einheiten unterteilen. Wie Du schon weißt, heißt die kleinste Einheit bei Bitcoin - 0,00000001 BTC - ein \"Sat\".",
-              "Das ist falsch. Bitcoin kann fast beliebig geteilt werden. Du kannst einfach einen Bruchteil eines Bitcoin nutzen.",
-              "Falsch. Auch, wenn die kleinste Einheit der US Währung ein Cent ist: Ein Bitcoin kann noch 100 Mal kleiner unterteilt werden."
-            ],
-            "question": "Was ist die kleinste Einheit bei Bitcoin, die man besitzen oder nutzen kann?",
-            "text": "Herkömmliches Papiergeld kann nur in Beträgen bis zu einem Cent ausgegeben werden - oder zwei Dezimalstellen für einen US-Dollar ($0,01).\n\nAuf der anderen Seite kann Bitcoin 100.000.000 Mal geteilt werden. Das bedeutet, dass Du minimal 0,00000001 ₿ ausgeben kannst. Du wirst das \"₿\"-Symbol bemerkt haben, das das Bitcoin-Äquivalent von \"$\" ist. Manchmal wirst Du auch die Verwendung von BTC anstelle von ₿ sehen.\n\nAlso kann Bitcoin auch sehr kleine Zahlungen abwickeln - sogar solche unter einem US-Cent!",
-            "title": "Spezialfähigkeit #4: \nTeilbar"
-          },
-          "securePartOne": {
-            "answers": [
-              "Ja, das Bitcoin Netzwerk ist sehr sicher.",
-              "Vielleicht. Das kommt drauf an, welchen Wochentag wir haben.",
-              "Nein. Es ist eine Open Source Software und kann einfach angegriffen werden."
-            ],
-            "feedback": [
-              "Richtig! Tatsächlich wurde das Bitcoin Netzwerk nicht einmal gehackt. Beantworte weitere Fragen, um noch mehr zu lernen!",
-              "Guter Versuch, aber leider falsch. Das Bitcoin Netzwerk ist sicher - 24 Stunden am Tag, 365 Tage im Jahr.",
-              "Falsch. Obwohl die Bitcoin Software \"open source\" ist - und für die Öffentlichkeit zugänglich ist - ist sie gerade deswegen extrem sicher."
-            ],
-            "question": "Ist das Bitcoin Netzwerk sicher?",
-            "text": "Das Bitcoin-Netzwerk ist heute weit über 100 Milliarden Dollar wert. Dementsprechend muss das Netzwerk sehr sicher sein - damit kein Geld gestohlen werden kann. \n\nBitcoin ist bekannt als die erste Kryptowährung der Welt. \n\nDer Begriff \"Krypto\" kommt von Kryptographie. Einfach gesagt, schützt die Kryptografie Informationen durch sehr komplexe mathematische Funktionen. \n\nDen meisten Menschen ist nicht bewusst, dass Bitcoin das sicherste Computernetzwerk der Welt ist! \n\n(Du hast vielleicht schon von Bitcoin-\"Hacks\" gehört - die wir im nächsten Quiz entlarven werden)",
-            "title": "Spezialfähigkeit #5: \nSicherheit -- Teil 1"
-          },
-          "securePartTwo": {
-            "answers": [
-              "Nein. Bitcoin ist nie gehackt worden.",
-              "Ja. Bitcoin wird ständig gehackt.",
-              "Ja. Bitcoin wird normalerweise an Feiertagen gehackt, wenn die traditionellen Banken geschlossen sind."
-            ],
-            "feedback": [
-              "Das ist korrekt. Das Bitcoin Netzwerk wurde noch nie kompromittiert. Dennoch ist es wichtig, dass man nur sichere Wallets verwendet, um seine Bitcoin jederzeit zu schützen.",
-              "Falsch. Versuch es noch einmal.",
-              "Nein, du Dummerchen. Du weißt, dass das nicht die richtige Antwort ist."
-            ],
-            "question": "Wurde Bitcoin jemals gehackt?",
-            "text": "Um es gleich zu sagen: Das Bitcoin-Netzwerk selbst ist noch nie gehackt worden. Nicht ein einziges Mal.\n\nWas genau wurde dann gehackt? \n\nBestimmte digitale Geldbörsen, die nicht richtig gesichert waren. \n\nSo wie eine physische Brieftasche Fiatgeld (in Form von Geldscheinen) enthält, enthalten digitale Brieftaschen eine gewisse Menge an Bitcoin. \n\nIn der physischen Welt rauben Kriminelle Banken aus und erbeuten dabei US-Dollars. Die Tatsache, dass jemand eine Bank ausgeraubt hat, hat nichts damit zu tun, ob der US-Dollar ein stabiles oder zuverlässiges Geld ist. \n\nIn ähnlicher Weise haben einige Computerhacker Bitcoin aus unsicheren digitalen Geldbörsen gestohlen - das Online-Äquivalent eines Bankraubs. \n\nEs ist jedoch wichtig zu wissen, dass das Bitcoin-Netzwerk selbst noch nie gehackt oder kompromittiert wurde!",
-            "title": "Spezialfähigkeit #5: \nSicherheit -- Teil 2"
-          }
-        }
-      }
+    "GaloyAddressScreen": {
+        "title": "Erhalte Zahlungen durch:",
+        "buttonTitle": "Wähle deine Adresse",
+        "yourAddress": "Deine {bankName: string} Adresse",
+        "notAbleToChange": "Du kannst deine {bankName: string} Adresse nicht ändern, sobald sie einmal gesetzt wurde.",
+        "addressNotAvailable": "Diese {bankName: string} Adresse ist bereits vergeben.",
+        "somethingWentWrong": "Es ist ein Fehler aufgetreten. Bitte versuche es später noch einmal.",
+        "merchantTitle": "Für Händler",
+        "yourCashRegister": "Deine Lightning-Kasse",
+        "yourPaycode": "Dein Zahlungscode",
+        "copiedAddressToClipboard": "Deine {bankName: string} Adresse wurde in die Zwischenablage kopiert",
+        "copiedPaycodeToClipboard": "Dein Zahlungscode wurde kopiert",
+        "copiedCashRegisterLinkToClipboard": "Kassen-Link in die Zwischenablage kopiert",
+        "howToUseIt": "Wie funktioniert das?",
+        "howToUseYourAddress": "Wie man eine Lightning-Adresse verwendet",
+        "howToUseYourPaycode": "Wie der Zahlungscode funktioniert",
+        "howToUseYourCashRegister": "Wie deine Kasse funktioniert",
+        "howToUseYourAddressExplainer": "Mit jemandem teilen, der eine kompatible Wallet verwendet, wie zum Beispiel:",
+        "howToUseYourPaycodeExplainer": "Du kannst deinen Paycode ausdrucken und in deinem Laden aushängen, um Zahlungen zu empfangen (technisch gesehen handelt es sich um eine LNURL-Adresse). Kunden können dich bezahlen, indem sie den Code mit einer Lightning-Wallet scannen.\n\nSei dir jedoch bitte bewusst, dass noch nicht alle Wallets Paycodes unterstützen, wie zum Beispiel:",
+        "howToUseYourCashRegisterExplainer": "Ermögliche es Personen, Zahlungen über den Kassen-Link zu empfangen, ohne ihnen Zugang zu deiner Wallet zu geben.\n\nSie können Invoices erstellen und die Zahlungen werden direkt an deine {bankName: string} Wallet gesendet."
     },
-    "finishText": "Das war es vorerst! Wir lassen es dich wissen, sobald es mehr zu erkunden gibt",
-    "getRewardNow": "Zum Quiz",
-    "keepDigging": "Weiter!",
-    "phoneNumberNeeded": "Mobilnummer benötigt",
-    "quizComplete": "Quiz abgeschlossen und {amount} Sats verdient",
-    "reviewQuiz": "Quiz ansehen",
-    "satAccumulated": "Sats gesammelt",
-    "satsEarned": "{formattedNumber|sats} verdient",
-    "sectionsCompleted": "Du bist fertig",
-    "title": "Verdienen",
-    "unlockQuestion": "Beantworte folgende Frage zum Entsperren:",
-    "youEarned": "Du hast"
-  },
-  "GetStartedScreen": {
-    "getStarted": "Loslegen",
-    "headline": "Wallet zur Verfügung gestellt von Galoy"
-  },
-  "MapScreen": {
-    "locationPermissionMessage": "Gib deinen Standort frei, um zu sehen wo Du auf der Karte bist",
-    "locationPermissionNegative": "Abbrechen",
-    "locationPermissionNeutral": "Später",
-    "locationPermissionPositive": "OK",
-    "locationPermissionTitle": "Bestimme deinen Standort selbst",
-    "payBusiness": "bezahle diesen Shop",
-    "title": "Karte"
-  },
-  "HomeScreen": {
-    "receive": "Erhalten",
-    "send": "Senden",
-    "title": "Home",
-    "updateAvailable": "Ein Update ist verfügbar. \nKlicke, um zu updaten",
-    "useLightning": "Wir nutzen das Lightning Netzwerk.",
-    "myAccounts": "Meine Konten"
-  },
-  "PinScreen": {
-    "attemptsRemaining": "Falsche PIN. {attemptsRemaining} verbleibende Versuche.",
-    "oneAttemptRemaining": "Falsche PIN. Letzter Versuch.",
-    "setPin": "Erstelle deinen PIN Code",
-    "setPinFailedMatch": "Die PINs stimmen nicht überein - Setze deinen PIN Code",
-    "storePinFailed": "Dein PIN Code konnte nicht gespeichert werden.",
-    "tooManyAttempts": "Zu viele Fehlversuche. Du wirst nun ausgeloggt.",
-    "verifyPin": "Bestätige deinen PIN Code"
-  },
-  "PriceHistoryScreen": {
-    "oneDay": "1T",
-    "oneMonth": "1M",
-    "oneWeek": "1W",
-    "oneYear": "1J",
-    "fiveYears": "5J",
-    "satPrice": "Preis für 100.000 Sats: ",
-    "last24Hours": "Letzte 24 Stunden",
-    "lastWeek": "Letzte Woche",
-    "lastMonth": "Letzter Monat",
-    "lastYear": "Letztes Jahr",
-    "lastFiveYears": "die letzten fünf Jahre"
-  },
-  "PrimaryScreen": {
-    "title": "Home"
-  },
-  "ReceiveWrapperScreen": {
-    "activateNotifications": "Möchtest Du die Benachrichtigungen aktivieren, um zu sehen, wenn die Zahlung eingegangen ist?",
-    "copyClipboard": "Invoice wurde in die Zwischenablage kopiert",
-    "copyClipboardBitcoin": "Bitcoin Adresse wurde in die Zwischenablage kopiert",
-    "invoicePaid": "Diese Invoice wurde bezahlt",
-    "setNote": "Notiz erstellen",
-    "tapQrCodeCopy": "Tippe den QR Code um zu kopieren",
-    "title": "Bitcoin empfangen",
-    "usdTitle": "USD empfangen",
-    "error": "Invoice konnte nicht erstellt werden. Bitte kontaktiere den Support, wenn dieses Problem weiterhin besteht.",
-    "copyInvoice": "Invoice kopieren",
-    "shareInvoice": "Invoice teilen",
-    "addAmount": "Betrag spezifizieren",
-    "expired": "Die Invoice ist abgelaufen",
-    "expiresIn": "Läuft ab in",
-    "updateInvoice": "Invoice aktualisieren",
-    "flexibleAmountInvoice": "Invoice mit flexiblem Betrag",
-    "copyAddress": "Adresse kopieren",
-    "shareAddress": "Adresse teilen",
-    "generatingInvoice": "Invoice wird erstellt",
-    "regenerateInvoice": "Invoice erneut erstellen",
-    "useABitcoinOnchainAddress": "Bitcoin Adresse verwenden",
-    "useALightningInvoice": "Lightning Invoice verwenden",
-    "setANote": "Notiz erstellen",
-    "invoiceAmount": "Invoice-Betrag"
-  },
-  "RedeemBitcoinScreen": {
-    "title": "Bitcoin einlösen",
-    "usdTitle": "Gegen USD einlösen",
-    "error": "Invoice konnte nicht erstellt werden. Bitte kontaktiere den Support, wenn dieses Problem weiterhin besteht.",
-    "redeemingError": "Bitcoin konnten nicht eingelöst werden. Bitte kontaktiere den Support, wenn das Problem weiterhin besteht.",
-    "submissionError": "Auszahlung fehlgeschlagen. Bitte kontaktiere den Support, wenn das Problem weiterhin besteht.",
-    "minMaxRange": "Min: {minimumAmount: string}, Max: {maximumAmount: string}",
-    "redeemBitcoin": "Bitcoin einlösen",
-    "amountToRedeemFrom": "Betrag einlösen von {domain: string}",
-    "redeemAmountFrom": "Einlösen {amountToRedeem: string} von {domain: string}"
-  },
-  "ScanningQRCodeScreen": {
-    "invalidContent": "Gefunden:\n\n{found}\n\nDies ist keine gültige Bitcoin Adresse oder Lightning Invoice",
-    "expiredContent": "Wir haben gefunden:\n\n{found: string}\n\nDiese Invoice ist abgelaufen",
-    "invalidTitle": "Ungültiger QR Code",
-    "noQrCode": "Es konnte kein QR Code im Bild gefunden werden",
-    "title": "QR-Code scannen",
-    "invalidContentLnurl": "Gefunden:\n\n{found}\n\n ist aktuell nicht unterstützt"
-  },
-  "SecurityScreen": {
-    "biometricDescription": "Mit Fingerabdruck oder Gesichtserkennung entsperren.",
-    "biometricSubtitle": "Biometrische Authentifizierung aktivieren",
-    "biometricTitle": "Biometrie",
-    "biometryNotAvailable": "Biometrischer Sensor nicht verfügbar.",
-    "biometryNotEnrolled": "Bitte aktiviere mindestens ein biometrisches Erkennungsmerkmal, um damit die App zu entsperren.",
-    "hideBalanceDescription": "Guthaben in der Übersicht verbergen, so dass es nicht direkt zu sehen ist.",
-    "hideBalanceSubtitle": "Guthaben verbergen",
-    "hideBalanceTitle": "Guthaben",
-    "pinDescription": "Dein PIN Code wird als weitere Methode zum Entsperren genutzt, wenn die biometrische Authentifizierung nicht verfügbar ist.",
-    "pinSubtitle": "PIN aktivieren",
-    "pinTitle": "PIN Code",
-    "setPin": "PIN setzen"
-  },
-  "SendBitcoinConfirmationScreen": {
-    "amountLabel": "Betrag:",
-    "confirmPayment": "Zahlung bestätigen",
-    "confirmPaymentQuestion": "Möchtest Du diese Zahlung bestätigen?",
-    "destinationLabel": "An:",
-    "feeLabel": "Gebühr",
-    "memoLabel": "Notiz:",
-    "paymentFinal": "Zahlungen sind final.",
-    "stalePrice": "Der Bitcoin Preis ist veraltet und wurde zuletzt {timePeriod} aktualisiert. Bitte starte die App erneut, bevor Du eine Zahlung tätigst.",
-    "title": "Zahlung bestätigen",
-    "totalLabel": "Gesamt:",
-    "totalExceed": "Der Gesamtbetrag übersteigt dein Guthaben von {balance}",
-    "maxFeeSelected": "Dies ist die maximale Transaktionsgebühr. Die tatsächlich gezahlte Gebühr kann weniger betragen.",
-    "feeError": "Gebühr konnte nicht berechnet werden"
-  },
-  "SendBitcoinDestinationScreen": {
-    "usernameNowAddress": "{bankName} Benutzernamen sind nun {bankName} Adressen.",
-    "usernameNowAddressInfo": "Wenn Du einen {bankName} Benutzernamen angibst, ergänzen wir \"@{lnDomain}\" (bspw. maria@{lnDomain}) um daraus eine Adresse zu machen. Dein Benutzername ist jetzt auch eine {bankName} Adresse.\n\nGehe zu deiner {bankName} Adresse in den Einstellungen, um mehr darüber zu erfahren oder um sie zu teilen, damit Du Zahlungen empfangen kannst.",
-    "enterValidDestination": "Bitte gib ein gültiges Ziel an.",
-    "destinationOptions": "Du kannst an eine {bankName} Adresse, Lightning Adresse, Lightning Invoice oder BTC Adresse senden.",
-    "expiredInvoice": "Diese Invoice ist abgelaufen. Bitte generiere eine neue Rechnung.",
-    "wrongNetwork": "Diese Invoice ist für ein anderes Netzwerk. Bitte generiere eine neue Invoice.",
-    "invalidAmount": "Diese Invoice enthält einen ungültigen Betrag. Bitte generiere eine neue Invoice.",
-    "usernameDoesNotExist": "{lnAddress} scheint keine existierende {bankName} Adresse zu sein.",
-    "usernameDoesNotExistAdvice": "Gehe sicher, dass Du alles richtig geschrieben hast oder frage den Empfänger nach einer Lightning Invoice oder BTC Adresse.",
-    "selfPaymentError": "{lnAddress} ist deine {bankName} Adresse.",
-    "selfPaymentAdvice": "Wenn Du Geld an ein anderes Konto von dir senden möchtest, nutze dafür eine Lightning Invoice, Lightning Adresse oder BTC Adresse.",
-    "lnAddressError": "Wir konnten diese Lightning Adresse nicht erreichen. Wenn Du dir sicher bist dass sie existiert, probiere es später erneut.",
-    "lnAddressAdvice": "Gehe sicher, dass Du alles richtig geschrieben hast oder frage den Empfänger nach einer Lightning Invoice oder BTC Adresse.",
-    "unknownLightning": "Wir können diese Lightning Adresse nicht dekodieren. Bitte versuche es erneut.",
-    "unknownOnchain": "Wir können diese Bitcoin Adresse nicht dekodieren. Bitte versuche es erneut.",
-    "newBankAddressUsername": "{lnAddress} ist eine {bankName} Adresse, aber Du hast bisher keine Geld dorthin gesendet.",
-    "confirmModal": {
-      "title": "Du hast bislang kein Geld an \"{lnAddress}\" gesendet.",
-      "body1": "Bitte stelle sicher, dass der Empfänger dir eine {bankName: string} Adresse gegeben hat,",
-      "bold2bold": "kein Benutzername von einer anderen Wallet.",
-      "body3": "Andernfalls wird das Geld an ein {bankName: string} Konto gesendet, das die “{lnAddress: string}” Adresse hat.\n\nÜberprüfe auch die Schreibweise des ersten Teils der Adresse. Zum Beispiel sind jackie and jack1e zwei unterschiedliche Adressen",
-      "warning": "Wenn die {bankName} Adresse falsch geschrieben ist, kann {bankName} die Transaktion nicht rückgängig machen.",
-      "checkBox": "{lnAddress} ist die richtige Adresse.",
-      "confirmButton": "Ich bin mir 100% sicher"
+    "SetAccountModal": {
+        "title": "Standard Account festlegen",
+        "description": "Dieser Account wird zunächst für das Senden und Empfangen von Zahlungen ausgewählt. Diese Einstellung kann jederzeit geändert werden.",
+        "stablesatsTag": "Auswählen, um den USD Betrag stabil zu halten.",
+        "bitcoinTag": "Auswählen, um auf den Bitcoin Standard zu wechseln."
     },
-    "clipboardError": "Fehler beim Abrufen des Werts aus der Zwischenablage"
-  },
-  "SendBitcoinScreen": {
-    "amount": "Betrag",
-    "amountExceed": "Der Betrag übersteigt dein Guthaben von {balance}",
-    "amountIsRequired": "Betrag ist erforderlich",
-    "cost": "Kosten",
-    "destination": "Empfänger",
-    "destinationIsRequired": "Empfänger ist erforderlich",
-    "fee": "Netzwerkgebühr",
-    "feeCalculationUnsuccessful": "Konnte nicht berechnet werden ⚠️",
-    "input": "Benutzername, Invoice oder Adresse",
-    "invalidUsername": "Ungültiger Benutzername",
-    "noAmount": "Diese Invoice hat keinen Betrag, daher musst Du selbst angeben, wie viel Geld Du senden möchtest.",
-    "notConfirmed": "Die Zahlung wurde gesendet\naber sie ist noch nicht bestätigt\n\nDu kannst den Status der Zahlung\nim Bereich Transaktionen einsehen",
-    "note": "Notiz",
-    "success": "Zahlung erfolgreich gesendet",
-    "title": "Sende Bitcoin",
-    "failedToFetchLnurlInvoice": "LNURL Invoice konnte nicht abgerufen werden",
-    "lnurlInvoiceIncorrectAmount": "Der LNURL-Server hat mit einer Zahlungsaufforderung mit einem abweichenden Betrag geantwortet.",
-    "lnurlInvoiceIncorrectDescription": "Der LNURL-Server hat mit einer Invoice mit einem abweichenden Hash der Beschreibung geantwortet."
-  },
-  "SettingsScreen": {
-    "activated": "Aktiviert",
-    "tapLogIn": "Antippen zum Einloggen",
-    "addressScreen": "Zahlungsmöglichkeiten",
-    "tapUserName": "Antippen um einen Benutzernamen festzulegen",
-    "title": "Einstellungen",
-    "darkMode": "Dark Mode",
-    "setToDark": "Bildschirm: abgedunkelt",
-    "setToLight": "Bildschirm: hell",
-    "darkDefault": "Bildschirm: abgedunkelt, (Standard).",
-    "lightDefault": "Bildschirm: hell, (Standard).",
-    "csvTransactionsError": "Die Transaktionen konnten nicht als CSV exportiert werden. Etwas ging schief. Wenn es weiterhin nicht funktioniert, kontaktiere uns.",
-    "lnurlNoUsername": "Um eine LNURL Adresse zu generieren, gib zuerst einen Benutzernamen an. Möchtest Du jetzt einen Benutzernamen festlegen?",
-    "copyClipboardLnurl": "LNURL Adresse wurde in die Zwischenablage kopiert",
-    "deleteAccount": "Konto löschen",
-    "defaultWallet": "Standard-Konto",
-    "rateUs": "Bewerte uns auf {storeName: string}"
-  },
-  "DefaultWalletScreen": {
-    "title": "Standard-Konto",
-    "info": "Dein Standard-Konto ist das Konto, das standardmäßig ausgewählt ist, um Zahlungen zu senden und zu empfangen. Du kannst diese Einstellung für individuelle Zahlungen in der App ändern. Dennoch werden Zahlungen, die du über die Kasse oder deine Lightning Adresse erhältst, immer auf dein Standard-Konto gehen.\n\nUm nicht der Volatilität des Bitcoin-Kurses ausgesetzt zu sein, nutze Stablesats. Dadurch hast du immer einen gleichbleibenden Geldbetrag zur Verfügung und kannst dennoch Zahlungen senden und empfangen. \n\nDu kannst diese Einstellung jederzeit ändern, ohne, dass sich dein Kontostand dadurch ändert."
-  },
-  "Languages": {
-    "DEFAULT": "Standard (OS)"
-  },
-  "StablesatsModal": {
-    "header": "Mit Stablesats kannst Du ein USD Konto mit deiner Wallet nutzen!",
-    "body": "Du kannst es nutzen, um Bitcoin zu senden und empfangen, und Gelder direkt zwischen deinen BTC und USD Konten zu transferieren. Der Wert in deinem USD Konto wird nicht mit dem Bitcoin-Preis schwanken. Diese Funktion ist nicht kompatibel mit traditionellen Banksystemen.",
-    "termsAndConditions": "Allgemeine Geschäftsbedingungen lesen.",
-    "learnMore": "Mehr über Stablesats erfahren"
-  },
-  "NewNameBlinkModal": {
-    "header": "Bald verfügbar: BBW heißt ab sofort Blink!",
-    "body": "BBW wurde 2021 in El Zonte, El Salvador, gestartet und hatte zum Ziel, eine Bitcoin-Kreislaufwirtschaft zu ermöglichen. Inzwischen hat sich BBW zur alltäglichen Lightning-Wallet für Menschen rund um die Welt entwickelt. Dieses Jahr benennen wir uns um in Blink, um einen größeren Mehrwert für unseren wachsenden Kundenstamm bieten zu können.",
-    "ok": "Klingt gut!",
-    "learnMore": "Erfahre mehr auf blink.sv"
-  },
-  "SplashScreen": {
-    "update": "Deine App ist veraltet. Ein Update wird benötigt, bevor Du die App nutzen kannst.\n\nLade bitte ein Update aus dem Android PlayStore oder Testflight für iOS"
-  },
-  "TransactionDetailScreen": {
-    "detail": "Transaktionsdetails",
-    "paid": "Gezahlt an/von",
-    "received": "Du erhieltst",
-    "spent": "Du zahltest",
-    "receivingAccount": "Empfangendes Konto",
-    "sendingAccount": "Sendendes Konto"
-  },
-  "TransactionLimitsScreen": {
-    "receive": "Empfangen",
-    "withdraw": "Auszahlen",
-    "perDay": "pro Tag",
-    "perWeek": "pro Woche",
-    "unlimited": "Unbeschränkt",
-    "remaining": "Verbleibend",
-    "stablesatTransfers": "Stablesat-Transaktionen",
-    "internalSend": "Sende an {bankName: string} User",
-    "error": "Limits können aktuell nicht abgerufen werden",
-    "contactUsMessageBody": "Hi, ich möchte mein Transaktionslimit für mein {bankName: string} Konto erhöhen. ",
-    "contactUsMessageSubject": "Erhöhung des Transaktionslimits anfragen",
-    "howToIncreaseLimits": "Wie kann ich mein Transaktionslimit erhöhen?"
-  },
-  "TransactionScreen": {
-    "noTransaction": "Keine Transaktionen",
-    "title": "Transaktionen",
-    "recentTransactions": "Letzte Transaktionen",
-    "transactionHistoryTitle": "Transaktionshistorie"
-  },
-  "TransferScreen": {
-    "title": "Transfer",
-    "percentageToConvert": "% konvertieren"
-  },
-  "UsernameScreen": {
-    "3CharactersMinimum": "es sind mindestens drei Zeichen nötig",
-    "50CharactersMaximum": "Benutzername darf nicht länger als 50 Zeichen sein",
-    "available": "✅  {username} ist verfügbar",
-    "confirmSubtext": "Der Benutzername kann später nicht mehr geändert werden",
-    "confirmTitle": "{username} als deinen Benutzernamen festlegen?",
-    "forbiddenStart": "Darf nicht mit lnbc1, bc1, 1 oder 3 beginnen und darf keine Bitcoin Adresse oder Lightning Invoice sein",
-    "letterAndNumber": "Nur kleingeschriebene Buchstaben, Zahlen und Unterstriche (_) sind gültig",
-    "emailAddress": "Benutzername darf keine E-Mail Adresse sein",
-    "notAvailable": "❌  {username} ist nicht verfügbar",
-    "success": "{username} ist nun dein Benutzername!",
-    "usernameToUse": "Welchen Benutzernamen möchtest Du nutzen?"
-  },
-  "WelcomeFirstScreen": {
-    "bank": "Mit Bitcoin kannst Du Geld aufbewahren, senden und empfangen, ohne auf eine Bank oder Kreditkarte angewiesen zu sein.",
-    "before": "Vor Bitcoin war man von Banken oder Kreditkartenabietern abhängig, um Geld zu senden und empfangen.",
-    "care": "Warum ist das wichtig?",
-    "learn": "Ich will dich nicht bedrängen, aber es gibt noch viel mehr zu lernen, mach mit …",
-    "learnToEarn": "Lernen und verdienen"
-  },
-  "PhoneInputScreen": {
-    "header": "Gib deine Telefonnumer an und wir senden dir einen Zugangscode.",
-    "headerVerify": "Bestätige, dass Du ein Mensch bist",
-    "errorRequestingCaptcha": "Etwas ging schief - wir konnten nicht sicherstellen, dass Du ein Mensch bist. Bitte versuche es erneut.",
-    "placeholder": "Telefonnummer",
-    "verify": "Klicken zur Bestätigung",
-    "sms": "Per SMS senden",
-    "whatsapp": "Via WhatsApp senden"
-  },
-  "PhoneValidationScreen": {
-    "errorLoggingIn": "Fehler beim Login. Hast Du den richtigen Code verwendet?",
-    "header": "Um deine Telefonnummer zu bestätigen, gib bitte den Code ein, den wir gerade per {channel: string} an {phoneNumber: string} gesendet haben",
-    "need6Digits": "Der Code muss aus 6 Zeichen bestehen",
-    "placeholder": "6 Zeichen Code",
-    "sendAgain": "Erneut senden",
-    "tryAgain": "Erneut versuchen",
-    "sendViaOtherChannel": "Du hast dich entschieden, den Code per {channel: string} zu empfangen.\n\nDu kannst es stattdessen auch per {other: string} versuchen"
-  },
-  "common": {
-    "account": "Konto",
-    "transactionLimits": "Transaktionslimits",
-    "activateWallet": "Wallet aktivieren",
-    "amountRequired": "Betrag ist erforderlich",
-    "back": "Zurück",
-    "backHome": "Zurück zur Übersicht",
-    "bank": "Bank",
-    "bankAccount": "Konto",
-    "bankAdvice": "{bankName} Vorschlag",
-    "bankInfo": "{bankName} Info",
-    "beta": "beta",
-    "bitcoin": "Bitcoin",
-    "bitcoinPrice": "Bitcoin Preis",
-    "btcAccount": "BTC Konto",
-    "cancel": "Abbrechen",
-    "close": "Schließen",
-    "confirm": "Bestätigen",
-    "convert": "Konvertieren",
-    "currency": "Währung",
-    "currencySyncIssue": "Problem mit der Währung. Erneutes Laden erforderlich",
-    "csvExport": "Transaktionen als CSV exportieren",
-    "date": "Datum",
-    "description": "Beschreibung",
-    "domain": "Domain",
-    "email": "E-Mail",
-    "error": "Fehler",
-    "fatal": "Verhängnisvoller",
-    "fee": "Gebühr",
-    "Fee": "Gebühr",
-    "fees": "Gebühren",
-    "firstName": "Vorname",
-    "from": "Von",
-    "hour": "Stunde",
-    "hours": "Stunden",
-    "invoice": "Invoice",
-    "language": "Sprache",
-    "languagePreference": "Spracheinstellungen",
-    "lastName": "Nachname",
-    "later": "Später",
-    "loggedOut": "Du wurdest ausgeloggt.",
-    "logout": "Ausloggen",
-    "minutes": "Minuten",
-    "needWallet": "Bestätige dein Telefon, um deine Wallet zu öffnen",
-    "next": "Weiter",
-    "No": "Nein",
-    "note": "Notiz",
-    "notification": "Benachrichtigungen",
-    "ok": "OK",
-    "openWallet": "Wallet öffnen",
-    "phoneNumber": "Telefonnummer",
-    "rate": "Kurs",
-    "reauth": "Deine Sitzung ist abgelaufen. Btte logge dich erneut ein.",
-    "restart": "Neustart",
-    "sats": "Sats",
-    "search": "Suche",
-    "security": "Sicherheit",
-    "send": "Senden",
-    "setAnAmount": "definiere einen Betrag",
-    "share": "Teilen",
-    "shareBitcoin": "Bitcoin Adresse teilen",
-    "shareLightning": "Lightning Invoice teilen",
-    "soon": "Bald verfügbar!",
-    "success": "Erfolgreich!",
-    "to": "An",
-    "total": "Gesamt",
-    "transactions": "Transaktionen",
-    "transactionsError": "Transaktionen konnten nicht geladen werden",
-    "tryAgain": "Erneut versuchen",
-    "type": "Typ",
-    "usdAccount": "USD Konto",
-    "username": "Benutzername",
-    "usernameRequired": "Benutzername ist erforderlich",
-    "viewTransaction": "Transaktionen ansehen",
-    "yes": "Ja",
-    "pending": "Ausstehend",
-    "today": "Heute",
-    "yesterday": "Gestern",
-    "thisMonth": "Dieser Monat",
-    "prevMonths": "Vorherige Monate",
-    "problemMaybeReauth": "Es gab ein Problem mit deiner Anfrage. Bitte versuche es in einer Minute erneut. Wenn das Problem weiterhin besteht, versuche dich aus- und wieder einzuloggen. Du kannst dich ausloggen unter Einstellungen > Account > Log out"
-  },
-  "errors": {
-    "generic": "Es gab einen Fehler.\nBitte versuche es später erneut.",
-    "invalidEmail": "Ungültige E-Mail Adresse",
-    "invalidPhoneNumber": "ist keine gültige Telefonnummer",
-    "tooManyRequestsPhoneCode": "Zu viele Anfragen. Bitte warte etwas, bevor Du eine weitere Nachricht anfragst.",
-    "network": {
-      "server": "Serverfehler. Bitte versuche es später erneut",
-      "request": "Anfragefehler.\nBitte kontaktiere uns, wenn dieses Problem weiterhin besteht",
-      "connection": "Verbindungsfehler.\nStelle sicher, dass Du eine Internetverbindung hast"
+    "AuthenticationScreen": {
+        "authenticationDescription": "Authentifizieren zum Fortfahren",
+        "setUp": "Biometrische Authentifizierung einrichten",
+        "setUpAuthenticationDescription": "Biometrie zur Authentifizierung verwenden",
+        "skip": "Überspringen",
+        "unlock": "Entsperren",
+        "usePin": "PIN nutzen"
     },
-    "unexpectedError": "Es trat ein unerwarteter Fehler auf",
-    "restartApp": "Bitte starte die App neu.",
-    "problemPersists": "Bitte kontaktiere uns, wenn dieses Problem weiterhin besteht.",
-    "fatalError": "Entschuldige, die Applikationsdaten konnten nicht geladen werden. Bitte kontaktiere uns, wenn dieses Problem weiterhin besteht.",
-    "showError": "Fehler anzeigen",
-    "clearAppData": "App-Daten löschen und ausloggen"
-  },
-  "notifications": {
-    "payment": {
-      "body": "Du hast {value} Sats empfangen",
-      "title": "Zahlung empfangen"
+    "ContactsScreen": {
+        "noContactsTitle": "Bislang keine Kontakte",
+        "noContactsYet": "Benutze einen Usernamen, um Zahlungen zu senden oder zu empfangen. Nutzer, die etwas gesendet oder empfangen haben, werden hier automatisch hinzugefügt",
+        "noMatchingContacts": "Es konnten keine passenden Kontakte gefunden werden.",
+        "title": "Kontakte"
+    },
+    "ContactDetailsScreen": {
+        "title": "Transaktionen mit {username}"
+    },
+    "ConversionDetailsScreen": {
+        "title": "Umtauschen",
+        "percentageToConvert": "% umtauschen"
+    },
+    "ConversionConfirmationScreen": {
+        "title": "Umtausch prüfen",
+        "youreConverting": "Umtausch läuft",
+        "receivingAccount": "Empfangendes Konto"
+    },
+    "ConversionSuccessScreen": {
+        "title": "Umtausch erfolgreich",
+        "message": "Das hat geklappt!"
+    },
+    "EarnScreen": {
+        "earnSats": "Verdiene {formattedNumber|sats}",
+        "earnSections": {
+            "bitcoinWhatIsIt": {
+                "title": "Was ist Bitcoin?",
+                "questions": {
+                    "whatIsBitcoin": {
+                        "answers": [
+                            "Digitales Geld",
+                            "Ein Videospiel",
+                            "Eine neue Zeichentrickfigur"
+                        ],
+                        "feedback": [
+                            "Korrekt. Du hast gerade 1 “Sat” verdient!",
+                            "Nicht ganz, versuche es erneut.",
+                            "Nein, zumindest nicht soweit wir wissen!"
+                        ],
+                        "question": "Was genau ist Bitcoin?",
+                        "text": "Bitcoin ist digitales Geld.\n\nEs kann schnell und sicher zwischen Menschen auf der ganzen Welt übertragen werden — ohne eine Bank oder andere Instanz dazwischen.",
+                        "title": "Was genau ist Bitcoin?"
+                    },
+                    "sat": {
+                        "answers": [
+                            "Die kleinste Einheit von Bitcoin",
+                            "Ein kleiner Satellit",
+                            "Eine Weltraumkatze 🐱🚀"
+                        ],
+                        "feedback": [
+                            "Korrekt. Du hast 2 weitere Sats verdient!!",
+                            "Vielleicht, aber das ist nicht die richtige Antwort in diesem Kontext 🙂",
+                            "Hmmm… nicht ganz!"
+                        ],
+                        "question": "Ich habe gerade einen “Sat\" verdient. Was ist das?",
+                        "text": "Ein “Sat” ist die kleinste Einheit von Bitcoin. \n\nWir wissen alle, dass man einen US Dollar in 100 Cents aufteilen kann. Genauso kann auch ein Bitcoin in 100.000.000 Sats aufgeteilt werden. \n\nDu musst also keinen ganzen Bitcoin besitzen, um Bitcoin nutzen zu können. Du kannst Bitcoin nutzen, ganz egal ob Du nun 20 Sats, 3000 Sats oder gar 100.000.000 Sats besitzt (wobei Du jetzt weißt, dass diese Menge einem ganzen Bitcoin entspricht).",
+                        "title": "Ich habe gerade einen “Sat\" verdient. Was ist das?"
+                    },
+                    "whereBitcoinExist": {
+                        "answers": [
+                            "Im Internet",
+                            "Auf dem Mond",
+                            "Auf einem Bankkonto"
+                        ],
+                        "feedback": [
+                            "Korrekt. Du hast weitere 5 Sats verdient!",
+                            "Falsch. Also… zumindest bis jetzt nicht ;)",
+                            "Nicht ganz, versuche es erneut."
+                        ],
+                        "question": "Wo existieren Bitcoins?",
+                        "text": "Bitcoin ist eine neue Form von Geld. Es kann immer und überall von jedem genutzt werden.\n\nEs ist nicht an eine spezielle Region oder einen Herausgeber gebunden (wie z.B. der Euro). Es gibt auch keine Geldscheine, Münzen oder (Bank-) Karten.\n\nAlles ist 100% digital. Bitcoin besteht aus einem Netzwerk  vieler Computer.\n\nDeine Bitcoin kannst Du einfach mit einer App auf deinem Handy oder auf deinem Computer verwalten.",
+                        "title": "Wo existieren Bitcoins?"
+                    },
+                    "whoControlsBitcoin": {
+                        "answers": [
+                            "Eine freiwillige Gemeinschaft von Benutzern auf der ganzen Welt",
+                            "Mister Burns aus \"Die Simpsons\"",
+                            "Die französische Regierung"
+                        ],
+                        "feedback": [
+                            "Das ist richtig. Bitcoin wird ermöglicht durch Menschen auf der ganzen Welt, die auf ihren Computern und Handys die Bitcoin Software laufen lassen.",
+                            "Ein amüsanter Gedanke - aber leider nicht richtig.",
+                            "Falsch. Bitcoin wird weder durch Unternehmen noch durch Regierungen kontrolliert."
+                        ],
+                        "question": "Wer kontrolliert Bitcoin?",
+                        "text": "Bitcoin wird durch keine einzelne Person, keinem einzelnen Unternehmen und keiner Regierung gesteuert.\n\nEs wird betrieben von seinen Nutzern - Menschen und Unternehmen auf der ganzen Welt - die freiwillig die Bitcoin Software auf Ihren Computern und Handys laufen lassen.",
+                        "title": "Wer kontrolliert Bitcoin?"
+                    },
+                    "copyBitcoin": {
+                        "answers": [
+                            "Nein - Es ist nicht möglich, Bitcoin zu kopieren oder zu vervielfältigen",
+                            "Ja, man kann Bitcoin genauso einfach kopieren, wie man ein digitales Foto kopieren kann",
+                            "Ja, aber um Bitcoin zu vervielfältigen, benötigt man spezielle Computer"
+                        ],
+                        "feedback": [
+                            "Das ist absolut richtig!",
+                            "Du weißt, dass das nicht richtig ist. Versuch's nochmal.",
+                            "Falsch. Es gibt kein Möglichkeit, Bitcoin zu kopieren."
+                        ],
+                        "question": "Wenn Bitcoin digitales Geld ist, kann man es dann nicht einfach kopieren - und so neues Geld erschaffen?",
+                        "text": "Der Wert eines Bitcoin kann niemals kopiert werden. Das ist einer der Hauptgründe, warum Bitcoin so eine mächtige Erfindung ist!\n\nDie meisten digitalen Dateien - wie zum Beispiel ein Foto auf dem iPhone, ein MP3 Song oder ein Microsoft Word Dokument - können sehr einfach kopiert oder mit jemandem geteilt werden.\n\nDie Bitcoin Software verhindert diese Vervielfältigung - auch \"Double Spending\" genannt - von digitalem Geld. Wie das funktioniert, zeigen wir Dir später!",
+                        "title": "Wenn Bitcoin digitales Geld ist, kann man es dann nicht einfach kopieren - und so neues Geld erschaffen?"
+                    }
+                }
+            },
+            "WhatIsMoney": {
+                "title": "Was ist Geld?",
+                "questions": {
+                    "moneySocialAggrement": {
+                        "answers": [
+                            "Weil Menschen darauf vertrauen, dass andere Personen dem Geld den gleichen Wert beimessen",
+                            "Weil Deine Mutter es dir gesagt hat",
+                            "Weil ein Dollar Geldschein den Wert seines eigenen Gewichts in Gold hat"
+                        ],
+                        "feedback": [
+                            "Genau. Deshalb funktioniert Geld!",
+                            "Das mag schon sein. Aber das ist hier nicht die richtige Antwort!",
+                            "Nein. In der Vergangenheit konnte man US Dollars in Gold tauschen. Aber das ist heute nicht mehr der Fall."
+                        ],
+                        "question": "Warum hat Geld einen Wert?",
+                        "text": "Geld benötigt das Vertrauen der Menschen. \n\nDie Menschen vertrauen den Papiergeldscheinen in ihren Taschen. Sie vertrauen dem digitalen Kontostand beim Online-Banking. Sie vertrauen darauf, dass ein Gutschein zu dem Wert eingelöst werden kann, der darauf abgedruckt ist. \n\nGeld befähigt Menschen dazu, schnell und einfach Handel zu treiben und es jederzeit gegen Güter oder Dienstleistungen tauschen zu können.",
+                        "title": "Geld ist eine soziale Vereinbarung. "
+                    },
+                    "coincidenceOfWants": {
+                        "answers": [
+                            "Gleichzeitiges Bestehen von Bedürfnissen",
+                            "Gleichzeitigkeit von Tag und Nacht",
+                            "Die Gleichzeitigkeit, dass der Mond die Sonne verdeckt."
+                        ],
+                        "feedback": [
+                            "Das ist richtig. Geld erlaubt es dir, etwas zu kaufen, ohne die Form der Bezahlung verhandeln zu müssen",
+                            "Nein, du Dummerchen. Du weißt, dass das nicht die richtige Antwort ist.",
+                            "Nicht wirklich. Wir nennen das eine Sonnenfinsternis 🌚"
+                        ],
+                        "question": "Wie wird das Problem der Gleichzeitigkeit durch Geld gelöst?",
+                        "text": "Vor Jahrhunderten, als die Menschen noch kein Geld hatten, da war der Tauschhandel mit Waren die einzige Möglichkeit des Handels. Sie mussten jedes Mal feilschen, in welchem Verhältnis ein Gut gegen ein anderes Gut getauscht werden sollte. \n\nAngenommen, Du hättest gerne ein Mittagessen in einem Restaurant und bietest dem Besitzer einen Besen als Bezahlung an. Der Besitzer könnte einfach \"Nein\" sagen -- aber vielleicht akzeptiert er drei Hüte, solltest Du welche besitzen. \n\nDu kannst Dir vorstellen, wie schwierig und ineffizient eine \"Tauschwirtschaft\" wäre!\n\nIm Gegensatz dazu kannst Du einfach einen 20 Euro Schein zücken und Du weißt, dass der Restaurantbesitzer bereit ist, diesen zu akzeptieren.",
+                        "title": "Geld löst das Problem der \"Gleichzeitigkeit von Bedürfnissen\"... Was bedeutet das?"
+                    },
+                    "moneyEvolution": {
+                        "answers": [
+                            "Steine, Muscheln und Gold",
+                            "Kleine Monopoly Häuser aus Plastik",
+                            "Münzen, die aus Schokolade bestehen"
+                        ],
+                        "feedback": [
+                            "Richtig. Dinge, die selten und schwierig zu vervielfältigen sind, wurden oft als Geld genutzt.",
+                            "Falsch. Sie können einen Wert im Spiel haben -- aber nicht in der echten Welt.",
+                            "Nein. Sie sind vielleicht lecker, aber als Geld sind sie unbrauchbar."
+                        ],
+                        "question": "Welche Dinge wurden in der Vergangenheit als Geld verwendet?",
+                        "text": "Vor Tausenden von Jahren benutzte die Gesellschaft in Mikronesien sehr große und seltene Steine als eine Art gemeinsame Währung. \n\nAb 1500 wurden seltene Kaurimuscheln (die im Meer gefunden wurden) in vielen Ländern als Geld verwendet.\n\nUnd seit Jahrtausenden wird Gold in Ländern auf der ganzen Welt als Geld verwendet - auch in den Vereinigten Staaten (bis 1971).",
+                        "title": "Geld hat sich bereits vor sehr langer Zeit entwickelt."
+                    },
+                    "whyStonesShellGold": {
+                        "answers": [
+                            "Weil sie die Schlüsseleigenschaften besitzen -- wie zum Beispiel Langlebigkeit, Einheitlichkeit und Teilbarkeit.",
+                            "Weil sie hübsch sind und funkeln.",
+                            "Weil sie in deine Hosentasche passen."
+                        ],
+                        "feedback": [
+                            "Richtig. Weitere wichtige Eigenschaften sind Begrenztheit und Transportierbarkeit.",
+                            "Falsch. Das mag zwar wahr sein, aber das alleine ist noch keine gute Eigenschaft für Geld.",
+                            "Nicht ganz. Auch wenn diese Dinge sicher gut zu transportieren sind, so ist das alleine noch keine gute Eigenschaft für Geld."
+                        ],
+                        "question": "Warum wurden Steine, Muscheln und Gold als Geld genutzt?",
+                        "text": "Na ja, all diese Dinge haben manche -- wenn auch nicht alle -- Eigenschaften eines guten Geldes.\n\nAber welche Eigenschaften zeichnen \"gutes\" Geld aus?\nBegrenztheit: Es darf nicht beliebig neu erzeugt oder kopiert werden können\nAkzeptanz: Die Echtheit muss überprüfbar sein\nLanglebigkeit: Einfach zu lagern. Es darf nicht verderben oder zerfallen\nEinheitlichkeit: Es muss austauschbar sein mit einer gleichwertigen Einheit\nTransportabel: Einfach von A nach B zu bewegen\nTeilbarkeit: Es kann in kleinere Einheiten unterteilt werden ",
+                        "title": "Warum wurden Steine, Muscheln und Gold in der Vergangenheit so häufig als Geld verwendet?"
+                    },
+                    "moneyIsImportant": {
+                        "answers": [
+                            "Geld erlaubt es Menschen, Güter und Dienstleistungen zu kaufen -- sowohl heute, als auch morgen.",
+                            "Geld gibt dir die Möglichkeit, zum Mond zu fliegen.",
+                            "Geld ist die Lösung aller Probleme."
+                        ],
+                        "feedback": [
+                            "Das ist richtig!",
+                            "Das ist leider falsch. Auch wenn es in der Zukunft so sein könnte :)",
+                            "Nicht ganz. Auch, wenn manche Menschen das glauben: Das ist nicht der hauptsächliche Zweck von Geld."
+                        ],
+                        "question": "Was ist der hauptsächliche Grund, warum Geld so wichtig ist?",
+                        "text": "Jeder weiß, dass Geld wichtig ist.\n\nDie meisten Menschen tauschen ihre Zeit und ihre Energie -- in Form von Arbeit -- um Geld zu erhalten. Die Menschen tun dies, um sich Güter und Dienstleistungen kaufen zu können -- heute und in der Zukunft.",
+                        "title": "Geld ist wichtig für jeden Einzelnen."
+                    },
+                    "moneyImportantGovernement": {
+                        "answers": [
+                            "Die US Notenbank (Federal Reserve)",
+                            "Mr Burns aus \"Die Simpsons\"",
+                            "Ein Typ mit einer Notenpresse im Keller"
+                        ],
+                        "feedback": [
+                            "Richtig. Die US Regierung kann jederzeit soviel Geld drucken, wie sie will.",
+                            "Falsch. Auch wenn es so aussah, als hätte er immer schon viel Geld gehabt.",
+                            "Nein. Auch, wenn einige Leute Falschgeld herstellen, so ist es trotzdem nicht legal!"
+                        ],
+                        "question": "Wer kann auf legalem Wege US Dollars drucken, wann immer er will?",
+                        "text": "Moderne Volkswirtschaften werden durch Staaten gelenkt: USA, Japan, Schweiz, Brasilien, Norwegen, China, etc.\n\nEntsprechend hat in den meisten Staaten die jeweilige Regierung die Gewalt darüber, ob neues Geld erschaffen wird.\n\nIn den Vereinigten Staaten kann die Zentralbank (auch bekannt als Federal Reserve, kurz \"FED\") beliebig viel Geld erschaffen und beliebig viele neue US Dollars drucken, wann immer sie möchte.\n\nDie \"FED\" benötigt dazu weder die Erlaubnis vom Präsidenten, noch vom Kongress -- und ganz sicher nicht von der Bevölkerung.\n\nStell Dir vor, Du hättest die Möglichkeit, so viele US Dollars zu drucken, wie Du möchtest -- was würdest Du tun?",
+                        "title": "Geld ist auch wichtig für Regierungen"
+                    }
+                }
+            },
+            "HowDoesMoneyWork": {
+                "title": "Wie funktioniert Geld?",
+                "questions": {
+                    "WhatIsFiat": {
+                        "answers": [
+                            "Es wird geschaffen auf Anweisung der nationalen Regierung des jeweiligen Landes.",
+                            "Von dem Manager einer lokalen Bank-Filiale.",
+                            "Der Monopoly-Geld-Mann."
+                        ],
+                        "feedback": [
+                            "Richtig, Die Zentralbank einer Regierung erschafft neues Fiatgeld.",
+                            "Falsch. Eine Bank kann nur das Geld verwalten, das vorher von der Regierung gedruckt wurde.",
+                            "Nein. Versuch's nochmal!"
+                        ],
+                        "question": "Wer erschafft Fiatgeld, wie beispielsweise US Dollars oder Schweizer Franken?",
+                        "text": "Alle nationalen Währungen, die heutzutage im Umlauf sind, sind sogenannte \"Fiat\"-Währungen. Darunter fallen zum Beispiel  der US Dollar, der Japanische Yen, der Schweizer Franken, und so weiter.\n\nDas Wort \"fiat\" ist Lateinisch und bedeutet \"Es werde!\" -- in dem Sinne, dass es offiziell angeordnet wird. \n\nDas bedeutet, dass alles Fiatgeld -- inklusive des US Dollars -- einfach auf Anordnung der nationalen Regierung erschaffen wird. ",
+                        "title": "Fiatgeld: Was ist das?"
+                    },
+                    "whyCareAboutFiatMoney": {
+                        "answers": [
+                            "Alle Fiatwährungen werden schlussendlich von staatlichen Behörden missbraucht.",
+                            "Die Banken vor Ort verfügen möglicherweise nicht über genügend Tresorraum, um alle Dollarscheine aufzubewahren.",
+                            "Möglicherweise gibt es nicht genug Bäume, um Papier für alle zusätzlichen Dollarscheine herzustellen."
+                        ],
+                        "feedback": [
+                            "Richtig. Im Laufe der Geschichte konnten die Regierungen der Möglichkeit, Geld zu drucken, nicht widerstehen, da sie im Endeffekt nicht verpflichtet sind, dieses Geld zurückzuzahlen.",
+                            "Nein, das ist sicher nicht der Fall.",
+                            "Falsch. Versuche es bitte noch einmal."
+                        ],
+                        "question": "Warum sollte es mich kümmern, dass die Regierung das Fiatgeld kontrolliert?",
+                        "text": "Wie bereits im vorherigen Quiz erwähnt, ist die US Zentralbank die Federal Reserve, kurz \"FED\".\n\nDie FED kann US Dollars drucken, wann immer sie will -- und sie braucht keine Erlaubnis vom Präsidenten oder dem Kongress -- und ganz sicher nicht von der Bevölkerung.\n\nDie Gewalt über das Geldsystem zu haben, kann Regierungen zum Missbrauch verleiten -- und hat in der Vergangenheit schon oft zu massiver Inflation, willkürlicher Enteignung und Korruption geführt. \n\nTatsächlich hat Alan Greenspan, der ehemalige Vorsitzende der FED, einmal gesagt, dass die Vereinigten Staaten \"alle Schulden, die sie haben, bezahlen können, weil sie einfach mehr Geld drucken können\".",
+                        "title": "Ich vertraue meiner Regierung.\nWarum sollte mich Fiatgeld kümmern?"
+                    },
+                    "GovernementCanPrintMoney": {
+                        "answers": [
+                            "Das Drucken von zusätzlichem Geld führt zu Inflation.",
+                            "Die Menschen müssen jedes Jahr alte Dollarscheine bei der Bank umtauschen.",
+                            "Das Aussehen des Dollar Geldscheins verändert sich."
+                        ],
+                        "feedback": [
+                            "Richtig. Das bedeutet, dass Güter und Dienstleistungen in der Zukunft mehr kosten.",
+                            "Nein. Alte Geldscheine haben die gleiche Gültigkeit wie neue Geldscheine.",
+                            "Das ist nicht richtig. Auch wenn die Regierung das Aussehen der Geldscheine verändern kann, so hat es doch nichts zu tun mit der Ausweitung der Geldmenge."
+                        ],
+                        "question": "Was bedeutet es, wenn die Regierung neues Geld druckt?",
+                        "text": "Nun ja, das sollte eigentlich jeden kümmern! \n\nDie Tatsache, dass Regierungen Dollars drucken -- also die Erhöhung der Geldmenge -- führt zu Inflation.\n\nInflation bedeutet, dass die Preise von Gütern und Dienstleistungen steigen. In anderen Worten: Der Preis von etwas wird in der Zukunft höher liegen als in der Gegenwart.\n\nAber was bedeutet Inflation für die Bevölkerung? \n\nDas Britische Pfund hat seit seiner Einführung vor 300 Jahren 99,5% seines Wertes verloren.   \n\nIn den Vereinigten Staaten hat der US Dollar seit dem Ende des Ersten Weltkrieges vor rund 100 Jahren 97% seines Wertes verloren. \n\nDas bedeutet, dass ein Steak, das 1920 $0,30 gekostet hat... 1990 bereits bei $3 lag.... und im Jahr 2020 ungefähr $15 kostet!",
+                        "title": "Warum sollte es jemanden kümmern, ob die Regierung unbegrenzt Geld drucken kann?"
+                    },
+                    "FiatLosesValueOverTime": {
+                        "answers": [
+                            "Jede Fiatwährung, die jemals existiert hat, hat einen Großteil ihres Wertes verloren.",
+                            "Der Wert bleibt für immer gleich.",
+                            "Das Aussehen und das Design von Papiergeld ändert sich ungefähr alle 10 Jahre."
+                        ],
+                        "feedback": [
+                            "Richtig. Das stimmt selbst für den US Dollar, der in den letzten 100 Jahren 97% seines Wertes verloren hat.",
+                            "Falsch. Versuch's bitte noch einmal.",
+                            "Nicht wirklich. Auch, wenn sich das Aussehen der Scheine verändert, so hat dies doch nichts mit seinem Wert zu tun."
+                        ],
+                        "question": "Was passiert mit dem Wert aller Fiatwährungen über einen langen Zeitraum?",
+                        "text": "Das ist korrekt. \n\nIn der Geschichte der Menschheit wurden 775 Fiatwährungen erschaffen. Die meisten existieren heute nicht mehr und die durchschnittliche Lebensdauer von Fiatgeld liegt bei nur 27 Jahren.\n\nDas Britische Pfund ist die älteste, noch bestehende, Fiatwährung und hat seit seiner Einführung im Jahre 1694 mehr als 99% seines Wertes verloren. \n\nEs gibt keinen einzigen Fall, dass eine Fiatwährung ihren Wert über die Zeit beibehalten hat. Das ist Inflation.\nInflation ist im Endeffekt eine Art des Diebstahls deines hart verdienten Geldes!",
+                        "title": "Bedeutet das, dass jede Fiatwährung mit der Zeit an Wert verliert?"
+                    },
+                    "OtherIssues": {
+                        "answers": [
+                            "Geld um die Welt zu bewegen ist schwierig. Außerdem können Transaktionen überwacht werden.",
+                            "Geld wird im 21. Jahrhundert nicht mehr benötigt.",
+                            "Geld ist die Wurzel des Bösen."
+                        ],
+                        "feedback": [
+                            "Richtig. Wir werden im weiteren Verlauf dieses Quizzes auf diese Thematik eingehen. Mach weiter!",
+                            "Falsche Antwort. Du weißt, dass das nicht richtig ist.",
+                            "Obwohl manche das glauben, so ist es doch nicht die Antwort, die wir hier suchen."
+                        ],
+                        "question": "Welche Probleme gibt es außerdem noch mit Fiatgeld?",
+                        "text": "Ja, es gibt noch viele andere Probleme, die mit dem modernen Fiatgeld verbunden sind. \n\nErstens kann es extrem schwierig sein, Geld auf der ganzen Welt zu bewegen. Oft schränken die Regierungen den Geldverkehr ohne triftigen Grund oder Erklärung ein und beschlagnahmen das Geld manchmal sogar. Und selbst wenn es möglich ist, Geld zu überweisen, wird dies durch hohe Transaktionsgebühren sehr teuer.\n\nZweitens: Selbst in den USA ist die Privatsphäre völlig verloren gegangen, da der Großteil des Handels mit Debit- und Kreditkarten sowie online mit anderen Systemen wie PayPal und Apple Pay abgewickelt wird.\n\nIst dir schon einmal aufgefallen, dass nur wenige Augenblicke nach der Suche nach einem bestimmten Produkt oder einer Dienstleistung eine Anzeige in deinen sozialen Medien oder in Google Mail erscheint? Dies wird als \"Überwachungskapitalismus\" bezeichnet und basiert auf Unternehmen, die deine persönlichen Finanzdaten verkaufen.",
+                        "title": "Okay, Fiatgeld verliert seinen Wert mit der Zeit. Gibt es noch weitere Probleme?"
+                    }
+                }
+            },
+            "BitcoinWhySpecial": {
+                "title": "Bitcoin: Warum ist es besonders?",
+                "questions": {
+                    "LimitedSupply": {
+                        "answers": [
+                            "Ja. Es wird niemals mehr als 21 Millionen Bitcoin geben.",
+                            "Nein. Die Regierung kann neue Bitcoin erschaffen, wann immer sie will.",
+                            "Nein, die Bitcoin Software kann geändert werden, sodass mehr Bitcoin geschaffen werden können."
+                        ],
+                        "feedback": [
+                            "Korrekt. Dadurch, dass Bitcoin in seiner Menge begrenzt ist, wächst sein Wert tendenziell mit der Zeit.",
+                            "Falsche Antwort. Die Regierung hat keine Gewalt über Bitcoin.",
+                            "Falsch. Eine der Haupteigenschaften von Bitcoin ist, dass die Geldmenge für immer limitiert ist."
+                        ],
+                        "question": "Ist die Geldmenge von Bitcoin für immer begrenzt?",
+                        "text": "Regierungen können Fiatgeld in unbegrenzten Mengen drucken. \n\nIm Gegensatz dazu ist das Angebot von Bitcoin fix - und kann nie 21 Millionen Coins überschreiten. \n\nEin ständig wachsendes Angebot an Papiergeld schafft Inflation. Das bedeutet, dass das Geld, das Du heute besitzen, in Zukunft weniger wert ist. \n\nEin einfaches Beispiel: \nEin Laib Brot, der im Jahr 1920 etwa 8 Cent kostete. Im Jahr 1990 kostete ein Laib etwa $1,00 und heute liegt der Preis eher bei $2,50! \n\nDas begrenzte Angebot an Bitcoin hat den gegenteiligen Effekt, nämlich eine Deflation. \n\nDas bedeutet, dass der Bitcoin, den Du heute besitzen, in der Zukunft wertvoller sein wird - weil er knapp ist.",
+                        "title": "Spezialfähigkeit #1:\nBegrenzte Menge"
+                    },
+                    "Decentralized": {
+                        "answers": [
+                            "Nein. Bitcoin ist vollständig \"dezentralisiert\".",
+                            "Ja. Es wird zentral gesteuert durch die Vereinten Nationen.",
+                            "Ja. Es wird zentral gesteuert durch die weltgrößten Banken."
+                        ],
+                        "feedback": [
+                            "Das ist korrekt. Es gibt kein Unternehmen, keine Regierung und keine Institution, die Bitcoin kontrolliert. Jeder kann Bitcoin nutzen - alles, was man dafür braucht, ist ein Smartphone und eine Internetverbindung.",
+                            "Falsche Antwort. Versuche es nochmal.",
+                            "Falsch. Du weißt bereits, dass das nicht wahr ist!"
+                        ],
+                        "question": "Ist Bitcoin zentralisiert?",
+                        "text": "Fiatgeld wird von Banken und Regierungen kontrolliert - deshalb spricht man von einer \"zentralisierten\" Währung.\n\nBitcoin wird von keiner Person, Regierung oder Firma kontrolliert - was es \"dezentral\" macht. \n\nDa keine Banken involviert sind, kann dir niemand den Zugang zu Bitcoin verwehren - aufgrund von Rasse, Geschlecht, Einkommen, Kreditgeschichte, geografischer Lage - oder irgendeinem anderen Faktor. \n\nJeder - überall auf der Welt - kann jederzeit auf Bitcoin zugreifen und es nutzen. Alles, was Du brauchst, ist ein Computer oder Smartphone und eine Internetverbindung!",
+                        "title": "Spezialfähigkeit #2: Dezentralisiert"
+                    },
+                    "NoCounterfeitMoney": {
+                        "answers": [
+                            "Nein. Es ist unmöglich, Bitcoin zu fälschen.",
+                            "Ja. Obwohl man spezielle Computer braucht, um Bitcoin zu fälschen.",
+                            "Ja. Die Regierung kann so viele Bitcoin erschaffen, wie sie will."
+                        ],
+                        "feedback": [
+                            "Das ist die richtige Antwort. In einem späteren Quiz wird Honey Badger genauer erklären, warum das so ist!",
+                            "Falsch. Es gibt keine Möglichkeit, Bitcoin zu kopieren oder seinen Wert zu duplizieren.",
+                            "Falsch. Auch, wenn Regierungen unendlich viele Dollars drucken können, so können sie doch keine Bitcoin drucken."
+                        ],
+                        "question": "Kann man Bitcoin fälschen?",
+                        "text": "Papiergeld, Schecks und Kreditkartentransaktionen können alle gefälscht werden. \n\nDie Software, mit der das Bitcoin-Netzwerk betrieben wird, verhindert, dass Falschgeld in Umlauf gebracht werden kann. \n\nNeue Bitcoin können nur ausgegeben werden, wenn die Teilnehmer des Netzwerks zustimmen. Das sind die Menschen, die freiwillig die Bitcoin-Software auf ihren eigenen Computern und Smartphones ausführen.\n\nDadurch wird sichergestellt, dass keine gefälschten Bitcoin in Umlauf geraten.",
+                        "title": "Spezialfähigkeit #3: \nKeine Geldfälschung"
+                    },
+                    "HighlyDivisible": {
+                        "answers": [
+                            "0,00000001 BTC",
+                            "Ein ganzer Bitcoin. Es ist nicht möglich, weniger zu nutzen.",
+                            "0,01 BTC"
+                        ],
+                        "feedback": [
+                            "Ja. Du kannst einen Bitcoin in 100.000.000 kleinere Einheiten unterteilen. Wie Du schon weißt, heißt die kleinste Einheit bei Bitcoin - 0,00000001 BTC - ein \"Sat\".",
+                            "Das ist falsch. Bitcoin kann fast beliebig geteilt werden. Du kannst einfach einen Bruchteil eines Bitcoin nutzen.",
+                            "Falsch. Auch, wenn die kleinste Einheit der US Währung ein Cent ist: Ein Bitcoin kann noch 100 Mal kleiner unterteilt werden."
+                        ],
+                        "question": "Was ist die kleinste Einheit bei Bitcoin, die man besitzen oder nutzen kann?",
+                        "text": "Herkömmliches Papiergeld kann nur in Beträgen bis zu einem Cent ausgegeben werden - oder zwei Dezimalstellen für einen US-Dollar ($0,01).\n\nAuf der anderen Seite kann Bitcoin 100.000.000 Mal geteilt werden. Das bedeutet, dass Du minimal 0,00000001 ₿ ausgeben kannst. Du wirst das \"₿\"-Symbol bemerkt haben, das das Bitcoin-Äquivalent von \"$\" ist. Manchmal wirst Du auch die Verwendung von BTC anstelle von ₿ sehen.\n\nAlso kann Bitcoin auch sehr kleine Zahlungen abwickeln - sogar solche unter einem US-Cent!",
+                        "title": "Spezialfähigkeit #4: \nTeilbar"
+                    },
+                    "securePartOne": {
+                        "answers": [
+                            "Ja, das Bitcoin Netzwerk ist sehr sicher.",
+                            "Vielleicht. Das kommt drauf an, welchen Wochentag wir haben.",
+                            "Nein. Es ist eine Open Source Software und kann einfach angegriffen werden."
+                        ],
+                        "feedback": [
+                            "Richtig! Tatsächlich wurde das Bitcoin Netzwerk nicht einmal gehackt. Beantworte weitere Fragen, um noch mehr zu lernen!",
+                            "Guter Versuch, aber leider falsch. Das Bitcoin Netzwerk ist sicher - 24 Stunden am Tag, 365 Tage im Jahr.",
+                            "Falsch. Obwohl die Bitcoin Software \"open source\" ist - und für die Öffentlichkeit zugänglich ist - ist sie gerade deswegen extrem sicher."
+                        ],
+                        "question": "Ist das Bitcoin Netzwerk sicher?",
+                        "text": "Das Bitcoin-Netzwerk ist heute weit über 100 Milliarden Dollar wert. Dementsprechend muss das Netzwerk sehr sicher sein - damit kein Geld gestohlen werden kann. \n\nBitcoin ist bekannt als die erste Kryptowährung der Welt. \n\nDer Begriff \"Krypto\" kommt von Kryptographie. Einfach gesagt, schützt die Kryptografie Informationen durch sehr komplexe mathematische Funktionen. \n\nDen meisten Menschen ist nicht bewusst, dass Bitcoin das sicherste Computernetzwerk der Welt ist! \n\n(Du hast vielleicht schon von Bitcoin-\"Hacks\" gehört - die wir im nächsten Quiz entlarven werden)",
+                        "title": "Spezialfähigkeit #5: \nSicherheit -- Teil 1"
+                    },
+                    "securePartTwo": {
+                        "answers": [
+                            "Nein. Bitcoin ist nie gehackt worden.",
+                            "Ja. Bitcoin wird ständig gehackt.",
+                            "Ja. Bitcoin wird normalerweise an Feiertagen gehackt, wenn die traditionellen Banken geschlossen sind."
+                        ],
+                        "feedback": [
+                            "Das ist korrekt. Das Bitcoin Netzwerk wurde noch nie kompromittiert. Dennoch ist es wichtig, dass man nur sichere Wallets verwendet, um seine Bitcoin jederzeit zu schützen.",
+                            "Falsch. Versuch es noch einmal.",
+                            "Nein, du Dummerchen. Du weißt, dass das nicht die richtige Antwort ist."
+                        ],
+                        "question": "Wurde Bitcoin jemals gehackt?",
+                        "text": "Um es gleich zu sagen: Das Bitcoin-Netzwerk selbst ist noch nie gehackt worden. Nicht ein einziges Mal.\n\nWas genau wurde dann gehackt? \n\nBestimmte digitale Geldbörsen, die nicht richtig gesichert waren. \n\nSo wie eine physische Brieftasche Fiatgeld (in Form von Geldscheinen) enthält, enthalten digitale Brieftaschen eine gewisse Menge an Bitcoin. \n\nIn der physischen Welt rauben Kriminelle Banken aus und erbeuten dabei US-Dollars. Die Tatsache, dass jemand eine Bank ausgeraubt hat, hat nichts damit zu tun, ob der US-Dollar ein stabiles oder zuverlässiges Geld ist. \n\nIn ähnlicher Weise haben einige Computerhacker Bitcoin aus unsicheren digitalen Geldbörsen gestohlen - das Online-Äquivalent eines Bankraubs. \n\nEs ist jedoch wichtig zu wissen, dass das Bitcoin-Netzwerk selbst noch nie gehackt oder kompromittiert wurde!",
+                        "title": "Spezialfähigkeit #5: \nSicherheit -- Teil 2"
+                    }
+                }
+            }
+        },
+        "finishText": "Das war es vorerst! Wir lassen es dich wissen, sobald es mehr zu erkunden gibt",
+        "getRewardNow": "Zum Quiz",
+        "keepDigging": "Weiter!",
+        "phoneNumberNeeded": "Mobilnummer benötigt",
+        "quizComplete": "Quiz abgeschlossen und {amount} Sats verdient",
+        "reviewQuiz": "Quiz ansehen",
+        "satAccumulated": "Sats gesammelt",
+        "satsEarned": "{formattedNumber|sats} verdient",
+        "sectionsCompleted": "Du bist fertig",
+        "title": "Verdienen",
+        "unlockQuestion": "Beantworte folgende Frage zum Entsperren:",
+        "youEarned": "Du hast",
+        "registerTitle": "Account Upgrade benötigt",
+        "registerContent": "Registriere dich mit deiner Telefonnummer, um Sats zu empfangen"
+    },
+    "GetStartedScreen": {
+        "logInCreateAccount": "Einloggen / Account erstellen",
+        "exploreWalletInstead": "Stattdessen Wallet erkunden",
+        "headline": "Wallet zur Verfügung gestellt von Galoy",
+        "startTrialAccount": "Mit einem Demo-Account beginnen",
+        "iUnderstand": "Habe ich verstanden, weiter",
+        "startWithTrialAccount": "Mit Demo-Account starten",
+        "registerPhoneAccount": "Telefon-Account registrieren",
+        "trialAccountCreationFailed": "Demo-Account Erstellen fehlgeschlagen",
+        "trialAccountCreationFailedMessage": "Leider konnten wir deinen Demo-Account nicht erstellen. Versuche es später erneut oder erstelle einen Account mit deiner Telefonnummer.",
+        "trialAccountHasLimits": "Der Demo-Account hat nur einen begrenzten Umfang",
+        "trialAccountLimits": {
+            "noBackup": "Keine Backup-Möglichkeit",
+            "sendingLimit": "Reduziertes tägliches Sendelimit",
+            "noOnchain": "Bitcoin können nicht onchain empfangen werden"
+        }
+    },
+    "MapScreen": {
+        "locationPermissionMessage": "Gib deinen Standort frei, um zu sehen wo Du auf der Karte bist",
+        "locationPermissionNegative": "Abbrechen",
+        "locationPermissionNeutral": "Später",
+        "locationPermissionPositive": "OK",
+        "locationPermissionTitle": "Bestimme deinen Standort selbst",
+        "payBusiness": "bezahle diesen Shop",
+        "title": "Karte"
+    },
+    "HomeScreen": {
+        "receive": "Erhalten",
+        "send": "Senden",
+        "title": "Home",
+        "scan": "Scannen",
+        "updateAvailable": "Ein Update ist verfügbar. \nKlicke, um zu updaten",
+        "useLightning": "Wir nutzen das Lightning Netzwerk.",
+        "myAccounts": "Meine Konten"
+    },
+    "PinScreen": {
+        "attemptsRemaining": "Falsche PIN. {attemptsRemaining} verbleibende Versuche.",
+        "oneAttemptRemaining": "Falsche PIN. Letzter Versuch.",
+        "setPin": "Erstelle deinen PIN Code",
+        "setPinFailedMatch": "Die PINs stimmen nicht überein - Setze deinen PIN Code",
+        "storePinFailed": "Dein PIN Code konnte nicht gespeichert werden.",
+        "tooManyAttempts": "Zu viele Fehlversuche. Du wirst nun ausgeloggt.",
+        "verifyPin": "Bestätige deinen PIN Code"
+    },
+    "PriceHistoryScreen": {
+        "oneDay": "1T",
+        "oneMonth": "1M",
+        "oneWeek": "1W",
+        "oneYear": "1J",
+        "fiveYears": "5J",
+        "satPrice": "Preis für 100.000 Sats: ",
+        "last24Hours": "Letzte 24 Stunden",
+        "lastWeek": "Letzte Woche",
+        "lastMonth": "Letzter Monat",
+        "lastYear": "Letztes Jahr",
+        "lastFiveYears": "die letzten fünf Jahre"
+    },
+    "PrimaryScreen": {
+        "title": "Home"
+    },
+    "ReceiveScreen": {
+        "activateNotifications": "Möchtest Du die Benachrichtigungen aktivieren, um zu sehen, wenn die Zahlung eingegangen ist?",
+        "copyClipboard": "Invoice wurde in die Zwischenablage kopiert",
+        "copyClipboardBitcoin": "Bitcoin Adresse wurde in die Zwischenablage kopiert",
+        "invoicePaid": "Diese Invoice wurde bezahlt",
+        "setNote": "Notiz erstellen",
+        "tapQrCodeCopy": "Tippe den QR Code um zu kopieren",
+        "title": "Bitcoin empfangen",
+        "usdTitle": "USD empfangen",
+        "error": "Invoice konnte nicht erstellt werden. Bitte kontaktiere den Support, wenn dieses Problem weiterhin besteht.",
+        "copyInvoice": "Invoice kopieren",
+        "shareInvoice": "Invoice teilen",
+        "addAmount": "Betrag spezifizieren",
+        "expired": "Die Invoice ist abgelaufen",
+        "expiresIn": "Läuft ab in",
+        "updateInvoice": "Invoice aktualisieren",
+        "flexibleAmountInvoice": "Invoice mit flexiblem Betrag",
+        "copyAddress": "Adresse kopieren",
+        "shareAddress": "Adresse teilen",
+        "generatingInvoice": "Invoice wird erstellt",
+        "regenerateInvoice": "Invoice erneut erstellen",
+        "useABitcoinOnchainAddress": "Bitcoin Adresse verwenden",
+        "useALightningInvoice": "Lightning Invoice verwenden",
+        "setANote": "Notiz erstellen",
+        "invoiceAmount": "Invoice-Betrag",
+        "fees": "{minBankFee: string} Sats Gebühr für On-Chain Zahlungen unterhalb von {minBankFeeThreshold: string} Sats"
+    },
+    "RedeemBitcoinScreen": {
+        "title": "Bitcoin einlösen",
+        "usdTitle": "Gegen USD einlösen",
+        "error": "Invoice konnte nicht erstellt werden. Bitte kontaktiere den Support, wenn dieses Problem weiterhin besteht.",
+        "redeemingError": "Bitcoin konnten nicht eingelöst werden. Bitte kontaktiere den Support, wenn das Problem weiterhin besteht.",
+        "submissionError": "Auszahlung fehlgeschlagen. Bitte kontaktiere den Support, wenn das Problem weiterhin besteht.",
+        "minMaxRange": "Min: {minimumAmount: string}, Max: {maximumAmount: string}",
+        "redeemBitcoin": "Bitcoin einlösen",
+        "amountToRedeemFrom": "Betrag einlösen von {domain: string}",
+        "redeemAmountFrom": "Einlösen {amountToRedeem: string} von {domain: string}"
+    },
+    "ScanningQRCodeScreen": {
+        "invalidContent": "Gefunden:\n\n{found}\n\nDies ist keine gültige Bitcoin Adresse oder Lightning Invoice",
+        "expiredContent": "Wir haben gefunden:\n\n{found: string}\n\nDiese Invoice ist abgelaufen",
+        "invalidTitle": "Ungültiger QR Code",
+        "noQrCode": "Es konnte kein QR Code im Bild gefunden werden",
+        "title": "QR-Code scannen",
+        "invalidContentLnurl": "Gefunden:\n\n{found}\n\n ist aktuell nicht unterstützt"
+    },
+    "SecurityScreen": {
+        "biometricDescription": "Mit Fingerabdruck oder Gesichtserkennung entsperren.",
+        "biometricTitle": "Biometrie",
+        "biometryNotAvailable": "Biometrischer Sensor nicht verfügbar.",
+        "biometryNotEnrolled": "Bitte aktiviere mindestens ein biometrisches Erkennungsmerkmal, um damit die App zu entsperren.",
+        "hideBalanceDescription": "Guthaben in der Übersicht verbergen, so dass es nicht direkt zu sehen ist.",
+        "hideBalanceTitle": "Kontostand ausblenden",
+        "pinDescription": "Dein PIN Code wird als weitere Methode zum Entsperren genutzt, wenn die biometrische Authentifizierung nicht verfügbar ist.",
+        "pinTitle": "PIN Code",
+        "setPin": "PIN setzen"
+    },
+    "SendBitcoinConfirmationScreen": {
+        "amountLabel": "Betrag:",
+        "confirmPayment": "Zahlung bestätigen",
+        "confirmPaymentQuestion": "Möchtest Du diese Zahlung bestätigen?",
+        "destinationLabel": "An:",
+        "feeLabel": "Gebühr",
+        "memoLabel": "Notiz:",
+        "paymentFinal": "Zahlungen sind final.",
+        "stalePrice": "Der Bitcoin Preis ist veraltet und wurde zuletzt {timePeriod} aktualisiert. Bitte starte die App erneut, bevor Du eine Zahlung tätigst.",
+        "title": "Zahlung bestätigen",
+        "totalLabel": "Gesamt:",
+        "totalExceed": "Der Gesamtbetrag übersteigt dein Guthaben von {balance}",
+        "maxFeeSelected": "Dies ist die maximale Transaktionsgebühr. Die tatsächlich gezahlte Gebühr kann weniger betragen.",
+        "feeError": "Gebühr konnte nicht berechnet werden"
+    },
+    "SendBitcoinDestinationScreen": {
+        "usernameNowAddress": "{bankName} Benutzernamen sind nun {bankName} Adressen.",
+        "usernameNowAddressInfo": "Wenn Du einen {bankName} Benutzernamen angibst, ergänzen wir \"@{lnDomain}\" (bspw. maria@{lnDomain}) um daraus eine Adresse zu machen. Dein Benutzername ist jetzt auch eine {bankName} Adresse.\n\nGehe zu deiner {bankName} Adresse in den Einstellungen, um mehr darüber zu erfahren oder um sie zu teilen, damit Du Zahlungen empfangen kannst.",
+        "enterValidDestination": "Bitte gib ein gültiges Ziel an.",
+        "destinationOptions": "Du kannst an eine {bankName} Adresse, Lightning Adresse, Lightning Invoice oder BTC Adresse senden.",
+        "expiredInvoice": "Diese Invoice ist abgelaufen. Bitte generiere eine neue Rechnung.",
+        "wrongNetwork": "Diese Invoice ist für ein anderes Netzwerk. Bitte generiere eine neue Invoice.",
+        "invalidAmount": "Diese Invoice enthält einen ungültigen Betrag. Bitte generiere eine neue Invoice.",
+        "usernameDoesNotExist": "{lnAddress} scheint keine existierende {bankName} Adresse zu sein.",
+        "usernameDoesNotExistAdvice": "Gehe sicher, dass Du alles richtig geschrieben hast oder frage den Empfänger nach einer Lightning Invoice oder BTC Adresse.",
+        "selfPaymentError": "{lnAddress} ist deine {bankName} Adresse.",
+        "selfPaymentAdvice": "Wenn Du Geld an ein anderes Konto von dir senden möchtest, nutze dafür eine Lightning Invoice, Lightning Adresse oder BTC Adresse.",
+        "lnAddressError": "Wir konnten diese Lightning Adresse nicht erreichen. Wenn Du dir sicher bist dass sie existiert, probiere es später erneut.",
+        "lnAddressAdvice": "Gehe sicher, dass Du alles richtig geschrieben hast oder frage den Empfänger nach einer Lightning Invoice oder BTC Adresse.",
+        "unknownLightning": "Wir können diese Lightning Adresse nicht dekodieren. Bitte versuche es erneut.",
+        "unknownOnchain": "Wir können diese Bitcoin Adresse nicht dekodieren. Bitte versuche es erneut.",
+        "newBankAddressUsername": "{lnAddress} ist eine {bankName} Adresse, aber Du hast bisher keine Geld dorthin gesendet.",
+        "confirmModal": {
+            "title": "Du hast noch nie Geld an diese Adresse gesendet",
+            "body1": "Bitte stelle sicher, dass der Empfänger dir eine {bankName: string} Adresse gegeben hat,",
+            "bold2bold": "kein Benutzername von einer anderen Wallet.",
+            "body3": "Andernfalls wird das Geld an ein {bankName: string} Konto gesendet, das die “{lnAddress: string}” Adresse hat.\n\nÜberprüfe auch die Schreibweise des ersten Teils der Adresse. Zum Beispiel sind jackie and jack1e zwei unterschiedliche Adressen",
+            "warning": "Wenn die {bankName} Adresse falsch geschrieben ist, kann {bankName} die Transaktion nicht rückgängig machen.",
+            "checkBox": "{lnAddress} ist die richtige Adresse.",
+            "confirmButton": "Ich bin mir 100% sicher"
+        },
+        "clipboardError": "Fehler beim Abrufen des Werts aus der Zwischenablage"
+    },
+    "SendBitcoinScreen": {
+        "amount": "Betrag",
+        "amountExceed": "Der Betrag übersteigt dein Guthaben von {balance}",
+        "amountExceedsLimit": "Der Betrag übersteigt dein verbleibendes tägliches Limit von {limit: string}",
+        "upgradeAccountToIncreaseLimit": "Upgrade deinen Account, um dein Limit zu erhöhen",
+        "amountIsRequired": "Betrag ist erforderlich",
+        "cost": "Kosten",
+        "destination": "Empfänger",
+        "destinationIsRequired": "Empfänger ist erforderlich",
+        "fee": "Netzwerkgebühr",
+        "feeCalculationUnsuccessful": "Konnte nicht berechnet werden ⚠️",
+        "input": "Benutzername, Invoice oder Adresse",
+        "invalidUsername": "Ungültiger Benutzername",
+        "noAmount": "Diese Invoice hat keinen Betrag, daher musst Du selbst angeben, wie viel Geld Du senden möchtest.",
+        "notConfirmed": "Die Zahlung wurde gesendet\naber sie ist noch nicht bestätigt\n\nDu kannst den Status der Zahlung\nim Bereich Transaktionen einsehen",
+        "note": "Notiz",
+        "success": "Zahlung erfolgreich gesendet",
+        "max": "Max",
+        "maxAmount": "Maximaler Betrag",
+        "title": "Sende Bitcoin",
+        "failedToFetchLnurlInvoice": "LNURL Invoice konnte nicht abgerufen werden",
+        "lnurlInvoiceIncorrectAmount": "Der LNURL-Server hat mit einer Zahlungsaufforderung mit einem abweichenden Betrag geantwortet.",
+        "lnurlInvoiceIncorrectDescription": "Der LNURL-Server hat mit einer Invoice mit einem abweichenden Hash der Beschreibung geantwortet."
+    },
+    "SettingsScreen": {
+        "activated": "Aktiviert",
+        "tapLogIn": "Antippen zum Einloggen",
+        "addressScreen": "Zahlungsmöglichkeiten",
+        "tapUserName": "Antippen um einen Benutzernamen festzulegen",
+        "title": "Einstellungen",
+        "darkMode": "Dark Mode",
+        "setToDark": "Bildschirm: abgedunkelt",
+        "setToLight": "Bildschirm: hell",
+        "darkDefault": "Bildschirm: abgedunkelt, (Standard).",
+        "lightDefault": "Bildschirm: hell, (Standard).",
+        "csvTransactionsError": "Die Transaktionen konnten nicht als CSV exportiert werden. Etwas ging schief. Wenn es weiterhin nicht funktioniert, kontaktiere uns.",
+        "lnurlNoUsername": "Um eine LNURL Adresse zu generieren, gib zuerst einen Benutzernamen an. Möchtest Du jetzt einen Benutzernamen festlegen?",
+        "copyClipboardLnurl": "LNURL Adresse wurde in die Zwischenablage kopiert",
+        "defaultWallet": "Standard-Konto",
+        "rateUs": "Bewerte uns auf {storeName: string}",
+        "theme": "Design",
+        "nfc": "Per NFC empfangen",
+        "nfcError": "Fehler beim Lesen des NFC-Tags. Bitte versuche es erneut.",
+        "nfcNotCompatible": "Es konnte kein kompatibler LNURL-Link von dieser Karte gelesen werden.",
+        "nfcOnlyReceive": "Derzeit kann die NFC-Funktion nur zum Empfangen genutzt werden",
+        "nfcScanNow": "NFC jetzt scannen",
+        "nfcNotSupported": "NFC wird auf diesem Gerät nicht unterstützt"
+    },
+    "AccountScreen": {
+        "accountLevel": "Account Level",
+        "logIn": "Einloggen",
+        "upgrade": "Deinen Account upgraden",
+        "logOutAndDeleteLocalData": "Ausloggen und alle lokalen Daten löschen",
+        "IUnderstand": "Verstanden. Bitte logge mich aus.",
+        "logoutAlertTitle": "Bist du sicher, dass du dich ausloggen und alle deine lokalen Daten löschen möchtest?",
+        "logoutAlertContent": "Um dich erneut einzuloggen, benötigst du deine Telefonnummer. \nDeine Telefonnummer lautet {phoneNumber: string}. Stelle bitte sicher, dass du Zugriff auf diese hast, um dich erneut einloggen zu können.",
+        "usdBalanceWarning": "Dein Stablesats Kontostand beträgt {balance: string}.",
+        "btcBalanceWarning": "Dein Bitcoin Kontostand beträgt {balance: string}.",
+        "secureYourAccount": "Registriere dich, um deinen Account zu sichern"
+    },
+    "DefaultWalletScreen": {
+        "title": "Standard-Konto",
+        "info": "Wähle, welches Konto du standardmäßig zum Senden und Empfangen nutzen möchtest. Du kannst das verwendete Konto für individuelle Zahlungen jederzeit in der App ändern. Zahlungen, die über die Kasse oder deine Lightning Adresse empfangen werden, gehen immer auf dein Standard-Konto.\n\nUm die Volatilität von Bitcoin zu umgehen, nutze Stablesats. Stablesats ermöglicht es dir, Kursschwankungen auszugleichen und dennoch Geld senden und empfangen zu können.\n\nDu kannst diese Einstellungen jederzeit ändern, ohne, dass dein Kontostand davon betroffen ist."
+    },
+    "ThemeScreen": {
+        "title": "Design",
+        "info": "Wähle dein bevorzugtes Design für Blink oder übernimm dieses automatisch von deinen Systemeinstellungen.",
+        "system": "Systemeinstellungen verwenden",
+        "light": "Hellen Modus verwenden",
+        "dark": "Dunklen Modus verwenden"
+    },
+    "Languages": {
+        "DEFAULT": "Standard (OS)"
+    },
+    "StablesatsModal": {
+        "header": "Mit Stablesats kannst Du ein USD Konto mit deiner Wallet nutzen!",
+        "body": "Du kannst es nutzen, um Bitcoin zu senden und empfangen, und Gelder direkt zwischen deinen BTC und USD Konten zu transferieren. Der Wert in deinem USD Konto wird nicht mit dem Bitcoin-Preis schwanken. Diese Funktion ist nicht kompatibel mit traditionellen Banksystemen.",
+        "termsAndConditions": "Allgemeine Geschäftsbedingungen lesen.",
+        "learnMore": "Mehr über Stablesats erfahren"
+    },
+    "SplashScreen": {
+        "update": "Deine App ist veraltet. Ein Update wird benötigt, bevor Du die App nutzen kannst.\n\nLade bitte ein Update aus dem Android PlayStore oder Testflight für iOS"
+    },
+    "TransactionDetailScreen": {
+        "paid": "Gezahlt an/von",
+        "received": "Du erhieltst",
+        "spent": "Du zahltest",
+        "receivingAccount": "Empfangendes Konto",
+        "sendingAccount": "Sendendes Konto",
+        "txNotBroadcast": "Deine Transaktion ist noch nicht abgeschlossen und wird in Kürze an das Bitcoin-Netzwerk weitergeleitet."
+    },
+    "TransactionLimitsScreen": {
+        "receive": "Empfangen",
+        "withdraw": "Auszahlen",
+        "perDay": "pro Tag",
+        "perWeek": "pro Woche",
+        "unlimited": "Unbeschränkt",
+        "remaining": "Verbleibend",
+        "stablesatTransfers": "Stablesat-Transaktionen",
+        "internalSend": "Sende an {bankName: string} User",
+        "error": "Limits können aktuell nicht abgerufen werden",
+        "contactUsMessageBody": "Hi, ich möchte mein Transaktionslimit für mein {bankName: string} Konto erhöhen. ",
+        "contactUsMessageSubject": "Erhöhung des Transaktionslimits anfragen",
+        "contactSupportToPerformKyc": "Kontaktiere den Support, um ein manuelles KYC durchzuführen und dein Limit zu erhöhen",
+        "increaseLimits": "Erhöhe deine Limits"
+    },
+    "TransactionScreen": {
+        "noTransaction": "Keine Transaktionen",
+        "title": "Transaktionen",
+        "recentTransactions": "Letzte Transaktionen",
+        "transactionHistoryTitle": "Transaktionshistorie"
+    },
+    "TransferScreen": {
+        "title": "Transfer",
+        "percentageToConvert": "% konvertieren"
+    },
+    "UpgradeAccountModal": {
+        "title": "Deinen Account upgraden",
+        "backUpFunds": "Dein Geld sichern",
+        "higherLimits": "Deine Transaktionslimits erhöhen",
+        "receiveOnchain": "Bitcoin onchain empfangen",
+        "onlyAPhoneNumber": "Einfache und schnelle Verifizierung deiner Telefonnummer",
+        "letsGo": "Los geht's!",
+        "stayInTrialMode": "Im Demo-Modus bleiben"
+    },
+    "SetAddressModal": {
+        "title": "Erstelle {bankName: string} Adresse",
+        "Errors": {
+            "tooShort": "Die Adresse muss mindestens drei Zeichen haben",
+            "tooLong": "Die Adresse darf nicht länger als 50 Zeichen sein",
+            "invalidCharacter": "Die Adresse darf nur Buchstaben, Zahlen und Unterstriche beinhalten",
+            "addressUnavailable": "Entschuldigung, diese Adresse ist schon vergeben",
+            "unknownError": "Ein unbekannter Fehler ist aufgetreten, bitte versuche es später erneut"
+        },
+        "receiveMoney": "Empfange Geld von anderen Lightning Wallets und {bankName: string} Usern mit dieser Adresse.",
+        "itCannotBeChanged": "Kann später nicht mehr geändert werden."
+    },
+    "WelcomeFirstScreen": {
+        "bank": "Mit Bitcoin kannst Du Geld aufbewahren, senden und empfangen, ohne auf eine Bank oder Kreditkarte angewiesen zu sein.",
+        "before": "Vor Bitcoin war man von Banken oder Kreditkartenabietern abhängig, um Geld zu senden und empfangen.",
+        "care": "Warum ist das wichtig?",
+        "learn": "Ich will dich nicht bedrängen, aber es gibt noch viel mehr zu lernen, mach mit …",
+        "learnToEarn": "Lernen und verdienen"
+    },
+    "PhoneLoginInitiateScreen": {
+        "title": "Account einrichten",
+        "header": "Gib deine Telefonnumer an und wir senden dir einen Zugangscode.",
+        "headerVerify": "Bestätige, dass Du ein Mensch bist",
+        "errorRequestingCaptcha": "Etwas ging schief - wir konnten nicht sicherstellen, dass Du ein Mensch bist. Bitte versuche es erneut.",
+        "errorRequestingCode": "Etwas ging schief bei der Abfrage des Telefon Codes. Bitte versuche es später erneut.",
+        "errorInvalidPhoneNumber": "Ungültige Telefonnummer. Bist du dir sicher, dass du die richtige Nummer eingegeben hast?",
+        "errorUnsupportedCountry": "Leider können wir unseren Dienst in deinem Land nicht anbieten.",
+        "placeholder": "Telefonnummer",
+        "verify": "Klicken zur Bestätigung",
+        "sms": "Per SMS senden",
+        "whatsapp": "Via WhatsApp senden"
+    },
+    "PhoneLoginValidationScreen": {
+        "errorLoggingIn": "Fehler beim Login. Hast Du den richtigen Code verwendet?",
+        "errorTooManyAttempts": "Zu viele Versuche. Bitte versuche es später erneut.",
+        "errorCannotUpgradeToExistingAccount": "Dieser Telefon-Account existiert bereits. Bitte logge dich aus deinem Demo-Account aus und logge dich dann mit deiner Telefonnummer wieder ein.",
+        "header": "Um deine Telefonnummer zu bestätigen, gib bitte den Code ein, den wir gerade per {channel: string} an {phoneNumber: string} gesendet haben",
+        "placeholder": "6 Zeichen Code",
+        "sendAgain": "Erneut senden",
+        "tryAgain": "Erneut versuchen",
+        "sendViaOtherChannel": "Du hast ausgewählt, dass du den Code per {channel: string} empfangen möchtest. Du kannst ihn alternativ auch per {other: string} empfangen."
+    },
+    "common": {
+        "account": "Konto",
+        "transactionLimits": "Transaktionslimits",
+        "activateWallet": "Wallet aktivieren",
+        "amountRequired": "Betrag ist erforderlich",
+        "back": "Zurück",
+        "backHome": "Zurück zur Übersicht",
+        "bank": "Bank",
+        "bankAccount": "Konto",
+        "bankAdvice": "{bankName} Vorschlag",
+        "bankInfo": "{bankName} Info",
+        "beta": "beta",
+        "bitcoin": "Bitcoin",
+        "bitcoinPrice": "Bitcoin Preis",
+        "btcAccount": "BTC Konto",
+        "cancel": "Abbrechen",
+        "close": "Schließen",
+        "confirm": "Bestätigen",
+        "convert": "Konvertieren",
+        "currency": "Währung",
+        "currencySyncIssue": "Problem mit der Währung. Erneutes Laden erforderlich",
+        "csvExport": "Transaktionen als CSV exportieren",
+        "date": "Datum",
+        "description": "Beschreibung",
+        "domain": "Domain",
+        "email": "E-Mail",
+        "error": "Fehler",
+        "fatal": "Verhängnisvoller",
+        "fee": "Gebühr",
+        "Fee": "Gebühr",
+        "fees": "Gebühren",
+        "firstName": "Vorname",
+        "from": "Von",
+        "hour": "Stunde",
+        "hours": "Stunden",
+        "invoice": "Invoice",
+        "language": "Sprache",
+        "languagePreference": "Spracheinstellungen",
+        "lastName": "Nachname",
+        "later": "Später",
+        "loggedOut": "Du wurdest ausgeloggt.",
+        "logout": "Ausloggen",
+        "minutes": "Minuten",
+        "needWallet": "Einloggen oder einen Account erstellen, um deine Wallet zu öffnen",
+        "next": "Weiter",
+        "No": "Nein",
+        "note": "Notiz",
+        "notification": "Benachrichtigungen",
+        "ok": "OK",
+        "openWallet": "Wallet öffnen",
+        "phoneNumber": "Telefonnummer",
+        "rate": "Kurs",
+        "reauth": "Deine Sitzung ist abgelaufen. Btte logge dich erneut ein.",
+        "restart": "Neustart",
+        "sats": "Sats",
+        "search": "Suche",
+        "security": "Sicherheit",
+        "send": "Senden",
+        "setAnAmount": "definiere einen Betrag",
+        "share": "Teilen",
+        "shareBitcoin": "Bitcoin Adresse teilen",
+        "shareLightning": "Lightning Invoice teilen",
+        "soon": "Bald verfügbar!",
+        "success": "Erfolgreich!",
+        "stablesatsUsd": "Stablesats USD",
+        "to": "An",
+        "total": "Gesamt",
+        "transactions": "Transaktionen",
+        "transactionsError": "Transaktionen konnten nicht geladen werden",
+        "tryAgain": "Erneut versuchen",
+        "type": "Typ",
+        "usdAccount": "USD Konto",
+        "username": "Benutzername",
+        "usernameRequired": "Benutzername ist erforderlich",
+        "backupAccount": "Account sichern / upgraden",
+        "viewTransaction": "Transaktionen ansehen",
+        "yes": "Ja",
+        "pending": "Ausstehend",
+        "today": "Heute",
+        "yesterday": "Gestern",
+        "thisMonth": "Dieser Monat",
+        "prevMonths": "Vorherige Monate",
+        "problemMaybeReauth": "Es gab ein Problem mit deiner Anfrage. Bitte versuche es in einer Minute erneut. Wenn das Problem weiterhin besteht, versuche dich aus- und wieder einzuloggen. Du kannst dich ausloggen unter Einstellungen > Account > Log out",
+        "warning": "Warnung"
+    },
+    "errors": {
+        "generic": "Es gab einen Fehler.\nBitte versuche es später erneut.",
+        "invalidEmail": "Ungültige E-Mail Adresse",
+        "invalidPhoneNumber": "ist keine gültige Telefonnummer",
+        "tooManyRequestsPhoneCode": "Zu viele Anfragen. Bitte warte etwas, bevor Du eine weitere Nachricht anfragst.",
+        "network": {
+            "server": "Serverfehler. Bitte versuche es später erneut",
+            "request": "Anfragefehler.\nBitte kontaktiere uns, wenn dieses Problem weiterhin besteht",
+            "connection": "Verbindungsfehler.\nStelle sicher, dass Du eine Internetverbindung hast"
+        },
+        "unexpectedError": "Es trat ein unerwarteter Fehler auf",
+        "restartApp": "Bitte starte die App neu.",
+        "problemPersists": "Bitte kontaktiere uns, wenn dieses Problem weiterhin besteht.",
+        "fatalError": "Entschuldige, die Applikationsdaten konnten nicht geladen werden. Bitte kontaktiere uns, wenn dieses Problem weiterhin besteht.",
+        "showError": "Fehler anzeigen",
+        "clearAppData": "App-Daten löschen und ausloggen"
+    },
+    "notifications": {
+        "payment": {
+            "body": "Du hast {value} Sats empfangen",
+            "title": "Zahlung empfangen"
+        }
+    },
+    "support": {
+        "contactUs": "Brauchst du Hilfe? Kontaktiere uns.",
+        "joinTheCommunity": "Tritt der Community bei",
+        "whatsapp": "WhatsApp",
+        "email": "Email",
+        "statusPage": "Status-Seite",
+        "telegram": "Telegram",
+        "mattermost": "Mattermost",
+        "defaultEmailSubject": "{bankName: string} - Support",
+        "defaultSupportMessage": "Hey! Ich brauche Hilfe mit {bankName: string}, ich benutze Version {version: string} auf {os: string}.",
+        "emailCopied": "E-Mail {email: string} in Zwischenablage kopiert",
+        "deleteAccount": "Account löschen",
+        "delete": "Löschen",
+        "typeDelete": "Bitte gib \"{delete: string}\" ein, um die Löschung deines Accounts zu bestätigen",
+        "finalConfirmationAccountDeletionTitle": "Erneute Bestätigung erforderlich",
+        "finalConfirmationAccountDeletionMessage": "Bist du sicher, dass du deinen Account löschen willst? Dieser Vorgang kann nicht rückgängig gemacht werden.",
+        "deleteAccountBalanceWarning": "Wenn du deinen Account löschst, kannst du nicht mehr über dein Konto verfügen. Bist du sicher, dass du fortfahren willst?",
+        "deleteAccountConfirmation": "Dein Account wurde für die Löschung vorgemerkt.\n\nWenn die gesetzliche Übergangsfrist abgelaufen ist, werden alle deine verbleibenden Daten dauerhaft gelöscht.",
+        "deleteAccountFromPhone": "Hey, bitte löscht meinen Account. Meine Telefonnummer ist {phoneNumber: string}.",
+        "deleteAccountError": "Etwas ist schief gelaufen. Bitte kontaktiere {email: string}, um weitere Hilfe zu erhalten.",
+        "bye": "Auf Wiedersehen!"
+    },
+    "lnurl": {
+        "overLimit": "Du kannst nicht mehr als den Maximalbetrag senden",
+        "underLimit": "Du kannst nicht weniger als den Minimalbetrag senden",
+        "commentRequired": "Kommentar erfordert",
+        "viewPrintable": "Druckversion anzeigen"
+    },
+    "DisplayCurrencyScreen": {
+        "errorLoading": "Fehler beim Laden der Währungsliste"
+    },
+    "AmountInputScreen": {
+        "enterAmount": "Betrag eingeben",
+        "setAmount": "Eingegebener Betrag",
+        "maxAmountExceeded": "Der Betrag darf {maxAmount: string} nicht übersteigen.",
+        "minAmountNotMet": "Der Betrag darf {minAmount: string} nicht unterschreiten."
+    },
+    "AmountInputButton": {
+        "tapToSetAmount": "Tippen, um Betrag festzulegen."
+    },
+    "AppUpdate": {
+        "needToUpdateSupportMessage": "Ich muss meine App auf die neuste Version updaten. Ich nutze die {os: string} App mit Version {version: string}.",
+        "versionNotSupported": "Diese mobile Version wird nicht mehr unterstützt",
+        "updateMandatory": "Das Update ist zwingend erforderlich",
+        "tapHereUpdate": "Klicke hier, um jetzt zu updaten",
+        "contactSupport": "Support kontaktieren"
     }
   },
   "support": {

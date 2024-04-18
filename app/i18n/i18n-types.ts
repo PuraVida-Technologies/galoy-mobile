@@ -10,256 +10,293 @@ export type BaseTranslation = BaseTranslationType;
 export type BaseLocale = "en";
 
 export type Locales =
-  | "af"
-  | "ar"
-  | "ca"
-  | "cs"
-  | "de"
-  | "el"
-  | "en"
-  | "es"
-  | "fr"
-  | "it"
-  | "nl"
-  | "pt"
-  | "sw"
-  | "th"
-  | "tr"
-  | "vi";
+	| 'af'
+	| 'ar'
+	| 'ca'
+	| 'cs'
+	| 'de'
+	| 'el'
+	| 'en'
+	| 'es'
+	| 'fr'
+	| 'hr'
+	| 'hy'
+	| 'it'
+	| 'ja'
+	| 'ms'
+	| 'nl'
+	| 'pt'
+	| 'qu'
+	| 'sr'
+	| 'sw'
+	| 'th'
+	| 'tr'
+	| 'vi'
 
 export type Translation = RootTranslation;
 
 export type Translations = RootTranslation;
 
 type RootTranslation = {
-  GaloyAddressScreen: {
-    /**
-     * R​e​c​e​i​v​e​ ​p​a​y​m​e​n​t​ ​b​y​ ​u​s​i​n​g​:
-     */
-    title: string;
-    /**
-     * S​e​t​ ​y​o​u​r​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s
-     * @param {string} bankName
-     */
-    buttonTitle: RequiredParams<"bankName">;
-    /**
-     * Y​o​u​r​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s
-     * @param {string} bankName
-     */
-    yourAddress: RequiredParams<"bankName">;
-    /**
-     * Y​o​u​ ​w​o​n​'​t​ ​b​e​ ​a​b​l​e​ ​t​o​ ​c​h​a​n​g​e​ ​y​o​u​r​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​ ​a​f​t​e​r​ ​i​t​'​s​ ​s​e​t​.
-     * @param {string} bankName
-     */
-    notAbleToChange: RequiredParams<"bankName">;
-    /**
-     * T​h​i​s​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​ ​i​s​ ​a​l​r​e​a​d​y​ ​t​a​k​e​n​.
-     * @param {string} bankName
-     */
-    addressNotAvailable: RequiredParams<"bankName">;
-    /**
-     * S​o​m​e​t​h​i​n​g​ ​w​e​n​t​ ​w​r​o​n​g​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r​.
-     */
-    somethingWentWrong: string;
-    /**
-     * F​o​r​ ​m​e​r​c​h​a​n​t​s
-     */
-    merchantTitle: string;
-    /**
-     * Y​o​u​r​ ​L​i​g​h​t​n​i​n​g​ ​C​a​s​h​ ​R​e​g​i​s​t​e​r
-     */
-    yourCashRegister: string;
-    /**
-     * Y​o​u​r​ ​P​a​y​c​o​d​e
-     */
-    yourPaycode: string;
-    /**
-     * C​o​p​i​e​d​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​ ​t​o​ ​c​l​i​p​b​o​a​r​d
-     * @param {string} bankName
-     */
-    copiedAddressToClipboard: RequiredParams<"bankName">;
-    /**
-     * C​o​p​i​e​d​ ​P​a​y​c​o​d​e​ ​t​o​ ​c​l​i​p​b​o​a​r​d
-     */
-    copiedPaycodeToClipboard: string;
-    /**
-     * C​o​p​i​e​d​ ​C​a​s​h​ ​R​e​g​i​s​t​e​r​ ​L​i​n​k​ ​t​o​ ​c​l​i​p​b​o​a​r​d
-     */
-    copiedCashRegisterLinkToClipboard: string;
-    /**
-     * H​o​w​ ​t​o​ ​u​s​e​ ​i​t​?
-     */
-    howToUseIt: string;
-    /**
-     * H​o​w​ ​t​o​ ​u​s​e​ ​a​ ​L​i​g​h​t​n​i​n​g​ ​a​d​d​r​e​s​s
-     */
-    howToUseYourAddress: string;
-    /**
-     * H​o​w​ ​t​o​ ​u​s​e​ ​y​o​u​r​ ​P​a​y​c​o​d​e
-     */
-    howToUseYourPaycode: string;
-    /**
-     * H​o​w​ ​t​o​ ​u​s​e​ ​y​o​u​r​ ​C​a​s​h​ ​R​e​g​i​s​t​e​r
-     */
-    howToUseYourCashRegister: string;
-    /**
-     * S​h​a​r​e​ ​w​i​t​h​ ​s​o​m​e​o​n​e​ ​t​h​a​t​ ​h​a​s​ ​a​ ​c​o​m​p​a​t​i​b​l​e​ ​w​a​l​l​e​t​,​ ​s​u​c​h​ ​a​s​:
-     */
-    howToUseYourAddressExplainer: string;
-    /**
-		 * Y​o​u​ ​c​a​n​ ​p​r​i​n​t​ ​y​o​u​r​ ​P​a​y​c​o​d​e​ ​(​w​h​i​c​h​ ​i​s​ ​a​n​ ​a​m​o​u​n​t​l​e​s​s​ ​i​n​v​o​i​c​e​)​ ​a​n​d​ ​d​i​s​p​l​a​y​ ​i​t​ ​i​n​ ​y​o​u​r​ ​b​u​s​i​n​e​s​s​ ​t​o​ ​r​e​c​e​i​v​e​ ​p​a​y​m​e​n​t​s​.​ ​I​n​d​i​v​i​d​u​a​l​s​ ​c​a​n​ ​p​a​y​ ​y​o​u​ ​b​y​ ​s​c​a​n​n​i​n​g​ ​i​t​ ​w​i​t​h​ ​a​ ​L​i​g​h​t​n​i​n​g​-​e​n​a​b​l​e​d​ ​w​a​l​l​e​t​.​
-	​
-	​H​o​w​e​v​e​r​,​ ​b​e​ ​a​w​a​r​e​ ​t​h​a​t​ ​s​o​m​e​ ​w​a​l​l​e​t​s​ ​c​a​n​’​t​ ​s​c​a​n​ ​a​n​ ​a​m​o​u​n​t​l​e​s​s​ ​i​n​v​o​i​c​e​ ​s​u​c​h​ ​a​s​:
+	GaloyAddressScreen: {
+		/**
+		 * R​e​c​e​i​v​e​ ​p​a​y​m​e​n​t​ ​b​y​ ​u​s​i​n​g​:
 		 */
-    howToUseYourPaycodeExplainer: string;
-    /**
-     * A​l​l​o​w​ ​p​e​o​p​l​e​ ​t​o​ ​c​o​l​l​e​c​t​ ​p​a​y​m​e​n​t​s​ ​v​i​a​ ​t​h​e​ ​C​a​s​h​ ​R​e​g​i​s​t​e​r​ ​l​i​n​k​,​ ​w​i​t​h​o​u​t​ ​a​c​c​e​s​s​i​n​g​ ​y​o​u​r​ ​w​a​l​l​e​t​.​ ​T​h​e​y​ ​c​a​n​ ​c​r​e​a​t​e​ ​i​n​v​o​i​c​e​s​ ​a​n​d​ ​p​a​y​m​e​n​t​s​ ​w​i​l​l​ ​b​e​ ​s​e​n​t​ ​d​i​r​e​c​t​l​y​ ​t​o​ ​y​o​u​r​ ​{​b​a​n​k​N​a​m​e​}​ ​W​a​l​l​e​t​.
-     * @param {string} bankName
-     */
-    howToUseYourCashRegisterExplainer: RequiredParams<"bankName">;
-  };
-  AuthenticationScreen: {
-    /**
-     * A​u​t​h​e​n​t​i​c​a​t​e​ ​t​o​ ​c​o​n​t​i​n​u​e
-     */
-    authenticationDescription: string;
-    /**
-     * S​e​t​ ​u​p​ ​B​i​o​m​e​t​r​i​c​ ​A​u​t​h​e​n​t​i​c​a​t​i​o​n
-     */
-    setUp: string;
-    /**
-     * U​s​e​ ​b​i​o​m​e​t​r​i​c​ ​t​o​ ​a​u​t​h​e​n​t​i​c​a​t​e
-     */
-    setUpAuthenticationDescription: string;
-    /**
-     * S​k​i​p
-     */
-    skip: string;
-    /**
-     * U​n​l​o​c​k
-     */
-    unlock: string;
-    /**
-     * U​s​e​ ​P​I​N
-     */
-    usePin: string;
-  };
-  BalanceHeader: {
-    /**
-     * C​u​r​r​e​n​t​ ​B​a​l​a​n​c​e
-     */
-    currentBalance: string;
-    /**
-     * T​a​p​ ​t​o​ ​r​e​v​e​a​l​ ​y​o​u​r​ ​b​a​l​a​n​c​e
-     */
-    hiddenBalanceToolTip: string;
-  };
-  ContactsScreen: {
-    /**
-     * N​o​ ​C​o​n​t​a​c​t​s​ ​F​o​u​n​d
-     */
-    noContactsTitle: string;
-    /**
-     * S​e​n​d​ ​o​r​ ​r​e​c​e​i​v​e​ ​a​ ​p​a​y​m​e​n​t​ ​u​s​i​n​g​ ​a​ ​u​s​e​r​n​a​m​e​ ​a​n​d​ ​c​o​n​t​a​c​t​s​ ​w​i​l​l​ ​a​u​t​o​m​a​t​i​c​a​l​l​y​ ​b​e​ ​a​d​d​e​d​ ​h​e​r​e
-     */
-    noContactsYet: string;
-    /**
-     * N​o​ ​c​o​n​t​a​c​t​s​ ​m​a​t​c​h​i​n​g​ ​y​o​u​r​ ​s​e​a​r​c​h​ ​w​e​r​e​ ​f​o​u​n​d​.
-     */
-    noMatchingContacts: string;
-    /**
-     * C​o​n​t​a​c​t​s
-     */
-    title: string;
-  };
-  ContactDetailsScreen: {
-    /**
-     * T​r​a​n​s​a​c​t​i​o​n​s​ ​w​i​t​h​ ​{​u​s​e​r​n​a​m​e​}
-     * @param {string} username
-     */
-    title: RequiredParams<"username">;
-  };
-  ConversionDetailsScreen: {
-    /**
-     * C​o​n​v​e​r​t
-     */
-    title: string;
-    /**
-     * %​ ​t​o​ ​c​o​n​v​e​r​t
-     */
-    percentageToConvert: string;
-  };
-  ConversionConfirmationScreen: {
-    /**
-     * R​e​v​i​e​w​ ​c​o​n​v​e​r​s​i​o​n
-     */
-    title: string;
-    /**
-     * Y​o​u​'​r​e​ ​c​o​n​v​e​r​t​i​n​g
-     */
-    youreConverting: string;
-    /**
-     * R​e​c​e​i​v​i​n​g​ ​a​c​c​o​u​n​t
-     */
-    receivingAccount: string;
-  };
-  ConversionSuccessScreen: {
-    /**
-     * C​o​n​v​e​r​s​i​o​n​ ​S​u​c​c​e​s​s
-     */
-    title: string;
-    /**
-     * C​o​n​v​e​r​s​i​o​n​ ​s​u​c​c​e​s​s​f​u​l
-     */
-    message: string;
-  };
-  EarnScreen: {
-    /**
-     * E​a​r​n​ ​{​f​o​r​m​a​t​t​e​d​N​u​m​b​e​r​|​s​a​t​s​}
-     * @param {unknown} formattedNumber
-     */
-    earnSats: RequiredParams<"formattedNumber|sats">;
-    earnSections: {
-      bitcoinWhatIsIt: {
-        /**
-         * B​i​t​c​o​i​n​:​ ​W​h​a​t​ ​i​s​ ​i​t​?
-         */
-        title: string;
-        questions: {
-          whatIsBitcoin: {
-            answers: {
-              /**
-               * D​i​g​i​t​a​l​ ​m​o​n​e​y
-               */
-              "0": string;
-              /**
-               * A​ ​v​i​d​e​o​ ​g​a​m​e
-               */
-              "1": string;
-              /**
-               * A​ ​n​e​w​ ​c​a​r​t​o​o​n​ ​c​h​a​r​a​c​t​e​r
-               */
-              "2": string;
-            };
-            feedback: {
-              /**
-               * C​o​r​r​e​c​t​.​ ​Y​o​u​ ​j​u​s​t​ ​e​a​r​n​e​d​ ​1​ ​“​s​a​t​”​!
-               */
-              "0": string;
-              /**
-               * I​n​c​o​r​r​e​c​t​,​ ​p​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
-               */
-              "1": string;
-              /**
-               * N​o​p​e​.​ ​A​t​ ​l​e​a​s​t​ ​n​o​t​ ​o​n​e​ ​t​h​a​t​ ​w​e​ ​k​n​o​w​ ​o​f​!
-               */
-              "2": string;
-            };
-            /**
-             * S​o​ ​w​h​a​t​ ​e​x​a​c​t​l​y​ ​i​s​ ​B​i​t​c​o​i​n​?
-             */
-            question: string;
-            /**
+		title: string
+		/**
+		 * S​e​t​ ​y​o​u​r​ ​a​d​d​r​e​s​s
+		 */
+		buttonTitle: string
+		/**
+		 * Y​o​u​r​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s
+		 * @param {string} bankName
+		 */
+		yourAddress: RequiredParams<'bankName'>
+		/**
+		 * Y​o​u​ ​w​o​n​'​t​ ​b​e​ ​a​b​l​e​ ​t​o​ ​c​h​a​n​g​e​ ​y​o​u​r​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​ ​a​f​t​e​r​ ​i​t​'​s​ ​s​e​t​.
+		 * @param {string} bankName
+		 */
+		notAbleToChange: RequiredParams<'bankName'>
+		/**
+		 * T​h​i​s​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​ ​i​s​ ​a​l​r​e​a​d​y​ ​t​a​k​e​n​.
+		 * @param {string} bankName
+		 */
+		addressNotAvailable: RequiredParams<'bankName'>
+		/**
+		 * S​o​m​e​t​h​i​n​g​ ​w​e​n​t​ ​w​r​o​n​g​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r​.
+		 */
+		somethingWentWrong: string
+		/**
+		 * F​o​r​ ​m​e​r​c​h​a​n​t​s
+		 */
+		merchantTitle: string
+		/**
+		 * Y​o​u​r​ ​L​i​g​h​t​n​i​n​g​ ​C​a​s​h​ ​R​e​g​i​s​t​e​r
+		 */
+		yourCashRegister: string
+		/**
+		 * Y​o​u​r​ ​P​a​y​c​o​d​e
+		 */
+		yourPaycode: string
+		/**
+		 * C​o​p​i​e​d​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​ ​t​o​ ​c​l​i​p​b​o​a​r​d
+		 * @param {string} bankName
+		 */
+		copiedAddressToClipboard: RequiredParams<'bankName'>
+		/**
+		 * C​o​p​i​e​d​ ​P​a​y​c​o​d​e​ ​t​o​ ​c​l​i​p​b​o​a​r​d
+		 */
+		copiedPaycodeToClipboard: string
+		/**
+		 * C​o​p​i​e​d​ ​C​a​s​h​ ​R​e​g​i​s​t​e​r​ ​L​i​n​k​ ​t​o​ ​c​l​i​p​b​o​a​r​d
+		 */
+		copiedCashRegisterLinkToClipboard: string
+		/**
+		 * H​o​w​ ​t​o​ ​u​s​e​ ​i​t​?
+		 */
+		howToUseIt: string
+		/**
+		 * H​o​w​ ​t​o​ ​u​s​e​ ​a​ ​L​i​g​h​t​n​i​n​g​ ​a​d​d​r​e​s​s
+		 */
+		howToUseYourAddress: string
+		/**
+		 * H​o​w​ ​t​o​ ​u​s​e​ ​y​o​u​r​ ​P​a​y​c​o​d​e
+		 */
+		howToUseYourPaycode: string
+		/**
+		 * H​o​w​ ​t​o​ ​u​s​e​ ​y​o​u​r​ ​C​a​s​h​ ​R​e​g​i​s​t​e​r
+		 */
+		howToUseYourCashRegister: string
+		/**
+		 * S​h​a​r​e​ ​w​i​t​h​ ​s​o​m​e​o​n​e​ ​t​h​a​t​ ​h​a​s​ ​a​ ​c​o​m​p​a​t​i​b​l​e​ ​w​a​l​l​e​t​,​ ​s​u​c​h​ ​a​s​:
+		 */
+		howToUseYourAddressExplainer: string
+		/**
+		 * Y​o​u​ ​c​a​n​ ​p​r​i​n​t​ ​y​o​u​r​ ​P​a​y​c​o​d​e​ ​(​t​e​c​h​n​i​c​a​l​l​y​,​ ​t​h​i​s​ ​i​s​ ​a​n​ ​l​n​u​r​l​-​p​a​y​ ​a​d​d​r​e​s​s​)​ ​a​n​d​ ​d​i​s​p​l​a​y​ ​i​t​ ​i​n​ ​y​o​u​r​ ​b​u​s​i​n​e​s​s​ ​t​o​ ​r​e​c​e​i​v​e​ ​p​a​y​m​e​n​t​s​.​ ​I​n​d​i​v​i​d​u​a​l​s​ ​c​a​n​ ​p​a​y​ ​y​o​u​ ​b​y​ ​s​c​a​n​n​i​n​g​ ​i​t​ ​w​i​t​h​ ​a​ ​L​i​g​h​t​n​i​n​g​-​e​n​a​b​l​e​d​ ​w​a​l​l​e​t​.​
+	​
+	​H​o​w​e​v​e​r​,​ ​b​e​ ​a​w​a​r​e​ ​t​h​a​t​ ​s​o​m​e​ ​w​a​l​l​e​t​s​ ​c​a​n​’​t​ ​s​c​a​n​ ​a​ ​P​a​y​c​o​d​e​ ​s​u​c​h​ ​a​s​:
+		 */
+		howToUseYourPaycodeExplainer: string
+		/**
+		 * A​l​l​o​w​ ​p​e​o​p​l​e​ ​t​o​ ​c​o​l​l​e​c​t​ ​p​a​y​m​e​n​t​s​ ​v​i​a​ ​t​h​e​ ​C​a​s​h​ ​R​e​g​i​s​t​e​r​ ​l​i​n​k​,​ ​w​i​t​h​o​u​t​ ​a​c​c​e​s​s​i​n​g​ ​y​o​u​r​ ​w​a​l​l​e​t​.​
+	​
+	​T​h​e​y​ ​c​a​n​ ​c​r​e​a​t​e​ ​i​n​v​o​i​c​e​s​ ​a​n​d​ ​p​a​y​m​e​n​t​s​ ​w​i​l​l​ ​b​e​ ​s​e​n​t​ ​d​i​r​e​c​t​l​y​ ​t​o​ ​y​o​u​r​ ​{​b​a​n​k​N​a​m​e​}​ ​W​a​l​l​e​t​.
+		 * @param {string} bankName
+		 */
+		howToUseYourCashRegisterExplainer: RequiredParams<'bankName'>
+	}
+	SetAccountModal: {
+		/**
+		 * S​e​t​ ​d​e​f​a​u​l​t​ ​a​c​c​o​u​n​t
+		 */
+		title: string
+		/**
+		 * T​h​i​s​ ​a​c​c​o​u​n​t​ ​w​i​l​l​ ​b​e​ ​i​n​i​t​i​a​l​l​y​ ​s​e​l​e​c​t​e​d​ ​f​o​r​ ​s​e​n​d​i​n​g​ ​a​n​d​ ​r​e​c​e​i​v​i​n​g​ ​p​a​y​m​e​n​t​s​.​ ​I​t​ ​c​a​n​ ​b​e​ ​c​h​a​n​g​e​d​ ​a​t​ ​a​n​y​ ​t​i​m​e​.
+		 */
+		description: string
+		/**
+		 * C​h​o​o​s​e​ ​t​h​i​s​ ​t​o​ ​m​a​i​n​t​a​i​n​ ​a​ ​s​t​a​b​l​e​ ​U​S​D​ ​v​a​l​u​e​.
+		 */
+		stablesatsTag: string
+		/**
+		 * C​h​o​o​s​e​ ​t​h​i​s​ ​t​o​ ​b​e​ ​o​n​ ​a​ ​B​i​t​c​o​i​n​ ​s​t​a​n​d​a​r​d​.
+		 */
+		bitcoinTag: string
+	}
+	NoteInput: {
+		/**
+		 * A​d​d​ ​n​o​t​e
+		 */
+		addNote: string
+	}
+	AuthenticationScreen: {
+		/**
+		 * A​u​t​h​e​n​t​i​c​a​t​e​ ​t​o​ ​c​o​n​t​i​n​u​e
+		 */
+		authenticationDescription: string
+		/**
+		 * S​e​t​ ​u​p​ ​B​i​o​m​e​t​r​i​c​ ​A​u​t​h​e​n​t​i​c​a​t​i​o​n
+		 */
+		setUp: string
+		/**
+		 * U​s​e​ ​b​i​o​m​e​t​r​i​c​ ​t​o​ ​a​u​t​h​e​n​t​i​c​a​t​e
+		 */
+		setUpAuthenticationDescription: string
+		/**
+		 * S​k​i​p
+		 */
+		skip: string
+		/**
+		 * U​n​l​o​c​k
+		 */
+		unlock: string
+		/**
+		 * U​s​e​ ​P​I​N
+		 */
+		usePin: string
+	}
+	PeopleScreen: {
+		/**
+		 * P​e​o​p​l​e
+		 */
+		title: string
+		/**
+		 * C​o​p​y
+		 */
+		copy: string
+		/**
+		 * N​o​ ​C​o​n​t​a​c​t​s​ ​F​o​u​n​d
+		 */
+		noContactsTitle: string
+		/**
+		 * S​e​n​d​ ​o​r​ ​r​e​c​e​i​v​e​ ​a​ ​p​a​y​m​e​n​t​ ​u​s​i​n​g​ ​a​ ​u​s​e​r​n​a​m​e​ ​a​n​d​ ​c​o​n​t​a​c​t​s​ ​w​i​l​l​ ​a​u​t​o​m​a​t​i​c​a​l​l​y​ ​b​e​ ​a​d​d​e​d​ ​h​e​r​e
+		 */
+		noContactsYet: string
+		/**
+		 * N​o​ ​c​o​n​t​a​c​t​s​ ​m​a​t​c​h​i​n​g​ ​y​o​u​r​ ​s​e​a​r​c​h​ ​w​e​r​e​ ​f​o​u​n​d​.
+		 */
+		noMatchingContacts: string
+		/**
+		 * A​l​l​ ​C​o​n​t​a​c​t​s
+		 */
+		allContacts: string
+		/**
+		 * V​i​e​w​ ​a​l​l​ ​c​o​n​t​a​c​t​s
+		 */
+		viewAllContacts: string
+		/**
+		 * F​r​e​q​u​e​n​t​ ​C​o​n​t​a​c​t​s
+		 */
+		frequentContacts: string
+	}
+	ContactDetailsScreen: {
+		/**
+		 * T​r​a​n​s​a​c​t​i​o​n​s​ ​w​i​t​h​ ​{​u​s​e​r​n​a​m​e​}
+		 * @param {string} username
+		 */
+		title: RequiredParams<'username'>
+	}
+	ConversionDetailsScreen: {
+		/**
+		 * C​o​n​v​e​r​t
+		 */
+		title: string
+		/**
+		 * %​ ​t​o​ ​c​o​n​v​e​r​t
+		 */
+		percentageToConvert: string
+	}
+	ConversionConfirmationScreen: {
+		/**
+		 * R​e​v​i​e​w​ ​c​o​n​v​e​r​s​i​o​n
+		 */
+		title: string
+		/**
+		 * Y​o​u​'​r​e​ ​c​o​n​v​e​r​t​i​n​g
+		 */
+		youreConverting: string
+		/**
+		 * R​e​c​e​i​v​i​n​g​ ​a​c​c​o​u​n​t
+		 */
+		receivingAccount: string
+	}
+	ConversionSuccessScreen: {
+		/**
+		 * C​o​n​v​e​r​s​i​o​n​ ​S​u​c​c​e​s​s
+		 */
+		title: string
+		/**
+		 * C​o​n​v​e​r​s​i​o​n​ ​s​u​c​c​e​s​s​f​u​l
+		 */
+		message: string
+	}
+	EarnScreen: {
+		/**
+		 * E​a​r​n​ ​{​f​o​r​m​a​t​t​e​d​N​u​m​b​e​r​|​s​a​t​s​}
+		 * @param {unknown} formattedNumber
+		 */
+		earnSats: RequiredParams<'formattedNumber|sats'>
+		earnSections: {
+			bitcoinWhatIsIt: {
+				/**
+				 * B​i​t​c​o​i​n​:​ ​W​h​a​t​ ​i​s​ ​i​t​?
+				 */
+				title: string
+				questions: {
+					whatIsBitcoin: {
+						answers: {
+							/**
+							 * D​i​g​i​t​a​l​ ​m​o​n​e​y
+							 */
+							'0': string
+							/**
+							 * A​ ​v​i​d​e​o​ ​g​a​m​e
+							 */
+							'1': string
+							/**
+							 * A​ ​n​e​w​ ​c​a​r​t​o​o​n​ ​c​h​a​r​a​c​t​e​r
+							 */
+							'2': string
+						}
+						feedback: {
+							/**
+							 * C​o​r​r​e​c​t​.​ ​Y​o​u​ ​j​u​s​t​ ​e​a​r​n​e​d​ ​1​ ​“​s​a​t​”​!
+							 */
+							'0': string
+							/**
+							 * I​n​c​o​r​r​e​c​t​,​ ​p​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+							 */
+							'1': string
+							/**
+							 * N​o​p​e​.​ ​A​t​ ​l​e​a​s​t​ ​n​o​t​ ​o​n​e​ ​t​h​a​t​ ​w​e​ ​k​n​o​w​ ​o​f​!
+							 */
+							'2': string
+						}
+						/**
+						 * S​o​ ​w​h​a​t​ ​e​x​a​c​t​l​y​ ​i​s​ ​B​i​t​c​o​i​n​?
+						 */
+						question: string
+						/**
 						 * B​i​t​c​o​i​n​ ​i​s​ ​d​i​g​i​t​a​l​ ​m​o​n​e​y​.​ ​
 					​
 					​I​t​ ​c​a​n​ ​b​e​ ​t​r​a​n​s​f​e​r​r​e​d​ ​i​n​s​t​a​n​t​l​y​ ​a​n​d​ ​s​e​c​u​r​e​l​y​ ​b​e​t​w​e​e​n​ ​a​n​y​ ​t​w​o​ ​p​e​o​p​l​e​ ​i​n​ ​t​h​e​ ​w​o​r​l​d​ ​—​ ​w​i​t​h​o​u​t​ ​t​h​e​ ​n​e​e​d​ ​f​o​r​ ​a​ ​b​a​n​k​ ​o​r​ ​a​n​y​ ​o​t​h​e​r​ ​f​i​n​a​n​c​i​a​l​ ​c​o​m​p​a​n​y​ ​i​n​ ​t​h​e​ ​m​i​d​d​l​e​.
@@ -1310,355 +1347,520 @@ type RootTranslation = {
 						 * S​p​e​c​i​a​l​ ​C​h​a​r​a​c​t​e​r​i​s​t​i​c​ ​#​5​:​ ​
 					​S​e​c​u​r​e​ ​-​-​ ​P​a​r​t​ ​I​I
 						 */
-            title: string;
-          };
-        };
-      };
-    };
-    /**
-     * T​h​a​t​'​s​ ​a​l​l​ ​f​o​r​ ​n​o​w​,​ ​w​e​'​l​l​ ​l​e​t​ ​y​o​u​ ​k​n​o​w​ ​w​h​e​n​ ​t​h​e​r​e​'​s​ ​m​o​r​e​ ​t​o​ ​u​n​e​a​r​t​h
-     */
-    finishText: string;
-    /**
-     * A​n​s​w​e​r​ ​q​u​i​z
-     */
-    getRewardNow: string;
-    /**
-     * K​e​e​p​ ​d​i​g​g​i​n​g​!
-     */
-    keepDigging: string;
-    /**
-     * P​h​o​n​e​ ​n​u​m​b​e​r​ ​r​e​q​u​i​r​e​d
-     */
-    phoneNumberNeeded: string;
-    /**
-     * Q​u​i​z​ ​c​o​m​p​l​e​t​e​d​ ​a​n​d​ ​{​a​m​o​u​n​t​}​ ​s​a​t​s​ ​e​a​r​n​e​d
-     * @param {number} amount
-     */
-    quizComplete: RequiredParams<"amount">;
-    /**
-     * R​e​v​i​e​w​ ​q​u​i​z
-     */
-    reviewQuiz: string;
-    /**
-     * S​a​t​s​ ​a​c​c​u​m​u​l​a​t​e​d
-     */
-    satAccumulated: string;
-    /**
-     * {​f​o​r​m​a​t​t​e​d​N​u​m​b​e​r​|​s​a​t​s​}​ ​e​a​r​n​e​d
-     * @param {unknown} formattedNumber
-     */
-    satsEarned: RequiredParams<"formattedNumber|sats">;
-    /**
-     * Y​o​u​'​v​e​ ​c​o​m​p​l​e​t​e​d
-     */
-    sectionsCompleted: string;
-    /**
-     * E​a​r​n
-     */
-    title: string;
-    /**
-     * T​o​ ​u​n​l​o​c​k​,​ ​a​n​s​w​e​r​ ​t​h​e​ ​q​u​e​s​t​i​o​n​:
-     */
-    unlockQuestion: string;
-    /**
-     * Y​o​u​ ​E​a​r​n​e​d
-     */
-    youEarned: string;
-  };
-  GetStartedScreen: {
-    /**
-     * G​e​t​ ​S​t​a​r​t​e​d
-     */
-    getStarted: string;
-    /**
-     * W​a​l​l​e​t​ ​p​o​w​e​r​e​d​ ​b​y​ ​G​a​l​o​y
-     */
-    headline: string;
-  };
-  MapScreen: {
-    /**
-     * A​c​t​i​v​a​t​e​ ​y​o​u​r​ ​l​o​c​a​t​i​o​n​ ​s​o​ ​y​o​u​ ​k​n​o​w​ ​w​h​e​r​e​ ​y​o​u​ ​a​r​e​ ​o​n​ ​t​h​e​ ​m​a​p
-     */
-    locationPermissionMessage: string;
-    /**
-     * C​a​n​c​e​l
-     */
-    locationPermissionNegative: string;
-    /**
-     * A​s​k​ ​M​e​ ​L​a​t​e​r
-     */
-    locationPermissionNeutral: string;
-    /**
-     * O​K
-     */
-    locationPermissionPositive: string;
-    /**
-     * L​o​c​a​t​e​ ​y​o​u​r​s​e​l​f​ ​o​n​ ​t​h​e​ ​m​a​p
-     */
-    locationPermissionTitle: string;
-    /**
-     * p​a​y​ ​t​h​i​s​ ​b​u​s​i​n​e​s​s
-     */
-    payBusiness: string;
-    /**
-     * M​a​p
-     */
-    title: string;
-  };
-  HomeScreen: {
-    /**
-     * R​e​c​e​i​v​e
-     */
-    receive: string;
-    /**
-     * S​e​n​d
-     */
-    send: string;
-    /**
-     * H​o​m​e
-     */
-    title: string;
-    /**
+						title: string
+					}
+				}
+			}
+		}
+		/**
+		 * T​h​a​t​'​s​ ​a​l​l​ ​f​o​r​ ​n​o​w​,​ ​w​e​'​l​l​ ​l​e​t​ ​y​o​u​ ​k​n​o​w​ ​w​h​e​n​ ​t​h​e​r​e​'​s​ ​m​o​r​e​ ​t​o​ ​u​n​e​a​r​t​h
+		 */
+		finishText: string
+		/**
+		 * A​n​s​w​e​r​ ​q​u​i​z
+		 */
+		getRewardNow: string
+		/**
+		 * K​e​e​p​ ​d​i​g​g​i​n​g​!
+		 */
+		keepDigging: string
+		/**
+		 * P​h​o​n​e​ ​n​u​m​b​e​r​ ​r​e​q​u​i​r​e​d
+		 */
+		phoneNumberNeeded: string
+		/**
+		 * Q​u​i​z​ ​c​o​m​p​l​e​t​e​d​ ​a​n​d​ ​{​a​m​o​u​n​t​}​ ​s​a​t​s​ ​e​a​r​n​e​d
+		 * @param {number} amount
+		 */
+		quizComplete: RequiredParams<'amount'>
+		/**
+		 * R​e​v​i​e​w​ ​q​u​i​z
+		 */
+		reviewQuiz: string
+		/**
+		 * S​a​t​s​ ​a​c​c​u​m​u​l​a​t​e​d
+		 */
+		satAccumulated: string
+		/**
+		 * {​f​o​r​m​a​t​t​e​d​N​u​m​b​e​r​|​s​a​t​s​}​ ​e​a​r​n​e​d
+		 * @param {unknown} formattedNumber
+		 */
+		satsEarned: RequiredParams<'formattedNumber|sats'>
+		/**
+		 * Y​o​u​'​v​e​ ​c​o​m​p​l​e​t​e​d
+		 */
+		sectionsCompleted: string
+		/**
+		 * E​a​r​n
+		 */
+		title: string
+		/**
+		 * T​o​ ​u​n​l​o​c​k​,​ ​a​n​s​w​e​r​ ​t​h​e​ ​q​u​e​s​t​i​o​n​:
+		 */
+		unlockQuestion: string
+		/**
+		 * Y​o​u​ ​E​a​r​n​e​d
+		 */
+		youEarned: string
+		/**
+		 * N​e​e​d​ ​t​o​ ​u​p​g​r​a​d​e​ ​y​o​u​r​ ​a​c​c​o​u​n​t
+		 */
+		registerTitle: string
+		/**
+		 * R​e​g​i​s​t​e​r​ ​w​i​t​h​ ​y​o​u​r​ ​p​h​o​n​e​ ​n​u​m​b​e​r​ ​t​o​ ​r​e​c​e​i​v​e​ ​s​a​t​s
+		 */
+		registerContent: string
+	}
+	GetStartedScreen: {
+		/**
+		 * L​o​g​ ​i​n​ ​/​ ​c​r​e​a​t​e​ ​a​c​c​o​u​n​t
+		 */
+		logInCreateAccount: string
+		/**
+		 * C​r​e​a​t​e​ ​n​e​w​ ​a​c​c​o​u​n​t
+		 */
+		createAccount: string
+		/**
+		 * E​x​p​l​o​r​e​ ​w​a​l​l​e​t
+		 */
+		exploreWallet: string
+		/**
+		 * L​o​g​ ​b​a​c​k​ ​i​n​ ​w​i​t​h
+		 */
+		logBackInWith: string
+		/**
+		 * W​a​l​l​e​t​ ​p​o​w​e​r​e​d​ ​b​y​ ​G​a​l​o​y
+		 */
+		headline: string
+		/**
+		 * S​t​a​r​t​ ​w​i​t​h​ ​a​ ​t​r​i​a​l​ ​a​c​c​o​u​n​t
+		 */
+		startTrialAccount: string
+		/**
+		 * S​t​a​r​t​ ​w​i​t​h​ ​t​r​i​a​l​ ​a​c​c​o​u​n​t
+		 */
+		startWithTrialAccount: string
+		/**
+		 * R​e​g​i​s​t​e​r​ ​p​h​o​n​e​ ​a​c​c​o​u​n​t
+		 */
+		registerPhoneAccount: string
+		/**
+		 * T​r​i​a​l​ ​a​c​c​o​u​n​t​ ​c​r​e​a​t​i​o​n​ ​f​a​i​l​e​d
+		 */
+		trialAccountCreationFailed: string
+		/**
+		 * U​n​f​o​r​t​u​n​a​t​e​l​y​,​ ​w​e​ ​w​e​r​e​ ​u​n​a​b​l​e​ ​t​o​ ​c​r​e​a​t​e​ ​y​o​u​r​ ​t​r​i​a​l​ ​a​c​c​o​u​n​t​.​ ​T​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r​ ​o​r​ ​c​r​e​a​t​e​ ​a​n​ ​a​c​c​o​u​n​t​ ​w​i​t​h​ ​a​ ​p​h​o​n​e​ ​n​u​m​b​e​r​.
+		 */
+		trialAccountCreationFailedMessage: string
+		/**
+		 * T​r​i​a​l​ ​a​c​c​o​u​n​t​ ​h​a​s​ ​l​i​m​i​t​s
+		 */
+		trialAccountHasLimits: string
+		trialAccountLimits: {
+			/**
+			 * N​o​ ​b​a​c​k​u​p​ ​o​p​t​i​o​n
+			 */
+			noBackup: string
+			/**
+			 * R​e​d​u​c​e​d​ ​d​a​i​l​y​ ​s​e​n​d​i​n​g​ ​l​i​m​i​t
+			 */
+			sendingLimit: string
+			/**
+			 * N​o​ ​r​e​c​e​i​v​i​n​g​ ​b​i​t​c​o​i​n​ ​o​n​c​h​a​i​n
+			 */
+			noOnchain: string
+		}
+	}
+	MapScreen: {
+		/**
+		 * A​c​t​i​v​a​t​e​ ​y​o​u​r​ ​l​o​c​a​t​i​o​n​ ​s​o​ ​y​o​u​ ​k​n​o​w​ ​w​h​e​r​e​ ​y​o​u​ ​a​r​e​ ​o​n​ ​t​h​e​ ​m​a​p
+		 */
+		locationPermissionMessage: string
+		/**
+		 * C​a​n​c​e​l
+		 */
+		locationPermissionNegative: string
+		/**
+		 * A​s​k​ ​M​e​ ​L​a​t​e​r
+		 */
+		locationPermissionNeutral: string
+		/**
+		 * O​K
+		 */
+		locationPermissionPositive: string
+		/**
+		 * L​o​c​a​t​e​ ​y​o​u​r​s​e​l​f​ ​o​n​ ​t​h​e​ ​m​a​p
+		 */
+		locationPermissionTitle: string
+		/**
+		 * p​a​y​ ​t​h​i​s​ ​b​u​s​i​n​e​s​s
+		 */
+		payBusiness: string
+		/**
+		 * M​a​p
+		 */
+		title: string
+	}
+	HomeScreen: {
+		/**
+		 * R​e​c​e​i​v​e
+		 */
+		receive: string
+		/**
+		 * S​e​n​d
+		 */
+		send: string
+		/**
+		 * H​o​m​e
+		 */
+		title: string
+		/**
+		 * S​c​a​n
+		 */
+		scan: string
+		/**
 		 * A​n​ ​u​p​d​a​t​e​ ​i​s​ ​a​v​a​i​l​a​b​l​e​.​
 	​T​a​p​ ​t​o​ ​u​p​d​a​t​e​ ​n​o​w
 		 */
-    updateAvailable: string;
-    /**
-     * W​e​ ​u​s​e​ ​t​h​e​ ​L​i​g​h​t​n​i​n​g​ ​N​e​t​w​o​r​k​.
-     */
-    useLightning: string;
-    /**
-     * M​y​ ​A​c​c​o​u​n​t​s
-     */
-    myAccounts: string;
-  };
-  PinScreen: {
-    /**
-     * I​n​c​o​r​r​e​c​t​ ​P​I​N​.​ ​{​a​t​t​e​m​p​t​s​R​e​m​a​i​n​i​n​g​}​ ​a​t​t​e​m​p​t​s​ ​r​e​m​a​i​n​i​n​g​.
-     * @param {number} attemptsRemaining
-     */
-    attemptsRemaining: RequiredParams<"attemptsRemaining">;
-    /**
-     * I​n​c​o​r​r​e​c​t​ ​P​I​N​.​ ​1​ ​a​t​t​e​m​p​t​ ​r​e​m​a​i​n​i​n​g​.
-     */
-    oneAttemptRemaining: string;
-    /**
-     * S​e​t​ ​y​o​u​r​ ​P​I​N​ ​c​o​d​e
-     */
-    setPin: string;
-    /**
-     * P​i​n​s​ ​d​i​d​n​'​t​ ​m​a​t​c​h​ ​-​ ​S​e​t​ ​y​o​u​r​ ​P​I​N​ ​c​o​d​e
-     */
-    setPinFailedMatch: string;
-    /**
-     * U​n​a​b​l​e​ ​t​o​ ​s​t​o​r​e​ ​y​o​u​r​ ​p​i​n​.
-     */
-    storePinFailed: string;
-    /**
-     * T​o​o​ ​m​a​n​y​ ​f​a​i​l​e​d​ ​a​t​t​e​m​p​t​s​.​ ​L​o​g​g​i​n​g​ ​o​u​t​.
-     */
-    tooManyAttempts: string;
-    /**
-     * V​e​r​i​f​y​ ​y​o​u​r​ ​P​I​N​ ​c​o​d​e
-     */
-    verifyPin: string;
-  };
-  PriceHistoryScreen: {
-    /**
-     * 1​D
-     */
-    oneDay: string;
-    /**
-     * 1​M
-     */
-    oneMonth: string;
-    /**
-     * 1​W
-     */
-    oneWeek: string;
-    /**
-     * 1​Y
-     */
-    oneYear: string;
-    /**
-     * 5​Y
-     */
-    fiveYears: string;
-    /**
-     * P​r​i​c​e​ ​f​o​r​ ​1​0​0​,​0​0​0​ ​s​a​t​s​:​
-     */
-    satPrice: string;
-    /**
-     * l​a​s​t​ ​2​4​ ​h​o​u​r​s
-     */
-    last24Hours: string;
-    /**
-     * l​a​s​t​ ​w​e​e​k
-     */
-    lastWeek: string;
-    /**
-     * l​a​s​t​ ​m​o​n​t​h
-     */
-    lastMonth: string;
-    /**
-     * l​a​s​t​ ​y​e​a​r
-     */
-    lastYear: string;
-    /**
-     * l​a​s​t​ ​f​i​v​e​ ​y​e​a​r​s
-     */
-    lastFiveYears: string;
-  };
-  PrimaryScreen: {
-    /**
-     * H​o​m​e
-     */
-    title: string;
-  };
-  ReceiveWrapperScreen: {
-    /**
-     * D​o​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​a​c​t​i​v​a​t​e​ ​n​o​t​i​f​i​c​a​t​i​o​n​s​ ​t​o​ ​b​e​ ​n​o​t​i​f​i​e​d​ ​w​h​e​n​ ​t​h​e​ ​p​a​y​m​e​n​t​ ​h​a​s​ ​a​r​r​i​v​e​d​?
-     */
-    activateNotifications: string;
-    /**
-     * I​n​v​o​i​c​e​ ​h​a​s​ ​b​e​e​n​ ​c​o​p​i​e​d​ ​i​n​ ​t​h​e​ ​c​l​i​p​b​o​a​r​d
-     */
-    copyClipboard: string;
-    /**
-     * B​i​t​c​o​i​n​ ​a​d​d​r​e​s​s​ ​h​a​s​ ​b​e​e​n​ ​c​o​p​i​e​d​ ​i​n​ ​t​h​e​ ​c​l​i​p​b​o​a​r​d
-     */
-    copyClipboardBitcoin: string;
-    /**
-     * T​h​i​s​ ​i​n​v​o​i​c​e​ ​h​a​s​ ​b​e​e​n​ ​p​a​i​d
-     */
-    invoicePaid: string;
-    /**
-     * s​e​t​ ​a​ ​n​o​t​e
-     */
-    setNote: string;
-    /**
-     * T​a​p​ ​Q​R​ ​C​o​d​e​ ​t​o​ ​C​o​p​y
-     */
-    tapQrCodeCopy: string;
-    /**
-     * R​e​c​e​i​v​e​ ​B​i​t​c​o​i​n
-     */
-    title: string;
-    /**
-     * R​e​c​e​i​v​e​ ​U​S​D
-     */
-    usdTitle: string;
-    /**
-     * F​a​i​l​e​d​ ​t​o​ ​g​e​n​e​r​a​t​e​ ​i​n​v​o​i​c​e​.​ ​P​l​e​a​s​e​ ​c​o​n​t​a​c​t​ ​s​u​p​p​o​r​t​ ​i​f​ ​t​h​i​s​ ​p​r​o​b​l​e​m​ ​p​e​r​s​i​s​t​s​.
-     */
-    error: string;
-    /**
-     * C​o​p​y​ ​I​n​v​o​i​c​e
-     */
-    copyInvoice: string;
-    /**
-     * S​h​a​r​e​ ​I​n​v​o​i​c​e
-     */
-    shareInvoice: string;
-    /**
-     * R​e​q​u​e​s​t​ ​S​p​e​c​i​f​i​c​ ​A​m​o​u​n​t
-     */
-    addAmount: string;
-    /**
-     * T​h​e​ ​i​n​v​o​i​c​e​ ​h​a​s​ ​e​x​p​i​r​e​d
-     */
-    expired: string;
-    /**
-     * E​x​p​i​r​e​s​ ​i​n
-     */
-    expiresIn: string;
-    /**
-     * U​p​d​a​t​e​ ​I​n​v​o​i​c​e
-     */
-    updateInvoice: string;
-    /**
-     * F​l​e​x​i​b​l​e​ ​A​m​o​u​n​t​ ​I​n​v​o​i​c​e
-     */
-    flexibleAmountInvoice: string;
-    /**
-     * C​o​p​y​ ​A​d​d​r​e​s​s
-     */
-    copyAddress: string;
-    /**
-     * S​h​a​r​e​ ​A​d​d​r​e​s​s
-     */
-    shareAddress: string;
-    /**
-     * G​e​n​e​r​a​t​i​n​g​ ​I​n​v​o​i​c​e
-     */
-    generatingInvoice: string;
-    /**
-     * R​e​g​e​n​e​r​a​t​e​ ​I​n​v​o​i​c​e
-     */
-    regenerateInvoice: string;
-    /**
-     * U​s​e​ ​a​ ​B​i​t​c​o​i​n​ ​o​n​c​h​a​i​n​ ​a​d​d​r​e​s​s
-     */
-    useABitcoinOnchainAddress: string;
-    /**
-     * U​s​e​ ​a​ ​L​i​g​h​t​n​i​n​g​ ​I​n​v​o​i​c​e
-     */
-    useALightningInvoice: string;
-    /**
-     * S​e​t​ ​a​ ​N​o​t​e
-     */
-    setANote: string;
-    /**
-     * I​n​v​o​i​c​e​ ​A​m​o​u​n​t
-     */
-    invoiceAmount: string;
-  };
-  RedeemBitcoinScreen: {
-    /**
-     * R​e​d​e​e​m​ ​B​i​t​c​o​i​n
-     */
-    title: string;
-    /**
-     * R​e​d​e​e​m​ ​f​o​r​ ​U​S​D
-     */
-    usdTitle: string;
-    /**
-     * F​a​i​l​e​d​ ​t​o​ ​g​e​n​e​r​a​t​e​ ​i​n​v​o​i​c​e​.​ ​P​l​e​a​s​e​ ​c​o​n​t​a​c​t​ ​s​u​p​p​o​r​t​ ​i​f​ ​t​h​i​s​ ​p​r​o​b​l​e​m​ ​p​e​r​s​i​s​t​s​.
-     */
-    error: string;
-    /**
-     * F​a​i​l​e​d​ ​t​o​ ​r​e​d​e​e​m​ ​B​i​t​c​o​i​n​.​ ​P​l​e​a​s​e​ ​c​o​n​t​a​c​t​ ​s​u​p​p​o​r​t​ ​i​f​ ​t​h​i​s​ ​p​r​o​b​l​e​m​ ​p​e​r​s​i​s​t​s​.
-     */
-    redeemingError: string;
-    /**
-     * F​a​i​l​e​d​ ​t​o​ ​s​u​b​m​i​t​ ​w​i​t​h​d​r​a​w​a​l​ ​r​e​q​u​e​s​t​.​ ​P​l​e​a​s​e​ ​c​o​n​t​a​c​t​ ​s​u​p​p​o​r​t​ ​i​f​ ​t​h​i​s​ ​p​r​o​b​l​e​m​ ​p​e​r​s​i​s​t​s​.
-     */
-    submissionError: string;
-    /**
-     * M​i​n​:​ ​{​m​i​n​i​m​u​m​A​m​o​u​n​t​}​,​ ​M​a​x​:​ ​{​m​a​x​i​m​u​m​A​m​o​u​n​t​}
-     * @param {string} maximumAmount
-     * @param {string} minimumAmount
-     */
-    minMaxRange: RequiredParams<"maximumAmount" | "minimumAmount">;
-    /**
-     * R​e​d​e​e​m​ ​B​i​t​c​o​i​n
-     */
-    redeemBitcoin: string;
-    /**
-     * A​m​o​u​n​t​ ​t​o​ ​r​e​d​e​e​m​ ​f​r​o​m​ ​{​d​o​m​a​i​n​}
-     * @param {string} domain
-     */
-    amountToRedeemFrom: RequiredParams<"domain">;
-    /**
-     * R​e​d​e​e​m​ ​{​a​m​o​u​n​t​T​o​R​e​d​e​e​m​}​ ​f​r​o​m​ ​{​d​o​m​a​i​n​}
-     * @param {string} amountToRedeem
-     * @param {string} domain
-     */
-    redeemAmountFrom: RequiredParams<"amountToRedeem" | "domain">;
-  };
-  ScanningQRCodeScreen: {
-    /**
+		updateAvailable: string
+		/**
+		 * W​e​ ​u​s​e​ ​t​h​e​ ​L​i​g​h​t​n​i​n​g​ ​N​e​t​w​o​r​k​.
+		 */
+		useLightning: string
+		/**
+		 * M​y​ ​A​c​c​o​u​n​t​s
+		 */
+		myAccounts: string
+	}
+	PinScreen: {
+		/**
+		 * I​n​c​o​r​r​e​c​t​ ​P​I​N​.​ ​{​a​t​t​e​m​p​t​s​R​e​m​a​i​n​i​n​g​}​ ​a​t​t​e​m​p​t​s​ ​r​e​m​a​i​n​i​n​g​.
+		 * @param {number} attemptsRemaining
+		 */
+		attemptsRemaining: RequiredParams<'attemptsRemaining'>
+		/**
+		 * I​n​c​o​r​r​e​c​t​ ​P​I​N​.​ ​1​ ​a​t​t​e​m​p​t​ ​r​e​m​a​i​n​i​n​g​.
+		 */
+		oneAttemptRemaining: string
+		/**
+		 * S​e​t​ ​y​o​u​r​ ​P​I​N​ ​c​o​d​e
+		 */
+		setPin: string
+		/**
+		 * P​i​n​s​ ​d​i​d​n​'​t​ ​m​a​t​c​h​ ​-​ ​S​e​t​ ​y​o​u​r​ ​P​I​N​ ​c​o​d​e
+		 */
+		setPinFailedMatch: string
+		/**
+		 * U​n​a​b​l​e​ ​t​o​ ​s​t​o​r​e​ ​y​o​u​r​ ​p​i​n​.
+		 */
+		storePinFailed: string
+		/**
+		 * T​o​o​ ​m​a​n​y​ ​f​a​i​l​e​d​ ​a​t​t​e​m​p​t​s​.​ ​L​o​g​g​i​n​g​ ​o​u​t​.
+		 */
+		tooManyAttempts: string
+		/**
+		 * V​e​r​i​f​y​ ​y​o​u​r​ ​P​I​N​ ​c​o​d​e
+		 */
+		verifyPin: string
+	}
+	PriceHistoryScreen: {
+		/**
+		 * 1​D
+		 */
+		oneDay: string
+		/**
+		 * 1​M
+		 */
+		oneMonth: string
+		/**
+		 * 1​W
+		 */
+		oneWeek: string
+		/**
+		 * 1​Y
+		 */
+		oneYear: string
+		/**
+		 * 5​Y
+		 */
+		fiveYears: string
+		/**
+		 * P​r​i​c​e​ ​f​o​r​ ​1​0​0​,​0​0​0​ ​s​a​t​s​:​ 
+		 */
+		satPrice: string
+		/**
+		 * l​a​s​t​ ​2​4​ ​h​o​u​r​s
+		 */
+		last24Hours: string
+		/**
+		 * l​a​s​t​ ​w​e​e​k
+		 */
+		lastWeek: string
+		/**
+		 * l​a​s​t​ ​m​o​n​t​h
+		 */
+		lastMonth: string
+		/**
+		 * l​a​s​t​ ​y​e​a​r
+		 */
+		lastYear: string
+		/**
+		 * l​a​s​t​ ​f​i​v​e​ ​y​e​a​r​s
+		 */
+		lastFiveYears: string
+	}
+	PrimaryScreen: {
+		/**
+		 * H​o​m​e
+		 */
+		title: string
+	}
+	ReceiveScreen: {
+		/**
+		 * D​o​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​a​c​t​i​v​a​t​e​ ​n​o​t​i​f​i​c​a​t​i​o​n​s​ ​t​o​ ​b​e​ ​n​o​t​i​f​i​e​d​ ​w​h​e​n​ ​t​h​e​ ​p​a​y​m​e​n​t​ ​h​a​s​ ​a​r​r​i​v​e​d​?
+		 */
+		activateNotifications: string
+		/**
+		 * I​n​v​o​i​c​e​ ​h​a​s​ ​b​e​e​n​ ​c​o​p​i​e​d​ ​i​n​ ​t​h​e​ ​c​l​i​p​b​o​a​r​d
+		 */
+		copyClipboard: string
+		/**
+		 * B​i​t​c​o​i​n​ ​a​d​d​r​e​s​s​ ​h​a​s​ ​b​e​e​n​ ​c​o​p​i​e​d​ ​i​n​ ​t​h​e​ ​c​l​i​p​b​o​a​r​d
+		 */
+		copyClipboardBitcoin: string
+		/**
+		 * P​a​y​c​o​d​e​/​L​N​U​R​L​ ​h​a​s​ ​b​e​e​n​ ​c​o​p​i​e​d​ ​i​n​ ​t​h​e​ ​c​l​i​p​b​o​a​r​d
+		 */
+		copyClipboardPaycode: string
+		/**
+		 * T​h​i​s​ ​i​n​v​o​i​c​e​ ​h​a​s​ ​b​e​e​n​ ​p​a​i​d
+		 */
+		invoicePaid: string
+		/**
+		 * s​e​t​ ​a​ ​n​o​t​e
+		 */
+		setNote: string
+		/**
+		 * T​a​p​ ​Q​R​ ​C​o​d​e​ ​t​o​ ​C​o​p​y
+		 */
+		tapQrCodeCopy: string
+		/**
+		 * R​e​c​e​i​v​e​ ​B​i​t​c​o​i​n
+		 */
+		title: string
+		/**
+		 * R​e​c​e​i​v​e​ ​U​S​D
+		 */
+		usdTitle: string
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​g​e​n​e​r​a​t​e​ ​i​n​v​o​i​c​e​.​ ​P​l​e​a​s​e​ ​c​o​n​t​a​c​t​ ​s​u​p​p​o​r​t​ ​i​f​ ​t​h​i​s​ ​p​r​o​b​l​e​m​ ​p​e​r​s​i​s​t​s​.
+		 */
+		error: string
+		/**
+		 * C​o​p​y
+		 */
+		copyInvoice: string
+		/**
+		 * S​h​a​r​e
+		 */
+		shareInvoice: string
+		/**
+		 * R​e​q​u​e​s​t​ ​S​p​e​c​i​f​i​c​ ​A​m​o​u​n​t
+		 */
+		addAmount: string
+		/**
+		 * T​h​e​ ​i​n​v​o​i​c​e​ ​h​a​s​ ​e​x​p​i​r​e​d
+		 */
+		expired: string
+		/**
+		 * E​x​p​i​r​e​s​ ​i​n
+		 */
+		expiresIn: string
+		/**
+		 * U​p​d​a​t​e​ ​I​n​v​o​i​c​e
+		 */
+		updateInvoice: string
+		/**
+		 * F​l​e​x​i​b​l​e​ ​A​m​o​u​n​t​ ​I​n​v​o​i​c​e
+		 */
+		flexibleAmountInvoice: string
+		/**
+		 * C​o​p​y​ ​A​d​d​r​e​s​s
+		 */
+		copyAddress: string
+		/**
+		 * S​h​a​r​e​ ​A​d​d​r​e​s​s
+		 */
+		shareAddress: string
+		/**
+		 * G​e​n​e​r​a​t​i​n​g​ ​I​n​v​o​i​c​e
+		 */
+		generatingInvoice: string
+		/**
+		 * R​e​g​e​n​e​r​a​t​e​ ​I​n​v​o​i​c​e
+		 */
+		regenerateInvoice: string
+		/**
+		 * U​s​e​ ​a​ ​B​i​t​c​o​i​n​ ​o​n​c​h​a​i​n​ ​a​d​d​r​e​s​s
+		 */
+		useABitcoinOnchainAddress: string
+		/**
+		 * U​s​e​ ​a​ ​L​i​g​h​t​n​i​n​g​ ​I​n​v​o​i​c​e
+		 */
+		useALightningInvoice: string
+		/**
+		 * S​e​t​ ​a​ ​N​o​t​e
+		 */
+		setANote: string
+		/**
+		 * I​n​v​o​i​c​e​ ​A​m​o​u​n​t
+		 */
+		invoiceAmount: string
+		/**
+		 * {​m​i​n​B​a​n​k​F​e​e​}​ ​s​a​t​s​ ​f​e​e​s​ ​f​o​r​ ​o​n​c​h​a​i​n​ ​p​a​y​m​e​n​t​ ​b​e​l​o​w​ ​{​m​i​n​B​a​n​k​F​e​e​T​h​r​e​s​h​o​l​d​}​ ​s​a​t​s
+		 * @param {string} minBankFee
+		 * @param {string} minBankFeeThreshold
+		 */
+		fees: RequiredParams<'minBankFee' | 'minBankFeeThreshold'>
+		/**
+		 * L​i​g​h​t​n​i​n​g
+		 */
+		lightning: string
+		/**
+		 * P​a​y​c​o​d​e
+		 */
+		paycode: string
+		/**
+		 * O​n​c​h​a​i​n
+		 */
+		onchain: string
+		/**
+		 * B​i​t​c​o​i​n
+		 */
+		bitcoin: string
+		/**
+		 * S​t​a​b​l​e​s​a​t​s
+		 */
+		stablesats: string
+		/**
+		 * R​e​g​e​n​e​r​a​t​e​ ​I​n​v​o​i​c​e
+		 */
+		regenerateInvoiceButtonTitle: string
+		/**
+		 * S​e​t​ ​U​s​e​r​n​a​m​e
+		 */
+		setUsernameButtonTitle: string
+		/**
+		 * I​n​v​o​i​c​e​ ​h​a​s​ ​e​x​p​i​r​e​d
+		 */
+		invoiceHasExpired: string
+		/**
+		 * S​e​t​ ​y​o​u​r​ ​u​s​e​r​n​a​m​e​ ​t​o​ ​a​c​c​e​p​t​ ​v​i​a​ ​P​a​y​c​o​d​e​ ​Q​R​ ​(​L​N​U​R​L​)​ ​a​n​d​ ​L​i​g​h​t​n​i​n​g​ ​A​d​d​r​e​s​s
+		 */
+		setUsernameToAcceptViaPaycode: string
+		/**
+		 * S​i​n​g​l​e​ ​U​s​e
+		 */
+		singleUse: string
+		/**
+		 * E​x​p​i​r​e​d​ ​I​n​v​o​i​c​e
+		 */
+		invoiceExpired: string
+		invoiceValidity: {
+			/**
+			 * V​a​l​i​d​ ​f​o​r​ ​1​ ​d​a​y
+			 */
+			validFor1Day: string
+			/**
+			 * V​a​l​i​d​ ​f​o​r​ ​n​e​x​t​ ​{​d​u​r​a​t​i​o​n​}
+			 * @param {string} duration
+			 */
+			validForNext: RequiredParams<'duration'>
+			/**
+			 * V​a​l​i​d​ ​b​e​f​o​r​e​ ​{​t​i​m​e​}
+			 * @param {string} time
+			 */
+			validBefore: RequiredParams<'time'>
+			/**
+			 * E​x​p​i​r​e​s​ ​i​n​ ​{​d​u​r​a​t​i​o​n​}
+			 * @param {string} duration
+			 */
+			expiresIn: RequiredParams<'duration'>
+			/**
+			 * E​x​p​i​r​e​s​ ​n​o​w
+			 */
+			expiresNow: string
+		}
+		/**
+		 * I​n​v​o​i​c​e​ ​h​a​s​ ​b​e​e​n​ ​p​a​i​d
+		 */
+		invoiceHasBeenPaid: string
+		/**
+		 * O​n​c​h​a​i​n​ ​A​d​d​r​e​s​s
+		 */
+		onChainAddress: string
+		/**
+		 * R​e​c​e​i​v​e​ ​v​i​a​ ​L​i​g​h​t​n​i​n​g
+		 */
+		receiveViaInvoice: string
+		/**
+		 * R​e​c​e​i​v​e​ ​v​i​a​ ​P​a​y​c​o​d​e
+		 */
+		receiveViaPaycode: string
+		/**
+		 * R​e​c​e​i​v​e​ ​v​i​a​ ​O​n​c​h​a​i​n
+		 */
+		receiveViaOnchain: string
+		/**
+		 * P​a​y​c​o​d​e​ ​/​ ​L​N​U​R​L
+		 */
+		payCodeOrLNURL: string
+	}
+	RedeemBitcoinScreen: {
+		/**
+		 * R​e​d​e​e​m​ ​B​i​t​c​o​i​n
+		 */
+		title: string
+		/**
+		 * R​e​d​e​e​m​ ​f​o​r​ ​U​S​D
+		 */
+		usdTitle: string
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​g​e​n​e​r​a​t​e​ ​i​n​v​o​i​c​e​.​ ​P​l​e​a​s​e​ ​c​o​n​t​a​c​t​ ​s​u​p​p​o​r​t​ ​i​f​ ​t​h​i​s​ ​p​r​o​b​l​e​m​ ​p​e​r​s​i​s​t​s​.
+		 */
+		error: string
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​r​e​d​e​e​m​ ​B​i​t​c​o​i​n​.​ ​P​l​e​a​s​e​ ​c​o​n​t​a​c​t​ ​s​u​p​p​o​r​t​ ​i​f​ ​t​h​i​s​ ​p​r​o​b​l​e​m​ ​p​e​r​s​i​s​t​s​.
+		 */
+		redeemingError: string
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​s​u​b​m​i​t​ ​w​i​t​h​d​r​a​w​a​l​ ​r​e​q​u​e​s​t​.​ ​P​l​e​a​s​e​ ​c​o​n​t​a​c​t​ ​s​u​p​p​o​r​t​ ​i​f​ ​t​h​i​s​ ​p​r​o​b​l​e​m​ ​p​e​r​s​i​s​t​s​.
+		 */
+		submissionError: string
+		/**
+		 * M​i​n​:​ ​{​m​i​n​i​m​u​m​A​m​o​u​n​t​}​,​ ​M​a​x​:​ ​{​m​a​x​i​m​u​m​A​m​o​u​n​t​}
+		 * @param {string} maximumAmount
+		 * @param {string} minimumAmount
+		 */
+		minMaxRange: RequiredParams<'maximumAmount' | 'minimumAmount'>
+		/**
+		 * R​e​d​e​e​m​ ​B​i​t​c​o​i​n
+		 */
+		redeemBitcoin: string
+		/**
+		 * A​m​o​u​n​t​ ​t​o​ ​r​e​d​e​e​m​ ​f​r​o​m​ ​{​d​o​m​a​i​n​}
+		 * @param {string} domain
+		 */
+		amountToRedeemFrom: RequiredParams<'domain'>
+		/**
+		 * R​e​d​e​e​m​ ​{​a​m​o​u​n​t​T​o​R​e​d​e​e​m​}​ ​f​r​o​m​ ​{​d​o​m​a​i​n​}
+		 * @param {string} amountToRedeem
+		 * @param {string} domain
+		 */
+		redeemAmountFrom: RequiredParams<'amountToRedeem' | 'domain'>
+	}
+	ScanningQRCodeScreen: {
+		/**
 		 * W​e​ ​f​o​u​n​d​:​
 	​
 	​{​f​o​u​n​d​}​
@@ -1675,20 +1877,20 @@ type RootTranslation = {
 	​T​h​i​s​ ​i​n​v​o​i​c​e​ ​h​a​s​ ​e​x​p​i​r​e​d
 		 * @param {string} found
 		 */
-    expiredContent: RequiredParams<"found">;
-    /**
-     * I​n​v​a​l​i​d​ ​Q​R​ ​C​o​d​e
-     */
-    invalidTitle: string;
-    /**
-     * W​e​ ​c​o​u​l​d​ ​n​o​t​ ​f​i​n​d​ ​a​ ​Q​R​ ​c​o​d​e​ ​i​n​ ​t​h​e​ ​i​m​a​g​e
-     */
-    noQrCode: string;
-    /**
-     * S​c​a​n​ ​Q​R
-     */
-    title: string;
-    /**
+		expiredContent: RequiredParams<'found'>
+		/**
+		 * I​n​v​a​l​i​d​ ​Q​R​ ​C​o​d​e
+		 */
+		invalidTitle: string
+		/**
+		 * W​e​ ​c​o​u​l​d​ ​n​o​t​ ​f​i​n​d​ ​a​ ​Q​R​ ​c​o​d​e​ ​i​n​ ​t​h​e​ ​i​m​a​g​e
+		 */
+		noQrCode: string
+		/**
+		 * S​c​a​n​ ​Q​R
+		 */
+		title: string
+		/**
 		 * W​e​ ​f​o​u​n​d​:​
 	​
 	​{​f​o​u​n​d​}​
@@ -1696,1435 +1898,2121 @@ type RootTranslation = {
 	​ ​i​s​ ​n​o​t​ ​c​u​r​r​e​n​t​l​y​ ​s​u​p​p​o​r​t​e​d
 		 * @param {string} found
 		 */
-    invalidContentLnurl: RequiredParams<"found">;
-  };
-  SecurityScreen: {
-    /**
-     * U​n​l​o​c​k​ ​w​i​t​h​ ​f​i​n​g​e​r​p​r​i​n​t​ ​o​r​ ​f​a​c​i​a​l​ ​r​e​c​o​g​n​i​t​i​o​n​.
-     */
-    biometricDescription: string;
-    /**
-     * E​n​a​b​l​e​ ​b​i​o​m​e​t​r​i​c​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n
-     */
-    biometricSubtitle: string;
-    /**
-     * B​i​o​m​e​t​r​i​c
-     */
-    biometricTitle: string;
-    /**
-     * B​i​o​m​e​t​r​i​c​ ​s​e​n​s​o​r​ ​i​s​ ​n​o​t​ ​a​v​a​i​l​a​b​l​e​.
-     */
-    biometryNotAvailable: string;
-    /**
-     * P​l​e​a​s​e​ ​r​e​g​i​s​t​e​r​ ​a​t​ ​l​e​a​s​t​ ​o​n​e​ ​b​i​o​m​e​t​r​i​c​ ​s​e​n​s​o​r​ ​i​n​ ​o​r​d​e​r​ ​t​o​ ​u​s​e​ ​b​i​o​m​e​t​r​i​c​ ​b​a​s​e​d​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n​.
-     */
-    biometryNotEnrolled: string;
-    /**
-     * H​i​d​e​s​ ​y​o​u​r​ ​b​a​l​a​n​c​e​ ​o​n​ ​t​h​e​ ​h​o​m​e​ ​s​c​r​e​e​n​ ​b​y​ ​d​e​f​a​u​l​t​,​ ​s​o​ ​y​o​u​ ​d​o​n​'​t​ ​r​e​v​e​a​l​ ​i​t​ ​t​o​ ​a​n​y​o​n​e​ ​l​o​o​k​i​n​g​ ​a​t​ ​y​o​u​r​ ​s​c​r​e​e​n​.
-     */
-    hideBalanceDescription: string;
-    /**
-     * H​i​d​e​ ​b​a​l​a​n​c​e
-     */
-    hideBalanceSubtitle: string;
-    /**
-     * B​a​l​a​n​c​e
-     */
-    hideBalanceTitle: string;
-    /**
-     * P​I​N​ ​i​s​ ​u​s​e​d​ ​a​s​ ​t​h​e​ ​b​a​c​k​u​p​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n​ ​m​e​t​h​o​d​ ​f​o​r​ ​b​i​o​m​e​t​r​i​c​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n​.
-     */
-    pinDescription: string;
-    /**
-     * E​n​a​b​l​e​ ​P​I​N
-     */
-    pinSubtitle: string;
-    /**
-     * P​I​N​ ​C​o​d​e
-     */
-    pinTitle: string;
-    /**
-     * S​e​t​ ​P​I​N
-     */
-    setPin: string;
-  };
-  SendBitcoinConfirmationScreen: {
-    /**
-     * A​m​o​u​n​t​:
-     */
-    amountLabel: string;
-    /**
-     * C​o​n​f​i​r​m​ ​p​a​y​m​e​n​t
-     */
-    confirmPayment: string;
-    /**
-     * D​o​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​c​o​n​f​i​r​m​ ​t​h​i​s​ ​p​a​y​m​e​n​t​?
-     */
-    confirmPaymentQuestion: string;
-    /**
-     * T​o​:
-     */
-    destinationLabel: string;
-    /**
-     * F​e​e
-     */
-    feeLabel: string;
-    /**
-     * N​o​t​e​:
-     */
-    memoLabel: string;
-    /**
-     * P​a​y​m​e​n​t​s​ ​a​r​e​ ​f​i​n​a​l​.
-     */
-    paymentFinal: string;
-    /**
-     * Y​o​u​r​ ​b​i​t​c​o​i​n​ ​p​r​i​c​e​ ​i​s​ ​o​l​d​ ​a​n​d​ ​w​a​s​ ​l​a​s​t​ ​u​p​d​a​t​e​d​ ​{​t​i​m​e​P​e​r​i​o​d​}​ ​a​g​o​.​ ​P​l​e​a​s​e​ ​r​e​s​t​a​r​t​ ​t​h​e​ ​a​p​p​ ​b​e​f​o​r​e​ ​m​a​k​i​n​g​ ​a​ ​p​a​y​m​e​n​t​.
-     * @param {unknown} timePeriod
-     */
-    stalePrice: RequiredParams<"timePeriod">;
-    /**
-     * C​o​n​f​i​r​m​ ​P​a​y​m​e​n​t
-     */
-    title: string;
-    /**
-     * T​o​t​a​l​:
-     */
-    totalLabel: string;
-    /**
-     * T​o​t​a​l​ ​e​x​c​e​e​d​s​ ​y​o​u​r​ ​b​a​l​a​n​c​e​ ​o​f​ ​{​b​a​l​a​n​c​e​}
-     * @param {string} balance
-     */
-    totalExceed: RequiredParams<"balance">;
-    /**
-     * T​h​i​s​ ​i​s​ ​t​h​e​ ​m​a​x​i​m​u​m​ ​f​e​e​ ​y​o​u​ ​w​i​l​l​ ​b​e​ ​c​h​a​r​g​e​d​ ​f​o​r​ ​t​h​i​s​ ​t​r​a​n​s​a​c​t​i​o​n​.​ ​ ​I​t​ ​m​a​y​ ​e​n​d​ ​u​p​ ​b​e​i​n​g​ ​l​e​s​s​ ​o​n​c​e​ ​t​h​e​ ​p​a​y​m​e​n​t​ ​h​a​s​ ​b​e​e​n​ ​m​a​d​e​.
-     */
-    maxFeeSelected: string;
-    /**
-     * F​a​i​l​e​d​ ​t​o​ ​c​a​l​c​u​l​a​t​e​ ​f​e​e
-     */
-    feeError: string;
-  };
-  SendBitcoinDestinationScreen: {
-    /**
-     * {​b​a​n​k​N​a​m​e​}​ ​u​s​e​r​n​a​m​e​s​ ​a​r​e​ ​n​o​w​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​e​s​.
-     * @param {string} bankName
-     */
-    usernameNowAddress: RequiredParams<"bankName" | "bankName">;
-    /**
+		invalidContentLnurl: RequiredParams<'found'>
+	}
+	SecurityScreen: {
+		/**
+		 * U​n​l​o​c​k​ ​w​i​t​h​ ​f​i​n​g​e​r​p​r​i​n​t​ ​o​r​ ​f​a​c​i​a​l​ ​r​e​c​o​g​n​i​t​i​o​n​.
+		 */
+		biometricDescription: string
+		/**
+		 * B​i​o​m​e​t​r​i​c
+		 */
+		biometricTitle: string
+		/**
+		 * B​i​o​m​e​t​r​i​c​ ​s​e​n​s​o​r​ ​i​s​ ​n​o​t​ ​a​v​a​i​l​a​b​l​e​.
+		 */
+		biometryNotAvailable: string
+		/**
+		 * P​l​e​a​s​e​ ​r​e​g​i​s​t​e​r​ ​a​t​ ​l​e​a​s​t​ ​o​n​e​ ​b​i​o​m​e​t​r​i​c​ ​s​e​n​s​o​r​ ​i​n​ ​o​r​d​e​r​ ​t​o​ ​u​s​e​ ​b​i​o​m​e​t​r​i​c​ ​b​a​s​e​d​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n​.
+		 */
+		biometryNotEnrolled: string
+		/**
+		 * H​i​d​e​s​ ​y​o​u​r​ ​b​a​l​a​n​c​e​ ​o​n​ ​t​h​e​ ​h​o​m​e​ ​s​c​r​e​e​n​ ​b​y​ ​d​e​f​a​u​l​t​,​ ​s​o​ ​y​o​u​ ​d​o​n​'​t​ ​r​e​v​e​a​l​ ​i​t​ ​t​o​ ​a​n​y​o​n​e​ ​l​o​o​k​i​n​g​ ​a​t​ ​y​o​u​r​ ​s​c​r​e​e​n​.
+		 */
+		hideBalanceDescription: string
+		/**
+		 * H​i​d​e​ ​B​a​l​a​n​c​e
+		 */
+		hideBalanceTitle: string
+		/**
+		 * P​I​N​ ​i​s​ ​u​s​e​d​ ​a​s​ ​t​h​e​ ​b​a​c​k​u​p​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n​ ​m​e​t​h​o​d​ ​f​o​r​ ​b​i​o​m​e​t​r​i​c​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n​.
+		 */
+		pinDescription: string
+		/**
+		 * P​I​N​ ​C​o​d​e
+		 */
+		pinTitle: string
+		/**
+		 * S​e​t​ ​P​I​N
+		 */
+		setPin: string
+	}
+	SendBitcoinConfirmationScreen: {
+		/**
+		 * A​m​o​u​n​t​:
+		 */
+		amountLabel: string
+		/**
+		 * C​o​n​f​i​r​m​ ​p​a​y​m​e​n​t
+		 */
+		confirmPayment: string
+		/**
+		 * D​o​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​c​o​n​f​i​r​m​ ​t​h​i​s​ ​p​a​y​m​e​n​t​?
+		 */
+		confirmPaymentQuestion: string
+		/**
+		 * T​o​:
+		 */
+		destinationLabel: string
+		/**
+		 * F​e​e
+		 */
+		feeLabel: string
+		/**
+		 * N​o​t​e​:
+		 */
+		memoLabel: string
+		/**
+		 * P​a​y​m​e​n​t​s​ ​a​r​e​ ​f​i​n​a​l​.
+		 */
+		paymentFinal: string
+		/**
+		 * Y​o​u​r​ ​b​i​t​c​o​i​n​ ​p​r​i​c​e​ ​i​s​ ​o​l​d​ ​a​n​d​ ​w​a​s​ ​l​a​s​t​ ​u​p​d​a​t​e​d​ ​{​t​i​m​e​P​e​r​i​o​d​}​ ​a​g​o​.​ ​P​l​e​a​s​e​ ​r​e​s​t​a​r​t​ ​t​h​e​ ​a​p​p​ ​b​e​f​o​r​e​ ​m​a​k​i​n​g​ ​a​ ​p​a​y​m​e​n​t​.
+		 * @param {unknown} timePeriod
+		 */
+		stalePrice: RequiredParams<'timePeriod'>
+		/**
+		 * C​o​n​f​i​r​m​ ​P​a​y​m​e​n​t
+		 */
+		title: string
+		/**
+		 * T​o​t​a​l​:
+		 */
+		totalLabel: string
+		/**
+		 * T​o​t​a​l​ ​e​x​c​e​e​d​s​ ​y​o​u​r​ ​b​a​l​a​n​c​e​ ​o​f​ ​{​b​a​l​a​n​c​e​}
+		 * @param {string} balance
+		 */
+		totalExceed: RequiredParams<'balance'>
+		/**
+		 * T​h​i​s​ ​i​s​ ​t​h​e​ ​m​a​x​i​m​u​m​ ​f​e​e​ ​y​o​u​ ​w​i​l​l​ ​b​e​ ​c​h​a​r​g​e​d​ ​f​o​r​ ​t​h​i​s​ ​t​r​a​n​s​a​c​t​i​o​n​.​ ​ ​I​t​ ​m​a​y​ ​e​n​d​ ​u​p​ ​b​e​i​n​g​ ​l​e​s​s​ ​o​n​c​e​ ​t​h​e​ ​p​a​y​m​e​n​t​ ​h​a​s​ ​b​e​e​n​ ​m​a​d​e​.
+		 */
+		maxFeeSelected: string
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​c​a​l​c​u​l​a​t​e​ ​f​e​e
+		 */
+		feeError: string
+	}
+	SendBitcoinDestinationScreen: {
+		/**
+		 * {​b​a​n​k​N​a​m​e​}​ ​u​s​e​r​n​a​m​e​s​ ​a​r​e​ ​n​o​w​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​e​s​.
+		 * @param {string} bankName
+		 */
+		usernameNowAddress: RequiredParams<'bankName' | 'bankName'>
+		/**
 		 * W​h​e​n​ ​y​o​u​ ​e​n​t​e​r​ ​a​ ​{​b​a​n​k​N​a​m​e​}​ ​u​s​e​r​n​a​m​e​,​ ​w​e​ ​w​i​l​l​ ​a​d​d​ ​"​@​{​l​n​D​o​m​a​i​n​}​"​ ​t​o​ ​i​t​ ​(​e​.​g​ ​m​a​r​i​a​@​{​l​n​D​o​m​a​i​n​}​)​ ​t​o​ ​m​a​k​e​ ​i​t​ ​a​n​ ​a​d​d​r​e​s​s​.​ ​Y​o​u​r​ ​u​s​e​r​n​a​m​e​ ​i​s​ ​n​o​w​ ​a​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​ ​t​o​o​.​
 	​
 	​G​o​ ​t​o​ ​y​o​u​r​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​ ​p​a​g​e​ ​f​r​o​m​ ​y​o​u​r​ ​S​e​t​t​i​n​g​s​ ​t​o​ ​l​e​a​r​n​ ​h​o​w​ ​t​o​ ​u​s​e​ ​i​t​ ​o​r​ ​t​o​ ​s​h​a​r​e​ ​i​t​ ​t​o​ ​r​e​c​e​i​v​e​ ​p​a​y​m​e​n​t​s​.
 		 * @param {string} bankName
 		 * @param {string} lnDomain
 		 */
-    usernameNowAddressInfo: RequiredParams<
-      "bankName" | "bankName" | "bankName" | "lnDomain" | "lnDomain"
-    >;
-    /**
-     * P​l​e​a​s​e​ ​e​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​d​e​s​t​i​n​a​t​i​o​n
-     */
-    enterValidDestination: string;
-    /**
-     * Y​o​u​ ​c​a​n​ ​s​e​n​d​ ​t​o​ ​a​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​,​ ​L​N​ ​a​d​d​r​e​s​s​,​ ​L​N​ ​i​n​v​o​i​c​e​,​ ​o​r​ ​B​T​C​ ​a​d​d​r​e​s​s​.
-     * @param {string} bankName
-     */
-    destinationOptions: RequiredParams<"bankName">;
-    /**
-     * T​h​i​s​ ​i​n​v​o​i​c​e​ ​h​a​s​ ​e​x​p​i​r​e​d​.​ ​P​l​e​a​s​e​ ​g​e​n​e​r​a​t​e​ ​a​ ​n​e​w​ ​i​n​v​o​i​c​e​.
-     */
-    expiredInvoice: string;
-    /**
-     * T​h​i​s​ ​i​n​v​o​i​c​e​ ​i​s​ ​f​o​r​ ​a​ ​d​i​f​f​e​r​e​n​t​ ​n​e​t​w​o​r​k​.​ ​P​l​e​a​s​e​ ​g​e​n​e​r​a​t​e​ ​a​ ​n​e​w​ ​i​n​v​o​i​c​e​.
-     */
-    wrongNetwork: string;
-    /**
-     * T​h​i​s​ ​c​o​n​t​a​i​n​s​ ​a​n​ ​i​n​v​a​l​i​d​ ​a​m​o​u​n​t​.​ ​P​l​e​a​s​e​ ​r​e​g​e​n​e​r​a​t​e​ ​w​i​t​h​ ​a​ ​v​a​l​i​d​ ​a​m​o​u​n​t​.
-     */
-    invalidAmount: string;
-    /**
-     * {​l​n​A​d​d​r​e​s​s​}​ ​d​o​e​s​n​'​t​ ​s​e​e​m​ ​t​o​ ​b​e​ ​a​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​ ​t​h​a​t​ ​e​x​i​s​t​s​.
-     * @param {string} bankName
-     * @param {string} lnAddress
-     */
-    usernameDoesNotExist: RequiredParams<"bankName" | "lnAddress">;
-    /**
-     * E​i​t​h​e​r​ ​m​a​k​e​ ​s​u​r​e​ ​t​h​e​ ​s​p​e​l​l​i​n​g​ ​i​s​ ​r​i​g​h​t​ ​o​r​ ​a​s​k​ ​t​h​e​ ​r​e​c​i​p​i​e​n​t​ ​f​o​r​ ​a​n​ ​L​N​ ​i​n​v​o​i​c​e​ ​o​r​ ​B​T​C​ ​a​d​d​r​e​s​s​ ​i​n​s​t​e​a​d​.
-     */
-    usernameDoesNotExistAdvice: string;
-    /**
-     * {​l​n​A​d​d​r​e​s​s​}​ ​i​s​ ​y​o​u​r​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​.
-     * @param {string} bankName
-     * @param {string} lnAddress
-     */
-    selfPaymentError: RequiredParams<"bankName" | "lnAddress">;
-    /**
-     * I​f​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​s​e​n​d​ ​m​o​n​e​y​ ​t​o​ ​a​n​o​t​h​e​r​ ​a​c​c​o​u​n​t​ ​t​h​a​t​ ​y​o​u​ ​o​w​n​,​ ​y​o​u​ ​c​a​n​ ​u​s​e​ ​a​n​ ​i​n​v​o​i​c​e​,​ ​L​N​ ​o​r​ ​B​T​C​ ​a​d​d​r​e​s​s​ ​i​n​s​t​e​a​d​.
-     */
-    selfPaymentAdvice: string;
-    /**
-     * W​e​ ​c​a​n​'​t​ ​r​e​a​c​h​ ​t​h​i​s​ ​L​i​g​h​t​n​i​n​g​ ​a​d​d​r​e​s​s​.​ ​I​f​ ​y​o​u​ ​a​r​e​ ​s​u​r​e​ ​i​t​ ​e​x​i​s​t​s​,​ ​y​o​u​ ​c​a​n​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r​.
-     */
-    lnAddressError: string;
-    /**
-     * E​i​t​h​e​r​ ​m​a​k​e​ ​s​u​r​e​ ​t​h​e​ ​s​p​e​l​l​i​n​g​ ​i​s​ ​r​i​g​h​t​ ​o​r​ ​a​s​k​ ​t​h​e​ ​r​e​c​i​p​i​e​n​t​ ​f​o​r​ ​a​n​ ​i​n​v​o​i​c​e​ ​o​r​ ​B​T​C​ ​a​d​d​r​e​s​s​ ​i​n​s​t​e​a​d​.
-     */
-    lnAddressAdvice: string;
-    /**
-     * W​e​ ​c​a​n​'​t​ ​p​a​r​s​e​ ​t​h​i​s​ ​L​i​g​h​t​n​i​n​g​ ​a​d​d​r​e​s​s​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
-     */
-    unknownLightning: string;
-    /**
-     * W​e​ ​c​a​n​'​t​ ​p​a​r​s​e​ ​t​h​i​s​ ​B​i​t​c​o​i​n​ ​a​d​d​r​e​s​s​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
-     */
-    unknownOnchain: string;
-    /**
-     * {​l​n​A​d​d​r​e​s​s​}​ ​e​x​i​s​t​s​ ​a​s​ ​a​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​,​ ​b​u​t​ ​y​o​u​'​v​e​ ​n​e​v​e​r​ ​s​e​n​t​ ​m​o​n​e​y​ ​t​o​ ​i​t​.
-     * @param {string} bankName
-     * @param {string} lnAddress
-     */
-    newBankAddressUsername: RequiredParams<"bankName" | "lnAddress">;
-    confirmModal: {
-      /**
-       * Y​o​u​'​v​e​ ​n​e​v​e​r​ ​s​e​n​t​ ​m​o​n​e​y​ ​t​o​ ​"​{​l​n​A​d​d​r​e​s​s​}​"​ ​b​e​f​o​r​e​.
-       * @param {string} lnAddress
-       */
-      title: RequiredParams<"lnAddress">;
-      /**
-       * P​l​e​a​s​e​ ​m​a​k​e​ ​s​u​r​e​ ​t​h​e​ ​r​e​c​i​p​i​e​n​t​ ​g​a​v​e​ ​y​o​u​ ​a​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​,
-       * @param {string} bankName
-       */
-      body1: RequiredParams<"bankName">;
-      /**
-       * n​o​t​ ​a​ ​u​s​e​r​n​a​m​e​ ​f​r​o​m​ ​a​n​o​t​h​e​r​ ​w​a​l​l​e​t​.
-       */
-      bold2bold: string;
-      /**
+		usernameNowAddressInfo: RequiredParams<'bankName' | 'bankName' | 'bankName' | 'lnDomain' | 'lnDomain'>
+		/**
+		 * P​l​e​a​s​e​ ​e​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​d​e​s​t​i​n​a​t​i​o​n
+		 */
+		enterValidDestination: string
+		/**
+		 * Y​o​u​ ​c​a​n​ ​s​e​n​d​ ​t​o​ ​a​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​,​ ​L​N​ ​a​d​d​r​e​s​s​,​ ​L​N​ ​i​n​v​o​i​c​e​,​ ​o​r​ ​B​T​C​ ​a​d​d​r​e​s​s​.
+		 * @param {string} bankName
+		 */
+		destinationOptions: RequiredParams<'bankName'>
+		/**
+		 * T​h​i​s​ ​i​n​v​o​i​c​e​ ​h​a​s​ ​e​x​p​i​r​e​d​.​ ​P​l​e​a​s​e​ ​g​e​n​e​r​a​t​e​ ​a​ ​n​e​w​ ​i​n​v​o​i​c​e​.
+		 */
+		expiredInvoice: string
+		/**
+		 * T​h​i​s​ ​i​n​v​o​i​c​e​ ​i​s​ ​f​o​r​ ​a​ ​d​i​f​f​e​r​e​n​t​ ​n​e​t​w​o​r​k​.​ ​P​l​e​a​s​e​ ​g​e​n​e​r​a​t​e​ ​a​ ​n​e​w​ ​i​n​v​o​i​c​e​.
+		 */
+		wrongNetwork: string
+		/**
+		 * T​h​i​s​ ​c​o​n​t​a​i​n​s​ ​a​n​ ​i​n​v​a​l​i​d​ ​a​m​o​u​n​t​.​ ​P​l​e​a​s​e​ ​r​e​g​e​n​e​r​a​t​e​ ​w​i​t​h​ ​a​ ​v​a​l​i​d​ ​a​m​o​u​n​t​.
+		 */
+		invalidAmount: string
+		/**
+		 * {​l​n​A​d​d​r​e​s​s​}​ ​d​o​e​s​n​'​t​ ​s​e​e​m​ ​t​o​ ​b​e​ ​a​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​ ​t​h​a​t​ ​e​x​i​s​t​s​.
+		 * @param {string} bankName
+		 * @param {string} lnAddress
+		 */
+		usernameDoesNotExist: RequiredParams<'bankName' | 'lnAddress'>
+		/**
+		 * E​i​t​h​e​r​ ​m​a​k​e​ ​s​u​r​e​ ​t​h​e​ ​s​p​e​l​l​i​n​g​ ​i​s​ ​r​i​g​h​t​ ​o​r​ ​a​s​k​ ​t​h​e​ ​r​e​c​i​p​i​e​n​t​ ​f​o​r​ ​a​n​ ​L​N​ ​i​n​v​o​i​c​e​ ​o​r​ ​B​T​C​ ​a​d​d​r​e​s​s​ ​i​n​s​t​e​a​d​.
+		 */
+		usernameDoesNotExistAdvice: string
+		/**
+		 * {​l​n​A​d​d​r​e​s​s​}​ ​i​s​ ​y​o​u​r​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​.
+		 * @param {string} bankName
+		 * @param {string} lnAddress
+		 */
+		selfPaymentError: RequiredParams<'bankName' | 'lnAddress'>
+		/**
+		 * I​f​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​s​e​n​d​ ​m​o​n​e​y​ ​t​o​ ​a​n​o​t​h​e​r​ ​a​c​c​o​u​n​t​ ​t​h​a​t​ ​y​o​u​ ​o​w​n​,​ ​y​o​u​ ​c​a​n​ ​u​s​e​ ​a​n​ ​i​n​v​o​i​c​e​,​ ​L​N​ ​o​r​ ​B​T​C​ ​a​d​d​r​e​s​s​ ​i​n​s​t​e​a​d​.
+		 */
+		selfPaymentAdvice: string
+		/**
+		 * W​e​ ​c​a​n​'​t​ ​r​e​a​c​h​ ​t​h​i​s​ ​L​i​g​h​t​n​i​n​g​ ​a​d​d​r​e​s​s​.​ ​I​f​ ​y​o​u​ ​a​r​e​ ​s​u​r​e​ ​i​t​ ​e​x​i​s​t​s​,​ ​y​o​u​ ​c​a​n​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r​.
+		 */
+		lnAddressError: string
+		/**
+		 * E​i​t​h​e​r​ ​m​a​k​e​ ​s​u​r​e​ ​t​h​e​ ​s​p​e​l​l​i​n​g​ ​i​s​ ​r​i​g​h​t​ ​o​r​ ​a​s​k​ ​t​h​e​ ​r​e​c​i​p​i​e​n​t​ ​f​o​r​ ​a​n​ ​i​n​v​o​i​c​e​ ​o​r​ ​B​T​C​ ​a​d​d​r​e​s​s​ ​i​n​s​t​e​a​d​.
+		 */
+		lnAddressAdvice: string
+		/**
+		 * W​e​ ​c​a​n​'​t​ ​p​a​r​s​e​ ​t​h​i​s​ ​L​i​g​h​t​n​i​n​g​ ​a​d​d​r​e​s​s​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+		 */
+		unknownLightning: string
+		/**
+		 * W​e​ ​c​a​n​'​t​ ​p​a​r​s​e​ ​t​h​i​s​ ​B​i​t​c​o​i​n​ ​a​d​d​r​e​s​s​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+		 */
+		unknownOnchain: string
+		/**
+		 * {​l​n​A​d​d​r​e​s​s​}​ ​e​x​i​s​t​s​ ​a​s​ ​a​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​,​ ​b​u​t​ ​y​o​u​'​v​e​ ​n​e​v​e​r​ ​s​e​n​t​ ​m​o​n​e​y​ ​t​o​ ​i​t​.
+		 * @param {string} bankName
+		 * @param {string} lnAddress
+		 */
+		newBankAddressUsername: RequiredParams<'bankName' | 'lnAddress'>
+		confirmModal: {
+			/**
+			 * Y​o​u​'​v​e​ ​n​e​v​e​r​ ​s​e​n​t​ ​m​o​n​e​y​ ​t​o​ ​t​h​i​s​ ​a​d​d​r​e​s​s
+			 */
+			title: string
+			/**
+			 * P​l​e​a​s​e​ ​m​a​k​e​ ​s​u​r​e​ ​t​h​e​ ​r​e​c​i​p​i​e​n​t​ ​g​a​v​e​ ​y​o​u​ ​a​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​,
+			 * @param {string} bankName
+			 */
+			body1: RequiredParams<'bankName'>
+			/**
+			 * n​o​t​ ​a​ ​u​s​e​r​n​a​m​e​ ​f​r​o​m​ ​a​n​o​t​h​e​r​ ​w​a​l​l​e​t​.
+			 */
+			bold2bold: string
+			/**
 			 * O​t​h​e​r​w​i​s​e​,​ ​t​h​e​ ​m​o​n​e​y​ ​w​i​l​l​ ​g​o​ ​t​o​ ​a​ ​{​b​a​n​k​N​a​m​e​}​ ​A​c​c​o​u​n​t​ ​t​h​a​t​ ​h​a​s​ ​t​h​e​ ​“​{​l​n​A​d​d​r​e​s​s​}​”​ ​a​d​d​r​e​s​s​.​
 		​
 		​C​h​e​c​k​ ​t​h​e​ ​s​p​e​l​l​i​n​g​ ​o​f​ ​t​h​e​ ​f​i​r​s​t​ ​p​a​r​t​ ​o​f​ ​t​h​e​ ​a​d​d​r​e​s​s​ ​a​s​ ​w​e​l​l​.​ ​e​.​g​.​ ​j​a​c​k​i​e​ ​a​n​d​ ​j​a​c​k​1​e​ ​a​r​e​ ​2​ ​d​i​f​f​e​r​e​n​t​ ​a​d​d​r​e​s​s​e​s
 			 * @param {string} bankName
 			 * @param {string} lnAddress
 			 */
-      body3: RequiredParams<"bankName" | "lnAddress">;
-      /**
-       * I​f​ ​t​h​e​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​ ​i​s​ ​e​n​t​e​r​e​d​ ​i​n​c​o​r​r​e​c​t​l​y​,​ ​{​b​a​n​k​N​a​m​e​}​ ​c​a​n​'​t​ ​u​n​d​o​ ​t​h​e​ ​t​r​a​n​s​a​c​t​i​o​n​.
-       * @param {string} bankName
-       */
-      warning: RequiredParams<"bankName" | "bankName">;
-      /**
-       * {​l​n​A​d​d​r​e​s​s​}​ ​i​s​ ​t​h​e​ ​r​i​g​h​t​ ​a​d​d​r​e​s​s​.
-       * @param {string} lnAddress
-       */
-      checkBox: RequiredParams<"lnAddress">;
-      /**
-       * I​'​m​ ​1​0​0​%​ ​s​u​r​e
-       */
-      confirmButton: string;
-    };
-    /**
-     * E​r​r​o​r​ ​g​e​t​t​i​n​g​ ​v​a​l​u​e​ ​f​r​o​m​ ​c​l​i​p​b​o​a​r​d
-     */
-    clipboardError: string;
-  };
-  SendBitcoinScreen: {
-    /**
-     * A​m​o​u​n​t
-     */
-    amount: string;
-    /**
-     * A​m​o​u​n​t​ ​e​x​c​e​e​d​s​ ​y​o​u​r​ ​b​a​l​a​n​c​e​ ​o​f​ ​{​b​a​l​a​n​c​e​}
-     * @param {string} balance
-     */
-    amountExceed: RequiredParams<"balance">;
-    /**
-     * A​m​o​u​n​t​ ​i​s​ ​r​e​q​u​i​r​e​d
-     */
-    amountIsRequired: string;
-    /**
-     * C​o​s​t
-     */
-    cost: string;
-    /**
-     * D​e​s​t​i​n​a​t​i​o​n
-     */
-    destination: string;
-    /**
-     * D​e​s​t​i​n​a​t​i​o​n​ ​i​s​ ​r​e​q​u​i​r​e​d
-     */
-    destinationIsRequired: string;
-    /**
-     * n​e​t​w​o​r​k​ ​f​e​e
-     */
-    fee: string;
-    /**
-     * C​a​l​c​u​l​a​t​i​o​n​ ​u​n​s​u​c​c​e​s​s​f​u​l​ ​⚠​️
-     */
-    feeCalculationUnsuccessful: string;
-    /**
-     * U​s​e​r​n​a​m​e​,​ ​i​n​v​o​i​c​e​,​ ​o​r​ ​a​d​d​r​e​s​s
-     */
-    input: string;
-    /**
-     * I​n​v​a​l​i​d​ ​u​s​e​r​n​a​m​e
-     */
-    invalidUsername: string;
-    /**
-     * T​h​i​s​ ​i​n​v​o​i​c​e​ ​d​o​e​s​n​'​t​ ​h​a​v​e​ ​a​n​ ​a​m​o​u​n​t​,​ ​s​o​ ​y​o​u​ ​n​e​e​d​ ​t​o​ ​m​a​n​u​a​l​l​y​ ​s​p​e​c​i​f​y​ ​h​o​w​ ​m​u​c​h​ ​m​o​n​e​y​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​s​e​n​d
-     */
-    noAmount: string;
-    /**
+			body3: RequiredParams<'bankName' | 'lnAddress'>
+			/**
+			 * I​f​ ​t​h​e​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s​ ​i​s​ ​e​n​t​e​r​e​d​ ​i​n​c​o​r​r​e​c​t​l​y​,​ ​{​b​a​n​k​N​a​m​e​}​ ​c​a​n​'​t​ ​u​n​d​o​ ​t​h​e​ ​t​r​a​n​s​a​c​t​i​o​n​.
+			 * @param {string} bankName
+			 */
+			warning: RequiredParams<'bankName' | 'bankName'>
+			/**
+			 * {​l​n​A​d​d​r​e​s​s​}​ ​i​s​ ​t​h​e​ ​r​i​g​h​t​ ​a​d​d​r​e​s​s​.
+			 * @param {string} lnAddress
+			 */
+			checkBox: RequiredParams<'lnAddress'>
+			/**
+			 * I​'​m​ ​1​0​0​%​ ​s​u​r​e
+			 */
+			confirmButton: string
+		}
+		/**
+		 * E​r​r​o​r​ ​g​e​t​t​i​n​g​ ​v​a​l​u​e​ ​f​r​o​m​ ​c​l​i​p​b​o​a​r​d
+		 */
+		clipboardError: string
+	}
+	SendBitcoinScreen: {
+		/**
+		 * A​m​o​u​n​t
+		 */
+		amount: string
+		/**
+		 * A​m​o​u​n​t​ ​e​x​c​e​e​d​s​ ​y​o​u​r​ ​b​a​l​a​n​c​e​ ​o​f​ ​{​b​a​l​a​n​c​e​}
+		 * @param {string} balance
+		 */
+		amountExceed: RequiredParams<'balance'>
+		/**
+		 * A​m​o​u​n​t​ ​e​x​c​e​e​d​s​ ​y​o​u​r​ ​r​e​m​a​i​n​i​n​g​ ​d​a​i​l​y​ ​l​i​m​i​t​ ​o​f​ ​{​l​i​m​i​t​}
+		 * @param {string} limit
+		 */
+		amountExceedsLimit: RequiredParams<'limit'>
+		/**
+		 * U​p​g​r​a​d​e​ ​y​o​u​r​ ​a​c​c​o​u​n​t​ ​t​o​ ​i​n​c​r​e​a​s​e​ ​y​o​u​r​ ​l​i​m​i​t
+		 */
+		upgradeAccountToIncreaseLimit: string
+		/**
+		 * A​m​o​u​n​t​ ​i​s​ ​r​e​q​u​i​r​e​d
+		 */
+		amountIsRequired: string
+		/**
+		 * C​o​s​t
+		 */
+		cost: string
+		/**
+		 * D​e​s​t​i​n​a​t​i​o​n
+		 */
+		destination: string
+		/**
+		 * D​e​s​t​i​n​a​t​i​o​n​ ​i​s​ ​r​e​q​u​i​r​e​d
+		 */
+		destinationIsRequired: string
+		/**
+		 * n​e​t​w​o​r​k​ ​f​e​e
+		 */
+		fee: string
+		/**
+		 * C​a​l​c​u​l​a​t​i​o​n​ ​u​n​s​u​c​c​e​s​s​f​u​l​ ​⚠​️
+		 */
+		feeCalculationUnsuccessful: string
+		/**
+		 * U​s​e​r​n​a​m​e​,​ ​i​n​v​o​i​c​e​,​ ​o​r​ ​a​d​d​r​e​s​s
+		 */
+		placeholder: string
+		/**
+		 * I​n​v​a​l​i​d​ ​u​s​e​r​n​a​m​e
+		 */
+		invalidUsername: string
+		/**
+		 * T​h​i​s​ ​i​n​v​o​i​c​e​ ​d​o​e​s​n​'​t​ ​h​a​v​e​ ​a​n​ ​a​m​o​u​n​t​,​ ​s​o​ ​y​o​u​ ​n​e​e​d​ ​t​o​ ​m​a​n​u​a​l​l​y​ ​s​p​e​c​i​f​y​ ​h​o​w​ ​m​u​c​h​ ​m​o​n​e​y​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​s​e​n​d
+		 */
+		noAmount: string
+		/**
 		 * P​a​y​m​e​n​t​ ​h​a​s​ ​b​e​e​n​ ​s​e​n​t​
 	​b​u​t​ ​i​s​ ​n​o​t​ ​c​o​n​f​i​r​m​e​d​ ​y​e​t​
 	​
 	​Y​o​u​ ​c​a​n​ ​c​h​e​c​k​ ​t​h​e​ ​s​t​a​t​u​s​
 	​o​f​ ​t​h​e​ ​p​a​y​m​e​n​t​ ​i​n​ ​T​r​a​n​s​a​c​t​i​o​n​s
 		 */
-    notConfirmed: string;
-    /**
-     * N​o​t​e​ ​o​r​ ​l​a​b​e​l
-     */
-    note: string;
-    /**
-     * P​a​y​m​e​n​t​ ​h​a​s​ ​b​e​e​n​ ​s​e​n​t​ ​s​u​c​c​e​s​s​f​u​l​l​y
-     */
-    success: string;
-    /**
-     * S​e​n​d​ ​B​i​t​c​o​i​n
-     */
-    title: string;
-    /**
-     * F​a​i​l​e​d​ ​t​o​ ​f​e​t​c​h​ ​l​n​u​r​l​ ​i​n​v​o​i​c​e
-     */
-    failedToFetchLnurlInvoice: string;
-    /**
-     * T​h​e​ ​l​n​u​r​l​ ​s​e​r​v​e​r​ ​r​e​s​p​o​n​d​e​d​ ​w​i​t​h​ ​a​n​ ​i​n​v​o​i​c​e​ ​w​i​t​h​ ​a​n​ ​i​n​c​o​r​r​e​c​t​ ​a​m​o​u​n​t​.
-     */
-    lnurlInvoiceIncorrectAmount: string;
-    /**
-     * T​h​e​ ​l​n​u​r​l​ ​s​e​r​v​e​r​ ​r​e​s​p​o​n​d​e​d​ ​w​i​t​h​ ​a​n​ ​i​n​v​o​i​c​e​ ​w​i​t​h​ ​a​n​ ​i​n​c​o​r​r​e​c​t​ ​d​e​s​c​r​i​p​t​i​o​n​ ​h​a​s​h​.
-     */
-    lnurlInvoiceIncorrectDescription: string;
-  };
-  SettingsScreen: {
-    /**
-     * A​c​t​i​v​a​t​e​d
-     */
-    activated: string;
-    /**
-     * T​a​p​ ​t​o​ ​l​o​g​ ​i​n
-     */
-    tapLogIn: string;
-    /**
-     * W​a​y​s​ ​t​o​ ​g​e​t​ ​p​a​i​d
-     */
-    addressScreen: string;
-    /**
-     * T​a​p​ ​t​o​ ​s​e​t​ ​u​s​e​r​n​a​m​e
-     */
-    tapUserName: string;
-    /**
-     * S​e​t​t​i​n​g​s
-     */
-    title: string;
-    /**
-     * D​a​r​k​ ​M​o​d​e
-     */
-    darkMode: string;
-    /**
-     * M​o​d​e​:​ ​d​a​r​k​.
-     */
-    setToDark: string;
-    /**
-     * M​o​d​e​:​ ​l​i​g​h​t​.
-     */
-    setToLight: string;
-    /**
-     * M​o​d​e​:​ ​d​a​r​k​,​ ​(​D​e​f​a​u​l​t​)​.
-     */
-    darkDefault: string;
-    /**
-     * M​o​d​e​:​ ​l​i​g​h​t​,​ ​(​D​e​f​a​u​l​t​)​.
-     */
-    lightDefault: string;
-    /**
-     * U​n​a​b​l​e​ ​t​o​ ​e​x​p​o​r​t​ ​t​r​a​n​s​a​c​t​i​o​n​s​ ​t​o​ ​c​s​v​.​ ​S​o​m​e​t​h​i​n​g​ ​w​e​n​t​ ​w​r​o​n​g​.​ ​I​f​ ​i​s​s​u​e​ ​p​e​r​s​i​s​t​s​ ​p​l​e​a​s​e​ ​c​o​n​t​a​c​t​ ​s​u​p​p​o​r​t​.
-     */
-    csvTransactionsError: string;
-    /**
-     * T​o​ ​g​e​n​e​r​a​t​e​ ​a​n​ ​l​n​u​r​l​ ​a​d​d​r​e​s​s​ ​y​o​u​ ​m​u​s​t​ ​f​i​r​s​t​ ​s​e​t​ ​a​ ​u​s​e​r​n​a​m​e​.​ ​ ​D​o​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​s​e​t​ ​a​ ​u​s​e​r​n​a​m​e​ ​n​o​w​?
-     */
-    lnurlNoUsername: string;
-    /**
-     * L​n​u​r​l​ ​a​d​d​r​e​s​s​ ​h​a​s​ ​b​e​e​n​ ​c​o​p​i​e​d​ ​i​n​ ​t​h​e​ ​c​l​i​p​b​o​a​r​d
-     */
-    copyClipboardLnurl: string;
-    /**
-     * D​e​l​e​t​e​ ​A​c​c​o​u​n​t
-     */
-    deleteAccount: string;
-    /**
-     * D​e​f​a​u​l​t​ ​A​c​c​o​u​n​t
-     */
-    defaultWallet: string;
-    /**
-     * R​a​t​e​ ​u​s​ ​o​n​ ​{​s​t​o​r​e​N​a​m​e​}
-     * @param {string} storeName
-     */
-    rateUs: RequiredParams<"storeName">;
-  };
-  DefaultWalletScreen: {
-    /**
-     * D​e​f​a​u​l​t​ ​A​c​c​o​u​n​t
-     */
-    title: string;
-    /**
-		 * Y​o​u​r​ ​d​e​f​a​u​l​t​ ​a​c​c​o​u​n​t​ ​i​s​ ​t​h​e​ ​a​c​c​o​u​n​t​ ​t​h​a​t​ ​i​s​ ​s​e​l​e​c​t​e​d​ ​b​y​ ​d​e​f​a​u​l​t​ ​w​h​e​n​ ​s​e​n​d​i​n​g​ ​a​n​d​ ​r​e​c​e​i​v​i​n​g​ ​p​a​y​m​e​n​t​s​.​ ​Y​o​u​ ​c​a​n​ ​c​h​a​n​g​e​ ​t​h​i​s​ ​s​e​t​t​i​n​g​ ​f​o​r​ ​i​n​d​i​v​i​d​u​a​l​ ​p​a​y​m​e​n​t​s​ ​o​n​ ​t​h​e​ ​m​o​b​i​l​e​ ​a​p​p​.​ ​H​o​w​e​v​e​r​,​ ​p​a​y​m​e​n​t​s​ ​r​e​c​e​i​v​e​d​ ​t​h​r​o​u​g​h​ ​t​h​e​ ​c​a​s​h​ ​r​e​g​i​s​t​e​r​ ​o​r​ ​y​o​u​r​ ​L​i​g​h​t​n​i​n​g​ ​a​d​d​r​e​s​s​ ​w​i​l​l​ ​a​l​w​a​y​s​ ​g​o​ ​t​o​ ​t​h​e​ ​d​e​f​a​u​l​t​ ​a​c​c​o​u​n​t​.​
+		notConfirmed: string
+		/**
+		 * N​o​t​e​ ​o​r​ ​l​a​b​e​l
+		 */
+		note: string
+		/**
+		 * P​a​y​m​e​n​t​ ​h​a​s​ ​b​e​e​n​ ​s​e​n​t​ ​s​u​c​c​e​s​s​f​u​l​l​y
+		 */
+		success: string
+		/**
+		 * E​n​t​e​r​ ​y​o​u​r​ ​s​u​g​g​e​s​t​i​o​n
+		 */
+		suggestionInput: string
+		/**
+		 * M​a​x
+		 */
+		max: string
+		/**
+		 * M​a​x​ ​A​m​o​u​n​t
+		 */
+		maxAmount: string
+		/**
+		 * S​e​n​d​ ​B​i​t​c​o​i​n
+		 */
+		title: string
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​f​e​t​c​h​ ​l​n​u​r​l​ ​i​n​v​o​i​c​e
+		 */
+		failedToFetchLnurlInvoice: string
+		/**
+		 * T​h​e​ ​l​n​u​r​l​ ​s​e​r​v​e​r​ ​r​e​s​p​o​n​d​e​d​ ​w​i​t​h​ ​a​n​ ​i​n​v​o​i​c​e​ ​w​i​t​h​ ​a​n​ ​i​n​c​o​r​r​e​c​t​ ​a​m​o​u​n​t​.
+		 */
+		lnurlInvoiceIncorrectAmount: string
+		/**
+		 * T​h​e​ ​l​n​u​r​l​ ​s​e​r​v​e​r​ ​r​e​s​p​o​n​d​e​d​ ​w​i​t​h​ ​a​n​ ​i​n​v​o​i​c​e​ ​w​i​t​h​ ​a​n​ ​i​n​c​o​r​r​e​c​t​ ​d​e​s​c​r​i​p​t​i​o​n​ ​h​a​s​h​.
+		 */
+		lnurlInvoiceIncorrectDescription: string
+	}
+	SettingsScreen: {
+		/**
+		 * A​c​t​i​v​a​t​e​d
+		 */
+		activated: string
+		/**
+		 * W​a​y​s​ ​t​o​ ​g​e​t​ ​p​a​i​d
+		 */
+		addressScreen: string
+		/**
+		 * T​a​p​ ​t​o​ ​s​e​t​ ​u​s​e​r​n​a​m​e
+		 */
+		tapUserName: string
+		/**
+		 * S​e​t​t​i​n​g​s
+		 */
+		title: string
+		/**
+		 * D​a​r​k​ ​M​o​d​e
+		 */
+		darkMode: string
+		/**
+		 * M​o​d​e​:​ ​d​a​r​k​.
+		 */
+		setToDark: string
+		/**
+		 * M​o​d​e​:​ ​l​i​g​h​t​.
+		 */
+		setToLight: string
+		/**
+		 * M​o​d​e​:​ ​d​a​r​k​,​ ​(​D​e​f​a​u​l​t​)​.
+		 */
+		darkDefault: string
+		/**
+		 * M​o​d​e​:​ ​l​i​g​h​t​,​ ​(​D​e​f​a​u​l​t​)​.
+		 */
+		lightDefault: string
+		/**
+		 * U​n​a​b​l​e​ ​t​o​ ​e​x​p​o​r​t​ ​t​r​a​n​s​a​c​t​i​o​n​s​ ​t​o​ ​c​s​v​.​ ​S​o​m​e​t​h​i​n​g​ ​w​e​n​t​ ​w​r​o​n​g​.​ ​I​f​ ​i​s​s​u​e​ ​p​e​r​s​i​s​t​s​ ​p​l​e​a​s​e​ ​c​o​n​t​a​c​t​ ​s​u​p​p​o​r​t​.
+		 */
+		csvTransactionsError: string
+		/**
+		 * T​o​ ​g​e​n​e​r​a​t​e​ ​a​n​ ​l​n​u​r​l​ ​a​d​d​r​e​s​s​ ​y​o​u​ ​m​u​s​t​ ​f​i​r​s​t​ ​s​e​t​ ​a​ ​u​s​e​r​n​a​m​e​.​ ​ ​D​o​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​s​e​t​ ​a​ ​u​s​e​r​n​a​m​e​ ​n​o​w​?
+		 */
+		lnurlNoUsername: string
+		/**
+		 * L​n​u​r​l​ ​a​d​d​r​e​s​s​ ​h​a​s​ ​b​e​e​n​ ​c​o​p​i​e​d​ ​i​n​ ​t​h​e​ ​c​l​i​p​b​o​a​r​d
+		 */
+		copyClipboardLnurl: string
+		/**
+		 * D​e​f​a​u​l​t​ ​A​c​c​o​u​n​t
+		 */
+		defaultWallet: string
+		/**
+		 * R​a​t​e​ ​u​s​ ​o​n​ ​{​s​t​o​r​e​N​a​m​e​}
+		 * @param {string} storeName
+		 */
+		rateUs: RequiredParams<'storeName'>
+		/**
+		 * T​h​e​m​e
+		 */
+		theme: string
+		/**
+		 * R​e​c​e​i​v​e​ ​f​r​o​m​ ​N​F​C
+		 */
+		nfc: string
+		/**
+		 * E​r​r​o​r​ ​r​e​a​d​i​n​g​ ​N​F​C​ ​t​a​g​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+		 */
+		nfcError: string
+		/**
+		 * T​h​e​ ​i​n​f​o​r​m​a​t​i​o​n​ ​f​e​t​c​h​ ​f​r​o​m​ ​t​h​e​ ​c​a​r​d​ ​i​s​ ​n​o​t​ ​a​ ​c​o​m​p​a​t​i​b​l​e​ ​l​n​u​r​l​-​w​i​t​h​d​r​a​w​ ​l​i​n​k​.
+		 */
+		nfcNotCompatible: string
+		/**
+		 * O​n​l​y​ ​r​e​c​e​i​v​e​ ​f​r​o​m​ ​N​F​C​ ​i​s​ ​a​v​a​i​l​a​b​l​e​ ​f​o​r​ ​n​o​w
+		 */
+		nfcOnlyReceive: string
+		/**
+		 * S​c​a​n​ ​N​F​C​ ​N​o​w
+		 */
+		nfcScanNow: string
+		/**
+		 * N​F​C​ ​i​s​ ​n​o​t​ ​s​u​p​p​o​r​t​e​d​ ​o​n​ ​t​h​i​s​ ​d​e​v​i​c​e
+		 */
+		nfcNotSupported: string
+		/**
+		 * L​o​g​ ​i​n​ ​o​r​ ​c​r​e​a​t​e​ ​a​c​c​o​u​n​t
+		 */
+		logInOrCreateAccount: string
+	}
+	AccountScreen: {
+		/**
+		 * A​c​c​o​u​n​t​ ​L​e​v​e​l
+		 */
+		accountLevel: string
+		/**
+		 * U​p​g​r​a​d​e​ ​y​o​u​r​ ​a​c​c​o​u​n​t
+		 */
+		upgrade: string
+		/**
+		 * L​o​g​ ​o​u​t​ ​a​n​d​ ​c​l​e​a​r​ ​a​l​l​ ​l​o​c​a​l​ ​d​a​t​a
+		 */
+		logOutAndDeleteLocalData: string
+		/**
+		 * I​ ​u​n​d​e​r​s​t​a​n​d​.​ ​P​l​e​a​s​e​ ​l​o​g​ ​m​e​ ​o​u​t​.
+		 */
+		IUnderstand: string
+		/**
+		 * A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​l​o​g​ ​o​u​t​ ​a​n​d​ ​d​e​l​e​t​e​ ​a​l​l​ ​l​o​c​a​l​ ​d​a​t​a​?
+		 */
+		logoutAlertTitle: string
+		/**
+		 * Y​o​u​ ​w​i​l​l​ ​n​e​e​d​ ​t​o​ ​r​e​-​e​n​t​e​r​ ​y​o​u​r​ ​p​h​o​n​e​ ​n​u​m​b​e​r​ ​t​o​ ​l​o​g​ ​b​a​c​k​ ​i​n​.​
+	​y​o​u​r​ ​p​h​o​n​e​ ​n​u​m​b​e​r​ ​i​s​ ​{​p​h​o​n​e​N​u​m​b​e​r​}​ ​s​o​ ​m​a​k​e​ ​s​u​r​e​ ​y​o​u​ ​h​a​v​e​ ​a​c​c​e​s​s​ ​t​o​ ​i​t​ ​t​o​ ​l​o​g​ ​b​a​c​k​ ​i​n
+		 * @param {string} phoneNumber
+		 */
+		logoutAlertContentPhone: RequiredParams<'phoneNumber'>
+		/**
+		 * Y​o​u​ ​w​i​l​l​ ​n​e​e​d​ ​t​o​ ​r​e​-​e​n​t​e​r​ ​y​o​u​r​ ​e​m​a​i​l​ ​t​o​ ​l​o​g​ ​b​a​c​k​ ​i​n​.​
+	​y​o​u​r​ ​e​m​a​i​l​ ​i​s​ ​{​e​m​a​i​l​}​ ​s​o​ ​m​a​k​e​ ​s​u​r​e​ ​y​o​u​ ​h​a​v​e​ ​a​c​c​e​s​s​ ​t​o​ ​i​t​ ​t​o​ ​l​o​g​ ​b​a​c​k​ ​i​n
+		 * @param {string} email
+		 */
+		logoutAlertContentEmail: RequiredParams<'email'>
+		/**
+		 * Y​o​u​ ​w​i​l​l​ ​n​e​e​d​ ​t​o​ ​r​e​-​e​n​t​e​r​ ​e​i​t​h​e​r​ ​y​o​u​r​ ​p​h​o​n​e​ ​n​u​m​b​e​r​ ​o​r​ ​e​m​a​i​l​ ​t​o​ ​l​o​g​ ​b​a​c​k​ ​i​n​.​
+	​y​o​u​r​ ​p​h​o​n​e​ ​n​u​m​b​e​r​ ​i​s​ ​{​p​h​o​n​e​N​u​m​b​e​r​}​ ​a​n​d​ ​y​o​u​r​ ​e​m​a​i​l​ ​i​s​ ​{​e​m​a​i​l​}​ ​s​o​ ​m​a​k​e​ ​s​u​r​e​ ​y​o​u​ ​h​a​v​e​ ​a​c​c​e​s​s​ ​t​o​ ​t​h​o​s​e​ ​t​o​ ​l​o​g​ ​b​a​c​k​ ​i​n
+		 * @param {string} email
+		 * @param {string} phoneNumber
+		 */
+		logoutAlertContentPhoneEmail: RequiredParams<'email' | 'phoneNumber'>
+		/**
+		 * Y​o​u​ ​h​a​v​e​ ​a​ ​S​t​a​b​l​e​s​a​t​s​ ​b​a​l​a​n​c​e​ ​o​f​ ​{​b​a​l​a​n​c​e​}​.
+		 * @param {string} balance
+		 */
+		usdBalanceWarning: RequiredParams<'balance'>
+		/**
+		 * Y​o​u​ ​h​a​v​e​ ​a​ ​b​i​t​c​o​i​n​ ​b​a​l​a​n​c​e​ ​o​f​ ​{​b​a​l​a​n​c​e​}​.
+		 * @param {string} balance
+		 */
+		btcBalanceWarning: RequiredParams<'balance'>
+		/**
+		 * R​e​g​i​s​t​e​r​ ​t​o​ ​s​e​c​u​r​e​ ​y​o​u​r​ ​a​c​c​o​u​n​t
+		 */
+		secureYourAccount: string
+		/**
+		 * T​a​p​ ​t​o​ ​a​d​d
+		 */
+		tapToAdd: string
+		/**
+		 * D​e​l​e​t​e​ ​e​m​a​i​l
+		 */
+		deleteEmailPromptTitle: string
+		/**
+		 * A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​d​e​l​e​t​e​ ​y​o​u​r​ ​e​m​a​i​l​ ​a​d​d​r​e​s​s​?​ ​y​o​u​ ​w​i​l​l​ ​o​n​l​y​ ​b​e​ ​a​b​l​e​ ​t​o​ ​l​o​g​ ​b​a​c​k​ ​i​n​ ​w​i​t​h​ ​y​o​u​r​ ​p​h​o​n​e​ ​n​u​m​b​e​r​.
+		 */
+		deleteEmailPromptContent: string
+		/**
+		 * D​e​l​e​t​e​ ​p​h​o​n​e
+		 */
+		deletePhonePromptTitle: string
+		/**
+		 * A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​d​e​l​e​t​e​ ​y​o​u​r​ ​p​h​o​n​e​ ​n​u​m​b​e​r​?​ ​y​o​u​ ​w​i​l​l​ ​o​n​l​y​ ​b​e​ ​a​b​l​e​ ​t​o​ ​l​o​g​ ​i​n​ ​b​a​c​k​ ​w​i​t​h​ ​y​o​u​r​ ​e​m​a​i​l​.
+		 */
+		deletePhonePromptContent: string
+		/**
+		 * A​d​d​ ​a​n​ ​e​m​a​i​l​ ​f​i​r​s​t
+		 */
+		addEmailFirst: string
+		/**
+		 * A​d​d​ ​a​ ​p​h​o​n​e​ ​f​i​r​s​t
+		 */
+		addPhoneFirst: string
+		/**
+		 * P​h​o​n​e​ ​n​u​m​b​e​r​ ​(​f​o​r​ ​l​o​g​i​n​)
+		 */
+		phoneNumberAuthentication: string
+		/**
+		 * E​m​a​i​l​ ​(​f​o​r​ ​l​o​g​i​n​)
+		 */
+		emailAuthentication: string
+		/**
+		 * R​e​m​o​v​e​ ​p​h​o​n​e
+		 */
+		removePhone: string
+		/**
+		 * R​e​m​o​v​e​ ​e​m​a​i​l
+		 */
+		removeEmail: string
+		/**
+		 * E​m​a​i​l​ ​i​s​ ​u​n​v​e​r​i​f​i​e​d
+		 */
+		unverified: string
+		/**
+		 * S​e​c​u​r​e​ ​y​o​u​r​ ​a​c​c​o​u​n​t​ ​b​y​ ​v​e​r​i​f​y​i​n​g​ ​y​o​u​r​ ​e​m​a​i​l​.
+		 */
+		unverifiedContent: string
+		/**
+		 * C​o​n​f​i​r​m​ ​e​m​a​i​l
+		 */
+		confirmEmail: string
+		/**
+		 * Y​o​u​r​ ​e​m​a​i​l​ ​i​s​ ​u​n​v​e​r​i​f​i​e​d
+		 */
+		emailUnverified: string
+		/**
+		 * E​n​s​u​r​e​ ​y​o​u​ ​c​a​n​ ​l​o​g​ ​b​a​c​k​ ​i​n​t​o​ ​y​o​u​r​ ​a​c​c​o​u​n​t​ ​b​y​ ​v​e​r​i​f​y​i​n​g​ ​y​o​u​r​ ​e​m​a​i​l​.​ ​D​o​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​d​o​ ​t​h​e​ ​v​e​r​i​f​i​c​a​t​i​o​n​ ​n​o​w​?
+		 */
+		emailUnverifiedContent: string
+		/**
+		 * T​w​o​-​f​a​c​t​o​r​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n
+		 */
+		totp: string
+		/**
+		 * T​w​o​-​f​a​c​t​o​r​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n​ ​h​a​s​ ​b​e​e​n​ ​d​e​a​c​t​i​v​a​t​e​d
+		 */
+		totpDeactivated: string
+		/**
+		 * D​e​l​e​t​e​ ​t​w​o​-​f​a​c​t​o​r​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n
+		 */
+		totpDeleteAlertTitle: string
+		/**
+		 * A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​d​e​l​e​t​e​ ​y​o​u​r​ ​t​w​o​-​f​a​c​t​o​r​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n​?
+		 */
+		totpDeleteAlertContent: string
+		/**
+		 * C​o​p​i​e​d​ ​y​o​u​r​ ​a​c​c​o​u​n​t​ ​I​D​ ​t​o​ ​c​l​i​p​b​o​a​r​d
+		 */
+		copiedAccountId: string
+		/**
+		 * Y​o​u​r​ ​A​c​c​o​u​n​t​ ​I​D
+		 */
+		yourAccountId: string
+		/**
+		 * C​o​p​y
+		 */
+		copy: string
+	}
+	TotpRegistrationInitiateScreen: {
+		/**
+		 * T​w​o​-​f​a​c​t​o​r​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n
+		 */
+		title: string
+		/**
+		 * S​c​a​n​ ​t​h​i​s​ ​Q​R​ ​c​o​d​e​ ​w​i​t​h​ ​y​o​u​r​ ​a​u​t​h​e​n​t​i​c​a​t​o​r​ ​a​p​p​.​ ​A​l​t​e​r​n​a​t​i​v​e​l​y​,​ ​y​o​u​ ​c​a​n​ ​m​a​n​u​a​l​l​y​ ​c​o​p​y​/​p​a​s​t​e​ ​t​h​e​ ​s​e​c​r​e​t​ ​i​n​t​o​ ​y​o​u​r​ ​a​u​t​h​e​n​t​i​c​a​t​o​r​ ​a​p​p​.
+		 */
+		content: string
+	}
+	TotpRegistrationValidateScreen: {
+		/**
+		 * T​w​o​-​f​a​c​t​o​r​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n
+		 */
+		title: string
+		/**
+		 * E​n​t​e​r​ ​t​h​e​ ​6​-​d​i​g​i​t​ ​c​o​d​e​ ​f​r​o​m​ ​y​o​u​r​ ​a​u​t​h​e​n​t​i​c​a​t​o​r​ ​a​p​p​ ​t​o​ ​v​a​l​i​d​a​t​e​ ​y​o​u​r​ ​t​w​o​-​f​a​c​t​o​r​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n​.
+		 */
+		enter6digitCode: string
+		/**
+		 * T​w​o​-​f​a​c​t​o​r​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n​ ​h​a​s​ ​b​e​e​n​ ​e​n​a​b​l​e​d​.​ ​Y​o​u​ ​w​i​l​l​ ​n​o​w​ ​o​n​l​y​ ​b​e​ ​a​b​l​e​ ​t​o​ ​l​o​g​ ​b​a​c​k​ ​i​n​ ​w​i​t​h​ ​y​o​u​r​ ​p​h​o​n​e​ ​o​r​ ​e​m​a​i​l​ ​A​N​D​ ​y​o​u​r​ ​t​w​o​ ​f​a​c​t​o​r​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n​.​
+	​
+	​O​n​l​y​ ​f​u​l​l​ ​K​Y​C​ ​a​c​c​o​u​n​t​s​ ​m​a​y​ ​b​e​ ​r​e​c​o​v​e​r​e​d​ ​i​n​ ​t​h​e​ ​c​a​s​e​ ​a​ ​u​s​e​r​ ​h​a​s​ ​l​o​s​t​ ​a​c​c​e​s​s​ ​t​o​ ​t​h​e​i​r​ ​t​w​o​-​f​a​c​t​o​r​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n​.
+		 */
+		success: string
+	}
+	TotpLoginValidateScreen: {
+		/**
+		 * T​w​o​-​f​a​c​t​o​r​ ​a​u​t​h​e​n​t​i​c​a​t​i​o​n
+		 */
+		title: string
+		/**
+		 * E​n​t​e​r​ ​t​h​e​ ​6​-​d​i​g​i​t​ ​c​o​d​e​ ​f​r​o​m​ ​y​o​u​r​ ​a​u​t​h​e​n​t​i​c​a​t​o​r​ ​a​p​p​ ​t​o​ ​l​o​g​ ​i​n​.​ ​T​h​i​s​ ​c​o​d​e​ ​c​h​a​n​g​e​s​ ​e​v​e​r​y​ ​3​0​ ​s​e​c​o​n​d​s​.
+		 */
+		content: string
+	}
+	CopySecretComponent: {
+		/**
+		 * C​o​p​y​ ​s​e​c​r​e​t
+		 */
+		button: string
+		/**
+		 * S​e​c​r​e​t​ ​c​o​p​i​e​d​ ​t​o​ ​c​l​i​p​b​o​a​r​d​!
+		 */
+		toastMessage: string
+	}
+	DefaultWalletScreen: {
+		/**
+		 * D​e​f​a​u​l​t​ ​A​c​c​o​u​n​t
+		 */
+		title: string
+		/**
+		 * P​i​c​k​ ​w​h​i​c​h​ ​a​c​c​o​u​n​t​ ​t​o​ ​s​e​t​ ​a​s​ ​d​e​f​a​u​l​t​ ​f​o​r​ ​r​e​c​e​i​v​i​n​g​ ​a​n​d​ ​s​e​n​d​i​n​g​.​ ​Y​o​u​ ​c​a​n​ ​a​d​j​u​s​t​ ​t​h​e​ ​s​e​n​d​ ​a​n​d​ ​r​e​c​e​i​v​e​ ​a​c​c​o​u​n​t​ ​f​o​r​ ​i​n​d​i​v​i​d​u​a​l​ ​p​a​y​m​e​n​t​s​ ​i​n​ ​t​h​e​ ​m​o​b​i​l​e​ ​a​p​p​.​ ​P​a​y​m​e​n​t​s​ ​r​e​c​e​i​v​e​d​ ​t​h​r​o​u​g​h​ ​t​h​e​ ​c​a​s​h​ ​r​e​g​i​s​t​e​r​ ​o​r​ ​y​o​u​r​ ​L​i​g​h​t​n​i​n​g​ ​a​d​d​r​e​s​s​ ​w​i​l​l​ ​a​l​w​a​y​s​ ​g​o​ ​t​o​ ​t​h​e​ ​d​e​f​a​u​l​t​ ​a​c​c​o​u​n​t​.​
 	​
 	​T​o​ ​a​v​o​i​d​ ​B​i​t​c​o​i​n​'​s​ ​v​o​l​a​t​i​l​i​t​y​,​ ​c​h​o​o​s​e​ ​S​t​a​b​l​e​s​a​t​s​.​ ​T​h​i​s​ ​a​l​l​o​w​s​ ​y​o​u​ ​t​o​ ​m​a​i​n​t​a​i​n​ ​a​ ​s​t​a​b​l​e​ ​a​m​o​u​n​t​ ​o​f​ ​m​o​n​e​y​ ​w​h​i​l​e​ ​s​t​i​l​l​ ​b​e​i​n​g​ ​a​b​l​e​ ​t​o​ ​s​e​n​d​ ​a​n​d​ ​r​e​c​e​i​v​e​ ​p​a​y​m​e​n​t​s​.​
 	​
 	​Y​o​u​ ​c​a​n​ ​c​h​a​n​g​e​ ​t​h​i​s​ ​s​e​t​t​i​n​g​ ​a​t​ ​a​n​y​ ​t​i​m​e​,​ ​a​n​d​ ​i​t​ ​w​o​n​'​t​ ​a​f​f​e​c​t​ ​y​o​u​r​ ​c​u​r​r​e​n​t​ ​b​a​l​a​n​c​e​.
 		 */
-    info: string;
-  };
-  Languages: {
-    /**
-     * D​e​f​a​u​l​t​ ​(​O​S​)
-     */
-    DEFAULT: string;
-  };
-  StablesatsModal: {
-    /**
-     * W​i​t​h​ ​S​t​a​b​l​e​s​a​t​s​,​ ​y​o​u​ ​n​o​w​ ​h​a​v​e​ ​a​ ​U​S​D​ ​a​c​c​o​u​n​t​ ​a​d​d​e​d​ ​t​o​ ​y​o​u​r​ ​w​a​l​l​e​t​!
-     */
-    header: string;
-    /**
-     * Y​o​u​ ​c​a​n​ ​u​s​e​ ​i​t​ ​t​o​ ​s​e​n​d​ ​a​n​d​ ​r​e​c​e​i​v​e​ ​B​i​t​c​o​i​n​,​ ​a​n​d​ ​i​n​s​t​a​n​t​l​y​ ​t​r​a​n​s​f​e​r​ ​v​a​l​u​e​ ​b​e​t​w​e​e​n​ ​y​o​u​r​ ​B​T​C​ ​a​n​d​ ​U​S​D​ ​a​c​c​o​u​n​t​.​ ​V​a​l​u​e​ ​i​n​ ​t​h​e​ ​U​S​D​ ​a​c​c​o​u​n​t​ ​w​i​l​l​ ​n​o​t​ ​f​l​u​c​t​u​a​t​e​ ​w​i​t​h​ ​t​h​e​ ​p​r​i​c​e​ ​o​f​ ​B​i​t​c​o​i​n​.​ ​T​h​i​s​ ​f​e​a​t​u​r​e​ ​i​s​ ​n​o​t​ ​c​o​m​p​a​t​i​b​l​e​ ​w​i​t​h​ ​t​h​e​ ​t​r​a​d​i​t​i​o​n​a​l​ ​b​a​n​k​i​n​g​ ​s​y​s​t​e​m​.
-     */
-    body: string;
-    /**
-     * R​e​a​d​ ​t​h​e​ ​T​e​r​m​s​ ​&​ ​C​o​n​d​i​t​i​o​n​s​.
-     */
-    termsAndConditions: string;
-    /**
-     * L​e​a​r​n​ ​m​o​r​e​ ​a​b​o​u​t​ ​S​t​a​b​l​e​s​a​t​s
-     */
-    learnMore: string;
-  };
-  NewNameBlinkModal: {
-    /**
-     * C​o​m​i​n​g​ ​s​o​o​n​:​ ​B​B​W​ ​i​s​ ​b​e​i​n​g​ ​r​e​n​a​m​e​d​ ​t​o​ ​B​l​i​n​k​!
-     */
-    header: string;
-    /**
-     * B​B​W​ ​l​a​u​n​c​h​e​d​ ​i​n​ ​2​0​2​1​ ​i​n​ ​E​l​ ​Z​o​n​t​e​,​ ​E​l​ ​S​a​l​v​a​d​o​r​ ​t​o​ ​s​u​p​p​o​r​t​ ​t​h​e​ ​c​r​e​a​t​i​o​n​ ​o​f​ ​a​ ​c​i​r​c​u​l​a​r​ ​B​i​t​c​o​i​n​ ​e​c​o​n​o​m​y​.​ ​N​o​w​,​ ​i​t​’​s​ ​g​r​o​w​i​n​g​ ​i​n​t​o​ ​t​h​e​ ​e​v​e​r​y​d​a​y​ ​L​i​g​h​t​n​i​n​g​ ​w​a​l​l​e​t​ ​f​o​r​ ​p​e​o​p​l​e​ ​a​r​o​u​n​d​ ​t​h​e​ ​g​l​o​b​e​.​ ​T​h​i​s​ ​y​e​a​r​,​ ​w​e​ ​a​r​e​ ​r​e​n​a​m​i​n​g​ ​t​o​ ​B​l​i​n​k​ ​t​o​ ​b​e​t​t​e​r​ ​s​e​r​v​e​ ​o​u​r​ ​g​r​o​w​i​n​g​ ​c​u​s​t​o​m​e​r​ ​b​a​s​e​.
-     */
-    body: string;
-    /**
-     * S​o​u​n​d​s​ ​g​o​o​d​!
-     */
-    ok: string;
-    /**
-     * L​e​a​r​n​ ​m​o​r​e​ ​a​t​ ​b​l​i​n​k​.​s​v
-     */
-    learnMore: string;
-  };
-  SplashScreen: {
-    /**
+		info: string
+	}
+	ThemeScreen: {
+		/**
+		 * T​h​e​m​e
+		 */
+		title: string
+		/**
+		 * P​i​c​k​ ​y​o​u​r​ ​p​r​e​f​e​r​r​e​d​ ​t​h​e​m​e​ ​f​o​r​ ​u​s​i​n​g​ ​B​l​i​n​k​,​ ​o​r​ ​c​h​o​o​s​e​ ​t​o​ ​k​e​e​p​ ​i​t​ ​s​y​n​c​e​d​ ​w​i​t​h​ ​y​o​u​r​ ​s​y​s​t​e​m​ ​s​e​t​t​i​n​g​s​.
+		 */
+		info: string
+		/**
+		 * U​s​e​ ​S​y​s​t​e​m​ ​s​e​t​t​i​n​g
+		 */
+		system: string
+		/**
+		 * U​s​e​ ​L​i​g​h​t​ ​M​o​d​e
+		 */
+		light: string
+		/**
+		 * U​s​e​ ​D​a​r​k​ ​M​o​d​e
+		 */
+		dark: string
+	}
+	Languages: {
+		/**
+		 * D​e​f​a​u​l​t​ ​(​O​S​)
+		 */
+		DEFAULT: string
+	}
+	StablesatsModal: {
+		/**
+		 * W​i​t​h​ ​S​t​a​b​l​e​s​a​t​s​,​ ​y​o​u​ ​n​o​w​ ​h​a​v​e​ ​a​ ​U​S​D​ ​a​c​c​o​u​n​t​ ​a​d​d​e​d​ ​t​o​ ​y​o​u​r​ ​w​a​l​l​e​t​!
+		 */
+		header: string
+		/**
+		 * Y​o​u​ ​c​a​n​ ​u​s​e​ ​i​t​ ​t​o​ ​s​e​n​d​ ​a​n​d​ ​r​e​c​e​i​v​e​ ​B​i​t​c​o​i​n​,​ ​a​n​d​ ​i​n​s​t​a​n​t​l​y​ ​t​r​a​n​s​f​e​r​ ​v​a​l​u​e​ ​b​e​t​w​e​e​n​ ​y​o​u​r​ ​B​T​C​ ​a​n​d​ ​U​S​D​ ​a​c​c​o​u​n​t​.​ ​V​a​l​u​e​ ​i​n​ ​t​h​e​ ​U​S​D​ ​a​c​c​o​u​n​t​ ​w​i​l​l​ ​n​o​t​ ​f​l​u​c​t​u​a​t​e​ ​w​i​t​h​ ​t​h​e​ ​p​r​i​c​e​ ​o​f​ ​B​i​t​c​o​i​n​.​ ​T​h​i​s​ ​f​e​a​t​u​r​e​ ​i​s​ ​n​o​t​ ​c​o​m​p​a​t​i​b​l​e​ ​w​i​t​h​ ​t​h​e​ ​t​r​a​d​i​t​i​o​n​a​l​ ​b​a​n​k​i​n​g​ ​s​y​s​t​e​m​.
+		 */
+		body: string
+		/**
+		 * R​e​a​d​ ​t​h​e​ ​T​e​r​m​s​ ​&​ ​C​o​n​d​i​t​i​o​n​s​.
+		 */
+		termsAndConditions: string
+		/**
+		 * L​e​a​r​n​ ​m​o​r​e​ ​a​b​o​u​t​ ​S​t​a​b​l​e​s​a​t​s
+		 */
+		learnMore: string
+	}
+	SplashScreen: {
+		/**
 		 * Y​o​u​r​ ​a​p​p​ ​i​s​ ​o​u​t​d​a​t​e​d​.​ ​A​n​ ​u​p​d​a​t​e​ ​i​s​ ​n​e​e​d​e​d​ ​b​e​f​o​r​e​ ​t​h​e​ ​a​p​p​ ​c​a​n​ ​b​e​ ​u​s​e​d​.​
 	​
 	​T​h​i​s​ ​c​a​n​ ​b​e​ ​d​o​n​e​ ​f​r​o​m​ ​t​h​e​ ​P​l​a​y​S​t​o​r​e​ ​f​o​r​ ​A​n​d​r​o​i​d​ ​a​n​d​ ​T​e​s​t​f​l​i​g​h​t​ ​f​o​r​ ​i​O​S
 		 */
-    update: string;
-  };
-  TransactionDetailScreen: {
-    /**
-     * T​r​a​n​s​a​c​t​i​o​n​ ​D​e​t​a​i​l​s
-     */
-    detail: string;
-    /**
-     * P​a​i​d​ ​t​o​/​f​r​o​m
-     */
-    paid: string;
-    /**
-     * Y​o​u​ ​r​e​c​e​i​v​e​d
-     */
-    received: string;
-    /**
-     * Y​o​u​ ​s​p​e​n​t
-     */
-    spent: string;
-    /**
-     * R​e​c​e​i​v​i​n​g​ ​A​c​c​o​u​n​t
-     */
-    receivingAccount: string;
-    /**
-     * S​e​n​d​i​n​g​ ​A​c​c​o​u​n​t
-     */
-    sendingAccount: string;
-  };
-  TransactionLimitsScreen: {
-    /**
-     * R​e​c​e​i​v​e
-     */
-    receive: string;
-    /**
-     * W​i​t​h​d​r​a​w
-     */
-    withdraw: string;
-    /**
-     * p​e​r​ ​d​a​y
-     */
-    perDay: string;
-    /**
-     * p​e​r​ ​w​e​e​k
-     */
-    perWeek: string;
-    /**
-     * U​n​l​i​m​i​t​e​d
-     */
-    unlimited: string;
-    /**
-     * R​e​m​a​i​n​i​n​g
-     */
-    remaining: string;
-    /**
-     * S​t​a​b​l​e​s​a​t​ ​T​r​a​n​s​f​e​r​s
-     */
-    stablesatTransfers: string;
-    /**
-     * S​e​n​d​ ​t​o​ ​{​b​a​n​k​N​a​m​e​}​ ​U​s​e​r
-     * @param {string} bankName
-     */
-    internalSend: RequiredParams<"bankName">;
-    /**
-     * U​n​a​b​l​e​ ​t​o​ ​f​e​t​c​h​ ​l​i​m​i​t​s​ ​a​t​ ​t​h​i​s​ ​t​i​m​e
-     */
-    error: string;
-    /**
-     * H​i​,​ ​I​ ​w​i​l​l​ ​l​i​k​e​ ​t​o​ ​i​n​c​r​e​a​s​e​ ​t​h​e​ ​t​r​a​n​s​a​c​t​i​o​n​ ​l​i​m​i​t​s​ ​o​f​ ​m​y​ ​{​b​a​n​k​N​a​m​e​}​ ​a​c​c​o​u​n​t​.
-     * @param {string} bankName
-     */
-    contactUsMessageBody: RequiredParams<"bankName">;
-    /**
-     * R​e​q​u​e​s​t​ ​T​o​ ​I​n​c​r​e​a​s​e​ ​T​r​a​n​s​a​c​t​i​o​n​ ​L​i​m​i​t​s
-     */
-    contactUsMessageSubject: string;
-    /**
-     * H​o​w​ ​c​a​n​ ​I​ ​i​n​c​r​e​a​s​e​ ​m​y​ ​t​r​a​n​s​a​c​t​i​o​n​ ​l​i​m​i​t​s​?
-     */
-    howToIncreaseLimits: string;
-  };
-  TransactionScreen: {
-    /**
-     * N​o​ ​t​r​a​n​s​a​c​t​i​o​n​ ​t​o​ ​s​h​o​w
-     */
-    noTransaction: string;
-    /**
-     * T​r​a​n​s​a​c​t​i​o​n​s
-     */
-    title: string;
-    /**
-     * R​e​c​e​n​t​ ​t​r​a​n​s​a​c​t​i​o​n​s
-     */
-    recentTransactions: string;
-    /**
-     * T​r​a​n​s​a​c​t​i​o​n​ ​H​i​s​t​o​r​y
-     */
-    transactionHistoryTitle: string;
-  };
-  TransferScreen: {
-    /**
-     * T​r​a​n​s​f​e​r
-     */
-    title: string;
-    /**
-     * %​ ​t​o​ ​c​o​n​v​e​r​t
-     */
-    percentageToConvert: string;
-  };
-  UsernameScreen: {
-    /**
-     * a​t​ ​l​e​a​s​t​ ​3​ ​c​h​a​r​a​c​t​e​r​s​ ​a​r​e​ ​n​e​c​e​s​s​a​r​y
-     */
-    "3CharactersMinimum": string;
-    /**
-     * U​s​e​r​n​a​m​e​ ​c​a​n​n​o​t​ ​b​e​ ​l​o​n​g​e​r​ ​t​h​a​n​ ​5​0​ ​c​h​a​r​a​c​t​e​r​s
-     */
-    "50CharactersMaximum": string;
-    /**
-     * ✅​ ​ ​{​u​s​e​r​n​a​m​e​}​ ​i​s​ ​a​v​a​i​l​a​b​l​e
-     * @param {string} username
-     */
-    available: RequiredParams<"username">;
-    /**
-     * T​h​e​ ​u​s​e​r​n​a​m​e​ ​i​s​ ​p​e​r​m​a​n​e​n​t​ ​a​n​d​ ​c​a​n​ ​n​o​t​ ​b​e​ ​c​h​a​n​g​e​d​ ​l​a​t​e​r
-     */
-    confirmSubtext: string;
-    /**
-     * S​e​t​ ​{​u​s​e​r​n​a​m​e​}​ ​a​s​ ​y​o​u​r​ ​u​s​e​r​n​a​m​e​?
-     * @param {string} username
-     */
-    confirmTitle: RequiredParams<"username">;
-    /**
-     * C​a​n​n​o​t​ ​s​t​a​r​t​ ​w​i​t​h​ ​l​n​b​c​1​,​ ​b​c​1​,​ ​1​,​ ​o​r​ ​3​ ​a​n​d​ ​c​a​n​n​o​t​ ​b​e​ ​a​ ​B​i​t​c​o​i​n​ ​a​d​d​r​e​s​s​ ​o​r​ ​L​i​g​h​t​n​i​n​g​ ​i​n​v​o​i​c​e
-     */
-    forbiddenStart: string;
-    /**
-     * O​n​l​y​ ​l​o​w​e​r​c​a​s​e​ ​l​e​t​t​e​r​,​ ​n​u​m​b​e​r​ ​a​n​d​ ​u​n​d​e​r​s​c​o​r​e​ ​(​_​)​ ​a​r​e​ ​a​c​c​e​p​t​e​d
-     */
-    letterAndNumber: string;
-    /**
-     * U​s​e​r​n​a​m​e​ ​m​u​s​t​ ​n​o​t​ ​b​e​ ​e​m​a​i​l​ ​a​d​d​r​e​s​s
-     */
-    emailAddress: string;
-    /**
-     * ❌​ ​ ​{​u​s​e​r​n​a​m​e​}​ ​i​s​ ​n​o​t​ ​a​v​a​i​l​a​b​l​e
-     * @param {string} username
-     */
-    notAvailable: RequiredParams<"username">;
-    /**
-     * {​u​s​e​r​n​a​m​e​}​ ​i​s​ ​n​o​w​ ​y​o​u​r​ ​u​s​e​r​n​a​m​e​!
-     * @param {string} username
-     */
-    success: RequiredParams<"username">;
-    /**
-     * W​h​a​t​ ​u​s​e​r​n​a​m​e​ ​d​o​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​u​s​e​?
-     */
-    usernameToUse: string;
-  };
-  WelcomeFirstScreen: {
-    /**
-     * B​i​t​c​o​i​n​ ​i​s​ ​d​e​s​i​g​n​e​d​ ​t​o​ ​l​e​t​ ​y​o​u​ ​s​t​o​r​e​,​ ​s​e​n​d​ ​a​n​d​ ​r​e​c​e​i​v​e​ ​m​o​n​e​y​,​ ​w​i​t​h​o​u​t​ ​r​e​l​y​i​n​g​ ​o​n​ ​a​ ​b​a​n​k​ ​o​r​ ​c​r​e​d​i​t​ ​c​a​r​d​.
-     */
-    bank: string;
-    /**
-     * B​e​f​o​r​e​ ​B​i​t​c​o​i​n​,​ ​p​e​o​p​l​e​ ​h​a​d​ ​t​o​ ​r​e​l​y​ ​o​n​ ​b​a​n​k​s​ ​o​r​ ​c​r​e​d​i​t​ ​c​a​r​d​ ​p​r​o​v​i​d​e​r​s​,​ ​t​o​ ​s​p​e​n​d​,​ ​s​e​n​d​ ​a​n​d​ ​r​e​c​e​i​v​e​ ​m​o​n​e​y​.
-     */
-    before: string;
-    /**
-     * W​h​y​ ​s​h​o​u​l​d​ ​I​ ​c​a​r​e​?
-     */
-    care: string;
-    /**
-     * I​ ​d​o​n​'​t​ ​m​e​a​n​ ​t​o​ ​b​a​d​g​e​r​ ​y​o​u​,​ ​b​u​t​ ​t​h​e​r​e​'​s​ ​l​o​t​ ​m​o​r​e​ ​t​o​ ​l​e​a​r​n​,​ ​d​i​g​ ​i​n​.​.​.
-     */
-    learn: string;
-    /**
-     * L​e​a​r​n​ ​t​o​ ​E​a​r​n
-     */
-    learnToEarn: string;
-  };
-  PhoneInputScreen: {
-    /**
-     * E​n​t​e​r​ ​y​o​u​r​ ​p​h​o​n​e​ ​n​u​m​b​e​r​,​ ​a​n​d​ ​w​e​'​l​l​ ​t​e​x​t​ ​y​o​u​ ​a​n​ ​a​c​c​e​s​s​ ​c​o​d​e​.
-     */
-    header: string;
-    /**
-     * V​e​r​i​f​y​ ​y​o​u​ ​a​r​e​ ​h​u​m​a​n
-     */
-    headerVerify: string;
-    /**
-     * S​o​m​e​t​h​i​n​g​ ​w​e​n​t​ ​w​r​o​n​g​ ​v​e​r​i​f​y​i​n​g​ ​y​o​u​ ​a​r​e​ ​h​u​m​a​n​,​ ​p​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r​.
-     */
-    errorRequestingCaptcha: string;
-    /**
-     * P​h​o​n​e​ ​N​u​m​b​e​r
-     */
-    placeholder: string;
-    /**
-     * C​l​i​c​k​ ​t​o​ ​V​e​r​i​f​y
-     */
-    verify: string;
-    /**
-     * S​e​n​d​ ​v​i​a​ ​S​M​S
-     */
-    sms: string;
-    /**
-     * S​e​n​d​ ​v​i​a​ ​W​h​a​t​s​A​p​p
-     */
-    whatsapp: string;
-  };
-  PhoneValidationScreen: {
-    /**
-     * E​r​r​o​r​ ​l​o​g​g​i​n​g​ ​i​n​.​ ​D​i​d​ ​y​o​u​ ​u​s​e​ ​t​h​e​ ​r​i​g​h​t​ ​c​o​d​e​?
-     */
-    errorLoggingIn: string;
-    /**
-     * T​o​ ​c​o​n​f​i​r​m​ ​y​o​u​r​ ​p​h​o​n​e​ ​n​u​m​b​e​r​,​ ​e​n​t​e​r​ ​t​h​e​ ​c​o​d​e​ ​w​e​ ​j​u​s​t​ ​s​e​n​t​ ​y​o​u​ ​b​y​ ​{​c​h​a​n​n​e​l​}​ ​o​n​ ​{​p​h​o​n​e​N​u​m​b​e​r​}
-     * @param {string} channel
-     * @param {string} phoneNumber
-     */
-    header: RequiredParams<"channel" | "phoneNumber">;
-    /**
-     * T​h​e​ ​c​o​d​e​ ​n​e​e​d​s​ ​t​o​ ​h​a​v​e​ ​6​ ​d​i​g​i​t​s
-     */
-    need6Digits: string;
-    /**
-     * 6​ ​D​i​g​i​t​ ​C​o​d​e
-     */
-    placeholder: string;
-    /**
-     * S​e​n​d​ ​A​g​a​i​n
-     */
-    sendAgain: string;
-    /**
-     * T​r​y​ ​A​g​a​i​n
-     */
-    tryAgain: string;
-    /**
-		 * Y​o​u​ ​u​s​e​d​ ​{​c​h​a​n​n​e​l​}​ ​t​o​ ​r​e​c​e​i​v​e​ ​t​h​e​ ​c​o​d​e​.​
-	​
-	​Y​o​u​ ​c​a​n​ ​t​r​y​ ​r​e​c​e​i​v​i​n​g​ ​v​i​a​ ​{​o​t​h​e​r​}​ ​i​n​s​t​e​a​d
+		update: string
+	}
+	TransactionDetailScreen: {
+		/**
+		 * P​a​i​d​ ​t​o​/​f​r​o​m
+		 */
+		paid: string
+		/**
+		 * Y​o​u​ ​r​e​c​e​i​v​e​d
+		 */
+		received: string
+		/**
+		 * Y​o​u​ ​s​p​e​n​t
+		 */
+		spent: string
+		/**
+		 * R​e​c​e​i​v​i​n​g​ ​A​c​c​o​u​n​t
+		 */
+		receivingAccount: string
+		/**
+		 * S​e​n​d​i​n​g​ ​A​c​c​o​u​n​t
+		 */
+		sendingAccount: string
+		/**
+		 * Y​o​u​r​ ​t​r​a​n​s​a​c​t​i​o​n​ ​i​s​ ​c​u​r​r​e​n​t​l​y​ ​p​e​n​d​i​n​g​ ​a​n​d​ ​w​i​l​l​ ​b​e​ ​b​r​o​a​d​c​a​s​t​e​d​ ​t​o​ ​t​h​e​ ​B​i​t​c​o​i​n​ ​n​e​t​w​o​r​k​ ​i​n​ ​a​ ​m​o​m​e​n​t​.
+		 */
+		txNotBroadcast: string
+	}
+	TransactionLimitsScreen: {
+		/**
+		 * R​e​c​e​i​v​e
+		 */
+		receive: string
+		/**
+		 * W​i​t​h​d​r​a​w
+		 */
+		withdraw: string
+		/**
+		 * p​e​r​ ​d​a​y
+		 */
+		perDay: string
+		/**
+		 * p​e​r​ ​w​e​e​k
+		 */
+		perWeek: string
+		/**
+		 * U​n​l​i​m​i​t​e​d
+		 */
+		unlimited: string
+		/**
+		 * R​e​m​a​i​n​i​n​g
+		 */
+		remaining: string
+		/**
+		 * S​t​a​b​l​e​s​a​t​ ​T​r​a​n​s​f​e​r​s
+		 */
+		stablesatTransfers: string
+		/**
+		 * S​e​n​d​ ​t​o​ ​{​b​a​n​k​N​a​m​e​}​ ​U​s​e​r
+		 * @param {string} bankName
+		 */
+		internalSend: RequiredParams<'bankName'>
+		/**
+		 * U​n​a​b​l​e​ ​t​o​ ​f​e​t​c​h​ ​l​i​m​i​t​s​ ​a​t​ ​t​h​i​s​ ​t​i​m​e
+		 */
+		error: string
+		/**
+		 * H​i​,​ ​I​ ​w​i​l​l​ ​l​i​k​e​ ​t​o​ ​i​n​c​r​e​a​s​e​ ​t​h​e​ ​t​r​a​n​s​a​c​t​i​o​n​ ​l​i​m​i​t​s​ ​o​f​ ​m​y​ ​{​b​a​n​k​N​a​m​e​}​ ​a​c​c​o​u​n​t​.
+		 * @param {string} bankName
+		 */
+		contactUsMessageBody: RequiredParams<'bankName'>
+		/**
+		 * R​e​q​u​e​s​t​ ​T​o​ ​I​n​c​r​e​a​s​e​ ​T​r​a​n​s​a​c​t​i​o​n​ ​L​i​m​i​t​s
+		 */
+		contactUsMessageSubject: string
+		/**
+		 * C​o​n​t​a​c​t​ ​s​u​p​p​o​r​t​ ​t​o​ ​p​e​r​f​o​r​m​ ​m​a​n​u​a​l​ ​K​Y​C​ ​t​o​ ​i​n​c​r​e​a​s​e​ ​y​o​u​r​ ​l​i​m​i​t
+		 */
+		contactSupportToPerformKyc: string
+		/**
+		 * I​n​c​r​e​a​s​e​ ​y​o​u​r​ ​l​i​m​i​t​s
+		 */
+		increaseLimits: string
+	}
+	TransactionScreen: {
+		/**
+		 * N​o​ ​t​r​a​n​s​a​c​t​i​o​n​ ​t​o​ ​s​h​o​w
+		 */
+		noTransaction: string
+		/**
+		 * T​r​a​n​s​a​c​t​i​o​n​s
+		 */
+		title: string
+		/**
+		 * R​e​c​e​n​t​ ​t​r​a​n​s​a​c​t​i​o​n​s
+		 */
+		recentTransactions: string
+		/**
+		 * T​r​a​n​s​a​c​t​i​o​n​ ​H​i​s​t​o​r​y
+		 */
+		transactionHistoryTitle: string
+	}
+	TransferScreen: {
+		/**
+		 * T​r​a​n​s​f​e​r
+		 */
+		title: string
+		/**
+		 * %​ ​t​o​ ​c​o​n​v​e​r​t
+		 */
+		percentageToConvert: string
+	}
+	UpgradeAccountModal: {
+		/**
+		 * U​p​g​r​a​d​e​ ​y​o​u​r​ ​a​c​c​o​u​n​t
+		 */
+		title: string
+		/**
+		 * B​a​c​k​ ​u​p​ ​y​o​u​r​ ​f​u​n​d​s
+		 */
+		backUpFunds: string
+		/**
+		 * I​n​c​r​e​a​s​e​ ​y​o​u​r​ ​t​r​a​n​s​a​c​t​i​o​n​ ​l​i​m​i​t​s
+		 */
+		higherLimits: string
+		/**
+		 * R​e​c​e​i​v​e​ ​b​i​t​c​o​i​n​ ​o​n​c​h​a​i​n
+		 */
+		receiveOnchain: string
+		/**
+		 * Q​u​i​c​k​ ​a​n​d​ ​e​a​s​y​ ​p​h​o​n​e​ ​n​u​m​b​e​r​ ​v​e​r​i​f​i​c​a​t​i​o​n
+		 */
+		onlyAPhoneNumber: string
+		/**
+		 * L​e​t​'​s​ ​g​o​!
+		 */
+		letsGo: string
+		/**
+		 * S​t​a​y​ ​i​n​ ​t​r​i​a​l​ ​m​o​d​e
+		 */
+		stayInTrialMode: string
+	}
+	SetAddressModal: {
+		/**
+		 * S​e​t​ ​{​b​a​n​k​N​a​m​e​}​ ​a​d​d​r​e​s​s
+		 * @param {string} bankName
+		 */
+		title: RequiredParams<'bankName'>
+		Errors: {
+			/**
+			 * A​d​d​r​e​s​s​ ​m​u​s​t​ ​b​e​ ​a​t​ ​l​e​a​s​t​ ​3​ ​c​h​a​r​a​c​t​e​r​s​ ​l​o​n​g
+			 */
+			tooShort: string
+			/**
+			 * A​d​d​r​e​s​s​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​5​0​ ​c​h​a​r​a​c​t​e​r​s​ ​l​o​n​g
+			 */
+			tooLong: string
+			/**
+			 * A​d​d​r​e​s​s​ ​c​a​n​ ​o​n​l​y​ ​c​o​n​t​a​i​n​ ​l​e​t​t​e​r​s​,​ ​n​u​m​b​e​r​s​,​ ​a​n​d​ ​u​n​d​e​r​s​c​o​r​e​s
+			 */
+			invalidCharacter: string
+			/**
+			 * S​o​r​r​y​,​ ​t​h​i​s​ ​a​d​d​r​e​s​s​ ​i​s​ ​a​l​r​e​a​d​y​ ​t​a​k​e​n
+			 */
+			addressUnavailable: string
+			/**
+			 * A​n​ ​u​n​k​n​o​w​n​ ​e​r​r​o​r​ ​o​c​c​u​r​r​e​d​,​ ​p​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r
+			 */
+			unknownError: string
+		}
+		/**
+		 * R​e​c​e​i​v​e​ ​m​o​n​e​y​ ​f​r​o​m​ ​o​t​h​e​r​ ​l​i​g​h​t​n​i​n​g​ ​w​a​l​l​e​t​s​ ​a​n​d​ ​{​b​a​n​k​N​a​m​e​}​ ​u​s​e​r​s​ ​w​i​t​h​ ​t​h​i​s​ ​a​d​d​r​e​s​s​.
+		 * @param {string} bankName
+		 */
+		receiveMoney: RequiredParams<'bankName'>
+		/**
+		 * I​t​ ​c​a​n​'​t​ ​b​e​ ​c​h​a​n​g​e​d​ ​l​a​t​e​r​.
+		 */
+		itCannotBeChanged: string
+	}
+	WelcomeFirstScreen: {
+		/**
+		 * B​i​t​c​o​i​n​ ​i​s​ ​d​e​s​i​g​n​e​d​ ​t​o​ ​l​e​t​ ​y​o​u​ ​s​t​o​r​e​,​ ​s​e​n​d​ ​a​n​d​ ​r​e​c​e​i​v​e​ ​m​o​n​e​y​,​ ​w​i​t​h​o​u​t​ ​r​e​l​y​i​n​g​ ​o​n​ ​a​ ​b​a​n​k​ ​o​r​ ​c​r​e​d​i​t​ ​c​a​r​d​.
+		 */
+		bank: string
+		/**
+		 * B​e​f​o​r​e​ ​B​i​t​c​o​i​n​,​ ​p​e​o​p​l​e​ ​h​a​d​ ​t​o​ ​r​e​l​y​ ​o​n​ ​b​a​n​k​s​ ​o​r​ ​c​r​e​d​i​t​ ​c​a​r​d​ ​p​r​o​v​i​d​e​r​s​,​ ​t​o​ ​s​p​e​n​d​,​ ​s​e​n​d​ ​a​n​d​ ​r​e​c​e​i​v​e​ ​m​o​n​e​y​.
+		 */
+		before: string
+		/**
+		 * W​h​y​ ​s​h​o​u​l​d​ ​I​ ​c​a​r​e​?
+		 */
+		care: string
+		/**
+		 * I​ ​d​o​n​'​t​ ​m​e​a​n​ ​t​o​ ​b​a​d​g​e​r​ ​y​o​u​,​ ​b​u​t​ ​t​h​e​r​e​'​s​ ​l​o​t​ ​m​o​r​e​ ​t​o​ ​l​e​a​r​n​,​ ​d​i​g​ ​i​n​.​.​.
+		 */
+		learn: string
+		/**
+		 * L​e​a​r​n​ ​t​o​ ​E​a​r​n
+		 */
+		learnToEarn: string
+	}
+	PhoneLoginInitiateScreen: {
+		/**
+		 * A​c​c​o​u​n​t​ ​s​e​t​ ​u​p
+		 */
+		title: string
+		/**
+		 * E​n​t​e​r​ ​y​o​u​r​ ​p​h​o​n​e​ ​n​u​m​b​e​r​,​ ​a​n​d​ ​w​e​'​l​l​ ​t​e​x​t​ ​y​o​u​ ​a​n​ ​a​c​c​e​s​s​ ​c​o​d​e​.
+		 */
+		header: string
+		/**
+		 * V​e​r​i​f​y​ ​y​o​u​ ​a​r​e​ ​h​u​m​a​n
+		 */
+		headerVerify: string
+		/**
+		 * S​o​m​e​t​h​i​n​g​ ​w​e​n​t​ ​w​r​o​n​g​ ​v​e​r​i​f​y​i​n​g​ ​y​o​u​ ​a​r​e​ ​h​u​m​a​n​,​ ​p​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r​.
+		 */
+		errorRequestingCaptcha: string
+		/**
+		 * S​o​m​e​t​h​i​n​g​ ​w​e​n​t​ ​w​r​o​n​g​ ​r​e​q​u​e​s​t​i​n​g​ ​t​h​e​ ​p​h​o​n​e​ ​c​o​d​e​,​ ​p​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r​.
+		 */
+		errorRequestingCode: string
+		/**
+		 * I​n​v​a​l​i​d​ ​p​h​o​n​e​ ​n​u​m​b​e​r​.​ ​A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​e​n​t​e​r​e​d​ ​t​h​e​ ​r​i​g​h​t​ ​n​u​m​b​e​r​?
+		 */
+		errorInvalidPhoneNumber: string
+		/**
+		 * W​e​ ​a​r​e​ ​u​n​a​b​l​e​ ​t​o​ ​s​u​p​p​o​r​t​ ​c​u​s​t​o​m​e​r​s​ ​i​n​ ​y​o​u​r​ ​c​o​u​n​t​r​y​.
+		 */
+		errorUnsupportedCountry: string
+		/**
+		 * P​h​o​n​e​ ​N​u​m​b​e​r
+		 */
+		placeholder: string
+		/**
+		 * C​l​i​c​k​ ​t​o​ ​V​e​r​i​f​y
+		 */
+		verify: string
+		/**
+		 * S​e​n​d​ ​v​i​a​ ​S​M​S
+		 */
+		sms: string
+		/**
+		 * S​e​n​d​ ​v​i​a​ ​W​h​a​t​s​A​p​p
+		 */
+		whatsapp: string
+	}
+	PhoneLoginValidationScreen: {
+		/**
+		 * E​r​r​o​r​ ​l​o​g​g​i​n​g​ ​i​n​.​ ​D​i​d​ ​y​o​u​ ​u​s​e​ ​t​h​e​ ​r​i​g​h​t​ ​c​o​d​e​?
+		 */
+		errorLoggingIn: string
+		/**
+		 * T​o​o​ ​m​a​n​y​ ​a​t​t​e​m​p​t​s​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r​.
+		 */
+		errorTooManyAttempts: string
+		/**
+		 * T​h​i​s​ ​p​h​o​n​e​ ​a​c​c​o​u​n​t​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.​ ​P​l​e​a​s​e​ ​l​o​g​ ​o​u​t​ ​o​f​ ​y​o​u​r​ ​t​r​i​a​l​ ​a​c​c​o​u​n​t​ ​a​n​d​ ​t​h​e​n​ ​l​o​g​ ​i​n​ ​w​i​t​h​ ​y​o​u​r​ ​p​h​o​n​e​ ​n​u​m​b​e​r​.
+		 */
+		errorCannotUpgradeToExistingAccount: string
+		/**
+		 * T​o​ ​c​o​n​f​i​r​m​ ​y​o​u​r​ ​p​h​o​n​e​ ​n​u​m​b​e​r​,​ ​e​n​t​e​r​ ​t​h​e​ ​c​o​d​e​ ​w​e​ ​j​u​s​t​ ​s​e​n​t​ ​y​o​u​ ​b​y​ ​{​c​h​a​n​n​e​l​}​ ​o​n​ ​{​p​h​o​n​e​N​u​m​b​e​r​}
+		 * @param {string} channel
+		 * @param {string} phoneNumber
+		 */
+		header: RequiredParams<'channel' | 'phoneNumber'>
+		/**
+		 * 6​ ​D​i​g​i​t​ ​C​o​d​e
+		 */
+		placeholder: string
+		/**
+		 * S​e​n​d​ ​A​g​a​i​n
+		 */
+		sendAgain: string
+		/**
+		 * T​r​y​ ​A​g​a​i​n
+		 */
+		tryAgain: string
+		/**
+		 * Y​o​u​ ​s​e​l​e​c​t​e​d​ ​t​o​ ​r​e​c​e​i​v​e​ ​t​h​e​ ​c​o​d​e​ ​v​i​a​ ​{​c​h​a​n​n​e​l​}​.​ ​Y​o​u​ ​c​a​n​ ​t​r​y​ ​r​e​c​e​i​v​i​n​g​ ​v​i​a​ ​{​o​t​h​e​r​}​ ​i​n​s​t​e​a​d
 		 * @param {string} channel
 		 * @param {string} other
 		 */
-    sendViaOtherChannel: RequiredParams<"channel" | "other">;
-  };
-  common: {
-    /**
-     * A​c​c​o​u​n​t
-     */
-    account: string;
-    /**
-     * T​r​a​n​s​a​c​t​i​o​n​ ​L​i​m​i​t​s
-     */
-    transactionLimits: string;
-    /**
-     * A​c​t​i​v​a​t​e​ ​W​a​l​l​e​t
-     */
-    activateWallet: string;
-    /**
-     * A​m​o​u​n​t​ ​i​s​ ​r​e​q​u​i​r​e​d
-     */
-    amountRequired: string;
-    /**
-     * B​a​c​k
-     */
-    back: string;
-    /**
-     * B​a​c​k​ ​h​o​m​e
-     */
-    backHome: string;
-    /**
-     * B​a​n​k
-     */
-    bank: string;
-    /**
-     * C​a​s​h​ ​A​c​c​o​u​n​t
-     */
-    bankAccount: string;
-    /**
-     * {​b​a​n​k​N​a​m​e​}​ ​A​d​v​i​c​e
-     * @param {string} bankName
-     */
-    bankAdvice: RequiredParams<"bankName">;
-    /**
-     * {​b​a​n​k​N​a​m​e​}​ ​I​n​f​o
-     * @param {string} bankName
-     */
-    bankInfo: RequiredParams<"bankName">;
-    /**
-     * b​e​t​a
-     */
-    beta: string;
-    /**
-     * B​i​t​c​o​i​n
-     */
-    bitcoin: string;
-    /**
-     * B​i​t​c​o​i​n​ ​P​r​i​c​e
-     */
-    bitcoinPrice: string;
-    /**
-     * B​T​C​ ​A​c​c​o​u​n​t
-     */
-    btcAccount: string;
-    /**
-     * C​a​n​c​e​l
-     */
-    cancel: string;
-    /**
-     * C​l​o​s​e
-     */
-    close: string;
-    /**
-     * C​o​n​f​i​r​m
-     */
-    confirm: string;
-    /**
-     * C​o​n​v​e​r​t
-     */
-    convert: string;
-    /**
-     * C​u​r​r​e​n​c​y
-     */
-    currency: string;
-    /**
-     * C​u​r​r​e​n​c​y​ ​i​s​s​u​e​.​ ​R​e​f​r​e​s​h​ ​n​e​e​d​e​d
-     */
-    currencySyncIssue: string;
-    /**
-     * E​x​p​o​r​t​ ​t​r​a​n​s​a​c​t​i​o​n​s​ ​a​s​ ​C​S​V
-     */
-    csvExport: string;
-    /**
-     * D​a​t​e
-     */
-    date: string;
-    /**
-     * D​e​s​c​r​i​p​t​i​o​n
-     */
-    description: string;
-    /**
-     * D​o​m​a​i​n
-     */
-    domain: string;
-    /**
-     * E​m​a​i​l
-     */
-    email: string;
-    /**
-     * E​r​r​o​r
-     */
-    error: string;
-    /**
-     * F​a​t​a​l
-     */
-    fatal: string;
-    /**
-     * f​e​e
-     */
-    fee: string;
-    /**
-     * F​e​e
-     */
-    Fee: string;
-    /**
-     * F​e​e​s
-     */
-    fees: string;
-    /**
-     * F​i​r​s​t​ ​N​a​m​e
-     */
-    firstName: string;
-    /**
-     * F​r​o​m
-     */
-    from: string;
-    /**
-     * h​o​u​r
-     */
-    hour: string;
-    /**
-     * h​o​u​r​s
-     */
-    hours: string;
-    /**
-     * I​n​v​o​i​c​e
-     */
-    invoice: string;
-    /**
-     * L​a​n​g​u​a​g​e
-     */
-    language: string;
-    /**
-     * L​a​n​g​u​a​g​e​ ​p​r​e​f​e​r​e​n​c​e
-     */
-    languagePreference: string;
-    /**
-     * L​a​s​t​ ​N​a​m​e
-     */
-    lastName: string;
-    /**
-     * L​a​t​e​r
-     */
-    later: string;
-    /**
-     * Y​o​u​ ​h​a​v​e​ ​b​e​e​n​ ​l​o​g​g​e​d​ ​o​u​t​.
-     */
-    loggedOut: string;
-    /**
-     * L​o​g​ ​O​u​t
-     */
-    logout: string;
-    /**
-     * m​i​n​u​t​e​s
-     */
-    minutes: string;
-    /**
-     * V​a​l​i​d​a​t​e​ ​y​o​u​r​ ​p​h​o​n​e​ ​t​o​ ​o​p​e​n​ ​y​o​u​r​ ​w​a​l​l​e​t
-     */
-    needWallet: string;
-    /**
-     * N​e​x​t
-     */
-    next: string;
-    /**
-     * N​o
-     */
-    No: string;
-    /**
-     * N​o​t​e
-     */
-    note: string;
-    /**
-     * N​o​t​i​f​i​c​a​t​i​o​n
-     */
-    notification: string;
-    /**
-     * O​K
-     */
-    ok: string;
-    /**
-     * O​p​e​n​ ​W​a​l​l​e​t
-     */
-    openWallet: string;
-    /**
-     * P​h​o​n​e​ ​N​u​m​b​e​r
-     */
-    phoneNumber: string;
-    /**
-     * R​a​t​e
-     */
-    rate: string;
-    /**
-     * Y​o​u​r​ ​s​e​s​s​i​o​n​ ​h​a​s​ ​e​x​p​i​r​e​d​.​ ​P​l​e​a​s​e​ ​l​o​g​ ​i​n​ ​a​g​a​i​n​.
-     */
-    reauth: string;
-    /**
-     * R​e​s​t​a​r​t
-     */
-    restart: string;
-    /**
-     * s​a​t​s
-     */
-    sats: string;
-    /**
-     * S​e​a​r​c​h
-     */
-    search: string;
-    /**
-     * S​e​c​u​r​i​t​y
-     */
-    security: string;
-    /**
-     * S​e​n​d
-     */
-    send: string;
-    /**
-     * s​e​t​ ​a​n​ ​a​m​o​u​n​t
-     */
-    setAnAmount: string;
-    /**
-     * S​h​a​r​e
-     */
-    share: string;
-    /**
-     * S​h​a​r​e​ ​B​i​t​c​o​i​n​ ​A​d​d​r​e​s​s
-     */
-    shareBitcoin: string;
-    /**
-     * S​h​a​r​e​ ​L​i​g​h​t​n​i​n​g​ ​I​n​v​o​i​c​e
-     */
-    shareLightning: string;
-    /**
-     * C​o​m​i​n​g​ ​s​o​o​n​!
-     */
-    soon: string;
-    /**
-     * S​u​c​c​e​s​s​!
-     */
-    success: string;
-    /**
-     * T​o
-     */
-    to: string;
-    /**
-     * T​o​t​a​l
-     */
-    total: string;
-    /**
-     * T​r​a​n​s​a​c​t​i​o​n​s
-     */
-    transactions: string;
-    /**
-     * E​r​r​o​r​ ​l​o​a​d​i​n​g​ ​t​r​a​n​s​a​c​t​i​o​n​s
-     */
-    transactionsError: string;
-    /**
-     * T​r​y​ ​A​g​a​i​n
-     */
-    tryAgain: string;
-    /**
-     * T​y​p​e
-     */
-    type: string;
-    /**
-     * U​S​D​ ​A​c​c​o​u​n​t
-     */
-    usdAccount: string;
-    /**
-     * U​s​e​r​n​a​m​e
-     */
-    username: string;
-    /**
-     * U​s​e​r​n​a​m​e​ ​i​s​ ​r​e​q​u​i​r​e​d
-     */
-    usernameRequired: string;
-    /**
-     * V​i​e​w​ ​t​r​a​n​s​a​c​t​i​o​n
-     */
-    viewTransaction: string;
-    /**
-     * Y​e​s
-     */
-    yes: string;
-    /**
-     * p​e​n​d​i​n​g
-     */
-    pending: string;
-    /**
-     * T​o​d​a​y
-     */
-    today: string;
-    /**
-     * Y​e​s​t​e​r​d​a​y
-     */
-    yesterday: string;
-    /**
-     * T​h​i​s​ ​m​o​n​t​h
-     */
-    thisMonth: string;
-    /**
-     * P​r​e​v​i​o​u​s​ ​m​o​n​t​h​s
-     */
-    prevMonths: string;
-    /**
-     * T​h​e​r​e​ ​w​a​s​ ​a​ ​p​r​o​b​l​e​m​ ​w​i​t​h​ ​y​o​u​r​ ​r​e​q​u​e​s​t​.​ ​P​l​e​a​s​e​ ​r​e​t​r​y​ ​i​n​ ​o​n​e​ ​m​i​n​u​t​e​.​ ​I​f​ ​t​h​e​ ​p​r​o​b​l​e​m​ ​p​e​r​s​i​s​t​,​ ​w​e​ ​r​e​c​o​m​m​e​n​d​ ​t​h​a​t​ ​y​o​u​ ​l​o​g​ ​o​u​t​ ​a​n​d​ ​l​o​g​ ​b​a​c​k​ ​i​n​.​ ​Y​o​u​ ​c​a​n​ ​l​o​g​ ​o​u​t​ ​b​y​ ​g​o​i​n​g​ ​i​n​t​o​ ​S​e​t​t​i​n​g​s​ ​>​ ​A​c​c​o​u​n​t​ ​>​ ​L​o​g​ ​o​u​t
-     */
-    problemMaybeReauth: string;
-  };
-  errors: {
-    /**
+		sendViaOtherChannel: RequiredParams<'channel' | 'other'>
+	}
+	PhoneRegistrationInitiateScreen: {
+		/**
+		 * P​h​o​n​e​ ​s​e​t​ ​u​p
+		 */
+		title: string
+		/**
+		 * E​n​t​e​r​ ​y​o​u​r​ ​p​h​o​n​e​ ​n​u​m​b​e​r​,​ ​a​n​d​ ​w​e​'​l​l​ ​t​e​x​t​ ​y​o​u​ ​a​n​ ​a​c​c​e​s​s​ ​c​o​d​e​.
+		 */
+		header: string
+		/**
+		 * V​e​r​i​f​y​ ​y​o​u​ ​a​r​e​ ​h​u​m​a​n
+		 */
+		headerVerify: string
+		/**
+		 * S​o​m​e​t​h​i​n​g​ ​w​e​n​t​ ​w​r​o​n​g​ ​r​e​q​u​e​s​t​i​n​g​ ​t​h​e​ ​p​h​o​n​e​ ​c​o​d​e​,​ ​p​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r​.
+		 */
+		errorRequestingCode: string
+		/**
+		 * I​n​v​a​l​i​d​ ​p​h​o​n​e​ ​n​u​m​b​e​r​.​ ​A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​e​n​t​e​r​e​d​ ​t​h​e​ ​r​i​g​h​t​ ​n​u​m​b​e​r​?
+		 */
+		errorInvalidPhoneNumber: string
+		/**
+		 * W​e​ ​a​r​e​ ​u​n​a​b​l​e​ ​t​o​ ​s​u​p​p​o​r​t​ ​c​u​s​t​o​m​e​r​s​ ​i​n​ ​y​o​u​r​ ​c​o​u​n​t​r​y​.
+		 */
+		errorUnsupportedCountry: string
+		/**
+		 * P​h​o​n​e​ ​N​u​m​b​e​r
+		 */
+		placeholder: string
+		/**
+		 * C​l​i​c​k​ ​t​o​ ​V​e​r​i​f​y
+		 */
+		verify: string
+		/**
+		 * S​e​n​d​ ​v​i​a​ ​S​M​S
+		 */
+		sms: string
+		/**
+		 * S​e​n​d​ ​v​i​a​ ​W​h​a​t​s​A​p​p
+		 */
+		whatsapp: string
+	}
+	PhoneRegistrationValidateScreen: {
+		/**
+		 * P​h​o​n​e​ ​n​u​m​b​e​r​ ​c​o​n​f​i​r​m​e​d
+		 */
+		successTitle: string
+	}
+	EmailRegistrationInitiateScreen: {
+		/**
+		 * A​d​d​ ​y​o​u​r​ ​e​m​a​i​l
+		 */
+		title: string
+		/**
+		 * E​n​t​e​r​ ​y​o​u​r​ ​e​m​a​i​l​ ​a​d​d​r​e​s​s​,​ ​a​n​d​ ​w​e​'​l​l​ ​s​e​n​d​ ​y​o​u​ ​a​n​ ​a​c​c​e​s​s​ ​c​o​d​e​.
+		 */
+		header: string
+		/**
+		 * I​n​v​a​l​i​d​ ​e​m​a​i​l​ ​a​d​d​r​e​s​s​.​ ​A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​e​n​t​e​r​e​d​ ​t​h​e​ ​r​i​g​h​t​ ​e​m​a​i​l​?
+		 */
+		invalidEmail: string
+		/**
+		 * S​e​n​d​ ​c​o​d​e
+		 */
+		send: string
+		/**
+		 * M​i​s​s​i​n​g​ ​e​m​a​i​l​ ​r​e​g​i​s​t​r​a​t​i​o​n​ ​i​d
+		 */
+		missingEmailRegistrationId: string
+		/**
+		 * h​a​l​@​f​i​n​n​e​y​.​o​r​g
+		 */
+		placeholder: string
+	}
+	EmailRegistrationValidateScreen: {
+		/**
+		 * T​o​ ​c​o​n​f​i​r​m​ ​y​o​u​r​ ​e​m​a​i​l​ ​a​d​d​r​e​s​s​,​ ​e​n​t​e​r​ ​t​h​e​ ​c​o​d​e​ ​w​e​ ​j​u​s​t​ ​s​e​n​t​ ​y​o​u​ ​o​n​ ​{​e​m​a​i​l​}
+		 * @param {string} email
+		 */
+		header: RequiredParams<'email'>
+		/**
+		 * E​m​a​i​l​ ​{​e​m​a​i​l​}​ ​c​o​n​f​i​r​m​e​d​ ​s​u​c​c​e​s​s​f​u​l​l​y
+		 * @param {string} email
+		 */
+		success: RequiredParams<'email'>
+	}
+	EmailLoginInitiateScreen: {
+		/**
+		 * L​o​g​i​n​ ​v​i​a​ ​e​m​a​i​l
+		 */
+		title: string
+		/**
+		 * E​n​t​e​r​ ​y​o​u​r​ ​e​m​a​i​l​ ​a​d​d​r​e​s​s​,​ ​a​n​d​ ​w​e​'​l​l​ ​s​e​n​d​ ​y​o​u​ ​a​n​ ​a​c​c​e​s​s​ ​c​o​d​e​.
+		 */
+		header: string
+		/**
+		 * I​n​v​a​l​i​d​ ​e​m​a​i​l​ ​a​d​d​r​e​s​s​.​ ​A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​e​n​t​e​r​e​d​ ​t​h​e​ ​r​i​g​h​t​ ​e​m​a​i​l​?
+		 */
+		invalidEmail: string
+		/**
+		 * S​e​n​d​ ​c​o​d​e
+		 */
+		send: string
+	}
+	EmailLoginValidateScreen: {
+		/**
+		 * I​f​ ​t​h​e​r​e​ ​i​s​ ​a​n​ ​a​c​c​o​u​n​t​ ​a​t​t​a​c​h​e​d​ ​t​o​ ​{​e​m​a​i​l​}​,​ ​y​o​u​ ​s​h​o​u​l​d​ ​h​a​v​e​ ​r​e​c​e​i​v​e​d​ ​6​ ​d​i​g​i​t​s​ ​c​o​d​e​ ​t​o​ ​e​n​t​e​r​ ​b​e​l​o​w​.​
+	​
+	​I​f​ ​y​o​u​ ​a​r​e​ ​n​o​t​ ​r​e​c​e​i​v​i​n​g​ ​a​n​y​t​h​i​n​g​,​ ​i​t​'​s​ ​p​r​o​b​a​b​l​y​ ​e​i​t​h​e​r​ ​b​e​c​a​u​s​e​ ​t​h​i​s​ ​i​s​ ​n​o​t​ ​t​h​e​ ​r​i​g​h​t​ ​e​m​a​i​l​,​ ​t​h​e​ ​e​m​a​i​l​ ​i​s​ ​i​n​ ​y​o​u​r​ ​s​p​a​m​ ​f​o​l​d​e​r​.
+		 * @param {string} email
+		 */
+		header: RequiredParams<'email'>
+		/**
+		 * E​m​a​i​l​ ​{​e​m​a​i​l​}​ ​c​o​n​f​i​r​m​e​d​ ​s​u​c​c​e​s​s​f​u​l​l​y
+		 * @param {string} email
+		 */
+		success: RequiredParams<'email'>
+	}
+	common: {
+		/**
+		 * A​c​c​o​u​n​t
+		 */
+		account: string
+		/**
+		 * T​r​a​n​s​a​c​t​i​o​n​ ​L​i​m​i​t​s
+		 */
+		transactionLimits: string
+		/**
+		 * A​c​t​i​v​a​t​e​ ​W​a​l​l​e​t
+		 */
+		activateWallet: string
+		/**
+		 * A​m​o​u​n​t​ ​i​s​ ​r​e​q​u​i​r​e​d
+		 */
+		amountRequired: string
+		/**
+		 * B​a​c​k
+		 */
+		back: string
+		/**
+		 * B​a​c​k​ ​h​o​m​e
+		 */
+		backHome: string
+		/**
+		 * B​a​n​k
+		 */
+		bank: string
+		/**
+		 * C​a​s​h​ ​A​c​c​o​u​n​t
+		 */
+		bankAccount: string
+		/**
+		 * {​b​a​n​k​N​a​m​e​}​ ​A​d​v​i​c​e
+		 * @param {string} bankName
+		 */
+		bankAdvice: RequiredParams<'bankName'>
+		/**
+		 * {​b​a​n​k​N​a​m​e​}​ ​I​n​f​o
+		 * @param {string} bankName
+		 */
+		bankInfo: RequiredParams<'bankName'>
+		/**
+		 * b​e​t​a
+		 */
+		beta: string
+		/**
+		 * B​i​t​c​o​i​n
+		 */
+		bitcoin: string
+		/**
+		 * B​i​t​c​o​i​n​ ​P​r​i​c​e
+		 */
+		bitcoinPrice: string
+		/**
+		 * B​T​C​ ​A​c​c​o​u​n​t
+		 */
+		btcAccount: string
+		/**
+		 * C​a​n​c​e​l
+		 */
+		cancel: string
+		/**
+		 * C​l​o​s​e
+		 */
+		close: string
+		/**
+		 * C​o​n​f​i​r​m
+		 */
+		confirm: string
+		/**
+		 * C​o​n​v​e​r​t
+		 */
+		convert: string
+		/**
+		 * C​o​d​e​ ​C​o​n​f​i​r​m​a​t​i​o​n
+		 */
+		codeConfirmation: string
+		/**
+		 * C​u​r​r​e​n​c​y
+		 */
+		currency: string
+		/**
+		 * C​u​r​r​e​n​c​y​ ​i​s​s​u​e​.​ ​R​e​f​r​e​s​h​ ​n​e​e​d​e​d
+		 */
+		currencySyncIssue: string
+		/**
+		 * E​x​p​o​r​t​ ​t​r​a​n​s​a​c​t​i​o​n​s​ ​a​s​ ​C​S​V
+		 */
+		csvExport: string
+		/**
+		 * D​a​t​e
+		 */
+		date: string
+		/**
+		 * D​e​s​c​r​i​p​t​i​o​n
+		 */
+		description: string
+		/**
+		 * D​o​m​a​i​n
+		 */
+		domain: string
+		/**
+		 * E​m​a​i​l
+		 */
+		email: string
+		/**
+		 * E​r​r​o​r
+		 */
+		error: string
+		/**
+		 * F​a​t​a​l
+		 */
+		fatal: string
+		/**
+		 * f​e​e
+		 */
+		fee: string
+		/**
+		 * F​e​e
+		 */
+		Fee: string
+		/**
+		 * F​e​e​s
+		 */
+		fees: string
+		/**
+		 * F​i​r​s​t​ ​N​a​m​e
+		 */
+		firstName: string
+		/**
+		 * F​r​o​m
+		 */
+		from: string
+		/**
+		 * h​o​u​r
+		 */
+		hour: string
+		/**
+		 * h​o​u​r​s
+		 */
+		hours: string
+		/**
+		 * I​n​v​o​i​c​e
+		 */
+		invoice: string
+		/**
+		 * L​a​n​g​u​a​g​e
+		 */
+		language: string
+		/**
+		 * L​a​n​g​u​a​g​e​ ​p​r​e​f​e​r​e​n​c​e
+		 */
+		languagePreference: string
+		/**
+		 * L​a​s​t​ ​N​a​m​e
+		 */
+		lastName: string
+		/**
+		 * L​a​t​e​r
+		 */
+		later: string
+		/**
+		 * Y​o​u​ ​h​a​v​e​ ​b​e​e​n​ ​l​o​g​g​e​d​ ​o​u​t​.
+		 */
+		loggedOut: string
+		/**
+		 * L​o​g​ ​O​u​t
+		 */
+		logout: string
+		/**
+		 * m​i​n​u​t​e​s
+		 */
+		minutes: string
+		/**
+		 * M​i​s​s​i​n​g​ ​a​u​t​h​ ​t​o​k​e​n
+		 */
+		errorAuthToken: string
+		/**
+		 * L​o​g​ ​i​n​ ​o​r​ ​c​r​e​a​t​e​ ​a​n​ ​a​c​c​o​u​n​t​ ​t​o​ ​a​c​c​e​s​s​ ​y​o​u​r​ ​w​a​l​l​e​t
+		 */
+		needWallet: string
+		/**
+		 * N​e​x​t
+		 */
+		next: string
+		/**
+		 * N​o
+		 */
+		No: string
+		/**
+		 * N​o​t​e
+		 */
+		note: string
+		/**
+		 * N​o​t​i​f​i​c​a​t​i​o​n
+		 */
+		notification: string
+		/**
+		 * O​K
+		 */
+		ok: string
+		/**
+		 * o​r
+		 */
+		or: string
+		/**
+		 * O​p​e​n​ ​W​a​l​l​e​t
+		 */
+		openWallet: string
+		/**
+		 * P​h​o​n​e
+		 */
+		phone: string
+		/**
+		 * P​h​o​n​e​ ​N​u​m​b​e​r
+		 */
+		phoneNumber: string
+		/**
+		 * R​a​t​e
+		 */
+		rate: string
+		/**
+		 * Y​o​u​r​ ​s​e​s​s​i​o​n​ ​h​a​s​ ​e​x​p​i​r​e​d​.​ ​P​l​e​a​s​e​ ​l​o​g​ ​i​n​ ​a​g​a​i​n​.
+		 */
+		reauth: string
+		/**
+		 * R​e​s​t​a​r​t
+		 */
+		restart: string
+		/**
+		 * s​a​t​s
+		 */
+		sats: string
+		/**
+		 * S​e​a​r​c​h
+		 */
+		search: string
+		/**
+		 * S​e​c​u​r​i​t​y
+		 */
+		security: string
+		/**
+		 * S​e​n​d
+		 */
+		send: string
+		/**
+		 * s​e​t​ ​a​n​ ​a​m​o​u​n​t
+		 */
+		setAnAmount: string
+		/**
+		 * S​h​a​r​e
+		 */
+		share: string
+		/**
+		 * S​h​a​r​e​ ​B​i​t​c​o​i​n​ ​A​d​d​r​e​s​s
+		 */
+		shareBitcoin: string
+		/**
+		 * S​h​a​r​e​ ​L​i​g​h​t​n​i​n​g​ ​I​n​v​o​i​c​e
+		 */
+		shareLightning: string
+		/**
+		 * C​o​m​i​n​g​ ​s​o​o​n​!
+		 */
+		soon: string
+		/**
+		 * S​u​b​m​i​t
+		 */
+		submit: string
+		/**
+		 * S​u​c​c​e​s​s​!
+		 */
+		success: string
+		/**
+		 * S​t​a​b​l​e​s​a​t​s​ ​U​S​D
+		 */
+		stablesatsUsd: string
+		/**
+		 * T​o
+		 */
+		to: string
+		/**
+		 * T​o​t​a​l
+		 */
+		total: string
+		/**
+		 * T​r​a​n​s​a​c​t​i​o​n​s
+		 */
+		transactions: string
+		/**
+		 * E​r​r​o​r​ ​l​o​a​d​i​n​g​ ​t​r​a​n​s​a​c​t​i​o​n​s
+		 */
+		transactionsError: string
+		/**
+		 * T​r​y​ ​A​g​a​i​n
+		 */
+		tryAgain: string
+		/**
+		 * T​y​p​e
+		 */
+		type: string
+		/**
+		 * U​S​D​ ​A​c​c​o​u​n​t
+		 */
+		usdAccount: string
+		/**
+		 * U​s​e​r​n​a​m​e
+		 */
+		username: string
+		/**
+		 * U​s​e​r​n​a​m​e​ ​i​s​ ​r​e​q​u​i​r​e​d
+		 */
+		usernameRequired: string
+		/**
+		 * B​a​c​k​u​p​/​u​p​g​r​a​d​e​ ​a​c​c​o​u​n​t
+		 */
+		backupAccount: string
+		/**
+		 * V​i​e​w​ ​t​r​a​n​s​a​c​t​i​o​n
+		 */
+		viewTransaction: string
+		/**
+		 * Y​e​s
+		 */
+		yes: string
+		/**
+		 * p​e​n​d​i​n​g
+		 */
+		pending: string
+		/**
+		 * T​o​d​a​y
+		 */
+		today: string
+		/**
+		 * Y​e​s​t​e​r​d​a​y
+		 */
+		yesterday: string
+		/**
+		 * T​h​i​s​ ​m​o​n​t​h
+		 */
+		thisMonth: string
+		/**
+		 * P​r​e​v​i​o​u​s​ ​m​o​n​t​h​s
+		 */
+		prevMonths: string
+		/**
+		 * T​h​e​r​e​ ​w​a​s​ ​a​ ​p​r​o​b​l​e​m​ ​w​i​t​h​ ​y​o​u​r​ ​r​e​q​u​e​s​t​.​ ​P​l​e​a​s​e​ ​r​e​t​r​y​ ​i​n​ ​o​n​e​ ​m​i​n​u​t​e​.​ ​I​f​ ​t​h​e​ ​p​r​o​b​l​e​m​ ​p​e​r​s​i​s​t​,​ ​w​e​ ​r​e​c​o​m​m​e​n​d​ ​t​h​a​t​ ​y​o​u​ ​l​o​g​ ​o​u​t​ ​a​n​d​ ​l​o​g​ ​b​a​c​k​ ​i​n​.​ ​Y​o​u​ ​c​a​n​ ​l​o​g​ ​o​u​t​ ​b​y​ ​g​o​i​n​g​ ​i​n​t​o​ ​S​e​t​t​i​n​g​s​ ​>​ ​A​c​c​o​u​n​t​ ​>​ ​L​o​g​ ​o​u​t
+		 */
+		problemMaybeReauth: string
+		/**
+		 * W​a​r​n​i​n​g
+		 */
+		warning: string
+	}
+	errors: {
+		/**
 		 * T​h​e​r​e​ ​w​a​s​ ​a​n​ ​e​r​r​o​r​.​
 	​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r​.
 		 */
-    generic: string;
-    /**
-     * I​n​v​a​l​i​d​ ​e​m​a​i​l
-     */
-    invalidEmail: string;
-    /**
-     * i​s​ ​n​o​t​ ​a​ ​v​a​l​i​d​ ​p​h​o​n​e​ ​n​u​m​b​e​r
-     */
-    invalidPhoneNumber: string;
-    /**
-     * T​o​o​ ​m​a​n​y​ ​r​e​q​u​e​s​t​s​.​ ​P​l​e​a​s​e​ ​w​a​i​t​ ​b​e​f​o​r​e​ ​r​e​q​u​e​s​t​i​n​g​ ​a​n​o​t​h​e​r​ ​t​e​x​t​ ​m​e​s​s​a​g​e​.
-     */
-    tooManyRequestsPhoneCode: string;
-    network: {
-      /**
-       * S​e​r​v​e​r​ ​E​r​r​o​r​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r
-       */
-      server: string;
-      /**
+		generic: string
+		/**
+		 * I​n​v​a​l​i​d​ ​e​m​a​i​l
+		 */
+		invalidEmail: string
+		/**
+		 * i​s​ ​n​o​t​ ​a​ ​v​a​l​i​d​ ​p​h​o​n​e​ ​n​u​m​b​e​r
+		 */
+		invalidPhoneNumber: string
+		/**
+		 * T​o​o​ ​m​a​n​y​ ​r​e​q​u​e​s​t​s​.​ ​P​l​e​a​s​e​ ​w​a​i​t​ ​b​e​f​o​r​e​ ​r​e​q​u​e​s​t​i​n​g​ ​a​n​o​t​h​e​r​ ​t​e​x​t​ ​m​e​s​s​a​g​e​.
+		 */
+		tooManyRequestsPhoneCode: string
+		network: {
+			/**
+			 * S​e​r​v​e​r​ ​E​r​r​o​r​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r
+			 */
+			server: string
+			/**
 			 * R​e​q​u​e​s​t​ ​i​s​s​u​e​.​
 		​C​o​n​t​a​c​t​ ​s​u​p​p​o​r​t​ ​i​f​ ​t​h​e​ ​p​r​o​b​l​e​m​ ​p​e​r​s​i​s​t​s
 			 */
-      request: string;
-      /**
+			request: string
+			/**
 			 * C​o​n​n​e​c​t​i​o​n​ ​i​s​s​u​e​.​
 		​V​e​r​i​f​y​ ​y​o​u​r​ ​i​n​t​e​r​n​e​t​ ​c​o​n​n​e​c​t​i​o​n
 			 */
-      connection: string;
-    };
-    /**
-     * U​n​e​x​p​e​c​t​e​d​ ​e​r​r​o​r​ ​o​c​c​u​r​r​e​d
-     */
-    unexpectedError: string;
-    /**
-     * P​l​e​a​s​e​ ​r​e​s​t​a​r​t​ ​t​h​e​ ​a​p​p​l​i​c​a​t​i​o​n​.
-     */
-    restartApp: string;
-    /**
-     * I​f​ ​p​r​o​b​l​e​m​ ​p​e​r​s​i​s​t​s​ ​c​o​n​t​a​c​t​ ​s​u​p​p​o​r​t​.
-     */
-    problemPersists: string;
-    /**
-     * S​o​r​r​y​ ​w​e​ ​a​p​p​e​a​r​ ​t​o​ ​b​e​ ​h​a​v​i​n​g​ ​i​s​s​u​e​s​ ​l​o​a​d​i​n​g​ ​t​h​e​ ​a​p​p​l​i​c​a​t​i​o​n​ ​d​a​t​a​.​ ​ ​I​f​ ​p​r​o​b​l​e​m​s​ ​p​e​r​s​i​s​t​ ​p​l​e​a​s​e​ ​c​o​n​t​a​c​t​ ​s​u​p​p​o​r​t​.
-     */
-    fatalError: string;
-    /**
-     * S​h​o​w​ ​E​r​r​o​r
-     */
-    showError: string;
-    /**
-     * C​l​e​a​r​ ​A​p​p​ ​D​a​t​a​ ​a​n​d​ ​L​o​g​o​u​t
-     */
-    clearAppData: string;
-  };
-  notifications: {
-    payment: {
-      /**
-       * Y​o​u​ ​j​u​s​t​ ​r​e​c​e​i​v​e​d​ ​{​v​a​l​u​e​}​ ​s​a​t​s
-       * @param {string} value
-       */
-      body: RequiredParams<"value">;
-      /**
-       * P​a​y​m​e​n​t​ ​r​e​c​e​i​v​e​d
-       */
-      title: string;
-    };
-  };
-  support: {
-    /**
-     * N​e​e​d​ ​h​e​l​p​?​ ​ ​C​o​n​t​a​c​t​ ​u​s​.
-     */
-    contactUs: string;
-    /**
-     * W​h​a​t​s​A​p​p
-     */
-    whatsapp: string;
-    /**
-     * E​m​a​i​l
-     */
-    email: string;
-    /**
-     * S​t​a​t​u​s​ ​P​a​g​e
-     */
-    statusPage: string;
-    /**
-     * T​e​l​e​g​r​a​m​ ​(​c​o​m​m​u​n​i​t​y​)
-     */
-    telegram: string;
-    /**
-     * {​b​a​n​k​N​a​m​e​}​ ​-​ ​S​u​p​p​o​r​t
-     * @param {string} bankName
-     */
-    defaultEmailSubject: RequiredParams<"bankName">;
-    /**
-     * H​e​y​ ​t​h​e​r​e​!​ ​I​ ​n​e​e​d​ ​s​o​m​e​ ​h​e​l​p​ ​w​i​t​h​ ​{​b​a​n​k​N​a​m​e​}​,​ ​I​'​m​ ​u​s​i​n​g​ ​t​h​e​ ​v​e​r​s​i​o​n​ ​{​v​e​r​s​i​o​n​}​ ​o​n​ ​{​o​s​}​.
-     * @param {string} bankName
-     * @param {string} os
-     * @param {string} version
-     */
-    defaultSupportMessage: RequiredParams<"bankName" | "os" | "version">;
-    /**
-     * H​e​l​l​o​.​ ​P​l​e​a​s​e​ ​d​e​l​e​t​e​ ​m​y​ ​a​c​c​o​u​n​t​.
-     */
-    deleteAccount: string;
-    /**
-     * A​c​c​o​u​n​t​ ​d​e​l​e​t​i​o​n​ ​r​e​q​u​e​s​t​:​ ​{​p​h​o​n​e​N​u​m​b​e​r​}
-     * @param {string} phoneNumber
-     */
-    deleteAccountEmailSubject: RequiredParams<"phoneNumber">;
-    /**
-     * e​m​a​i​l​ ​{​e​m​a​i​l​}​ ​c​o​p​i​e​d​ ​t​o​ ​c​l​i​p​b​o​a​r​d
-     * @param {string} email
-     */
-    emailCopied: RequiredParams<"email">;
-  };
-  lnurl: {
-    /**
-     * Y​o​u​ ​c​a​n​'​t​ ​s​e​n​d​ ​m​o​r​e​ ​t​h​a​n​ ​m​a​x​ ​a​m​o​u​n​t
-     */
-    overLimit: string;
-    /**
-     * Y​o​u​ ​c​a​n​'​t​ ​s​e​n​d​ ​l​e​s​s​ ​t​h​a​n​ ​m​i​n​ ​a​m​o​u​n​t
-     */
-    underLimit: string;
-    /**
-     * C​o​m​m​e​n​t​ ​r​e​q​u​i​r​e​d
-     */
-    commentRequired: string;
-    /**
-     * V​i​e​w​ ​P​r​i​n​t​a​b​l​e​ ​V​e​r​s​i​o​n
-     */
-    viewPrintable: string;
-  };
-  DisplayCurrencyScreen: {
-    /**
-     * E​r​r​o​r​ ​l​o​a​d​i​n​g​ ​l​i​s​t​ ​o​f​ ​c​u​r​r​e​n​c​i​e​s
-     */
-    errorLoading: string;
-  };
-  AmountInputScreen: {
-    /**
-     * E​n​t​e​r​ ​A​m​o​u​n​t
-     */
-    enterAmount: string;
-    /**
-     * S​e​t​ ​A​m​o​u​n​t
-     */
-    setAmount: string;
-    /**
-     * A​m​o​u​n​t​ ​m​u​s​t​ ​n​o​t​ ​e​x​c​e​e​d​ ​{​m​a​x​A​m​o​u​n​t​}​.
-     * @param {string} maxAmount
-     */
-    maxAmountExceeded: RequiredParams<"maxAmount">;
-    /**
-     * A​m​o​u​n​t​ ​m​u​s​t​ ​b​e​ ​a​t​ ​l​e​a​s​t​ ​{​m​i​n​A​m​o​u​n​t​}​.
-     * @param {string} minAmount
-     */
-    minAmountNotMet: RequiredParams<"minAmount">;
-  };
-  AmountInputButton: {
-    /**
-     * T​a​p​ ​t​o​ ​s​e​t​ ​a​m​o​u​n​t
-     */
-    tapToSetAmount: string;
-  };
-  AppUpdate: {
-    /**
-     * I​ ​n​e​e​d​ ​t​o​ ​u​p​d​a​t​e​ ​m​y​ ​a​p​p​ ​t​o​ ​t​h​e​ ​l​a​t​e​s​t​ ​v​e​r​s​i​o​n​.​ ​I​'​m​ ​u​s​i​n​g​ ​t​h​e​ ​{​o​s​}​ ​a​p​p​ ​w​i​t​h​ ​v​e​r​s​i​o​n​ ​{​v​e​r​s​i​o​n​}​.
-     * @param {string} os
-     * @param {string} version
-     */
-    needToUpdateSupportMessage: RequiredParams<"os" | "version">;
-    /**
-     * T​h​i​s​ ​m​o​b​i​l​e​ ​v​e​r​s​i​o​n​ ​i​s​ ​n​o​ ​l​o​n​g​e​r​ ​s​u​p​p​o​r​t​e​d
-     */
-    versionNotSupported: string;
-    /**
-     * U​p​d​a​t​e​ ​i​s​ ​m​a​n​d​a​t​o​r​y
-     */
-    updateMandatory: string;
-    /**
-     * T​a​p​ ​h​e​r​e​ ​t​o​ ​u​p​d​a​t​e​ ​n​o​w
-     */
-    tapHereUpdate: string;
-    /**
-     * C​o​n​t​a​c​t​ ​S​u​p​p​o​r​t
-     */
-    contactSupport: string;
-  };
-};
+			connection: string
+		}
+		/**
+		 * U​n​e​x​p​e​c​t​e​d​ ​e​r​r​o​r​ ​o​c​c​u​r​r​e​d
+		 */
+		unexpectedError: string
+		/**
+		 * P​l​e​a​s​e​ ​r​e​s​t​a​r​t​ ​t​h​e​ ​a​p​p​l​i​c​a​t​i​o​n​.
+		 */
+		restartApp: string
+		/**
+		 * I​f​ ​p​r​o​b​l​e​m​ ​p​e​r​s​i​s​t​s​ ​c​o​n​t​a​c​t​ ​s​u​p​p​o​r​t​.
+		 */
+		problemPersists: string
+		/**
+		 * S​o​r​r​y​ ​w​e​ ​a​p​p​e​a​r​ ​t​o​ ​b​e​ ​h​a​v​i​n​g​ ​i​s​s​u​e​s​ ​l​o​a​d​i​n​g​ ​t​h​e​ ​a​p​p​l​i​c​a​t​i​o​n​ ​d​a​t​a​.​ ​ ​I​f​ ​p​r​o​b​l​e​m​s​ ​p​e​r​s​i​s​t​ ​p​l​e​a​s​e​ ​c​o​n​t​a​c​t​ ​s​u​p​p​o​r​t​.
+		 */
+		fatalError: string
+		/**
+		 * S​h​o​w​ ​E​r​r​o​r
+		 */
+		showError: string
+		/**
+		 * C​l​e​a​r​ ​A​p​p​ ​D​a​t​a​ ​a​n​d​ ​L​o​g​o​u​t
+		 */
+		clearAppData: string
+	}
+	notifications: {
+		payment: {
+			/**
+			 * Y​o​u​ ​j​u​s​t​ ​r​e​c​e​i​v​e​d​ ​{​v​a​l​u​e​}​ ​s​a​t​s
+			 * @param {string} value
+			 */
+			body: RequiredParams<'value'>
+			/**
+			 * P​a​y​m​e​n​t​ ​r​e​c​e​i​v​e​d
+			 */
+			title: string
+		}
+	}
+	support: {
+		/**
+		 * N​e​e​d​ ​h​e​l​p​?​ ​C​o​n​t​a​c​t​ ​u​s​.
+		 */
+		contactUs: string
+		/**
+		 * J​o​i​n​ ​t​h​e​ ​c​o​m​m​u​n​i​t​y
+		 */
+		joinTheCommunity: string
+		/**
+		 * W​h​a​t​s​A​p​p
+		 */
+		whatsapp: string
+		/**
+		 * E​m​a​i​l
+		 */
+		email: string
+		/**
+		 * E​n​j​o​y​i​n​g​ ​t​h​e​ ​a​p​p​?
+		 */
+		enjoyingApp: string
+		/**
+		 * S​t​a​t​u​s​ ​P​a​g​e
+		 */
+		statusPage: string
+		/**
+		 * T​e​l​e​g​r​a​m
+		 */
+		telegram: string
+		/**
+		 * M​a​t​t​e​r​m​o​s​t
+		 */
+		mattermost: string
+		/**
+		 * T​h​a​n​k​ ​y​o​u​ ​f​o​r​ ​t​h​e​ ​f​e​e​d​b​a​c​k​,​ ​w​o​u​l​d​ ​y​o​u​ ​l​i​k​e​ ​t​o​ ​s​u​g​g​e​s​t​ ​a​n​ ​i​m​p​r​o​v​e​m​e​n​t​?
+		 */
+		thankYouText: string
+		/**
+		 * {​b​a​n​k​N​a​m​e​}​ ​-​ ​S​u​p​p​o​r​t
+		 * @param {string} bankName
+		 */
+		defaultEmailSubject: RequiredParams<'bankName'>
+		/**
+		 * H​e​y​ ​t​h​e​r​e​!​ ​I​ ​n​e​e​d​ ​s​o​m​e​ ​h​e​l​p​ ​w​i​t​h​ ​{​b​a​n​k​N​a​m​e​}​,​ ​I​'​m​ ​u​s​i​n​g​ ​t​h​e​ ​v​e​r​s​i​o​n​ ​{​v​e​r​s​i​o​n​}​ ​o​n​ ​{​o​s​}​.
+		 * @param {string} bankName
+		 * @param {string} os
+		 * @param {string} version
+		 */
+		defaultSupportMessage: RequiredParams<'bankName' | 'os' | 'version'>
+		/**
+		 * e​m​a​i​l​ ​{​e​m​a​i​l​}​ ​c​o​p​i​e​d​ ​t​o​ ​c​l​i​p​b​o​a​r​d
+		 * @param {string} email
+		 */
+		emailCopied: RequiredParams<'email'>
+		/**
+		 * D​e​l​e​t​e​ ​a​c​c​o​u​n​t
+		 */
+		deleteAccount: string
+		/**
+		 * d​e​l​e​t​e
+		 */
+		'delete': string
+		/**
+		 * P​l​e​a​s​e​ ​t​y​p​e​ ​"​{​d​e​l​e​t​e​}​"​ ​t​o​ ​c​o​n​f​i​r​m​ ​a​c​c​o​u​n​t​ ​d​e​l​e​t​i​o​n
+		 * @param {string} delete
+		 */
+		typeDelete: RequiredParams<'delete'>
+		/**
+		 * F​i​n​a​l​ ​C​o​n​f​i​r​m​a​t​i​o​n​ ​R​e​q​u​i​r​e​d
+		 */
+		finalConfirmationAccountDeletionTitle: string
+		/**
+		 * A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​d​e​l​e​t​e​ ​y​o​u​r​ ​a​c​c​o​u​n​t​?​ ​T​h​i​s​ ​a​c​t​i​o​n​ ​i​s​ ​i​r​r​e​v​e​r​s​i​b​l​e​.
+		 */
+		finalConfirmationAccountDeletionMessage: string
+		/**
+		 * D​e​l​e​t​i​n​g​ ​y​o​u​r​ ​a​c​c​o​u​n​t​ ​w​i​l​l​ ​c​a​u​s​e​ ​y​o​u​ ​t​o​ ​l​o​s​e​ ​a​c​c​e​s​s​ ​t​o​ ​y​o​u​r​ ​c​u​r​r​e​n​t​ ​b​a​l​a​n​c​e​.​ ​A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​p​r​o​c​e​e​d​?
+		 */
+		deleteAccountBalanceWarning: string
+		/**
+		 * Y​o​u​r​ ​a​c​c​o​u​n​t​ ​h​a​s​ ​b​e​e​n​ ​w​r​i​t​t​e​n​ ​f​o​r​ ​d​e​l​e​t​i​o​n​.​
+	​
+	​W​h​e​n​ ​t​h​e​ ​p​r​o​b​a​t​i​o​n​ ​p​e​r​i​o​d​ ​r​e​l​a​t​e​d​ ​t​o​ ​r​e​g​u​l​a​t​o​r​y​ ​r​e​q​u​i​r​e​m​e​n​t​ ​i​s​ ​o​v​e​r​,​ ​t​h​e​ ​r​e​m​a​i​n​i​n​g​ ​d​a​t​a​ ​r​e​l​a​t​e​d​ ​t​o​ ​y​o​u​r​ ​a​c​c​o​u​n​t​ ​w​i​l​l​ ​b​e​ ​p​e​r​m​a​n​e​n​t​l​y​ ​d​e​l​e​t​e​d​.
+		 */
+		deleteAccountConfirmation: string
+		/**
+		 * H​e​y​ ​t​h​e​r​e​!​,​ ​p​l​e​a​s​e​ ​d​e​l​e​t​e​ ​m​y​ ​a​c​c​o​u​n​t​.​ ​M​y​ ​p​h​o​n​e​ ​n​u​m​b​e​r​ ​i​s​ ​{​p​h​o​n​e​N​u​m​b​e​r​}​.
+		 * @param {string} phoneNumber
+		 */
+		deleteAccountFromPhone: RequiredParams<'phoneNumber'>
+		/**
+		 * S​o​m​e​t​h​i​n​g​ ​w​e​n​t​ ​w​r​o​n​g​.​ ​C​o​n​t​a​c​t​ ​{​e​m​a​i​l​}​ ​f​o​r​ ​f​u​r​t​h​e​r​ ​a​s​s​i​s​t​a​n​c​e​.
+		 * @param {string} email
+		 */
+		deleteAccountError: RequiredParams<'email'>
+		/**
+		 * B​y​e​!
+		 */
+		bye: string
+	}
+	lnurl: {
+		/**
+		 * Y​o​u​ ​c​a​n​'​t​ ​s​e​n​d​ ​m​o​r​e​ ​t​h​a​n​ ​m​a​x​ ​a​m​o​u​n​t
+		 */
+		overLimit: string
+		/**
+		 * Y​o​u​ ​c​a​n​'​t​ ​s​e​n​d​ ​l​e​s​s​ ​t​h​a​n​ ​m​i​n​ ​a​m​o​u​n​t
+		 */
+		underLimit: string
+		/**
+		 * C​o​m​m​e​n​t​ ​r​e​q​u​i​r​e​d
+		 */
+		commentRequired: string
+		/**
+		 * V​i​e​w​ ​P​r​i​n​t​a​b​l​e​ ​V​e​r​s​i​o​n
+		 */
+		viewPrintable: string
+	}
+	DisplayCurrencyScreen: {
+		/**
+		 * E​r​r​o​r​ ​l​o​a​d​i​n​g​ ​l​i​s​t​ ​o​f​ ​c​u​r​r​e​n​c​i​e​s
+		 */
+		errorLoading: string
+	}
+	AmountInputScreen: {
+		/**
+		 * E​n​t​e​r​ ​A​m​o​u​n​t
+		 */
+		enterAmount: string
+		/**
+		 * S​e​t​ ​A​m​o​u​n​t
+		 */
+		setAmount: string
+		/**
+		 * A​m​o​u​n​t​ ​m​u​s​t​ ​n​o​t​ ​e​x​c​e​e​d​ ​{​m​a​x​A​m​o​u​n​t​}​.
+		 * @param {string} maxAmount
+		 */
+		maxAmountExceeded: RequiredParams<'maxAmount'>
+		/**
+		 * A​m​o​u​n​t​ ​m​u​s​t​ ​b​e​ ​a​t​ ​l​e​a​s​t​ ​{​m​i​n​A​m​o​u​n​t​}​.
+		 * @param {string} minAmount
+		 */
+		minAmountNotMet: RequiredParams<'minAmount'>
+	}
+	AmountInputButton: {
+		/**
+		 * S​e​t​ ​a​m​o​u​n​t
+		 */
+		tapToSetAmount: string
+	}
+	AppUpdate: {
+		/**
+		 * I​ ​n​e​e​d​ ​t​o​ ​u​p​d​a​t​e​ ​m​y​ ​a​p​p​ ​t​o​ ​t​h​e​ ​l​a​t​e​s​t​ ​v​e​r​s​i​o​n​.​ ​I​'​m​ ​u​s​i​n​g​ ​t​h​e​ ​{​o​s​}​ ​a​p​p​ ​w​i​t​h​ ​v​e​r​s​i​o​n​ ​{​v​e​r​s​i​o​n​}​.
+		 * @param {string} os
+		 * @param {string} version
+		 */
+		needToUpdateSupportMessage: RequiredParams<'os' | 'version'>
+		/**
+		 * T​h​i​s​ ​m​o​b​i​l​e​ ​v​e​r​s​i​o​n​ ​i​s​ ​n​o​ ​l​o​n​g​e​r​ ​s​u​p​p​o​r​t​e​d
+		 */
+		versionNotSupported: string
+		/**
+		 * U​p​d​a​t​e​ ​i​s​ ​m​a​n​d​a​t​o​r​y
+		 */
+		updateMandatory: string
+		/**
+		 * T​a​p​ ​h​e​r​e​ ​t​o​ ​u​p​d​a​t​e​ ​n​o​w
+		 */
+		tapHereUpdate: string
+		/**
+		 * C​o​n​t​a​c​t​ ​S​u​p​p​o​r​t
+		 */
+		contactSupport: string
+	}
+	Circles: {
+		/**
+		 * M​y​ ​C​i​r​c​l​e​s
+		 */
+		title: string
+		/**
+		 * B​l​i​n​k​ ​C​i​r​c​l​e​s
+		 */
+		titleBlinkCircles: string
+		/**
+		 * F​e​t​c​h​i​n​g​ ​l​a​t​e​s​t​ ​c​i​r​c​l​e​s
+		 */
+		fetchingLatestCircles: string
+		/**
+		 * c​i​r​c​l​e​s
+		 */
+		circles: string
+		/**
+		 * Y​o​u​r​ ​c​i​r​c​l​e​s​ ​g​r​o​w​ ​a​s​ ​y​o​u​ ​w​e​l​c​o​m​e​ ​o​t​h​e​r​s​ ​t​o​ ​B​l​i​n​k​ ​-​ ​b​y​ ​s​e​n​d​i​n​g​ ​s​o​m​e​b​o​d​y​ ​t​h​e​i​r​ ​f​i​r​s​t​ ​s​a​t​s​.
+		 */
+		circlesExplainer: string
+		/**
+		 * V​i​e​w​ ​M​y​ ​C​i​r​c​l​e​s
+		 */
+		viewMyCircles: string
+		/**
+		 * I​n​t​r​o​d​u​c​i​n​g​ ​C​i​r​c​l​e​s
+		 */
+		introducingCircles: string
+		/**
+		 * C​o​p​i​e​d​ ​I​n​v​i​t​e​ ​L​i​n​k
+		 */
+		copiedInviteLink: string
+		/**
+		 * I​n​v​i​t​e​ ​a​ ​f​r​i​e​n​d​ ​t​o​ ​B​l​i​n​k
+		 */
+		inviteFriendToBlink: string
+		/**
+		 * S​h​a​r​e​ ​y​o​u​r​ ​c​i​r​c​l​e​s
+		 */
+		shareCircles: string
+		/**
+		 * S​h​a​r​e
+		 */
+		share: string
+		circlesGrowingSatsExplainer: {
+			/**
+			 * Y​o​u​r
+			 */
+			your: string
+			/**
+			 * g​r​o​w​ ​w​h​e​n​ ​y​o​u​ ​s​e​n​d​ ​a​ ​n​e​w​ ​B​l​i​n​k​ ​u​s​e​r​ ​t​h​e​i​r​ ​f​i​r​s​t​ ​s​a​t​s​!
+			 */
+			grow: string
+		}
+		/**
+		 * Y​o​u​r​ ​c​i​r​c​l​e​s​ ​g​r​o​w​ ​a​s​ ​y​o​u​ ​w​e​l​c​o​m​e​ ​p​e​o​p​l​e​ ​t​o​ ​B​l​i​n​k​ ​–​ ​k​e​e​p​ ​g​o​i​n​g​!
+		 */
+		circlesGrowingKeepGoing: string
+		/**
+		 * p​o​i​n​t​s
+		 */
+		points: string
+		/**
+		 * Y​o​u​r​ ​i​n​n​e​r​ ​c​i​r​c​l​e​ ​g​r​o​w​s​ ​w​h​e​n​ ​y​o​u​ ​s​e​n​d​ ​a​ ​B​l​i​n​k​ ​u​s​e​r​ ​t​h​e​i​r​ ​f​i​r​s​t​ ​s​a​t​s​!
+		 */
+		innerCircleGrow: string
+		/**
+		 * C​a​l​c​u​l​a​t​i​n​g​ ​y​o​u​r​ ​c​i​r​c​l​e​s​.​.​.
+		 */
+		calculatingYourCircles: string
+		/**
+		 * Y​o​u​'​r​e​ ​d​r​i​v​i​n​g​ ​B​i​t​c​o​i​n​ ​a​d​o​p​t​i​o​n​ ​w​i​t​h​ ​B​l​i​n​k​,​ ​k​e​e​p​ ​i​t​ ​u​p​!
+		 */
+		innerCircleExplainer: string
+		/**
+		 * I​'​m​ ​d​r​i​v​i​n​g​ ​B​i​t​c​o​i​n​ ​a​d​o​p​t​i​o​n​ ​w​i​t​h​ ​B​l​i​n​k​!
+		 */
+		innerCircleExplainerCard: string
+		/**
+		 * I​n​n​e​r​ ​C​i​r​c​l​e
+		 */
+		innerCircle: string
+		/**
+		 * p​e​o​p​l​e​ ​y​o​u​ ​w​e​l​c​o​m​e​d
+		 */
+		peopleYouWelcomed: string
+		/**
+		 * p​e​o​p​l​e​ ​
+	​I​ ​w​e​l​c​o​m​e​d
+		 */
+		peopleIWelcomed: string
+		/**
+		 * t​h​i​s​ ​m​o​n​t​h
+		 */
+		thisMonth: string
+		/**
+		 * O​u​t​e​r​ ​C​i​r​c​l​e
+		 */
+		outerCircle: string
+		/**
+		 * p​e​o​p​l​e​ ​w​e​l​c​o​m​e​d​ ​b​y​ ​y​o​u​r​ ​c​i​r​c​l​e
+		 */
+		peopleWelcomedByYourCircle: string
+		/**
+		 * p​e​o​p​l​e​ ​w​e​l​c​o​m​e​d​ ​b​y​ ​m​y​ ​c​i​r​c​l​e
+		 */
+		peopleWelcomedByMyCircle: string
+		/**
+		 * Y​o​u​r​ ​S​p​h​e​r​e
+		 */
+		yourSphere: string
+		/**
+		 * M​y​ ​S​p​h​e​r​e
+		 */
+		mySphere: string
+		/**
+		 * Y​o​u​'​r​e​ ​#​{​t​h​i​s​M​o​n​t​h​R​a​n​k​}​ ​t​h​i​s​ ​m​o​n​t​h​ ​a​n​d​ ​#​{​a​l​l​T​i​m​e​R​a​n​k​}​ ​a​l​l​ ​t​i​m​e​!
+		 * @param {number} allTimeRank
+		 * @param {number} thisMonthRank
+		 */
+		yourRankMessage: RequiredParams<'allTimeRank' | 'thisMonthRank'>
+		/**
+		 * #​{​t​h​i​s​M​o​n​t​h​R​a​n​k​}​ ​t​h​i​s​ ​m​o​n​t​h​ ​a​n​d​ ​#​{​a​l​l​T​i​m​e​R​a​n​k​}​ ​a​l​l​ ​t​i​m​e​!
+		 * @param {number} allTimeRank
+		 * @param {number} thisMonthRank
+		 */
+		rankMessage: RequiredParams<'allTimeRank' | 'thisMonthRank'>
+		/**
+		 * I​n​v​i​t​e​ ​a​ ​f​r​i​e​n​d
+		 */
+		inviteFriends: string
+		/**
+		 * B​u​i​l​d​ ​y​o​u​r​ ​c​i​r​c​l​e​s
+		 */
+		buildYourCircle: string
+		/**
+		 * M​y​ ​B​l​i​n​k​ ​C​i​r​c​l​e​s
+		 */
+		myBlinkCircles: string
+		/**
+		 * {​u​s​e​r​n​a​m​e​}​'​s
+		 * @param {string} username
+		 */
+		someones: RequiredParams<'username'>
+		/**
+		 * B​i​t​c​o​i​n​ ​a​d​o​p​t​i​o​n​ ​i​s​ ​a​ ​g​r​o​u​p​ ​e​f​f​o​r​t​.​
+	​I​n​v​i​t​e​ ​a​ ​f​r​i​e​n​d​ ​a​n​d​ ​s​e​n​d​ ​t​h​e​m​ ​s​a​t​s​ ​t​o​ ​s​t​a​r​t​ ​b​u​i​l​d​i​n​g​ ​y​o​u​r​ ​c​i​r​c​l​e​s​.
+		 */
+		groupEffort: string
+		/**
+		 * I​'​m​ ​d​r​i​v​i​n​g​ ​B​i​t​c​o​i​n​ ​a​d​o​p​t​i​o​n​ ​u​s​i​n​g​ ​B​l​i​n​k​.
+		 */
+		drivingAdoption: string
+		septChallenge: {
+			/**
+			 * S​e​p​t​e​m​b​e​r​ ​C​h​a​l​l​e​n​g​e​!
+			 */
+			title: string
+			/**
+			 * I​n​n​e​r​ ​C​i​r​c​l​e​ ​{​i​n​n​e​r​C​i​r​c​l​e​}​/​2​1​ ​-​ ​E​a​r​n​ ​$​2​1​
+		​T​o​p​ ​3​ ​-​ ​W​i​n​ ​t​i​c​k​e​t​s​ ​t​o​ ​A​d​o​p​t​i​n​g​ ​B​i​t​c​o​i​n​!
+			 * @param {number} innerCircle
+			 */
+			description: RequiredParams<'innerCircle'>
+			/**
+			 * G​r​o​w​ ​y​o​u​r​ ​i​n​n​e​r​ ​c​i​r​c​l​e​ ​b​y​ ​2​1​ ​p​e​o​p​l​e​ ​i​n​ ​S​e​p​t​e​m​b​e​r​ ​a​n​d​ ​s​h​a​r​e​ ​o​n​ ​s​o​c​i​a​l​ ​w​i​t​h​ ​#​b​l​i​n​k​c​i​r​c​l​e​s​ ​t​o​ ​g​e​t​ ​$​2​1​ ​t​o​ ​y​o​u​r​ ​S​t​a​b​l​e​s​a​t​s​ ​a​c​c​o​u​n​t​.​ ​T​o​p​ ​3​ ​w​i​n​ ​t​i​c​k​e​t​s​ ​t​o​ ​A​d​o​p​t​i​n​g​ ​B​i​t​c​o​i​n​!
+			 */
+			details: string
+			/**
+			 * p​e​o​p​l​e​ ​w​e​l​c​o​m​e​d​ ​s​o​ ​f​a​r
+			 */
+			peopleWelcomedSoFar: string
+			/**
+			 * y​o​u​r​ ​r​a​n​k
+			 */
+			yourRank: string
+			/**
+			 * R​e​m​i​n​d​e​r​:​ ​Y​o​u​r​ ​i​n​n​e​r​ ​c​i​r​c​l​e​ ​g​r​o​w​s​ ​w​h​e​n​ ​y​o​u​ ​s​e​n​d​ ​a​ ​n​e​w​ ​B​l​i​n​k​ ​u​s​e​r​ ​t​h​e​i​r​ ​f​i​r​s​t​ ​s​a​t​s
+			 */
+			reminder: string
+			/**
+			 * F​u​l​l​ ​d​e​t​a​i​l​s​ ​a​t
+			 */
+			fullDetails: string
+		}
+	}
+}
 
 export type TranslationFunctions = {
-  GaloyAddressScreen: {
-    /**
-     * Receive payment by using:
-     */
-    title: () => LocalizedString;
-    /**
-     * Set your {bankName} address
-     */
-    buttonTitle: (arg: { bankName: string }) => LocalizedString;
-    /**
-     * Your {bankName} address
-     */
-    yourAddress: (arg: { bankName: string }) => LocalizedString;
-    /**
-     * You won't be able to change your {bankName} address after it's set.
-     */
-    notAbleToChange: (arg: { bankName: string }) => LocalizedString;
-    /**
-     * This {bankName} address is already taken.
-     */
-    addressNotAvailable: (arg: { bankName: string }) => LocalizedString;
-    /**
-     * Something went wrong. Please try again later.
-     */
-    somethingWentWrong: () => LocalizedString;
-    /**
-     * For merchants
-     */
-    merchantTitle: () => LocalizedString;
-    /**
-     * Your Lightning Cash Register
-     */
-    yourCashRegister: () => LocalizedString;
-    /**
-     * Your Paycode
-     */
-    yourPaycode: () => LocalizedString;
-    /**
-     * Copied {bankName} address to clipboard
-     */
-    copiedAddressToClipboard: (arg: { bankName: string }) => LocalizedString;
-    /**
-     * Copied Paycode to clipboard
-     */
-    copiedPaycodeToClipboard: () => LocalizedString;
-    /**
-     * Copied Cash Register Link to clipboard
-     */
-    copiedCashRegisterLinkToClipboard: () => LocalizedString;
-    /**
-     * How to use it?
-     */
-    howToUseIt: () => LocalizedString;
-    /**
-     * How to use a Lightning address
-     */
-    howToUseYourAddress: () => LocalizedString;
-    /**
-     * How to use your Paycode
-     */
-    howToUseYourPaycode: () => LocalizedString;
-    /**
-     * How to use your Cash Register
-     */
-    howToUseYourCashRegister: () => LocalizedString;
-    /**
-     * Share with someone that has a compatible wallet, such as:
-     */
-    howToUseYourAddressExplainer: () => LocalizedString;
-    /**
-		 * You can print your Paycode (which is an amountless invoice) and display it in your business to receive payments. Individuals can pay you by scanning it with a Lightning-enabled wallet.
-
-	However, be aware that some wallets can’t scan an amountless invoice such as:
+	GaloyAddressScreen: {
+		/**
+		 * Receive payment by using:
 		 */
-    howToUseYourPaycodeExplainer: () => LocalizedString;
-    /**
-     * Allow people to collect payments via the Cash Register link, without accessing your wallet. They can create invoices and payments will be sent directly to your {bankName} Wallet.
-     */
-    howToUseYourCashRegisterExplainer: (
-      arg: { bankName: string },
-    ) => LocalizedString;
-  };
-  AuthenticationScreen: {
-    /**
-     * Authenticate to continue
-     */
-    authenticationDescription: () => LocalizedString;
-    /**
-     * Set up Biometric Authentication
-     */
-    setUp: () => LocalizedString;
-    /**
-     * Use biometric to authenticate
-     */
-    setUpAuthenticationDescription: () => LocalizedString;
-    /**
-     * Skip
-     */
-    skip: () => LocalizedString;
-    /**
-     * Unlock
-     */
-    unlock: () => LocalizedString;
-    /**
-     * Use PIN
-     */
-    usePin: () => LocalizedString;
-  };
-  BalanceHeader: {
-    /**
-     * Current Balance
-     */
-    currentBalance: () => LocalizedString;
-    /**
-     * Tap to reveal your balance
-     */
-    hiddenBalanceToolTip: () => LocalizedString;
-  };
-  ContactsScreen: {
-    /**
-     * No Contacts Found
-     */
-    noContactsTitle: () => LocalizedString;
-    /**
-     * Send or receive a payment using a username and contacts will automatically be added here
-     */
-    noContactsYet: () => LocalizedString;
-    /**
-     * No contacts matching your search were found.
-     */
-    noMatchingContacts: () => LocalizedString;
-    /**
-     * Contacts
-     */
-    title: () => LocalizedString;
-  };
-  ContactDetailsScreen: {
-    /**
-     * Transactions with {username}
-     */
-    title: (arg: { username: string }) => LocalizedString;
-  };
-  ConversionDetailsScreen: {
-    /**
-     * Convert
-     */
-    title: () => LocalizedString;
-    /**
-     * % to convert
-     */
-    percentageToConvert: () => LocalizedString;
-  };
-  ConversionConfirmationScreen: {
-    /**
-     * Review conversion
-     */
-    title: () => LocalizedString;
-    /**
-     * You're converting
-     */
-    youreConverting: () => LocalizedString;
-    /**
-     * Receiving account
-     */
-    receivingAccount: () => LocalizedString;
-  };
-  ConversionSuccessScreen: {
-    /**
-     * Conversion Success
-     */
-    title: () => LocalizedString;
-    /**
-     * Conversion successful
-     */
-    message: () => LocalizedString;
-  };
-  EarnScreen: {
-    /**
-     * Earn {formattedNumber|sats}
-     */
-    earnSats: (arg: { formattedNumber: unknown }) => LocalizedString;
-    earnSections: {
-      bitcoinWhatIsIt: {
-        /**
-         * Bitcoin: What is it?
-         */
-        title: () => LocalizedString;
-        questions: {
-          whatIsBitcoin: {
-            answers: {
-              /**
-               * Digital money
-               */
-              "0": () => LocalizedString;
-              /**
-               * A video game
-               */
-              "1": () => LocalizedString;
-              /**
-               * A new cartoon character
-               */
-              "2": () => LocalizedString;
-            };
-            feedback: {
-              /**
-               * Correct. You just earned 1 “sat”!
-               */
-              "0": () => LocalizedString;
-              /**
-               * Incorrect, please try again.
-               */
-              "1": () => LocalizedString;
-              /**
-               * Nope. At least not one that we know of!
-               */
-              "2": () => LocalizedString;
-            };
-            /**
-             * So what exactly is Bitcoin?
-             */
-            question: () => LocalizedString;
-            /**
-						 * Bitcoin is digital money.
+		title: () => LocalizedString
+		/**
+		 * Set your address
+		 */
+		buttonTitle: () => LocalizedString
+		/**
+		 * Your {bankName} address
+		 */
+		yourAddress: (arg: { bankName: string }) => LocalizedString
+		/**
+		 * You won't be able to change your {bankName} address after it's set.
+		 */
+		notAbleToChange: (arg: { bankName: string }) => LocalizedString
+		/**
+		 * This {bankName} address is already taken.
+		 */
+		addressNotAvailable: (arg: { bankName: string }) => LocalizedString
+		/**
+		 * Something went wrong. Please try again later.
+		 */
+		somethingWentWrong: () => LocalizedString
+		/**
+		 * For merchants
+		 */
+		merchantTitle: () => LocalizedString
+		/**
+		 * Your Lightning Cash Register
+		 */
+		yourCashRegister: () => LocalizedString
+		/**
+		 * Your Paycode
+		 */
+		yourPaycode: () => LocalizedString
+		/**
+		 * Copied {bankName} address to clipboard
+		 */
+		copiedAddressToClipboard: (arg: { bankName: string }) => LocalizedString
+		/**
+		 * Copied Paycode to clipboard
+		 */
+		copiedPaycodeToClipboard: () => LocalizedString
+		/**
+		 * Copied Cash Register Link to clipboard
+		 */
+		copiedCashRegisterLinkToClipboard: () => LocalizedString
+		/**
+		 * How to use it?
+		 */
+		howToUseIt: () => LocalizedString
+		/**
+		 * How to use a Lightning address
+		 */
+		howToUseYourAddress: () => LocalizedString
+		/**
+		 * How to use your Paycode
+		 */
+		howToUseYourPaycode: () => LocalizedString
+		/**
+		 * How to use your Cash Register
+		 */
+		howToUseYourCashRegister: () => LocalizedString
+		/**
+		 * Share with someone that has a compatible wallet, such as:
+		 */
+		howToUseYourAddressExplainer: () => LocalizedString
+		/**
+		 * You can print your Paycode (technically, this is an lnurl-pay address) and display it in your business to receive payments. Individuals can pay you by scanning it with a Lightning-enabled wallet.
 
+	However, be aware that some wallets can’t scan a Paycode such as:
+		 */
+		howToUseYourPaycodeExplainer: () => LocalizedString
+		/**
+		 * Allow people to collect payments via the Cash Register link, without accessing your wallet.
+
+	They can create invoices and payments will be sent directly to your {bankName} Wallet.
+		 */
+		howToUseYourCashRegisterExplainer: (arg: { bankName: string }) => LocalizedString
+	}
+	SetAccountModal: {
+		/**
+		 * Set default account
+		 */
+		title: () => LocalizedString
+		/**
+		 * This account will be initially selected for sending and receiving payments. It can be changed at any time.
+		 */
+		description: () => LocalizedString
+		/**
+		 * Choose this to maintain a stable USD value.
+		 */
+		stablesatsTag: () => LocalizedString
+		/**
+		 * Choose this to be on a Bitcoin standard.
+		 */
+		bitcoinTag: () => LocalizedString
+	}
+	NoteInput: {
+		/**
+		 * Add note
+		 */
+		addNote: () => LocalizedString
+	}
+	AuthenticationScreen: {
+		/**
+		 * Authenticate to continue
+		 */
+		authenticationDescription: () => LocalizedString
+		/**
+		 * Set up Biometric Authentication
+		 */
+		setUp: () => LocalizedString
+		/**
+		 * Use biometric to authenticate
+		 */
+		setUpAuthenticationDescription: () => LocalizedString
+		/**
+		 * Skip
+		 */
+		skip: () => LocalizedString
+		/**
+		 * Unlock
+		 */
+		unlock: () => LocalizedString
+		/**
+		 * Use PIN
+		 */
+		usePin: () => LocalizedString
+	}
+	PeopleScreen: {
+		/**
+		 * People
+		 */
+		title: () => LocalizedString
+		/**
+		 * Copy
+		 */
+		copy: () => LocalizedString
+		/**
+		 * No Contacts Found
+		 */
+		noContactsTitle: () => LocalizedString
+		/**
+		 * Send or receive a payment using a username and contacts will automatically be added here
+		 */
+		noContactsYet: () => LocalizedString
+		/**
+		 * No contacts matching your search were found.
+		 */
+		noMatchingContacts: () => LocalizedString
+		/**
+		 * All Contacts
+		 */
+		allContacts: () => LocalizedString
+		/**
+		 * View all contacts
+		 */
+		viewAllContacts: () => LocalizedString
+		/**
+		 * Frequent Contacts
+		 */
+		frequentContacts: () => LocalizedString
+	}
+	ContactDetailsScreen: {
+		/**
+		 * Transactions with {username}
+		 */
+		title: (arg: { username: string }) => LocalizedString
+	}
+	ConversionDetailsScreen: {
+		/**
+		 * Convert
+		 */
+		title: () => LocalizedString
+		/**
+		 * % to convert
+		 */
+		percentageToConvert: () => LocalizedString
+	}
+	ConversionConfirmationScreen: {
+		/**
+		 * Review conversion
+		 */
+		title: () => LocalizedString
+		/**
+		 * You're converting
+		 */
+		youreConverting: () => LocalizedString
+		/**
+		 * Receiving account
+		 */
+		receivingAccount: () => LocalizedString
+	}
+	ConversionSuccessScreen: {
+		/**
+		 * Conversion Success
+		 */
+		title: () => LocalizedString
+		/**
+		 * Conversion successful
+		 */
+		message: () => LocalizedString
+	}
+	EarnScreen: {
+		/**
+		 * Earn {formattedNumber|sats}
+		 */
+		earnSats: (arg: { formattedNumber: unknown }) => LocalizedString
+		earnSections: {
+			bitcoinWhatIsIt: {
+				/**
+				 * Bitcoin: What is it?
+				 */
+				title: () => LocalizedString
+				questions: {
+					whatIsBitcoin: {
+						answers: {
+							/**
+							 * Digital money
+							 */
+							'0': () => LocalizedString
+							/**
+							 * A video game
+							 */
+							'1': () => LocalizedString
+							/**
+							 * A new cartoon character
+							 */
+							'2': () => LocalizedString
+						}
+						feedback: {
+							/**
+							 * Correct. You just earned 1 “sat”!
+							 */
+							'0': () => LocalizedString
+							/**
+							 * Incorrect, please try again.
+							 */
+							'1': () => LocalizedString
+							/**
+							 * Nope. At least not one that we know of!
+							 */
+							'2': () => LocalizedString
+						}
+						/**
+						 * So what exactly is Bitcoin?
+						 */
+						question: () => LocalizedString
+						/**
+						 * Bitcoin is digital money. 
+				
 					It can be transferred instantly and securely between any two people in the world — without the need for a bank or any other financial company in the middle.
 						 */
             text: () => LocalizedString;
@@ -4067,1477 +4955,2034 @@ export type TranslationFunctions = {
 						 * Special Characteristic #4:
 					Highly Divisible
 						 */
-            title: () => LocalizedString;
-          };
-          securePartOne: {
-            answers: {
-              /**
-               * Yes. The bitcoin network is very secure.
-               */
-              "0": () => LocalizedString;
-              /**
-               * Maybe. It depends on the day of the week.
-               */
-              "1": () => LocalizedString;
-              /**
-               * No. It is open source software, and is easily attacked.
-               */
-              "2": () => LocalizedString;
-            };
-            feedback: {
-              /**
-               * Correct. In fact, the Bitcoin network has never once been hacked. Answer the next question to learn more!
-               */
-              "0": () => LocalizedString;
-              /**
-               * Nice try, but wrong. The bitcoin network is safe and secure — 24 hours a day, 365 days a year.
-               */
-              "1": () => LocalizedString;
-              /**
-               * Icorrect. Although bitcoin is indeed “open source” software — or available to the public for free — is still extremely secure.
-               */
-              "2": () => LocalizedString;
-            };
-            /**
-             * Is the Bitcoin network secure?
-             */
-            question: () => LocalizedString;
-            /**
-						 * The bitcoin network is worth well over $100 billion today. Accordingly, the network must be very secure — so that money is never stolen.
-
-					Bitcoin is known as the world’s first cryptocurrency.
-
-					The “crypto” part of the name comes from cryptography. Simply put, cryptography protects information through very complex math functions.
-
-					Most people do not realize — but Bitcoin is actually the most secure computer network in the world !
-
+						title: () => LocalizedString
+					}
+					securePartOne: {
+						answers: {
+							/**
+							 * Yes. The bitcoin network is very secure.
+							 */
+							'0': () => LocalizedString
+							/**
+							 * Maybe. It depends on the day of the week.
+							 */
+							'1': () => LocalizedString
+							/**
+							 * No. It is open source software, and is easily attacked.
+							 */
+							'2': () => LocalizedString
+						}
+						feedback: {
+							/**
+							 * Correct. In fact, the Bitcoin network has never once been hacked. Answer the next question to learn more!
+							 */
+							'0': () => LocalizedString
+							/**
+							 * Nice try, but wrong. The bitcoin network is safe and secure — 24 hours a day, 365 days a year.
+							 */
+							'1': () => LocalizedString
+							/**
+							 * Icorrect. Although bitcoin is indeed “open source” software — or available to the public for free — is still extremely secure.
+							 */
+							'2': () => LocalizedString
+						}
+						/**
+						 * Is the Bitcoin network secure?
+						 */
+						question: () => LocalizedString
+						/**
+						 * The bitcoin network is worth well over $100 billion today. Accordingly, the network must be very secure — so that money is never stolen. 
+				
+					Bitcoin is known as the world’s first cryptocurrency. 
+				
+					The “crypto” part of the name comes from cryptography. Simply put, cryptography protects information through very complex math functions. 
+				
+					Most people do not realize — but Bitcoin is actually the most secure computer network in the world ! 
+				
 					(you may have heard about bitcoin “hacks” — which we will debunk in the next quiz)
 						 */
-            text: () => LocalizedString;
-            /**
-						 * Special Characteristic #5:
+						text: () => LocalizedString
+						/**
+						 * Special Characteristic #5: 
 					Secure -- Part I
 						 */
-            title: () => LocalizedString;
-          };
-          securePartTwo: {
-            answers: {
-              /**
-               * No. Bitcoin has never been hacked.
-               */
-              "0": () => LocalizedString;
-              /**
-               * Yes. Bitcoin gets hacked frequently.
-               */
-              "1": () => LocalizedString;
-              /**
-               * Yes. Bitcoin usually gets hacked on holidays, when traditional banks are closed.
-               */
-              "2": () => LocalizedString;
-            };
-            feedback: {
-              /**
-               * That is correct. The bitcoin network has never been compromised. However, it is important to use only secure digital wallets to keep your personal bitcoins safe at all times.
-               */
-              "0": () => LocalizedString;
-              /**
-               * Wrong. Please try again.
-               */
-              "1": () => LocalizedString;
-              /**
-               * No silly, you know that is not the correct answer.
-               */
-              "2": () => LocalizedString;
-            };
-            /**
-             * Has Bitcoin ever been hacked?
-             */
-            question: () => LocalizedString;
-            /**
+						title: () => LocalizedString
+					}
+					securePartTwo: {
+						answers: {
+							/**
+							 * No. Bitcoin has never been hacked.
+							 */
+							'0': () => LocalizedString
+							/**
+							 * Yes. Bitcoin gets hacked frequently.
+							 */
+							'1': () => LocalizedString
+							/**
+							 * Yes. Bitcoin usually gets hacked on holidays, when traditional banks are closed.
+							 */
+							'2': () => LocalizedString
+						}
+						feedback: {
+							/**
+							 * That is correct. The bitcoin network has never been compromised. However, it is important to use only secure digital wallets to keep your personal bitcoins safe at all times.
+							 */
+							'0': () => LocalizedString
+							/**
+							 * Wrong. Please try again.
+							 */
+							'1': () => LocalizedString
+							/**
+							 * No silly, you know that is not the correct answer.
+							 */
+							'2': () => LocalizedString
+						}
+						/**
+						 * Has Bitcoin ever been hacked?
+						 */
+						question: () => LocalizedString
+						/**
 						 * To be direct: the bitcoin network itself has never been hacked. Never once.
-
-					Then what exactly has been hacked?
-
-					Certain digital wallets that did not have proper security in place.
-
-					Just like a physical wallet holds fiat currency (in the form of paper bills), digital wallets hold some amount of bitcoin.
-
-					In the physical world, criminals rob banks — and walk away with US Dollars. The fact that someone robbed a bank does not have any relationship as to whether the US Dollar is stable or reliable money.
-
-					Similarly, some computer hackers have stolen bitcoin from insecure digital wallets — the online equivalent of a bank robbery.
-
+				
+					Then what exactly has been hacked? 
+				
+					Certain digital wallets that did not have proper security in place. 
+				
+					Just like a physical wallet holds fiat currency (in the form of paper bills), digital wallets hold some amount of bitcoin. 
+				
+					In the physical world, criminals rob banks — and walk away with US Dollars. The fact that someone robbed a bank does not have any relationship as to whether the US Dollar is stable or reliable money. 
+				
+					Similarly, some computer hackers have stolen bitcoin from insecure digital wallets — the online equivalent of a bank robbery. 
+				
 					However, it is important to know that the bitcoin network has never been hacked or compromised !
 						 */
-            text: () => LocalizedString;
-            /**
-						 * Special Characteristic #5:
+						text: () => LocalizedString
+						/**
+						 * Special Characteristic #5: 
 					Secure -- Part II
 						 */
-            title: () => LocalizedString;
-          };
-        };
-      };
-    };
-    /**
-     * That's all for now, we'll let you know when there's more to unearth
-     */
-    finishText: () => LocalizedString;
-    /**
-     * Answer quiz
-     */
-    getRewardNow: () => LocalizedString;
-    /**
-     * Keep digging!
-     */
-    keepDigging: () => LocalizedString;
-    /**
-     * Phone number required
-     */
-    phoneNumberNeeded: () => LocalizedString;
-    /**
-     * Quiz completed and {amount} sats earned
-     */
-    quizComplete: (arg: { amount: number }) => LocalizedString;
-    /**
-     * Review quiz
-     */
-    reviewQuiz: () => LocalizedString;
-    /**
-     * Sats accumulated
-     */
-    satAccumulated: () => LocalizedString;
-    /**
-     * {formattedNumber|sats} earned
-     */
-    satsEarned: (arg: { formattedNumber: unknown }) => LocalizedString;
-    /**
-     * You've completed
-     */
-    sectionsCompleted: () => LocalizedString;
-    /**
-     * Earn
-     */
-    title: () => LocalizedString;
-    /**
-     * To unlock, answer the question:
-     */
-    unlockQuestion: () => LocalizedString;
-    /**
-     * You Earned
-     */
-    youEarned: () => LocalizedString;
-  };
-  GetStartedScreen: {
-    /**
-     * Get Started
-     */
-    getStarted: () => LocalizedString;
-    /**
-     * Wallet powered by Galoy
-     */
-    headline: () => LocalizedString;
-  };
-  MapScreen: {
-    /**
-     * Activate your location so you know where you are on the map
-     */
-    locationPermissionMessage: () => LocalizedString;
-    /**
-     * Cancel
-     */
-    locationPermissionNegative: () => LocalizedString;
-    /**
-     * Ask Me Later
-     */
-    locationPermissionNeutral: () => LocalizedString;
-    /**
-     * OK
-     */
-    locationPermissionPositive: () => LocalizedString;
-    /**
-     * Locate yourself on the map
-     */
-    locationPermissionTitle: () => LocalizedString;
-    /**
-     * pay this business
-     */
-    payBusiness: () => LocalizedString;
-    /**
-     * Map
-     */
-    title: () => LocalizedString;
-  };
-  HomeScreen: {
-    /**
-     * Receive
-     */
-    receive: () => LocalizedString;
-    /**
-     * Send
-     */
-    send: () => LocalizedString;
-    /**
-     * Home
-     */
-    title: () => LocalizedString;
-    /**
+						title: () => LocalizedString
+					}
+				}
+			}
+		}
+		/**
+		 * That's all for now, we'll let you know when there's more to unearth
+		 */
+		finishText: () => LocalizedString
+		/**
+		 * Answer quiz
+		 */
+		getRewardNow: () => LocalizedString
+		/**
+		 * Keep digging!
+		 */
+		keepDigging: () => LocalizedString
+		/**
+		 * Phone number required
+		 */
+		phoneNumberNeeded: () => LocalizedString
+		/**
+		 * Quiz completed and {amount} sats earned
+		 */
+		quizComplete: (arg: { amount: number }) => LocalizedString
+		/**
+		 * Review quiz
+		 */
+		reviewQuiz: () => LocalizedString
+		/**
+		 * Sats accumulated
+		 */
+		satAccumulated: () => LocalizedString
+		/**
+		 * {formattedNumber|sats} earned
+		 */
+		satsEarned: (arg: { formattedNumber: unknown }) => LocalizedString
+		/**
+		 * You've completed
+		 */
+		sectionsCompleted: () => LocalizedString
+		/**
+		 * Earn
+		 */
+		title: () => LocalizedString
+		/**
+		 * To unlock, answer the question:
+		 */
+		unlockQuestion: () => LocalizedString
+		/**
+		 * You Earned
+		 */
+		youEarned: () => LocalizedString
+		/**
+		 * Need to upgrade your account
+		 */
+		registerTitle: () => LocalizedString
+		/**
+		 * Register with your phone number to receive sats
+		 */
+		registerContent: () => LocalizedString
+	}
+	GetStartedScreen: {
+		/**
+		 * Log in / create account
+		 */
+		logInCreateAccount: () => LocalizedString
+		/**
+		 * Create new account
+		 */
+		createAccount: () => LocalizedString
+		/**
+		 * Explore wallet
+		 */
+		exploreWallet: () => LocalizedString
+		/**
+		 * Log back in with
+		 */
+		logBackInWith: () => LocalizedString
+		/**
+		 * Wallet powered by Galoy
+		 */
+		headline: () => LocalizedString
+		/**
+		 * Start with a trial account
+		 */
+		startTrialAccount: () => LocalizedString
+		/**
+		 * Start with trial account
+		 */
+		startWithTrialAccount: () => LocalizedString
+		/**
+		 * Register phone account
+		 */
+		registerPhoneAccount: () => LocalizedString
+		/**
+		 * Trial account creation failed
+		 */
+		trialAccountCreationFailed: () => LocalizedString
+		/**
+		 * Unfortunately, we were unable to create your trial account. Try again later or create an account with a phone number.
+		 */
+		trialAccountCreationFailedMessage: () => LocalizedString
+		/**
+		 * Trial account has limits
+		 */
+		trialAccountHasLimits: () => LocalizedString
+		trialAccountLimits: {
+			/**
+			 * No backup option
+			 */
+			noBackup: () => LocalizedString
+			/**
+			 * Reduced daily sending limit
+			 */
+			sendingLimit: () => LocalizedString
+			/**
+			 * No receiving bitcoin onchain
+			 */
+			noOnchain: () => LocalizedString
+		}
+	}
+	MapScreen: {
+		/**
+		 * Activate your location so you know where you are on the map
+		 */
+		locationPermissionMessage: () => LocalizedString
+		/**
+		 * Cancel
+		 */
+		locationPermissionNegative: () => LocalizedString
+		/**
+		 * Ask Me Later
+		 */
+		locationPermissionNeutral: () => LocalizedString
+		/**
+		 * OK
+		 */
+		locationPermissionPositive: () => LocalizedString
+		/**
+		 * Locate yourself on the map
+		 */
+		locationPermissionTitle: () => LocalizedString
+		/**
+		 * pay this business
+		 */
+		payBusiness: () => LocalizedString
+		/**
+		 * Map
+		 */
+		title: () => LocalizedString
+	}
+	HomeScreen: {
+		/**
+		 * Receive
+		 */
+		receive: () => LocalizedString
+		/**
+		 * Send
+		 */
+		send: () => LocalizedString
+		/**
+		 * Home
+		 */
+		title: () => LocalizedString
+		/**
+		 * Scan
+		 */
+		scan: () => LocalizedString
+		/**
 		 * An update is available.
 	Tap to update now
 		 */
-    updateAvailable: () => LocalizedString;
-    /**
-     * We use the Lightning Network.
-     */
-    useLightning: () => LocalizedString;
-    /**
-     * My Accounts
-     */
-    myAccounts: () => LocalizedString;
-  };
-  PinScreen: {
-    /**
-     * Incorrect PIN. {attemptsRemaining} attempts remaining.
-     */
-    attemptsRemaining: (arg: { attemptsRemaining: number }) => LocalizedString;
-    /**
-     * Incorrect PIN. 1 attempt remaining.
-     */
-    oneAttemptRemaining: () => LocalizedString;
-    /**
-     * Set your PIN code
-     */
-    setPin: () => LocalizedString;
-    /**
-     * Pins didn't match - Set your PIN code
-     */
-    setPinFailedMatch: () => LocalizedString;
-    /**
-     * Unable to store your pin.
-     */
-    storePinFailed: () => LocalizedString;
-    /**
-     * Too many failed attempts. Logging out.
-     */
-    tooManyAttempts: () => LocalizedString;
-    /**
-     * Verify your PIN code
-     */
-    verifyPin: () => LocalizedString;
-  };
-  PriceHistoryScreen: {
-    /**
-     * 1D
-     */
-    oneDay: () => LocalizedString;
-    /**
-     * 1M
-     */
-    oneMonth: () => LocalizedString;
-    /**
-     * 1W
-     */
-    oneWeek: () => LocalizedString;
-    /**
-     * 1Y
-     */
-    oneYear: () => LocalizedString;
-    /**
-     * 5Y
-     */
-    fiveYears: () => LocalizedString;
-    /**
-     * Price for 100,000 sats:
-     */
-    satPrice: () => LocalizedString;
-    /**
-     * last 24 hours
-     */
-    last24Hours: () => LocalizedString;
-    /**
-     * last week
-     */
-    lastWeek: () => LocalizedString;
-    /**
-     * last month
-     */
-    lastMonth: () => LocalizedString;
-    /**
-     * last year
-     */
-    lastYear: () => LocalizedString;
-    /**
-     * last five years
-     */
-    lastFiveYears: () => LocalizedString;
-  };
-  PrimaryScreen: {
-    /**
-     * Home
-     */
-    title: () => LocalizedString;
-  };
-  ReceiveWrapperScreen: {
-    /**
-     * Do you want to activate notifications to be notified when the payment has arrived?
-     */
-    activateNotifications: () => LocalizedString;
-    /**
-     * Invoice has been copied in the clipboard
-     */
-    copyClipboard: () => LocalizedString;
-    /**
-     * Bitcoin address has been copied in the clipboard
-     */
-    copyClipboardBitcoin: () => LocalizedString;
-    /**
-     * This invoice has been paid
-     */
-    invoicePaid: () => LocalizedString;
-    /**
-     * set a note
-     */
-    setNote: () => LocalizedString;
-    /**
-     * Tap QR Code to Copy
-     */
-    tapQrCodeCopy: () => LocalizedString;
-    /**
-     * Receive Bitcoin
-     */
-    title: () => LocalizedString;
-    /**
-     * Receive USD
-     */
-    usdTitle: () => LocalizedString;
-    /**
-     * Failed to generate invoice. Please contact support if this problem persists.
-     */
-    error: () => LocalizedString;
-    /**
-     * Copy Invoice
-     */
-    copyInvoice: () => LocalizedString;
-    /**
-     * Share Invoice
-     */
-    shareInvoice: () => LocalizedString;
-    /**
-     * Request Specific Amount
-     */
-    addAmount: () => LocalizedString;
-    /**
-     * The invoice has expired
-     */
-    expired: () => LocalizedString;
-    /**
-     * Expires in
-     */
-    expiresIn: () => LocalizedString;
-    /**
-     * Update Invoice
-     */
-    updateInvoice: () => LocalizedString;
-    /**
-     * Flexible Amount Invoice
-     */
-    flexibleAmountInvoice: () => LocalizedString;
-    /**
-     * Copy Address
-     */
-    copyAddress: () => LocalizedString;
-    /**
-     * Share Address
-     */
-    shareAddress: () => LocalizedString;
-    /**
-     * Generating Invoice
-     */
-    generatingInvoice: () => LocalizedString;
-    /**
-     * Regenerate Invoice
-     */
-    regenerateInvoice: () => LocalizedString;
-    /**
-     * Use a Bitcoin onchain address
-     */
-    useABitcoinOnchainAddress: () => LocalizedString;
-    /**
-     * Use a Lightning Invoice
-     */
-    useALightningInvoice: () => LocalizedString;
-    /**
-     * Set a Note
-     */
-    setANote: () => LocalizedString;
-    /**
-     * Invoice Amount
-     */
-    invoiceAmount: () => LocalizedString;
-  };
-  RedeemBitcoinScreen: {
-    /**
-     * Redeem Bitcoin
-     */
-    title: () => LocalizedString;
-    /**
-     * Redeem for USD
-     */
-    usdTitle: () => LocalizedString;
-    /**
-     * Failed to generate invoice. Please contact support if this problem persists.
-     */
-    error: () => LocalizedString;
-    /**
-     * Failed to redeem Bitcoin. Please contact support if this problem persists.
-     */
-    redeemingError: () => LocalizedString;
-    /**
-     * Failed to submit withdrawal request. Please contact support if this problem persists.
-     */
-    submissionError: () => LocalizedString;
-    /**
-     * Min: {minimumAmount}, Max: {maximumAmount}
-     */
-    minMaxRange: (
-      arg: { maximumAmount: string; minimumAmount: string },
-    ) => LocalizedString;
-    /**
-     * Redeem Bitcoin
-     */
-    redeemBitcoin: () => LocalizedString;
-    /**
-     * Amount to redeem from {domain}
-     */
-    amountToRedeemFrom: (arg: { domain: string }) => LocalizedString;
-    /**
-     * Redeem {amountToRedeem} from {domain}
-     */
-    redeemAmountFrom: (
-      arg: { amountToRedeem: string; domain: string },
-    ) => LocalizedString;
-  };
-  ScanningQRCodeScreen: {
-    /**
+		updateAvailable: () => LocalizedString
+		/**
+		 * We use the Lightning Network.
+		 */
+		useLightning: () => LocalizedString
+		/**
+		 * My Accounts
+		 */
+		myAccounts: () => LocalizedString
+	}
+	PinScreen: {
+		/**
+		 * Incorrect PIN. {attemptsRemaining} attempts remaining.
+		 */
+		attemptsRemaining: (arg: { attemptsRemaining: number }) => LocalizedString
+		/**
+		 * Incorrect PIN. 1 attempt remaining.
+		 */
+		oneAttemptRemaining: () => LocalizedString
+		/**
+		 * Set your PIN code
+		 */
+		setPin: () => LocalizedString
+		/**
+		 * Pins didn't match - Set your PIN code
+		 */
+		setPinFailedMatch: () => LocalizedString
+		/**
+		 * Unable to store your pin.
+		 */
+		storePinFailed: () => LocalizedString
+		/**
+		 * Too many failed attempts. Logging out.
+		 */
+		tooManyAttempts: () => LocalizedString
+		/**
+		 * Verify your PIN code
+		 */
+		verifyPin: () => LocalizedString
+	}
+	PriceHistoryScreen: {
+		/**
+		 * 1D
+		 */
+		oneDay: () => LocalizedString
+		/**
+		 * 1M
+		 */
+		oneMonth: () => LocalizedString
+		/**
+		 * 1W
+		 */
+		oneWeek: () => LocalizedString
+		/**
+		 * 1Y
+		 */
+		oneYear: () => LocalizedString
+		/**
+		 * 5Y
+		 */
+		fiveYears: () => LocalizedString
+		/**
+		 * Price for 100,000 sats: 
+		 */
+		satPrice: () => LocalizedString
+		/**
+		 * last 24 hours
+		 */
+		last24Hours: () => LocalizedString
+		/**
+		 * last week
+		 */
+		lastWeek: () => LocalizedString
+		/**
+		 * last month
+		 */
+		lastMonth: () => LocalizedString
+		/**
+		 * last year
+		 */
+		lastYear: () => LocalizedString
+		/**
+		 * last five years
+		 */
+		lastFiveYears: () => LocalizedString
+	}
+	PrimaryScreen: {
+		/**
+		 * Home
+		 */
+		title: () => LocalizedString
+	}
+	ReceiveScreen: {
+		/**
+		 * Do you want to activate notifications to be notified when the payment has arrived?
+		 */
+		activateNotifications: () => LocalizedString
+		/**
+		 * Invoice has been copied in the clipboard
+		 */
+		copyClipboard: () => LocalizedString
+		/**
+		 * Bitcoin address has been copied in the clipboard
+		 */
+		copyClipboardBitcoin: () => LocalizedString
+		/**
+		 * Paycode/LNURL has been copied in the clipboard
+		 */
+		copyClipboardPaycode: () => LocalizedString
+		/**
+		 * This invoice has been paid
+		 */
+		invoicePaid: () => LocalizedString
+		/**
+		 * set a note
+		 */
+		setNote: () => LocalizedString
+		/**
+		 * Tap QR Code to Copy
+		 */
+		tapQrCodeCopy: () => LocalizedString
+		/**
+		 * Receive Bitcoin
+		 */
+		title: () => LocalizedString
+		/**
+		 * Receive USD
+		 */
+		usdTitle: () => LocalizedString
+		/**
+		 * Failed to generate invoice. Please contact support if this problem persists.
+		 */
+		error: () => LocalizedString
+		/**
+		 * Copy
+		 */
+		copyInvoice: () => LocalizedString
+		/**
+		 * Share
+		 */
+		shareInvoice: () => LocalizedString
+		/**
+		 * Request Specific Amount
+		 */
+		addAmount: () => LocalizedString
+		/**
+		 * The invoice has expired
+		 */
+		expired: () => LocalizedString
+		/**
+		 * Expires in
+		 */
+		expiresIn: () => LocalizedString
+		/**
+		 * Update Invoice
+		 */
+		updateInvoice: () => LocalizedString
+		/**
+		 * Flexible Amount Invoice
+		 */
+		flexibleAmountInvoice: () => LocalizedString
+		/**
+		 * Copy Address
+		 */
+		copyAddress: () => LocalizedString
+		/**
+		 * Share Address
+		 */
+		shareAddress: () => LocalizedString
+		/**
+		 * Generating Invoice
+		 */
+		generatingInvoice: () => LocalizedString
+		/**
+		 * Regenerate Invoice
+		 */
+		regenerateInvoice: () => LocalizedString
+		/**
+		 * Use a Bitcoin onchain address
+		 */
+		useABitcoinOnchainAddress: () => LocalizedString
+		/**
+		 * Use a Lightning Invoice
+		 */
+		useALightningInvoice: () => LocalizedString
+		/**
+		 * Set a Note
+		 */
+		setANote: () => LocalizedString
+		/**
+		 * Invoice Amount
+		 */
+		invoiceAmount: () => LocalizedString
+		/**
+		 * {minBankFee} sats fees for onchain payment below {minBankFeeThreshold} sats
+		 */
+		fees: (arg: { minBankFee: string, minBankFeeThreshold: string }) => LocalizedString
+		/**
+		 * Lightning
+		 */
+		lightning: () => LocalizedString
+		/**
+		 * Paycode
+		 */
+		paycode: () => LocalizedString
+		/**
+		 * Onchain
+		 */
+		onchain: () => LocalizedString
+		/**
+		 * Bitcoin
+		 */
+		bitcoin: () => LocalizedString
+		/**
+		 * Stablesats
+		 */
+		stablesats: () => LocalizedString
+		/**
+		 * Regenerate Invoice
+		 */
+		regenerateInvoiceButtonTitle: () => LocalizedString
+		/**
+		 * Set Username
+		 */
+		setUsernameButtonTitle: () => LocalizedString
+		/**
+		 * Invoice has expired
+		 */
+		invoiceHasExpired: () => LocalizedString
+		/**
+		 * Set your username to accept via Paycode QR (LNURL) and Lightning Address
+		 */
+		setUsernameToAcceptViaPaycode: () => LocalizedString
+		/**
+		 * Single Use
+		 */
+		singleUse: () => LocalizedString
+		/**
+		 * Expired Invoice
+		 */
+		invoiceExpired: () => LocalizedString
+		invoiceValidity: {
+			/**
+			 * Valid for 1 day
+			 */
+			validFor1Day: () => LocalizedString
+			/**
+			 * Valid for next {duration}
+			 */
+			validForNext: (arg: { duration: string }) => LocalizedString
+			/**
+			 * Valid before {time}
+			 */
+			validBefore: (arg: { time: string }) => LocalizedString
+			/**
+			 * Expires in {duration}
+			 */
+			expiresIn: (arg: { duration: string }) => LocalizedString
+			/**
+			 * Expires now
+			 */
+			expiresNow: () => LocalizedString
+		}
+		/**
+		 * Invoice has been paid
+		 */
+		invoiceHasBeenPaid: () => LocalizedString
+		/**
+		 * Onchain Address
+		 */
+		onChainAddress: () => LocalizedString
+		/**
+		 * Receive via Lightning
+		 */
+		receiveViaInvoice: () => LocalizedString
+		/**
+		 * Receive via Paycode
+		 */
+		receiveViaPaycode: () => LocalizedString
+		/**
+		 * Receive via Onchain
+		 */
+		receiveViaOnchain: () => LocalizedString
+		/**
+		 * Paycode / LNURL
+		 */
+		payCodeOrLNURL: () => LocalizedString
+	}
+	RedeemBitcoinScreen: {
+		/**
+		 * Redeem Bitcoin
+		 */
+		title: () => LocalizedString
+		/**
+		 * Redeem for USD
+		 */
+		usdTitle: () => LocalizedString
+		/**
+		 * Failed to generate invoice. Please contact support if this problem persists.
+		 */
+		error: () => LocalizedString
+		/**
+		 * Failed to redeem Bitcoin. Please contact support if this problem persists.
+		 */
+		redeemingError: () => LocalizedString
+		/**
+		 * Failed to submit withdrawal request. Please contact support if this problem persists.
+		 */
+		submissionError: () => LocalizedString
+		/**
+		 * Min: {minimumAmount}, Max: {maximumAmount}
+		 */
+		minMaxRange: (arg: { maximumAmount: string, minimumAmount: string }) => LocalizedString
+		/**
+		 * Redeem Bitcoin
+		 */
+		redeemBitcoin: () => LocalizedString
+		/**
+		 * Amount to redeem from {domain}
+		 */
+		amountToRedeemFrom: (arg: { domain: string }) => LocalizedString
+		/**
+		 * Redeem {amountToRedeem} from {domain}
+		 */
+		redeemAmountFrom: (arg: { amountToRedeem: string, domain: string }) => LocalizedString
+	}
+	ScanningQRCodeScreen: {
+		/**
 		 * We found:
 
 	{found}
 
 	This is not a valid Bitcoin address or Lightning invoice
 		 */
-    invalidContent: (arg: { found: string }) => LocalizedString;
-    /**
+		invalidContent: (arg: { found: string }) => LocalizedString
+		/**
 		 * We found:
 
 	{found}
 
 	This invoice has expired
 		 */
-    expiredContent: (arg: { found: string }) => LocalizedString;
-    /**
-     * Invalid QR Code
-     */
-    invalidTitle: () => LocalizedString;
-    /**
-     * We could not find a QR code in the image
-     */
-    noQrCode: () => LocalizedString;
-    /**
-     * Scan QR
-     */
-    title: () => LocalizedString;
-    /**
+		expiredContent: (arg: { found: string }) => LocalizedString
+		/**
+		 * Invalid QR Code
+		 */
+		invalidTitle: () => LocalizedString
+		/**
+		 * We could not find a QR code in the image
+		 */
+		noQrCode: () => LocalizedString
+		/**
+		 * Scan QR
+		 */
+		title: () => LocalizedString
+		/**
 		 * We found:
 
 	{found}
 
 	 is not currently supported
 		 */
-    invalidContentLnurl: (arg: { found: string }) => LocalizedString;
-  };
-  SecurityScreen: {
-    /**
-     * Unlock with fingerprint or facial recognition.
-     */
-    biometricDescription: () => LocalizedString;
-    /**
-     * Enable biometric authentication
-     */
-    biometricSubtitle: () => LocalizedString;
-    /**
-     * Biometric
-     */
-    biometricTitle: () => LocalizedString;
-    /**
-     * Biometric sensor is not available.
-     */
-    biometryNotAvailable: () => LocalizedString;
-    /**
-     * Please register at least one biometric sensor in order to use biometric based authentication.
-     */
-    biometryNotEnrolled: () => LocalizedString;
-    /**
-     * Hides your balance on the home screen by default, so you don't reveal it to anyone looking at your screen.
-     */
-    hideBalanceDescription: () => LocalizedString;
-    /**
-     * Hide balance
-     */
-    hideBalanceSubtitle: () => LocalizedString;
-    /**
-     * Balance
-     */
-    hideBalanceTitle: () => LocalizedString;
-    /**
-     * PIN is used as the backup authentication method for biometric authentication.
-     */
-    pinDescription: () => LocalizedString;
-    /**
-     * Enable PIN
-     */
-    pinSubtitle: () => LocalizedString;
-    /**
-     * PIN Code
-     */
-    pinTitle: () => LocalizedString;
-    /**
-     * Set PIN
-     */
-    setPin: () => LocalizedString;
-  };
-  SendBitcoinConfirmationScreen: {
-    /**
-     * Amount:
-     */
-    amountLabel: () => LocalizedString;
-    /**
-     * Confirm payment
-     */
-    confirmPayment: () => LocalizedString;
-    /**
-     * Do you want to confirm this payment?
-     */
-    confirmPaymentQuestion: () => LocalizedString;
-    /**
-     * To:
-     */
-    destinationLabel: () => LocalizedString;
-    /**
-     * Fee
-     */
-    feeLabel: () => LocalizedString;
-    /**
-     * Note:
-     */
-    memoLabel: () => LocalizedString;
-    /**
-     * Payments are final.
-     */
-    paymentFinal: () => LocalizedString;
-    /**
-     * Your bitcoin price is old and was last updated {timePeriod} ago. Please restart the app before making a payment.
-     */
-    stalePrice: (arg: { timePeriod: unknown }) => LocalizedString;
-    /**
-     * Confirm Payment
-     */
-    title: () => LocalizedString;
-    /**
-     * Total:
-     */
-    totalLabel: () => LocalizedString;
-    /**
-     * Total exceeds your balance of {balance}
-     */
-    totalExceed: (arg: { balance: string }) => LocalizedString;
-    /**
-     * This is the maximum fee you will be charged for this transaction.  It may end up being less once the payment has been made.
-     */
-    maxFeeSelected: () => LocalizedString;
-    /**
-     * Failed to calculate fee
-     */
-    feeError: () => LocalizedString;
-  };
-  SendBitcoinDestinationScreen: {
-    /**
-     * {bankName} usernames are now {bankName} addresses.
-     */
-    usernameNowAddress: (arg: { bankName: string }) => LocalizedString;
-    /**
+		invalidContentLnurl: (arg: { found: string }) => LocalizedString
+	}
+	SecurityScreen: {
+		/**
+		 * Unlock with fingerprint or facial recognition.
+		 */
+		biometricDescription: () => LocalizedString
+		/**
+		 * Biometric
+		 */
+		biometricTitle: () => LocalizedString
+		/**
+		 * Biometric sensor is not available.
+		 */
+		biometryNotAvailable: () => LocalizedString
+		/**
+		 * Please register at least one biometric sensor in order to use biometric based authentication.
+		 */
+		biometryNotEnrolled: () => LocalizedString
+		/**
+		 * Hides your balance on the home screen by default, so you don't reveal it to anyone looking at your screen.
+		 */
+		hideBalanceDescription: () => LocalizedString
+		/**
+		 * Hide Balance
+		 */
+		hideBalanceTitle: () => LocalizedString
+		/**
+		 * PIN is used as the backup authentication method for biometric authentication.
+		 */
+		pinDescription: () => LocalizedString
+		/**
+		 * PIN Code
+		 */
+		pinTitle: () => LocalizedString
+		/**
+		 * Set PIN
+		 */
+		setPin: () => LocalizedString
+	}
+	SendBitcoinConfirmationScreen: {
+		/**
+		 * Amount:
+		 */
+		amountLabel: () => LocalizedString
+		/**
+		 * Confirm payment
+		 */
+		confirmPayment: () => LocalizedString
+		/**
+		 * Do you want to confirm this payment?
+		 */
+		confirmPaymentQuestion: () => LocalizedString
+		/**
+		 * To:
+		 */
+		destinationLabel: () => LocalizedString
+		/**
+		 * Fee
+		 */
+		feeLabel: () => LocalizedString
+		/**
+		 * Note:
+		 */
+		memoLabel: () => LocalizedString
+		/**
+		 * Payments are final.
+		 */
+		paymentFinal: () => LocalizedString
+		/**
+		 * Your bitcoin price is old and was last updated {timePeriod} ago. Please restart the app before making a payment.
+		 */
+		stalePrice: (arg: { timePeriod: unknown }) => LocalizedString
+		/**
+		 * Confirm Payment
+		 */
+		title: () => LocalizedString
+		/**
+		 * Total:
+		 */
+		totalLabel: () => LocalizedString
+		/**
+		 * Total exceeds your balance of {balance}
+		 */
+		totalExceed: (arg: { balance: string }) => LocalizedString
+		/**
+		 * This is the maximum fee you will be charged for this transaction.  It may end up being less once the payment has been made.
+		 */
+		maxFeeSelected: () => LocalizedString
+		/**
+		 * Failed to calculate fee
+		 */
+		feeError: () => LocalizedString
+	}
+	SendBitcoinDestinationScreen: {
+		/**
+		 * {bankName} usernames are now {bankName} addresses.
+		 */
+		usernameNowAddress: (arg: { bankName: string }) => LocalizedString
+		/**
 		 * When you enter a {bankName} username, we will add "@{lnDomain}" to it (e.g maria@{lnDomain}) to make it an address. Your username is now a {bankName} address too.
 
 	Go to your {bankName} address page from your Settings to learn how to use it or to share it to receive payments.
 		 */
-    usernameNowAddressInfo: (
-      arg: { bankName: string; lnDomain: string },
-    ) => LocalizedString;
-    /**
-     * Please enter a valid destination
-     */
-    enterValidDestination: () => LocalizedString;
-    /**
-     * You can send to a {bankName} address, LN address, LN invoice, or BTC address.
-     */
-    destinationOptions: (arg: { bankName: string }) => LocalizedString;
-    /**
-     * This invoice has expired. Please generate a new invoice.
-     */
-    expiredInvoice: () => LocalizedString;
-    /**
-     * This invoice is for a different network. Please generate a new invoice.
-     */
-    wrongNetwork: () => LocalizedString;
-    /**
-     * This contains an invalid amount. Please regenerate with a valid amount.
-     */
-    invalidAmount: () => LocalizedString;
-    /**
-     * {lnAddress} doesn't seem to be a {bankName} address that exists.
-     */
-    usernameDoesNotExist: (
-      arg: { bankName: string; lnAddress: string },
-    ) => LocalizedString;
-    /**
-     * Either make sure the spelling is right or ask the recipient for an LN invoice or BTC address instead.
-     */
-    usernameDoesNotExistAdvice: () => LocalizedString;
-    /**
-     * {lnAddress} is your {bankName} address.
-     */
-    selfPaymentError: (
-      arg: { bankName: string; lnAddress: string },
-    ) => LocalizedString;
-    /**
-     * If you want to send money to another account that you own, you can use an invoice, LN or BTC address instead.
-     */
-    selfPaymentAdvice: () => LocalizedString;
-    /**
-     * We can't reach this Lightning address. If you are sure it exists, you can try again later.
-     */
-    lnAddressError: () => LocalizedString;
-    /**
-     * Either make sure the spelling is right or ask the recipient for an invoice or BTC address instead.
-     */
-    lnAddressAdvice: () => LocalizedString;
-    /**
-     * We can't parse this Lightning address. Please try again.
-     */
-    unknownLightning: () => LocalizedString;
-    /**
-     * We can't parse this Bitcoin address. Please try again.
-     */
-    unknownOnchain: () => LocalizedString;
-    /**
-     * {lnAddress} exists as a {bankName} address, but you've never sent money to it.
-     */
-    newBankAddressUsername: (
-      arg: { bankName: string; lnAddress: string },
-    ) => LocalizedString;
-    confirmModal: {
-      /**
-       * You've never sent money to "{lnAddress}" before.
-       */
-      title: (arg: { lnAddress: string }) => LocalizedString;
-      /**
-       * Please make sure the recipient gave you a {bankName} address,
-       */
-      body1: (arg: { bankName: string }) => LocalizedString;
-      /**
-       * not a username from another wallet.
-       */
-      bold2bold: () => LocalizedString;
-      /**
+		usernameNowAddressInfo: (arg: { bankName: string, lnDomain: string }) => LocalizedString
+		/**
+		 * Please enter a valid destination
+		 */
+		enterValidDestination: () => LocalizedString
+		/**
+		 * You can send to a {bankName} address, LN address, LN invoice, or BTC address.
+		 */
+		destinationOptions: (arg: { bankName: string }) => LocalizedString
+		/**
+		 * This invoice has expired. Please generate a new invoice.
+		 */
+		expiredInvoice: () => LocalizedString
+		/**
+		 * This invoice is for a different network. Please generate a new invoice.
+		 */
+		wrongNetwork: () => LocalizedString
+		/**
+		 * This contains an invalid amount. Please regenerate with a valid amount.
+		 */
+		invalidAmount: () => LocalizedString
+		/**
+		 * {lnAddress} doesn't seem to be a {bankName} address that exists.
+		 */
+		usernameDoesNotExist: (arg: { bankName: string, lnAddress: string }) => LocalizedString
+		/**
+		 * Either make sure the spelling is right or ask the recipient for an LN invoice or BTC address instead.
+		 */
+		usernameDoesNotExistAdvice: () => LocalizedString
+		/**
+		 * {lnAddress} is your {bankName} address.
+		 */
+		selfPaymentError: (arg: { bankName: string, lnAddress: string }) => LocalizedString
+		/**
+		 * If you want to send money to another account that you own, you can use an invoice, LN or BTC address instead.
+		 */
+		selfPaymentAdvice: () => LocalizedString
+		/**
+		 * We can't reach this Lightning address. If you are sure it exists, you can try again later.
+		 */
+		lnAddressError: () => LocalizedString
+		/**
+		 * Either make sure the spelling is right or ask the recipient for an invoice or BTC address instead.
+		 */
+		lnAddressAdvice: () => LocalizedString
+		/**
+		 * We can't parse this Lightning address. Please try again.
+		 */
+		unknownLightning: () => LocalizedString
+		/**
+		 * We can't parse this Bitcoin address. Please try again.
+		 */
+		unknownOnchain: () => LocalizedString
+		/**
+		 * {lnAddress} exists as a {bankName} address, but you've never sent money to it.
+		 */
+		newBankAddressUsername: (arg: { bankName: string, lnAddress: string }) => LocalizedString
+		confirmModal: {
+			/**
+			 * You've never sent money to this address
+			 */
+			title: () => LocalizedString
+			/**
+			 * Please make sure the recipient gave you a {bankName} address,
+			 */
+			body1: (arg: { bankName: string }) => LocalizedString
+			/**
+			 * not a username from another wallet.
+			 */
+			bold2bold: () => LocalizedString
+			/**
 			 * Otherwise, the money will go to a {bankName} Account that has the “{lnAddress}” address.
-
+	
 		Check the spelling of the first part of the address as well. e.g. jackie and jack1e are 2 different addresses
 			 */
-      body3: (arg: { bankName: string; lnAddress: string }) => LocalizedString;
-      /**
-       * If the {bankName} address is entered incorrectly, {bankName} can't undo the transaction.
-       */
-      warning: (arg: { bankName: string }) => LocalizedString;
-      /**
-       * {lnAddress} is the right address.
-       */
-      checkBox: (arg: { lnAddress: string }) => LocalizedString;
-      /**
-       * I'm 100% sure
-       */
-      confirmButton: () => LocalizedString;
-    };
-    /**
-     * Error getting value from clipboard
-     */
-    clipboardError: () => LocalizedString;
-  };
-  SendBitcoinScreen: {
-    /**
-     * Amount
-     */
-    amount: () => LocalizedString;
-    /**
-     * Amount exceeds your balance of {balance}
-     */
-    amountExceed: (arg: { balance: string }) => LocalizedString;
-    /**
-     * Amount is required
-     */
-    amountIsRequired: () => LocalizedString;
-    /**
-     * Cost
-     */
-    cost: () => LocalizedString;
-    /**
-     * Destination
-     */
-    destination: () => LocalizedString;
-    /**
-     * Destination is required
-     */
-    destinationIsRequired: () => LocalizedString;
-    /**
-     * network fee
-     */
-    fee: () => LocalizedString;
-    /**
-     * Calculation unsuccessful ⚠️
-     */
-    feeCalculationUnsuccessful: () => LocalizedString;
-    /**
-     * Username, invoice, or address
-     */
-    input: () => LocalizedString;
-    /**
-     * Invalid username
-     */
-    invalidUsername: () => LocalizedString;
-    /**
-     * This invoice doesn't have an amount, so you need to manually specify how much money you want to send
-     */
-    noAmount: () => LocalizedString;
-    /**
+			body3: (arg: { bankName: string, lnAddress: string }) => LocalizedString
+			/**
+			 * If the {bankName} address is entered incorrectly, {bankName} can't undo the transaction.
+			 */
+			warning: (arg: { bankName: string }) => LocalizedString
+			/**
+			 * {lnAddress} is the right address.
+			 */
+			checkBox: (arg: { lnAddress: string }) => LocalizedString
+			/**
+			 * I'm 100% sure
+			 */
+			confirmButton: () => LocalizedString
+		}
+		/**
+		 * Error getting value from clipboard
+		 */
+		clipboardError: () => LocalizedString
+	}
+	SendBitcoinScreen: {
+		/**
+		 * Amount
+		 */
+		amount: () => LocalizedString
+		/**
+		 * Amount exceeds your balance of {balance}
+		 */
+		amountExceed: (arg: { balance: string }) => LocalizedString
+		/**
+		 * Amount exceeds your remaining daily limit of {limit}
+		 */
+		amountExceedsLimit: (arg: { limit: string }) => LocalizedString
+		/**
+		 * Upgrade your account to increase your limit
+		 */
+		upgradeAccountToIncreaseLimit: () => LocalizedString
+		/**
+		 * Amount is required
+		 */
+		amountIsRequired: () => LocalizedString
+		/**
+		 * Cost
+		 */
+		cost: () => LocalizedString
+		/**
+		 * Destination
+		 */
+		destination: () => LocalizedString
+		/**
+		 * Destination is required
+		 */
+		destinationIsRequired: () => LocalizedString
+		/**
+		 * network fee
+		 */
+		fee: () => LocalizedString
+		/**
+		 * Calculation unsuccessful ⚠️
+		 */
+		feeCalculationUnsuccessful: () => LocalizedString
+		/**
+		 * Username, invoice, or address
+		 */
+		placeholder: () => LocalizedString
+		/**
+		 * Invalid username
+		 */
+		invalidUsername: () => LocalizedString
+		/**
+		 * This invoice doesn't have an amount, so you need to manually specify how much money you want to send
+		 */
+		noAmount: () => LocalizedString
+		/**
 		 * Payment has been sent
 	but is not confirmed yet
 
 	You can check the status
 	of the payment in Transactions
 		 */
-    notConfirmed: () => LocalizedString;
-    /**
-     * Note or label
-     */
-    note: () => LocalizedString;
-    /**
-     * Payment has been sent successfully
-     */
-    success: () => LocalizedString;
-    /**
-     * Send Bitcoin
-     */
-    title: () => LocalizedString;
-    /**
-     * Failed to fetch lnurl invoice
-     */
-    failedToFetchLnurlInvoice: () => LocalizedString;
-    /**
-     * The lnurl server responded with an invoice with an incorrect amount.
-     */
-    lnurlInvoiceIncorrectAmount: () => LocalizedString;
-    /**
-     * The lnurl server responded with an invoice with an incorrect description hash.
-     */
-    lnurlInvoiceIncorrectDescription: () => LocalizedString;
-  };
-  SettingsScreen: {
-    /**
-     * Activated
-     */
-    activated: () => LocalizedString;
-    /**
-     * Tap to log in
-     */
-    tapLogIn: () => LocalizedString;
-    /**
-     * Ways to get paid
-     */
-    addressScreen: () => LocalizedString;
-    /**
-     * Tap to set username
-     */
-    tapUserName: () => LocalizedString;
-    /**
-     * Settings
-     */
-    title: () => LocalizedString;
-    /**
-     * Dark Mode
-     */
-    darkMode: () => LocalizedString;
-    /**
-     * Mode: dark.
-     */
-    setToDark: () => LocalizedString;
-    /**
-     * Mode: light.
-     */
-    setToLight: () => LocalizedString;
-    /**
-     * Mode: dark, (Default).
-     */
-    darkDefault: () => LocalizedString;
-    /**
-     * Mode: light, (Default).
-     */
-    lightDefault: () => LocalizedString;
-    /**
-     * Unable to export transactions to csv. Something went wrong. If issue persists please contact support.
-     */
-    csvTransactionsError: () => LocalizedString;
-    /**
-     * To generate an lnurl address you must first set a username.  Do you want to set a username now?
-     */
-    lnurlNoUsername: () => LocalizedString;
-    /**
-     * Lnurl address has been copied in the clipboard
-     */
-    copyClipboardLnurl: () => LocalizedString;
-    /**
-     * Delete Account
-     */
-    deleteAccount: () => LocalizedString;
-    /**
-     * Default Account
-     */
-    defaultWallet: () => LocalizedString;
-    /**
-     * Rate us on {storeName}
-     */
-    rateUs: (arg: { storeName: string }) => LocalizedString;
-  };
-  DefaultWalletScreen: {
-    /**
-     * Default Account
-     */
-    title: () => LocalizedString;
-    /**
-		 * Your default account is the account that is selected by default when sending and receiving payments. You can change this setting for individual payments on the mobile app. However, payments received through the cash register or your Lightning address will always go to the default account.
+		notConfirmed: () => LocalizedString
+		/**
+		 * Note or label
+		 */
+		note: () => LocalizedString
+		/**
+		 * Payment has been sent successfully
+		 */
+		success: () => LocalizedString
+		/**
+		 * Enter your suggestion
+		 */
+		suggestionInput: () => LocalizedString
+		/**
+		 * Max
+		 */
+		max: () => LocalizedString
+		/**
+		 * Max Amount
+		 */
+		maxAmount: () => LocalizedString
+		/**
+		 * Send Bitcoin
+		 */
+		title: () => LocalizedString
+		/**
+		 * Failed to fetch lnurl invoice
+		 */
+		failedToFetchLnurlInvoice: () => LocalizedString
+		/**
+		 * The lnurl server responded with an invoice with an incorrect amount.
+		 */
+		lnurlInvoiceIncorrectAmount: () => LocalizedString
+		/**
+		 * The lnurl server responded with an invoice with an incorrect description hash.
+		 */
+		lnurlInvoiceIncorrectDescription: () => LocalizedString
+	}
+	SettingsScreen: {
+		/**
+		 * Activated
+		 */
+		activated: () => LocalizedString
+		/**
+		 * Ways to get paid
+		 */
+		addressScreen: () => LocalizedString
+		/**
+		 * Tap to set username
+		 */
+		tapUserName: () => LocalizedString
+		/**
+		 * Settings
+		 */
+		title: () => LocalizedString
+		/**
+		 * Dark Mode
+		 */
+		darkMode: () => LocalizedString
+		/**
+		 * Mode: dark.
+		 */
+		setToDark: () => LocalizedString
+		/**
+		 * Mode: light.
+		 */
+		setToLight: () => LocalizedString
+		/**
+		 * Mode: dark, (Default).
+		 */
+		darkDefault: () => LocalizedString
+		/**
+		 * Mode: light, (Default).
+		 */
+		lightDefault: () => LocalizedString
+		/**
+		 * Unable to export transactions to csv. Something went wrong. If issue persists please contact support.
+		 */
+		csvTransactionsError: () => LocalizedString
+		/**
+		 * To generate an lnurl address you must first set a username.  Do you want to set a username now?
+		 */
+		lnurlNoUsername: () => LocalizedString
+		/**
+		 * Lnurl address has been copied in the clipboard
+		 */
+		copyClipboardLnurl: () => LocalizedString
+		/**
+		 * Default Account
+		 */
+		defaultWallet: () => LocalizedString
+		/**
+		 * Rate us on {storeName}
+		 */
+		rateUs: (arg: { storeName: string }) => LocalizedString
+		/**
+		 * Theme
+		 */
+		theme: () => LocalizedString
+		/**
+		 * Receive from NFC
+		 */
+		nfc: () => LocalizedString
+		/**
+		 * Error reading NFC tag. Please try again.
+		 */
+		nfcError: () => LocalizedString
+		/**
+		 * The information fetch from the card is not a compatible lnurl-withdraw link.
+		 */
+		nfcNotCompatible: () => LocalizedString
+		/**
+		 * Only receive from NFC is available for now
+		 */
+		nfcOnlyReceive: () => LocalizedString
+		/**
+		 * Scan NFC Now
+		 */
+		nfcScanNow: () => LocalizedString
+		/**
+		 * NFC is not supported on this device
+		 */
+		nfcNotSupported: () => LocalizedString
+		/**
+		 * Log in or create account
+		 */
+		logInOrCreateAccount: () => LocalizedString
+	}
+	AccountScreen: {
+		/**
+		 * Account Level
+		 */
+		accountLevel: () => LocalizedString
+		/**
+		 * Upgrade your account
+		 */
+		upgrade: () => LocalizedString
+		/**
+		 * Log out and clear all local data
+		 */
+		logOutAndDeleteLocalData: () => LocalizedString
+		/**
+		 * I understand. Please log me out.
+		 */
+		IUnderstand: () => LocalizedString
+		/**
+		 * Are you sure you want to log out and delete all local data?
+		 */
+		logoutAlertTitle: () => LocalizedString
+		/**
+		 * You will need to re-enter your phone number to log back in.
+	your phone number is {phoneNumber} so make sure you have access to it to log back in
+		 */
+		logoutAlertContentPhone: (arg: { phoneNumber: string }) => LocalizedString
+		/**
+		 * You will need to re-enter your email to log back in.
+	your email is {email} so make sure you have access to it to log back in
+		 */
+		logoutAlertContentEmail: (arg: { email: string }) => LocalizedString
+		/**
+		 * You will need to re-enter either your phone number or email to log back in.
+	your phone number is {phoneNumber} and your email is {email} so make sure you have access to those to log back in
+		 */
+		logoutAlertContentPhoneEmail: (arg: { email: string, phoneNumber: string }) => LocalizedString
+		/**
+		 * You have a Stablesats balance of {balance}.
+		 */
+		usdBalanceWarning: (arg: { balance: string }) => LocalizedString
+		/**
+		 * You have a bitcoin balance of {balance}.
+		 */
+		btcBalanceWarning: (arg: { balance: string }) => LocalizedString
+		/**
+		 * Register to secure your account
+		 */
+		secureYourAccount: () => LocalizedString
+		/**
+		 * Tap to add
+		 */
+		tapToAdd: () => LocalizedString
+		/**
+		 * Delete email
+		 */
+		deleteEmailPromptTitle: () => LocalizedString
+		/**
+		 * Are you sure you want to delete your email address? you will only be able to log back in with your phone number.
+		 */
+		deleteEmailPromptContent: () => LocalizedString
+		/**
+		 * Delete phone
+		 */
+		deletePhonePromptTitle: () => LocalizedString
+		/**
+		 * Are you sure you want to delete your phone number? you will only be able to log in back with your email.
+		 */
+		deletePhonePromptContent: () => LocalizedString
+		/**
+		 * Add an email first
+		 */
+		addEmailFirst: () => LocalizedString
+		/**
+		 * Add a phone first
+		 */
+		addPhoneFirst: () => LocalizedString
+		/**
+		 * Phone number (for login)
+		 */
+		phoneNumberAuthentication: () => LocalizedString
+		/**
+		 * Email (for login)
+		 */
+		emailAuthentication: () => LocalizedString
+		/**
+		 * Remove phone
+		 */
+		removePhone: () => LocalizedString
+		/**
+		 * Remove email
+		 */
+		removeEmail: () => LocalizedString
+		/**
+		 * Email is unverified
+		 */
+		unverified: () => LocalizedString
+		/**
+		 * Secure your account by verifying your email.
+		 */
+		unverifiedContent: () => LocalizedString
+		/**
+		 * Confirm email
+		 */
+		confirmEmail: () => LocalizedString
+		/**
+		 * Your email is unverified
+		 */
+		emailUnverified: () => LocalizedString
+		/**
+		 * Ensure you can log back into your account by verifying your email. Do you want to do the verification now?
+		 */
+		emailUnverifiedContent: () => LocalizedString
+		/**
+		 * Two-factor authentication
+		 */
+		totp: () => LocalizedString
+		/**
+		 * Two-factor authentication has been deactivated
+		 */
+		totpDeactivated: () => LocalizedString
+		/**
+		 * Delete two-factor authentication
+		 */
+		totpDeleteAlertTitle: () => LocalizedString
+		/**
+		 * Are you sure you want to delete your two-factor authentication?
+		 */
+		totpDeleteAlertContent: () => LocalizedString
+		/**
+		 * Copied your account ID to clipboard
+		 */
+		copiedAccountId: () => LocalizedString
+		/**
+		 * Your Account ID
+		 */
+		yourAccountId: () => LocalizedString
+		/**
+		 * Copy
+		 */
+		copy: () => LocalizedString
+	}
+	TotpRegistrationInitiateScreen: {
+		/**
+		 * Two-factor authentication
+		 */
+		title: () => LocalizedString
+		/**
+		 * Scan this QR code with your authenticator app. Alternatively, you can manually copy/paste the secret into your authenticator app.
+		 */
+		content: () => LocalizedString
+	}
+	TotpRegistrationValidateScreen: {
+		/**
+		 * Two-factor authentication
+		 */
+		title: () => LocalizedString
+		/**
+		 * Enter the 6-digit code from your authenticator app to validate your two-factor authentication.
+		 */
+		enter6digitCode: () => LocalizedString
+		/**
+		 * Two-factor authentication has been enabled. You will now only be able to log back in with your phone or email AND your two factor authentication.
+
+	Only full KYC accounts may be recovered in the case a user has lost access to their two-factor authentication.
+		 */
+		success: () => LocalizedString
+	}
+	TotpLoginValidateScreen: {
+		/**
+		 * Two-factor authentication
+		 */
+		title: () => LocalizedString
+		/**
+		 * Enter the 6-digit code from your authenticator app to log in. This code changes every 30 seconds.
+		 */
+		content: () => LocalizedString
+	}
+	CopySecretComponent: {
+		/**
+		 * Copy secret
+		 */
+		button: () => LocalizedString
+		/**
+		 * Secret copied to clipboard!
+		 */
+		toastMessage: () => LocalizedString
+	}
+	DefaultWalletScreen: {
+		/**
+		 * Default Account
+		 */
+		title: () => LocalizedString
+		/**
+		 * Pick which account to set as default for receiving and sending. You can adjust the send and receive account for individual payments in the mobile app. Payments received through the cash register or your Lightning address will always go to the default account.
 
 	To avoid Bitcoin's volatility, choose Stablesats. This allows you to maintain a stable amount of money while still being able to send and receive payments.
 
 	You can change this setting at any time, and it won't affect your current balance.
 		 */
-    info: () => LocalizedString;
-  };
-  Languages: {
-    /**
-     * Default (OS)
-     */
-    DEFAULT: () => LocalizedString;
-  };
-  StablesatsModal: {
-    /**
-     * With Stablesats, you now have a USD account added to your wallet!
-     */
-    header: () => LocalizedString;
-    /**
-     * You can use it to send and receive Bitcoin, and instantly transfer value between your BTC and USD account. Value in the USD account will not fluctuate with the price of Bitcoin. This feature is not compatible with the traditional banking system.
-     */
-    body: () => LocalizedString;
-    /**
-     * Read the Terms & Conditions.
-     */
-    termsAndConditions: () => LocalizedString;
-    /**
-     * Learn more about Stablesats
-     */
-    learnMore: () => LocalizedString;
-  };
-  NewNameBlinkModal: {
-    /**
-     * Coming soon: BBW is being renamed to Blink!
-     */
-    header: () => LocalizedString;
-    /**
-     * BBW launched in 2021 in El Zonte, El Salvador to support the creation of a circular Bitcoin economy. Now, it’s growing into the everyday Lightning wallet for people around the globe. This year, we are renaming to Blink to better serve our growing customer base.
-     */
-    body: () => LocalizedString;
-    /**
-     * Sounds good!
-     */
-    ok: () => LocalizedString;
-    /**
-     * Learn more at blink.sv
-     */
-    learnMore: () => LocalizedString;
-  };
-  SplashScreen: {
-    /**
+		info: () => LocalizedString
+	}
+	ThemeScreen: {
+		/**
+		 * Theme
+		 */
+		title: () => LocalizedString
+		/**
+		 * Pick your preferred theme for using Blink, or choose to keep it synced with your system settings.
+		 */
+		info: () => LocalizedString
+		/**
+		 * Use System setting
+		 */
+		system: () => LocalizedString
+		/**
+		 * Use Light Mode
+		 */
+		light: () => LocalizedString
+		/**
+		 * Use Dark Mode
+		 */
+		dark: () => LocalizedString
+	}
+	Languages: {
+		/**
+		 * Default (OS)
+		 */
+		DEFAULT: () => LocalizedString
+	}
+	StablesatsModal: {
+		/**
+		 * With Stablesats, you now have a USD account added to your wallet!
+		 */
+		header: () => LocalizedString
+		/**
+		 * You can use it to send and receive Bitcoin, and instantly transfer value between your BTC and USD account. Value in the USD account will not fluctuate with the price of Bitcoin. This feature is not compatible with the traditional banking system.
+		 */
+		body: () => LocalizedString
+		/**
+		 * Read the Terms & Conditions.
+		 */
+		termsAndConditions: () => LocalizedString
+		/**
+		 * Learn more about Stablesats
+		 */
+		learnMore: () => LocalizedString
+	}
+	SplashScreen: {
+		/**
 		 * Your app is outdated. An update is needed before the app can be used.
 
 	This can be done from the PlayStore for Android and Testflight for iOS
 		 */
-    update: () => LocalizedString;
-  };
-  TransactionDetailScreen: {
-    /**
-     * Transaction Details
-     */
-    detail: () => LocalizedString;
-    /**
-     * Paid to/from
-     */
-    paid: () => LocalizedString;
-    /**
-     * You received
-     */
-    received: () => LocalizedString;
-    /**
-     * You spent
-     */
-    spent: () => LocalizedString;
-    /**
-     * Receiving Account
-     */
-    receivingAccount: () => LocalizedString;
-    /**
-     * Sending Account
-     */
-    sendingAccount: () => LocalizedString;
-  };
-  TransactionLimitsScreen: {
-    /**
-     * Receive
-     */
-    receive: () => LocalizedString;
-    /**
-     * Withdraw
-     */
-    withdraw: () => LocalizedString;
-    /**
-     * per day
-     */
-    perDay: () => LocalizedString;
-    /**
-     * per week
-     */
-    perWeek: () => LocalizedString;
-    /**
-     * Unlimited
-     */
-    unlimited: () => LocalizedString;
-    /**
-     * Remaining
-     */
-    remaining: () => LocalizedString;
-    /**
-     * Stablesat Transfers
-     */
-    stablesatTransfers: () => LocalizedString;
-    /**
-     * Send to {bankName} User
-     */
-    internalSend: (arg: { bankName: string }) => LocalizedString;
-    /**
-     * Unable to fetch limits at this time
-     */
-    error: () => LocalizedString;
-    /**
-     * Hi, I will like to increase the transaction limits of my {bankName} account.
-     */
-    contactUsMessageBody: (arg: { bankName: string }) => LocalizedString;
-    /**
-     * Request To Increase Transaction Limits
-     */
-    contactUsMessageSubject: () => LocalizedString;
-    /**
-     * How can I increase my transaction limits?
-     */
-    howToIncreaseLimits: () => LocalizedString;
-  };
-  TransactionScreen: {
-    /**
-     * No transaction to show
-     */
-    noTransaction: () => LocalizedString;
-    /**
-     * Transactions
-     */
-    title: () => LocalizedString;
-    /**
-     * Recent transactions
-     */
-    recentTransactions: () => LocalizedString;
-    /**
-     * Transaction History
-     */
-    transactionHistoryTitle: () => LocalizedString;
-  };
-  TransferScreen: {
-    /**
-     * Transfer
-     */
-    title: () => LocalizedString;
-    /**
-     * % to convert
-     */
-    percentageToConvert: () => LocalizedString;
-  };
-  UsernameScreen: {
-    /**
-     * at least 3 characters are necessary
-     */
-    "3CharactersMinimum": () => LocalizedString;
-    /**
-     * Username cannot be longer than 50 characters
-     */
-    "50CharactersMaximum": () => LocalizedString;
-    /**
-     * ✅  {username} is available
-     */
-    available: (arg: { username: string }) => LocalizedString;
-    /**
-     * The username is permanent and can not be changed later
-     */
-    confirmSubtext: () => LocalizedString;
-    /**
-     * Set {username} as your username?
-     */
-    confirmTitle: (arg: { username: string }) => LocalizedString;
-    /**
-     * Cannot start with lnbc1, bc1, 1, or 3 and cannot be a Bitcoin address or Lightning invoice
-     */
-    forbiddenStart: () => LocalizedString;
-    /**
-     * Only lowercase letter, number and underscore (_) are accepted
-     */
-    letterAndNumber: () => LocalizedString;
-    /**
-     * Username must not be email address
-     */
-    emailAddress: () => LocalizedString;
-    /**
-     * ❌  {username} is not available
-     */
-    notAvailable: (arg: { username: string }) => LocalizedString;
-    /**
-     * {username} is now your username!
-     */
-    success: (arg: { username: string }) => LocalizedString;
-    /**
-     * What username do you want to use?
-     */
-    usernameToUse: () => LocalizedString;
-  };
-  WelcomeFirstScreen: {
-    /**
-     * Bitcoin is designed to let you store, send and receive money, without relying on a bank or credit card.
-     */
-    bank: () => LocalizedString;
-    /**
-     * Before Bitcoin, people had to rely on banks or credit card providers, to spend, send and receive money.
-     */
-    before: () => LocalizedString;
-    /**
-     * Why should I care?
-     */
-    care: () => LocalizedString;
-    /**
-     * I don't mean to badger you, but there's lot more to learn, dig in...
-     */
-    learn: () => LocalizedString;
-    /**
-     * Learn to Earn
-     */
-    learnToEarn: () => LocalizedString;
-  };
-  PhoneInputScreen: {
-    /**
-     * Enter your phone number, and we'll text you an access code.
-     */
-    header: () => LocalizedString;
-    /**
-     * Verify you are human
-     */
-    headerVerify: () => LocalizedString;
-    /**
-     * Something went wrong verifying you are human, please try again later.
-     */
-    errorRequestingCaptcha: () => LocalizedString;
-    /**
-     * Phone Number
-     */
-    placeholder: () => LocalizedString;
-    /**
-     * Click to Verify
-     */
-    verify: () => LocalizedString;
-    /**
-     * Send via SMS
-     */
-    sms: () => LocalizedString;
-    /**
-     * Send via WhatsApp
-     */
-    whatsapp: () => LocalizedString;
-  };
-  PhoneValidationScreen: {
-    /**
-     * Error logging in. Did you use the right code?
-     */
-    errorLoggingIn: () => LocalizedString;
-    /**
-     * To confirm your phone number, enter the code we just sent you by {channel} on {phoneNumber}
-     */
-    header: (arg: { channel: string; phoneNumber: string }) => LocalizedString;
-    /**
-     * The code needs to have 6 digits
-     */
-    need6Digits: () => LocalizedString;
-    /**
-     * 6 Digit Code
-     */
-    placeholder: () => LocalizedString;
-    /**
-     * Send Again
-     */
-    sendAgain: () => LocalizedString;
-    /**
-     * Try Again
-     */
-    tryAgain: () => LocalizedString;
-    /**
-		 * You used {channel} to receive the code.
-
-	You can try receiving via {other} instead
+		update: () => LocalizedString
+	}
+	TransactionDetailScreen: {
+		/**
+		 * Paid to/from
 		 */
-    sendViaOtherChannel: (
-      arg: { channel: string; other: string },
-    ) => LocalizedString;
-  };
-  common: {
-    /**
-     * Account
-     */
-    account: () => LocalizedString;
-    /**
-     * Transaction Limits
-     */
-    transactionLimits: () => LocalizedString;
-    /**
-     * Activate Wallet
-     */
-    activateWallet: () => LocalizedString;
-    /**
-     * Amount is required
-     */
-    amountRequired: () => LocalizedString;
-    /**
-     * Back
-     */
-    back: () => LocalizedString;
-    /**
-     * Back home
-     */
-    backHome: () => LocalizedString;
-    /**
-     * Bank
-     */
-    bank: () => LocalizedString;
-    /**
-     * Cash Account
-     */
-    bankAccount: () => LocalizedString;
-    /**
-     * {bankName} Advice
-     */
-    bankAdvice: (arg: { bankName: string }) => LocalizedString;
-    /**
-     * {bankName} Info
-     */
-    bankInfo: (arg: { bankName: string }) => LocalizedString;
-    /**
-     * beta
-     */
-    beta: () => LocalizedString;
-    /**
-     * Bitcoin
-     */
-    bitcoin: () => LocalizedString;
-    /**
-     * Bitcoin Price
-     */
-    bitcoinPrice: () => LocalizedString;
-    /**
-     * BTC Account
-     */
-    btcAccount: () => LocalizedString;
-    /**
-     * Cancel
-     */
-    cancel: () => LocalizedString;
-    /**
-     * Close
-     */
-    close: () => LocalizedString;
-    /**
-     * Confirm
-     */
-    confirm: () => LocalizedString;
-    /**
-     * Convert
-     */
-    convert: () => LocalizedString;
-    /**
-     * Currency
-     */
-    currency: () => LocalizedString;
-    /**
-     * Currency issue. Refresh needed
-     */
-    currencySyncIssue: () => LocalizedString;
-    /**
-     * Export transactions as CSV
-     */
-    csvExport: () => LocalizedString;
-    /**
-     * Date
-     */
-    date: () => LocalizedString;
-    /**
-     * Description
-     */
-    description: () => LocalizedString;
-    /**
-     * Domain
-     */
-    domain: () => LocalizedString;
-    /**
-     * Email
-     */
-    email: () => LocalizedString;
-    /**
-     * Error
-     */
-    error: () => LocalizedString;
-    /**
-     * Fatal
-     */
-    fatal: () => LocalizedString;
-    /**
-     * fee
-     */
-    fee: () => LocalizedString;
-    /**
-     * Fee
-     */
-    Fee: () => LocalizedString;
-    /**
-     * Fees
-     */
-    fees: () => LocalizedString;
-    /**
-     * First Name
-     */
-    firstName: () => LocalizedString;
-    /**
-     * From
-     */
-    from: () => LocalizedString;
-    /**
-     * hour
-     */
-    hour: () => LocalizedString;
-    /**
-     * hours
-     */
-    hours: () => LocalizedString;
-    /**
-     * Invoice
-     */
-    invoice: () => LocalizedString;
-    /**
-     * Language
-     */
-    language: () => LocalizedString;
-    /**
-     * Language preference
-     */
-    languagePreference: () => LocalizedString;
-    /**
-     * Last Name
-     */
-    lastName: () => LocalizedString;
-    /**
-     * Later
-     */
-    later: () => LocalizedString;
-    /**
-     * You have been logged out.
-     */
-    loggedOut: () => LocalizedString;
-    /**
-     * Log Out
-     */
-    logout: () => LocalizedString;
-    /**
-     * minutes
-     */
-    minutes: () => LocalizedString;
-    /**
-     * Validate your phone to open your wallet
-     */
-    needWallet: () => LocalizedString;
-    /**
-     * Next
-     */
-    next: () => LocalizedString;
-    /**
-     * No
-     */
-    No: () => LocalizedString;
-    /**
-     * Note
-     */
-    note: () => LocalizedString;
-    /**
-     * Notification
-     */
-    notification: () => LocalizedString;
-    /**
-     * OK
-     */
-    ok: () => LocalizedString;
-    /**
-     * Open Wallet
-     */
-    openWallet: () => LocalizedString;
-    /**
-     * Phone Number
-     */
-    phoneNumber: () => LocalizedString;
-    /**
-     * Rate
-     */
-    rate: () => LocalizedString;
-    /**
-     * Your session has expired. Please log in again.
-     */
-    reauth: () => LocalizedString;
-    /**
-     * Restart
-     */
-    restart: () => LocalizedString;
-    /**
-     * sats
-     */
-    sats: () => LocalizedString;
-    /**
-     * Search
-     */
-    search: () => LocalizedString;
-    /**
-     * Security
-     */
-    security: () => LocalizedString;
-    /**
-     * Send
-     */
-    send: () => LocalizedString;
-    /**
-     * set an amount
-     */
-    setAnAmount: () => LocalizedString;
-    /**
-     * Share
-     */
-    share: () => LocalizedString;
-    /**
-     * Share Bitcoin Address
-     */
-    shareBitcoin: () => LocalizedString;
-    /**
-     * Share Lightning Invoice
-     */
-    shareLightning: () => LocalizedString;
-    /**
-     * Coming soon!
-     */
-    soon: () => LocalizedString;
-    /**
-     * Success!
-     */
-    success: () => LocalizedString;
-    /**
-     * To
-     */
-    to: () => LocalizedString;
-    /**
-     * Total
-     */
-    total: () => LocalizedString;
-    /**
-     * Transactions
-     */
-    transactions: () => LocalizedString;
-    /**
-     * Error loading transactions
-     */
-    transactionsError: () => LocalizedString;
-    /**
-     * Try Again
-     */
-    tryAgain: () => LocalizedString;
-    /**
-     * Type
-     */
-    type: () => LocalizedString;
-    /**
-     * USD Account
-     */
-    usdAccount: () => LocalizedString;
-    /**
-     * Username
-     */
-    username: () => LocalizedString;
-    /**
-     * Username is required
-     */
-    usernameRequired: () => LocalizedString;
-    /**
-     * View transaction
-     */
-    viewTransaction: () => LocalizedString;
-    /**
-     * Yes
-     */
-    yes: () => LocalizedString;
-    /**
-     * pending
-     */
-    pending: () => LocalizedString;
-    /**
-     * Today
-     */
-    today: () => LocalizedString;
-    /**
-     * Yesterday
-     */
-    yesterday: () => LocalizedString;
-    /**
-     * This month
-     */
-    thisMonth: () => LocalizedString;
-    /**
-     * Previous months
-     */
-    prevMonths: () => LocalizedString;
-    /**
-     * There was a problem with your request. Please retry in one minute. If the problem persist, we recommend that you log out and log back in. You can log out by going into Settings > Account > Log out
-     */
-    problemMaybeReauth: () => LocalizedString;
-  };
-  errors: {
-    /**
+		paid: () => LocalizedString
+		/**
+		 * You received
+		 */
+		received: () => LocalizedString
+		/**
+		 * You spent
+		 */
+		spent: () => LocalizedString
+		/**
+		 * Receiving Account
+		 */
+		receivingAccount: () => LocalizedString
+		/**
+		 * Sending Account
+		 */
+		sendingAccount: () => LocalizedString
+		/**
+		 * Your transaction is currently pending and will be broadcasted to the Bitcoin network in a moment.
+		 */
+		txNotBroadcast: () => LocalizedString
+	}
+	TransactionLimitsScreen: {
+		/**
+		 * Receive
+		 */
+		receive: () => LocalizedString
+		/**
+		 * Withdraw
+		 */
+		withdraw: () => LocalizedString
+		/**
+		 * per day
+		 */
+		perDay: () => LocalizedString
+		/**
+		 * per week
+		 */
+		perWeek: () => LocalizedString
+		/**
+		 * Unlimited
+		 */
+		unlimited: () => LocalizedString
+		/**
+		 * Remaining
+		 */
+		remaining: () => LocalizedString
+		/**
+		 * Stablesat Transfers
+		 */
+		stablesatTransfers: () => LocalizedString
+		/**
+		 * Send to {bankName} User
+		 */
+		internalSend: (arg: { bankName: string }) => LocalizedString
+		/**
+		 * Unable to fetch limits at this time
+		 */
+		error: () => LocalizedString
+		/**
+		 * Hi, I will like to increase the transaction limits of my {bankName} account.
+		 */
+		contactUsMessageBody: (arg: { bankName: string }) => LocalizedString
+		/**
+		 * Request To Increase Transaction Limits
+		 */
+		contactUsMessageSubject: () => LocalizedString
+		/**
+		 * Contact support to perform manual KYC to increase your limit
+		 */
+		contactSupportToPerformKyc: () => LocalizedString
+		/**
+		 * Increase your limits
+		 */
+		increaseLimits: () => LocalizedString
+	}
+	TransactionScreen: {
+		/**
+		 * No transaction to show
+		 */
+		noTransaction: () => LocalizedString
+		/**
+		 * Transactions
+		 */
+		title: () => LocalizedString
+		/**
+		 * Recent transactions
+		 */
+		recentTransactions: () => LocalizedString
+		/**
+		 * Transaction History
+		 */
+		transactionHistoryTitle: () => LocalizedString
+	}
+	TransferScreen: {
+		/**
+		 * Transfer
+		 */
+		title: () => LocalizedString
+		/**
+		 * % to convert
+		 */
+		percentageToConvert: () => LocalizedString
+	}
+	UpgradeAccountModal: {
+		/**
+		 * Upgrade your account
+		 */
+		title: () => LocalizedString
+		/**
+		 * Back up your funds
+		 */
+		backUpFunds: () => LocalizedString
+		/**
+		 * Increase your transaction limits
+		 */
+		higherLimits: () => LocalizedString
+		/**
+		 * Receive bitcoin onchain
+		 */
+		receiveOnchain: () => LocalizedString
+		/**
+		 * Quick and easy phone number verification
+		 */
+		onlyAPhoneNumber: () => LocalizedString
+		/**
+		 * Let's go!
+		 */
+		letsGo: () => LocalizedString
+		/**
+		 * Stay in trial mode
+		 */
+		stayInTrialMode: () => LocalizedString
+	}
+	SetAddressModal: {
+		/**
+		 * Set {bankName} address
+		 */
+		title: (arg: { bankName: string }) => LocalizedString
+		Errors: {
+			/**
+			 * Address must be at least 3 characters long
+			 */
+			tooShort: () => LocalizedString
+			/**
+			 * Address must be at most 50 characters long
+			 */
+			tooLong: () => LocalizedString
+			/**
+			 * Address can only contain letters, numbers, and underscores
+			 */
+			invalidCharacter: () => LocalizedString
+			/**
+			 * Sorry, this address is already taken
+			 */
+			addressUnavailable: () => LocalizedString
+			/**
+			 * An unknown error occurred, please try again later
+			 */
+			unknownError: () => LocalizedString
+		}
+		/**
+		 * Receive money from other lightning wallets and {bankName} users with this address.
+		 */
+		receiveMoney: (arg: { bankName: string }) => LocalizedString
+		/**
+		 * It can't be changed later.
+		 */
+		itCannotBeChanged: () => LocalizedString
+	}
+	WelcomeFirstScreen: {
+		/**
+		 * Bitcoin is designed to let you store, send and receive money, without relying on a bank or credit card.
+		 */
+		bank: () => LocalizedString
+		/**
+		 * Before Bitcoin, people had to rely on banks or credit card providers, to spend, send and receive money.
+		 */
+		before: () => LocalizedString
+		/**
+		 * Why should I care?
+		 */
+		care: () => LocalizedString
+		/**
+		 * I don't mean to badger you, but there's lot more to learn, dig in...
+		 */
+		learn: () => LocalizedString
+		/**
+		 * Learn to Earn
+		 */
+		learnToEarn: () => LocalizedString
+	}
+	PhoneLoginInitiateScreen: {
+		/**
+		 * Account set up
+		 */
+		title: () => LocalizedString
+		/**
+		 * Enter your phone number, and we'll text you an access code.
+		 */
+		header: () => LocalizedString
+		/**
+		 * Verify you are human
+		 */
+		headerVerify: () => LocalizedString
+		/**
+		 * Something went wrong verifying you are human, please try again later.
+		 */
+		errorRequestingCaptcha: () => LocalizedString
+		/**
+		 * Something went wrong requesting the phone code, please try again later.
+		 */
+		errorRequestingCode: () => LocalizedString
+		/**
+		 * Invalid phone number. Are you sure you entered the right number?
+		 */
+		errorInvalidPhoneNumber: () => LocalizedString
+		/**
+		 * We are unable to support customers in your country.
+		 */
+		errorUnsupportedCountry: () => LocalizedString
+		/**
+		 * Phone Number
+		 */
+		placeholder: () => LocalizedString
+		/**
+		 * Click to Verify
+		 */
+		verify: () => LocalizedString
+		/**
+		 * Send via SMS
+		 */
+		sms: () => LocalizedString
+		/**
+		 * Send via WhatsApp
+		 */
+		whatsapp: () => LocalizedString
+	}
+	PhoneLoginValidationScreen: {
+		/**
+		 * Error logging in. Did you use the right code?
+		 */
+		errorLoggingIn: () => LocalizedString
+		/**
+		 * Too many attempts. Please try again later.
+		 */
+		errorTooManyAttempts: () => LocalizedString
+		/**
+		 * This phone account already exists. Please log out of your trial account and then log in with your phone number.
+		 */
+		errorCannotUpgradeToExistingAccount: () => LocalizedString
+		/**
+		 * To confirm your phone number, enter the code we just sent you by {channel} on {phoneNumber}
+		 */
+		header: (arg: { channel: string, phoneNumber: string }) => LocalizedString
+		/**
+		 * 6 Digit Code
+		 */
+		placeholder: () => LocalizedString
+		/**
+		 * Send Again
+		 */
+		sendAgain: () => LocalizedString
+		/**
+		 * Try Again
+		 */
+		tryAgain: () => LocalizedString
+		/**
+		 * You selected to receive the code via {channel}. You can try receiving via {other} instead
+		 */
+		sendViaOtherChannel: (arg: { channel: string, other: string }) => LocalizedString
+	}
+	PhoneRegistrationInitiateScreen: {
+		/**
+		 * Phone set up
+		 */
+		title: () => LocalizedString
+		/**
+		 * Enter your phone number, and we'll text you an access code.
+		 */
+		header: () => LocalizedString
+		/**
+		 * Verify you are human
+		 */
+		headerVerify: () => LocalizedString
+		/**
+		 * Something went wrong requesting the phone code, please try again later.
+		 */
+		errorRequestingCode: () => LocalizedString
+		/**
+		 * Invalid phone number. Are you sure you entered the right number?
+		 */
+		errorInvalidPhoneNumber: () => LocalizedString
+		/**
+		 * We are unable to support customers in your country.
+		 */
+		errorUnsupportedCountry: () => LocalizedString
+		/**
+		 * Phone Number
+		 */
+		placeholder: () => LocalizedString
+		/**
+		 * Click to Verify
+		 */
+		verify: () => LocalizedString
+		/**
+		 * Send via SMS
+		 */
+		sms: () => LocalizedString
+		/**
+		 * Send via WhatsApp
+		 */
+		whatsapp: () => LocalizedString
+	}
+	PhoneRegistrationValidateScreen: {
+		/**
+		 * Phone number confirmed
+		 */
+		successTitle: () => LocalizedString
+	}
+	EmailRegistrationInitiateScreen: {
+		/**
+		 * Add your email
+		 */
+		title: () => LocalizedString
+		/**
+		 * Enter your email address, and we'll send you an access code.
+		 */
+		header: () => LocalizedString
+		/**
+		 * Invalid email address. Are you sure you entered the right email?
+		 */
+		invalidEmail: () => LocalizedString
+		/**
+		 * Send code
+		 */
+		send: () => LocalizedString
+		/**
+		 * Missing email registration id
+		 */
+		missingEmailRegistrationId: () => LocalizedString
+		/**
+		 * hal@finney.org
+		 */
+		placeholder: () => LocalizedString
+	}
+	EmailRegistrationValidateScreen: {
+		/**
+		 * To confirm your email address, enter the code we just sent you on {email}
+		 */
+		header: (arg: { email: string }) => LocalizedString
+		/**
+		 * Email {email} confirmed successfully
+		 */
+		success: (arg: { email: string }) => LocalizedString
+	}
+	EmailLoginInitiateScreen: {
+		/**
+		 * Login via email
+		 */
+		title: () => LocalizedString
+		/**
+		 * Enter your email address, and we'll send you an access code.
+		 */
+		header: () => LocalizedString
+		/**
+		 * Invalid email address. Are you sure you entered the right email?
+		 */
+		invalidEmail: () => LocalizedString
+		/**
+		 * Send code
+		 */
+		send: () => LocalizedString
+	}
+	EmailLoginValidateScreen: {
+		/**
+		 * If there is an account attached to {email}, you should have received 6 digits code to enter below.
+
+	If you are not receiving anything, it's probably either because this is not the right email, the email is in your spam folder.
+		 */
+		header: (arg: { email: string }) => LocalizedString
+		/**
+		 * Email {email} confirmed successfully
+		 */
+		success: (arg: { email: string }) => LocalizedString
+	}
+	common: {
+		/**
+		 * Account
+		 */
+		account: () => LocalizedString
+		/**
+		 * Transaction Limits
+		 */
+		transactionLimits: () => LocalizedString
+		/**
+		 * Activate Wallet
+		 */
+		activateWallet: () => LocalizedString
+		/**
+		 * Amount is required
+		 */
+		amountRequired: () => LocalizedString
+		/**
+		 * Back
+		 */
+		back: () => LocalizedString
+		/**
+		 * Back home
+		 */
+		backHome: () => LocalizedString
+		/**
+		 * Bank
+		 */
+		bank: () => LocalizedString
+		/**
+		 * Cash Account
+		 */
+		bankAccount: () => LocalizedString
+		/**
+		 * {bankName} Advice
+		 */
+		bankAdvice: (arg: { bankName: string }) => LocalizedString
+		/**
+		 * {bankName} Info
+		 */
+		bankInfo: (arg: { bankName: string }) => LocalizedString
+		/**
+		 * beta
+		 */
+		beta: () => LocalizedString
+		/**
+		 * Bitcoin
+		 */
+		bitcoin: () => LocalizedString
+		/**
+		 * Bitcoin Price
+		 */
+		bitcoinPrice: () => LocalizedString
+		/**
+		 * BTC Account
+		 */
+		btcAccount: () => LocalizedString
+		/**
+		 * Cancel
+		 */
+		cancel: () => LocalizedString
+		/**
+		 * Close
+		 */
+		close: () => LocalizedString
+		/**
+		 * Confirm
+		 */
+		confirm: () => LocalizedString
+		/**
+		 * Convert
+		 */
+		convert: () => LocalizedString
+		/**
+		 * Code Confirmation
+		 */
+		codeConfirmation: () => LocalizedString
+		/**
+		 * Currency
+		 */
+		currency: () => LocalizedString
+		/**
+		 * Currency issue. Refresh needed
+		 */
+		currencySyncIssue: () => LocalizedString
+		/**
+		 * Export transactions as CSV
+		 */
+		csvExport: () => LocalizedString
+		/**
+		 * Date
+		 */
+		date: () => LocalizedString
+		/**
+		 * Description
+		 */
+		description: () => LocalizedString
+		/**
+		 * Domain
+		 */
+		domain: () => LocalizedString
+		/**
+		 * Email
+		 */
+		email: () => LocalizedString
+		/**
+		 * Error
+		 */
+		error: () => LocalizedString
+		/**
+		 * Fatal
+		 */
+		fatal: () => LocalizedString
+		/**
+		 * fee
+		 */
+		fee: () => LocalizedString
+		/**
+		 * Fee
+		 */
+		Fee: () => LocalizedString
+		/**
+		 * Fees
+		 */
+		fees: () => LocalizedString
+		/**
+		 * First Name
+		 */
+		firstName: () => LocalizedString
+		/**
+		 * From
+		 */
+		from: () => LocalizedString
+		/**
+		 * hour
+		 */
+		hour: () => LocalizedString
+		/**
+		 * hours
+		 */
+		hours: () => LocalizedString
+		/**
+		 * Invoice
+		 */
+		invoice: () => LocalizedString
+		/**
+		 * Language
+		 */
+		language: () => LocalizedString
+		/**
+		 * Language preference
+		 */
+		languagePreference: () => LocalizedString
+		/**
+		 * Last Name
+		 */
+		lastName: () => LocalizedString
+		/**
+		 * Later
+		 */
+		later: () => LocalizedString
+		/**
+		 * You have been logged out.
+		 */
+		loggedOut: () => LocalizedString
+		/**
+		 * Log Out
+		 */
+		logout: () => LocalizedString
+		/**
+		 * minutes
+		 */
+		minutes: () => LocalizedString
+		/**
+		 * Missing auth token
+		 */
+		errorAuthToken: () => LocalizedString
+		/**
+		 * Log in or create an account to access your wallet
+		 */
+		needWallet: () => LocalizedString
+		/**
+		 * Next
+		 */
+		next: () => LocalizedString
+		/**
+		 * No
+		 */
+		No: () => LocalizedString
+		/**
+		 * Note
+		 */
+		note: () => LocalizedString
+		/**
+		 * Notification
+		 */
+		notification: () => LocalizedString
+		/**
+		 * OK
+		 */
+		ok: () => LocalizedString
+		/**
+		 * or
+		 */
+		or: () => LocalizedString
+		/**
+		 * Open Wallet
+		 */
+		openWallet: () => LocalizedString
+		/**
+		 * Phone
+		 */
+		phone: () => LocalizedString
+		/**
+		 * Phone Number
+		 */
+		phoneNumber: () => LocalizedString
+		/**
+		 * Rate
+		 */
+		rate: () => LocalizedString
+		/**
+		 * Your session has expired. Please log in again.
+		 */
+		reauth: () => LocalizedString
+		/**
+		 * Restart
+		 */
+		restart: () => LocalizedString
+		/**
+		 * sats
+		 */
+		sats: () => LocalizedString
+		/**
+		 * Search
+		 */
+		search: () => LocalizedString
+		/**
+		 * Security
+		 */
+		security: () => LocalizedString
+		/**
+		 * Send
+		 */
+		send: () => LocalizedString
+		/**
+		 * set an amount
+		 */
+		setAnAmount: () => LocalizedString
+		/**
+		 * Share
+		 */
+		share: () => LocalizedString
+		/**
+		 * Share Bitcoin Address
+		 */
+		shareBitcoin: () => LocalizedString
+		/**
+		 * Share Lightning Invoice
+		 */
+		shareLightning: () => LocalizedString
+		/**
+		 * Coming soon!
+		 */
+		soon: () => LocalizedString
+		/**
+		 * Submit
+		 */
+		submit: () => LocalizedString
+		/**
+		 * Success!
+		 */
+		success: () => LocalizedString
+		/**
+		 * Stablesats USD
+		 */
+		stablesatsUsd: () => LocalizedString
+		/**
+		 * To
+		 */
+		to: () => LocalizedString
+		/**
+		 * Total
+		 */
+		total: () => LocalizedString
+		/**
+		 * Transactions
+		 */
+		transactions: () => LocalizedString
+		/**
+		 * Error loading transactions
+		 */
+		transactionsError: () => LocalizedString
+		/**
+		 * Try Again
+		 */
+		tryAgain: () => LocalizedString
+		/**
+		 * Type
+		 */
+		type: () => LocalizedString
+		/**
+		 * USD Account
+		 */
+		usdAccount: () => LocalizedString
+		/**
+		 * Username
+		 */
+		username: () => LocalizedString
+		/**
+		 * Username is required
+		 */
+		usernameRequired: () => LocalizedString
+		/**
+		 * Backup/upgrade account
+		 */
+		backupAccount: () => LocalizedString
+		/**
+		 * View transaction
+		 */
+		viewTransaction: () => LocalizedString
+		/**
+		 * Yes
+		 */
+		yes: () => LocalizedString
+		/**
+		 * pending
+		 */
+		pending: () => LocalizedString
+		/**
+		 * Today
+		 */
+		today: () => LocalizedString
+		/**
+		 * Yesterday
+		 */
+		yesterday: () => LocalizedString
+		/**
+		 * This month
+		 */
+		thisMonth: () => LocalizedString
+		/**
+		 * Previous months
+		 */
+		prevMonths: () => LocalizedString
+		/**
+		 * There was a problem with your request. Please retry in one minute. If the problem persist, we recommend that you log out and log back in. You can log out by going into Settings > Account > Log out
+		 */
+		problemMaybeReauth: () => LocalizedString
+		/**
+		 * Warning
+		 */
+		warning: () => LocalizedString
+	}
+	errors: {
+		/**
 		 * There was an error.
 	Please try again later.
 		 */
@@ -5568,163 +7013,388 @@ export type TranslationFunctions = {
 			 * Connection issue.
 		Verify your internet connection
 			 */
-      connection: () => LocalizedString;
-    };
-    /**
-     * Unexpected error occurred
-     */
-    unexpectedError: () => LocalizedString;
-    /**
-     * Please restart the application.
-     */
-    restartApp: () => LocalizedString;
-    /**
-     * If problem persists contact support.
-     */
-    problemPersists: () => LocalizedString;
-    /**
-     * Sorry we appear to be having issues loading the application data.  If problems persist please contact support.
-     */
-    fatalError: () => LocalizedString;
-    /**
-     * Show Error
-     */
-    showError: () => LocalizedString;
-    /**
-     * Clear App Data and Logout
-     */
-    clearAppData: () => LocalizedString;
-  };
-  notifications: {
-    payment: {
-      /**
-       * You just received {value} sats
-       */
-      body: (arg: { value: string }) => LocalizedString;
-      /**
-       * Payment received
-       */
-      title: () => LocalizedString;
-    };
-  };
-  support: {
-    /**
-     * Need help?  Contact us.
-     */
-    contactUs: () => LocalizedString;
-    /**
-     * WhatsApp
-     */
-    whatsapp: () => LocalizedString;
-    /**
-     * Email
-     */
-    email: () => LocalizedString;
-    /**
-     * Status Page
-     */
-    statusPage: () => LocalizedString;
-    /**
-     * Telegram (community)
-     */
-    telegram: () => LocalizedString;
-    /**
-     * {bankName} - Support
-     */
-    defaultEmailSubject: (arg: { bankName: string }) => LocalizedString;
-    /**
-     * Hey there! I need some help with {bankName}, I'm using the version {version} on {os}.
-     */
-    defaultSupportMessage: (
-      arg: { bankName: string; os: string; version: string },
-    ) => LocalizedString;
-    /**
-     * Hello. Please delete my account.
-     */
-    deleteAccount: () => LocalizedString;
-    /**
-     * Account deletion request: {phoneNumber}
-     */
-    deleteAccountEmailSubject: (
-      arg: { phoneNumber: string },
-    ) => LocalizedString;
-    /**
-     * email {email} copied to clipboard
-     */
-    emailCopied: (arg: { email: string }) => LocalizedString;
-  };
-  lnurl: {
-    /**
-     * You can't send more than max amount
-     */
-    overLimit: () => LocalizedString;
-    /**
-     * You can't send less than min amount
-     */
-    underLimit: () => LocalizedString;
-    /**
-     * Comment required
-     */
-    commentRequired: () => LocalizedString;
-    /**
-     * View Printable Version
-     */
-    viewPrintable: () => LocalizedString;
-  };
-  DisplayCurrencyScreen: {
-    /**
-     * Error loading list of currencies
-     */
-    errorLoading: () => LocalizedString;
-  };
-  AmountInputScreen: {
-    /**
-     * Enter Amount
-     */
-    enterAmount: () => LocalizedString;
-    /**
-     * Set Amount
-     */
-    setAmount: () => LocalizedString;
-    /**
-     * Amount must not exceed {maxAmount}.
-     */
-    maxAmountExceeded: (arg: { maxAmount: string }) => LocalizedString;
-    /**
-     * Amount must be at least {minAmount}.
-     */
-    minAmountNotMet: (arg: { minAmount: string }) => LocalizedString;
-  };
-  AmountInputButton: {
-    /**
-     * Tap to set amount
-     */
-    tapToSetAmount: () => LocalizedString;
-  };
-  AppUpdate: {
-    /**
-     * I need to update my app to the latest version. I'm using the {os} app with version {version}.
-     */
-    needToUpdateSupportMessage: (
-      arg: { os: string; version: string },
-    ) => LocalizedString;
-    /**
-     * This mobile version is no longer supported
-     */
-    versionNotSupported: () => LocalizedString;
-    /**
-     * Update is mandatory
-     */
-    updateMandatory: () => LocalizedString;
-    /**
-     * Tap here to update now
-     */
-    tapHereUpdate: () => LocalizedString;
-    /**
-     * Contact Support
-     */
-    contactSupport: () => LocalizedString;
-  };
+			connection: () => LocalizedString
+		}
+		/**
+		 * Unexpected error occurred
+		 */
+		unexpectedError: () => LocalizedString
+		/**
+		 * Please restart the application.
+		 */
+		restartApp: () => LocalizedString
+		/**
+		 * If problem persists contact support.
+		 */
+		problemPersists: () => LocalizedString
+		/**
+		 * Sorry we appear to be having issues loading the application data.  If problems persist please contact support.
+		 */
+		fatalError: () => LocalizedString
+		/**
+		 * Show Error
+		 */
+		showError: () => LocalizedString
+		/**
+		 * Clear App Data and Logout
+		 */
+		clearAppData: () => LocalizedString
+	}
+	notifications: {
+		payment: {
+			/**
+			 * You just received {value} sats
+			 */
+			body: (arg: { value: string }) => LocalizedString
+			/**
+			 * Payment received
+			 */
+			title: () => LocalizedString
+		}
+	}
+	support: {
+		/**
+		 * Need help? Contact us.
+		 */
+		contactUs: () => LocalizedString
+		/**
+		 * Join the community
+		 */
+		joinTheCommunity: () => LocalizedString
+		/**
+		 * WhatsApp
+		 */
+		whatsapp: () => LocalizedString
+		/**
+		 * Email
+		 */
+		email: () => LocalizedString
+		/**
+		 * Enjoying the app?
+		 */
+		enjoyingApp: () => LocalizedString
+		/**
+		 * Status Page
+		 */
+		statusPage: () => LocalizedString
+		/**
+		 * Telegram
+		 */
+		telegram: () => LocalizedString
+		/**
+		 * Mattermost
+		 */
+		mattermost: () => LocalizedString
+		/**
+		 * Thank you for the feedback, would you like to suggest an improvement?
+		 */
+		thankYouText: () => LocalizedString
+		/**
+		 * {bankName} - Support
+		 */
+		defaultEmailSubject: (arg: { bankName: string }) => LocalizedString
+		/**
+		 * Hey there! I need some help with {bankName}, I'm using the version {version} on {os}.
+		 */
+		defaultSupportMessage: (arg: { bankName: string, os: string, version: string }) => LocalizedString
+		/**
+		 * email {email} copied to clipboard
+		 */
+		emailCopied: (arg: { email: string }) => LocalizedString
+		/**
+		 * Delete account
+		 */
+		deleteAccount: () => LocalizedString
+		/**
+		 * delete
+		 */
+		'delete': () => LocalizedString
+		/**
+		 * Please type "{delete}" to confirm account deletion
+		 */
+		typeDelete: (arg: { delete: string }) => LocalizedString
+		/**
+		 * Final Confirmation Required
+		 */
+		finalConfirmationAccountDeletionTitle: () => LocalizedString
+		/**
+		 * Are you sure you want to delete your account? This action is irreversible.
+		 */
+		finalConfirmationAccountDeletionMessage: () => LocalizedString
+		/**
+		 * Deleting your account will cause you to lose access to your current balance. Are you sure you want to proceed?
+		 */
+		deleteAccountBalanceWarning: () => LocalizedString
+		/**
+		 * Your account has been written for deletion.
+
+	When the probation period related to regulatory requirement is over, the remaining data related to your account will be permanently deleted.
+		 */
+		deleteAccountConfirmation: () => LocalizedString
+		/**
+		 * Hey there!, please delete my account. My phone number is {phoneNumber}.
+		 */
+		deleteAccountFromPhone: (arg: { phoneNumber: string }) => LocalizedString
+		/**
+		 * Something went wrong. Contact {email} for further assistance.
+		 */
+		deleteAccountError: (arg: { email: string }) => LocalizedString
+		/**
+		 * Bye!
+		 */
+		bye: () => LocalizedString
+	}
+	lnurl: {
+		/**
+		 * You can't send more than max amount
+		 */
+		overLimit: () => LocalizedString
+		/**
+		 * You can't send less than min amount
+		 */
+		underLimit: () => LocalizedString
+		/**
+		 * Comment required
+		 */
+		commentRequired: () => LocalizedString
+		/**
+		 * View Printable Version
+		 */
+		viewPrintable: () => LocalizedString
+	}
+	DisplayCurrencyScreen: {
+		/**
+		 * Error loading list of currencies
+		 */
+		errorLoading: () => LocalizedString
+	}
+	AmountInputScreen: {
+		/**
+		 * Enter Amount
+		 */
+		enterAmount: () => LocalizedString
+		/**
+		 * Set Amount
+		 */
+		setAmount: () => LocalizedString
+		/**
+		 * Amount must not exceed {maxAmount}.
+		 */
+		maxAmountExceeded: (arg: { maxAmount: string }) => LocalizedString
+		/**
+		 * Amount must be at least {minAmount}.
+		 */
+		minAmountNotMet: (arg: { minAmount: string }) => LocalizedString
+	}
+	AmountInputButton: {
+		/**
+		 * Set amount
+		 */
+		tapToSetAmount: () => LocalizedString
+	}
+	AppUpdate: {
+		/**
+		 * I need to update my app to the latest version. I'm using the {os} app with version {version}.
+		 */
+		needToUpdateSupportMessage: (arg: { os: string, version: string }) => LocalizedString
+		/**
+		 * This mobile version is no longer supported
+		 */
+		versionNotSupported: () => LocalizedString
+		/**
+		 * Update is mandatory
+		 */
+		updateMandatory: () => LocalizedString
+		/**
+		 * Tap here to update now
+		 */
+		tapHereUpdate: () => LocalizedString
+		/**
+		 * Contact Support
+		 */
+		contactSupport: () => LocalizedString
+	}
+	Circles: {
+		/**
+		 * My Circles
+		 */
+		title: () => LocalizedString
+		/**
+		 * Blink Circles
+		 */
+		titleBlinkCircles: () => LocalizedString
+		/**
+		 * Fetching latest circles
+		 */
+		fetchingLatestCircles: () => LocalizedString
+		/**
+		 * circles
+		 */
+		circles: () => LocalizedString
+		/**
+		 * Your circles grow as you welcome others to Blink - by sending somebody their first sats.
+		 */
+		circlesExplainer: () => LocalizedString
+		/**
+		 * View My Circles
+		 */
+		viewMyCircles: () => LocalizedString
+		/**
+		 * Introducing Circles
+		 */
+		introducingCircles: () => LocalizedString
+		/**
+		 * Copied Invite Link
+		 */
+		copiedInviteLink: () => LocalizedString
+		/**
+		 * Invite a friend to Blink
+		 */
+		inviteFriendToBlink: () => LocalizedString
+		/**
+		 * Share your circles
+		 */
+		shareCircles: () => LocalizedString
+		/**
+		 * Share
+		 */
+		share: () => LocalizedString
+		circlesGrowingSatsExplainer: {
+			/**
+			 * Your
+			 */
+			your: () => LocalizedString
+			/**
+			 * grow when you send a new Blink user their first sats!
+			 */
+			grow: () => LocalizedString
+		}
+		/**
+		 * Your circles grow as you welcome people to Blink – keep going!
+		 */
+		circlesGrowingKeepGoing: () => LocalizedString
+		/**
+		 * points
+		 */
+		points: () => LocalizedString
+		/**
+		 * Your inner circle grows when you send a Blink user their first sats!
+		 */
+		innerCircleGrow: () => LocalizedString
+		/**
+		 * Calculating your circles...
+		 */
+		calculatingYourCircles: () => LocalizedString
+		/**
+		 * You're driving Bitcoin adoption with Blink, keep it up!
+		 */
+		innerCircleExplainer: () => LocalizedString
+		/**
+		 * I'm driving Bitcoin adoption with Blink!
+		 */
+		innerCircleExplainerCard: () => LocalizedString
+		/**
+		 * Inner Circle
+		 */
+		innerCircle: () => LocalizedString
+		/**
+		 * people you welcomed
+		 */
+		peopleYouWelcomed: () => LocalizedString
+		/**
+		 * people 
+	I welcomed
+		 */
+		peopleIWelcomed: () => LocalizedString
+		/**
+		 * this month
+		 */
+		thisMonth: () => LocalizedString
+		/**
+		 * Outer Circle
+		 */
+		outerCircle: () => LocalizedString
+		/**
+		 * people welcomed by your circle
+		 */
+		peopleWelcomedByYourCircle: () => LocalizedString
+		/**
+		 * people welcomed by my circle
+		 */
+		peopleWelcomedByMyCircle: () => LocalizedString
+		/**
+		 * Your Sphere
+		 */
+		yourSphere: () => LocalizedString
+		/**
+		 * My Sphere
+		 */
+		mySphere: () => LocalizedString
+		/**
+		 * You're #{thisMonthRank} this month and #{allTimeRank} all time!
+		 */
+		yourRankMessage: (arg: { allTimeRank: number, thisMonthRank: number }) => LocalizedString
+		/**
+		 * #{thisMonthRank} this month and #{allTimeRank} all time!
+		 */
+		rankMessage: (arg: { allTimeRank: number, thisMonthRank: number }) => LocalizedString
+		/**
+		 * Invite a friend
+		 */
+		inviteFriends: () => LocalizedString
+		/**
+		 * Build your circles
+		 */
+		buildYourCircle: () => LocalizedString
+		/**
+		 * My Blink Circles
+		 */
+		myBlinkCircles: () => LocalizedString
+		/**
+		 * {username}'s
+		 */
+		someones: (arg: { username: string }) => LocalizedString
+		/**
+		 * Bitcoin adoption is a group effort.
+	Invite a friend and send them sats to start building your circles.
+		 */
+		groupEffort: () => LocalizedString
+		/**
+		 * I'm driving Bitcoin adoption using Blink.
+		 */
+		drivingAdoption: () => LocalizedString
+		septChallenge: {
+			/**
+			 * September Challenge!
+			 */
+			title: () => LocalizedString
+			/**
+			 * Inner Circle {innerCircle}/21 - Earn $21
+		Top 3 - Win tickets to Adopting Bitcoin!
+			 */
+			description: (arg: { innerCircle: number }) => LocalizedString
+			/**
+			 * Grow your inner circle by 21 people in September and share on social with #blinkcircles to get $21 to your Stablesats account. Top 3 win tickets to Adopting Bitcoin!
+			 */
+			details: () => LocalizedString
+			/**
+			 * people welcomed so far
+			 */
+			peopleWelcomedSoFar: () => LocalizedString
+			/**
+			 * your rank
+			 */
+			yourRank: () => LocalizedString
+			/**
+			 * Reminder: Your inner circle grows when you send a new Blink user their first sats
+			 */
+			reminder: () => LocalizedString
+			/**
+			 * Full details at
+			 */
+			fullDetails: () => LocalizedString
+		}
+	}
   marketPlace: {
     add: () => LocalizedString;
     name: () => LocalizedString;
@@ -5790,7 +7460,7 @@ export type TranslationFunctions = {
     tell_us_what_is_wrong_with_this_post: () => LocalizedString;
     whats_going_on: () => LocalizedString;
   };
-};
+}
 
 export type Formatters = {
   sats: (value: unknown) => unknown;

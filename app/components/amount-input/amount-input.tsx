@@ -21,6 +21,9 @@ export type AmountInputProps = {
   maxAmount?: MoneyAmount<WalletOrDisplayCurrency>
   minAmount?: MoneyAmount<WalletOrDisplayCurrency>
   canSetAmount?: boolean
+  isSendingMax?: boolean
+  showValuesIfDisabled?: boolean
+  big?: boolean
 }
 
 export const AmountInput: React.FC<AmountInputProps> = ({
@@ -31,6 +34,9 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   minAmount,
   convertMoneyAmount,
   canSetAmount = true,
+  isSendingMax = false,
+  showValuesIfDisabled = true,
+  big = true,
 }) => {
   const [isSettingAmount, setIsSettingAmount] = React.useState(false)
   const { formatMoneyAmount, getSecondaryAmountIfCurrencyIsDifferent } =
@@ -46,7 +52,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     return (
       <AmountInputModal
         moneyAmount={unitOfAccountAmount}
-        isOpen={isSettingAmount}
+        isOpen={true}
         walletCurrency={walletCurrency}
         convertMoneyAmount={convertMoneyAmount}
         onSetAmount={onSetAmount}
@@ -92,6 +98,9 @@ export const AmountInput: React.FC<AmountInputProps> = ({
       })
   }
 
+  if (isSendingMax && formattedPrimaryAmount)
+    formattedPrimaryAmount = `~ ${formattedPrimaryAmount} (${LL.SendBitcoinScreen.max()})`
+
   const onPressInputButton = () => {
     setIsSettingAmount(true)
   }
@@ -105,16 +114,22 @@ export const AmountInput: React.FC<AmountInputProps> = ({
         iconName="pencil"
         secondaryValue={formattedSecondaryAmount}
         primaryTextTestProps={"Amount Input Button Amount"}
+        big={big}
         {...testProps("Amount Input Button")}
       />
     )
   }
+
   return (
     <AmountInputButton
+      placeholder={LL.AmountInputButton.tapToSetAmount()}
+      iconName="pencil"
       value={formattedPrimaryAmount}
       secondaryValue={formattedSecondaryAmount}
       disabled={true}
       primaryTextTestProps={"Amount Input Button Amount"}
+      showValuesIfDisabled={showValuesIfDisabled}
+      big={big}
       {...testProps("Amount Input Button")}
     />
   )

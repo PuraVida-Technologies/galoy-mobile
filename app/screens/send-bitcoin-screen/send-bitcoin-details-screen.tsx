@@ -1,214 +1,43 @@
 import { gql } from "@apollo/client"
-import NoteIcon from "@app/assets/icons/note.svg"
 import { AmountInput } from "@app/components/amount-input/amount-input"
+import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { Screen } from "@app/components/screen"
 import {
   useSendBitcoinDetailsScreenQuery,
+  useSendBitcoinInternalLimitsQuery,
+  useSendBitcoinWithdrawalLimitsQuery,
   Wallet,
   WalletCurrency,
 } from "@app/graphql/generated"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
+import { useLevel } from "@app/graphql/level-context"
 import { usePriceConversion } from "@app/hooks"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import { palette } from "@app/theme"
 import {
   DisplayCurrency,
-  isNonZeroMoneyAmount,
-  lessThanOrEqualTo,
   MoneyAmount,
-  moneyAmountIsCurrencyType,
   toBtcMoneyAmount,
   toUsdMoneyAmount,
   WalletOrDisplayCurrency,
 } from "@app/types/amounts"
-import { fetchLnurlInvoice, Network as NetworkLibGaloy } from "@galoymoney/client"
-import { decodeInvoiceString } from "@galoymoney/client/dist/parsing-v2"
+import { decodeInvoiceString, Network as NetworkLibGaloy } from "@galoymoney/client"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { NavigationProp, RouteProp, useNavigation } from "@react-navigation/native"
-import { makeStyles } from "@rneui/themed"
-import { Satoshis } from "lnurl-pay/dist/types/types"
+import { makeStyles, Text, useTheme } from "@rneui/themed"
 import React, { useEffect, useState } from "react"
-import { Text, TextInput, TouchableWithoutFeedback, View } from "react-native"
+import { TouchableWithoutFeedback, View } from "react-native"
 import ReactNativeModal from "react-native-modal"
 import Icon from "react-native-vector-icons/Ionicons"
 import { testProps } from "../../utils/testProps"
+import { isValidAmount } from "./payment-details"
 import { PaymentDetail } from "./payment-details/index.types"
-import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
-
-const useStyles = makeStyles((theme) => ({
-  backgroundColor: {
-    backgroundColor: theme.colors.lighterGreyOrBlack,
-  },
-  contentContainer: {
-    padding: 20,
-    flexGrow: 1,
-    backgroundColor: theme.colors.lighterGreyOrBlack,
-  },
-  sendBitcoinAmountContainer: {
-    flex: 1,
-  },
-  fieldBackground: {
-    flexDirection: "row",
-    borderStyle: "solid",
-    overflow: "hidden",
-    backgroundColor: palette.white,
-    paddingHorizontal: 14,
-    borderRadius: 10,
-    alignItems: "center",
-    height: 60,
-  },
-  walletContainer: {
-    flexDirection: "row",
-    borderStyle: "solid",
-    overflow: "hidden",
-    backgroundColor: palette.white,
-    paddingHorizontal: 14,
-    borderRadius: 10,
-    alignItems: "center",
-    marginBottom: 10,
-    height: 60,
-  },
-  walletSelectorTypeContainer: {
-    justifyContent: "center",
-    alignItems: "flex-start",
-    width: 50,
-    marginRight: 20,
-  },
-  walletSelectorTypeLabelBitcoin: {
-    height: 30,
-    width: 50,
-    borderRadius: 10,
-    backgroundColor: palette.lightOrange,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  walletSelectorTypeLabelUsd: {
-    height: 30,
-    width: 50,
-    backgroundColor: palette.usdSecondary,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  walletSelectorTypeLabelUsdText: {
-    fontWeight: "bold",
-    color: palette.usdPrimary,
-  },
-  walletSelectorTypeLabelBtcText: {
-    fontWeight: "bold",
-    color: palette.btcPrimary,
-  },
-  walletSelectorInfoContainer: {
-    flex: 1,
-    flexDirection: "column",
-  },
-  walletTitleContainer: {
-    flex: 1,
-  },
-  walletBalanceContainer: {
-    flex: 1,
-  },
-  walletCurrencyText: {
-    fontWeight: "bold",
-    fontSize: 18,
-    color: palette.lapisLazuli,
-  },
-  walletSelectorTypeTextContainer: {
-    flex: 1,
-    justifyContent: "flex-end",
-  },
-  walletSelectorBalanceContainer: {
-    flex: 1,
-    flexDirection: "row",
-  },
-  walletBalanceText: {
-    color: palette.midGrey,
-  },
-  fieldTitleText: {
-    fontWeight: "bold",
-    color: theme.colors.lapisLazuliOrLightGrey,
-    marginBottom: 4,
-  },
-  fieldContainer: {
-    marginBottom: 12,
-  },
-  currencyInputContainer: {
-    flexDirection: "column",
-  },
-  switchCurrencyIconContainer: {
-    width: 50,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  walletBalanceInput: {
-    color: palette.lapisLazuli,
-    fontSize: 20,
-    fontWeight: "600",
-  },
-  convertedAmountText: {
-    color: palette.coolGrey,
-    fontSize: 12,
-  },
-  errorContainer: {
-    marginVertical: 20,
-    flex: 1,
-  },
-  errorText: {
-    color: palette.red,
-    textAlign: "center",
-  },
-  noteContainer: {
-    flex: 1,
-    flexDirection: "row",
-  },
-  noteIconContainer: {
-    marginRight: 12,
-    justifyContent: "center",
-    alignItems: "flex-start",
-  },
-  noteIcon: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  noteInput: {
-    flex: 1,
-  },
-  button: {
-    marginTop: 20,
-    height: 60,
-    borderRadius: 10,
-  },
-  disabledButtonStyle: {
-    backgroundColor: theme.colors.grey7,
-  },
-  disabledButtonTitleStyle: {
-    color: palette.lightBlue,
-    fontWeight: "600",
-  },
-  activeButtonStyle: {
-    backgroundColor: palette.lightBlue,
-  },
-  activeButtonTitleStyle: {
-    color: palette.white,
-    fontWeight: "bold",
-  },
-  buttonContainer: {
-    flex: 1,
-    justifyContent: "flex-end",
-  },
-  modal: {
-    marginBottom: "90%",
-  },
-  pickWalletIcon: {
-    marginRight: 12,
-  },
-  screenStyle: {
-    padding: 20,
-    flexGrow: 1,
-  },
-}))
+import { SendBitcoinDetailsExtraInfo } from "./send-bitcoin-details-extra-info"
+import { requestInvoice, utils } from "lnurl-pay"
+import { GaloyTertiaryButton } from "@app/components/atomic/galoy-tertiary-button"
+import { getBtcWallet, getDefaultWallet, getUsdWallet } from "@app/graphql/wallets-utils"
+import { NoteInput } from "@app/components/note-input"
 
 gql`
   query sendBitcoinDetailsScreen {
@@ -220,24 +49,42 @@ gql`
       defaultAccount {
         id
         defaultWalletId
-        defaultWallet @client {
-          id
-          walletCurrency
-        }
-        btcWallet @client {
-          id
-          walletCurrency
-          balance
-        }
-        usdWallet @client {
-          id
-          walletCurrency
-          balance
-        }
         wallets {
           id
           walletCurrency
           balance
+        }
+      }
+    }
+  }
+
+  query sendBitcoinWithdrawalLimits {
+    me {
+      id
+      defaultAccount {
+        id
+        limits {
+          withdrawal {
+            totalLimit
+            remainingLimit
+            interval
+          }
+        }
+      }
+    }
+  }
+
+  query sendBitcoinInternalLimits {
+    me {
+      id
+      defaultAccount {
+        id
+        limits {
+          internalSend {
+            totalLimit
+            remainingLimit
+            interval
+          }
         }
       }
     }
@@ -249,10 +96,15 @@ type Props = {
 }
 
 const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
+  const {
+    theme: { colors },
+  } = useTheme()
   const styles = useStyles()
 
   const navigation =
     useNavigation<NavigationProp<RootStackParamList, "sendBitcoinDetails">>()
+
+  const { currentLevel } = useLevel()
 
   const { data } = useSendBitcoinDetailsScreenQuery({
     fetchPolicy: "cache-first",
@@ -267,8 +119,14 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
   const { convertMoneyAmount: _convertMoneyAmount } = usePriceConversion()
   const { zeroDisplayAmount } = useDisplayCurrency()
 
-  const defaultWallet = data?.me?.defaultAccount?.defaultWallet
-  const btcWallet = data?.me?.defaultAccount?.btcWallet
+  const defaultWallet = getDefaultWallet(
+    data?.me?.defaultAccount?.wallets,
+    data?.me?.defaultAccount?.defaultWalletId,
+  )
+
+  const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
+  const usdWallet = getUsdWallet(data?.me?.defaultAccount?.wallets)
+
   const network = data?.globals?.network
 
   const wallets = data?.me?.defaultAccount?.wallets
@@ -276,6 +134,22 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
 
   const [paymentDetail, setPaymentDetail] =
     useState<PaymentDetail<WalletCurrency> | null>(null)
+
+  const { data: withdrawalLimitsData } = useSendBitcoinWithdrawalLimitsQuery({
+    fetchPolicy: "no-cache",
+    skip:
+      !useIsAuthed() ||
+      !paymentDetail?.paymentType ||
+      paymentDetail.paymentType === "intraledger",
+  })
+
+  const { data: intraledgerLimitsData } = useSendBitcoinInternalLimitsQuery({
+    fetchPolicy: "no-cache",
+    skip:
+      !useIsAuthed() ||
+      !paymentDetail?.paymentType ||
+      paymentDetail.paymentType !== "intraledger",
+  })
 
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [asyncErrorMessage, setAsyncErrorMessage] = useState("")
@@ -329,17 +203,13 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
     return <></>
   }
 
-  const { sendingWalletDescriptor, settlementAmount, convertMoneyAmount } = paymentDetail
+  const { sendingWalletDescriptor, convertMoneyAmount } = paymentDetail
   const lnurlParams =
     paymentDetail?.paymentType === "lnurl" ? paymentDetail?.lnurlParams : undefined
 
-  const btcBalanceMoneyAmount = toBtcMoneyAmount(
-    data?.me?.defaultAccount?.btcWallet?.balance,
-  )
+  const btcBalanceMoneyAmount = toBtcMoneyAmount(btcWallet?.balance)
 
-  const usdBalanceMoneyAmount = toUsdMoneyAmount(
-    data?.me?.defaultAccount?.usdWallet?.balance,
-  )
+  const usdBalanceMoneyAmount = toUsdMoneyAmount(usdWallet?.balance)
 
   const btcWalletText = formatDisplayAndWalletAmount({
     displayAmount: convertMoneyAmount(btcBalanceMoneyAmount, DisplayCurrency),
@@ -351,32 +221,13 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
     walletAmount: usdBalanceMoneyAmount,
   })
 
-  let validAmount = true
-  let invalidAmountErrorMessage = ""
-
-  if (moneyAmountIsCurrencyType(settlementAmount, WalletCurrency.Btc)) {
-    validAmount = lessThanOrEqualTo({
-      value: settlementAmount,
-      lessThanOrEqualTo: btcBalanceMoneyAmount,
-    })
-    if (!validAmount) {
-      invalidAmountErrorMessage = LL.SendBitcoinScreen.amountExceed({
-        balance: btcWalletText,
-      })
-    }
-  }
-
-  if (moneyAmountIsCurrencyType(settlementAmount, WalletCurrency.Usd)) {
-    validAmount = lessThanOrEqualTo({
-      value: settlementAmount,
-      lessThanOrEqualTo: usdBalanceMoneyAmount,
-    })
-    if (!validAmount) {
-      invalidAmountErrorMessage = LL.SendBitcoinScreen.amountExceed({
-        balance: usdWalletText,
-      })
-    }
-  }
+  const amountStatus = isValidAmount({
+    paymentDetail,
+    usdWalletAmount: usdBalanceMoneyAmount,
+    btcWalletAmount: btcBalanceMoneyAmount,
+    intraledgerLimits: intraledgerLimitsData?.me?.defaultAccount?.limits?.internalSend,
+    withdrawalLimits: withdrawalLimitsData?.me?.defaultAccount?.limits?.withdrawal,
+  })
 
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible)
@@ -408,6 +259,7 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
       animationOut="fadeOutUp"
       isVisible={isModalVisible}
       onBackButtonPress={toggleModal}
+      onBackdropPress={toggleModal}
     >
       <View>
         {wallets.map((wallet) => {
@@ -448,9 +300,9 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
                   </View>
                   <View style={styles.walletSelectorBalanceContainer}>
                     {wallet.walletCurrency === WalletCurrency.Btc ? (
-                      <Text style={styles.walletBalanceText}>{btcWalletText}</Text>
+                      <Text>{btcWalletText}</Text>
                     ) : (
-                      <Text style={styles.walletBalanceText}>{usdWalletText}</Text>
+                      <Text>{usdWalletText}</Text>
                     )}
                   </View>
                   <View />
@@ -464,7 +316,7 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
   )
 
   const goToNextScreen =
-    (paymentDetail.sendPayment ||
+    (paymentDetail.sendPaymentMutation ||
       (paymentDetail.paymentType === "lnurl" && paymentDetail.unitOfAccountAmount)) &&
     (async () => {
       let paymentDetailForConfirmation: PaymentDetail<WalletCurrency> = paymentDetail
@@ -478,9 +330,9 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
             "BTC",
           )
 
-          const result = await fetchLnurlInvoice({
+          const result = await requestInvoice({
             lnUrlOrAddress: paymentDetail.destination,
-            tokens: btcAmount.amount as Satoshis,
+            tokens: utils.toSats(btcAmount.amount),
           })
           setIsLoadingLnurl(false)
           const invoice = result.invoice
@@ -516,7 +368,7 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
         }
       }
 
-      if (paymentDetailForConfirmation.sendPayment) {
+      if (paymentDetailForConfirmation.sendPaymentMutation) {
         navigation.navigate("sendBitcoinConfirmation", {
           paymentDetail: paymentDetailForConfirmation,
         })
@@ -529,12 +381,33 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
     )
   }
 
-  const errorMessage = asyncErrorMessage || invalidAmountErrorMessage
+  const sendAll = () => {
+    let moneyAmount: MoneyAmount<WalletCurrency>
+
+    if (paymentDetail.sendingWalletDescriptor.currency === WalletCurrency.Btc) {
+      moneyAmount = {
+        amount: btcWallet?.balance ?? 0,
+        currency: WalletCurrency.Btc,
+        currencyCode: "BTC",
+      }
+    } else {
+      moneyAmount = {
+        amount: usdWallet?.balance ?? 0,
+        currency: WalletCurrency.Usd,
+        currencyCode: "USD",
+      }
+    }
+
+    setPaymentDetail((paymentDetail) =>
+      paymentDetail?.setAmount
+        ? paymentDetail.setAmount(moneyAmount, true)
+        : paymentDetail,
+    )
+  }
 
   return (
     <Screen
       preset="scroll"
-      backgroundColor={styles.backgroundColor.backgroundColor}
       style={styles.screenStyle}
       keyboardOffset="navigationHeader"
       keyboardShouldPersistTaps="handled"
@@ -578,7 +451,6 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
                 <View style={styles.walletSelectorBalanceContainer}>
                   <Text
                     {...testProps(`${sendingWalletDescriptor.currency} Wallet Balance`)}
-                    style={styles.walletBalanceText}
                   >
                     {sendingWalletDescriptor.currency === WalletCurrency.Btc
                       ? btcWalletText
@@ -589,14 +461,25 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
               </View>
 
               <View style={styles.pickWalletIcon}>
-                <Icon name={"chevron-down"} size={24} color={palette.lightBlue} />
+                <Icon name={"chevron-down"} size={24} color={colors.black} />
               </View>
             </View>
           </TouchableWithoutFeedback>
           {ChooseWalletModal}
         </View>
         <View style={styles.fieldContainer}>
-          <Text style={styles.fieldTitleText}>{LL.SendBitcoinScreen.amount()}</Text>
+          <View style={styles.amountRightMaxField}>
+            <Text {...testProps(LL.SendBitcoinScreen.amount())} style={styles.amountText}>
+              {LL.SendBitcoinScreen.amount()}
+            </Text>
+            {paymentDetail.canSendMax && !paymentDetail.isSendingMax && (
+              <GaloyTertiaryButton
+                clear
+                title={LL.SendBitcoinScreen.maxAmount()}
+                onPress={sendAll}
+              />
+            )}
+          </View>
           <View style={styles.currencyInputContainer}>
             <AmountInput
               unitOfAccountAmount={paymentDetail.unitOfAccountAmount}
@@ -604,6 +487,7 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
               convertMoneyAmount={paymentDetail.convertMoneyAmount}
               walletCurrency={sendingWalletDescriptor.currency}
               canSetAmount={paymentDetail.canSetAmount}
+              isSendingMax={paymentDetail.isSendingMax}
               maxAmount={lnurlParams?.max ? toBtcMoneyAmount(lnurlParams.max) : undefined}
               minAmount={lnurlParams?.min ? toBtcMoneyAmount(lnurlParams.min) : undefined}
             />
@@ -611,38 +495,24 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
         </View>
         <View style={styles.fieldContainer}>
           <Text style={styles.fieldTitleText}>{LL.SendBitcoinScreen.note()}</Text>
-          <View style={styles.fieldBackground}>
-            <View style={styles.noteContainer}>
-              <View style={styles.noteIconContainer}>
-                <NoteIcon style={styles.noteIcon} />
-              </View>
-              <TextInput
-                style={styles.noteInput}
-                placeholder={LL.SendBitcoinScreen.note()}
-                onChangeText={(text) =>
-                  paymentDetail.setMemo && setPaymentDetail(paymentDetail.setMemo(text))
-                }
-                value={paymentDetail.memo || ""}
-                editable={paymentDetail.canSetMemo}
-                selectTextOnFocus
-                maxLength={500}
-              />
-            </View>
-          </View>
+          <NoteInput
+            onChangeText={(text) =>
+              paymentDetail.setMemo && setPaymentDetail(paymentDetail.setMemo(text))
+            }
+            value={paymentDetail.memo || ""}
+            editable={paymentDetail.canSetMemo}
+          />
         </View>
-        {Boolean(errorMessage) && (
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>{errorMessage}</Text>
-          </View>
-        )}
+        <SendBitcoinDetailsExtraInfo
+          errorMessage={asyncErrorMessage}
+          amountStatus={amountStatus}
+          currentLevel={currentLevel}
+        />
         <View style={styles.buttonContainer}>
           <GaloyPrimaryButton
-            {...testProps(LL.common.next())}
             onPress={goToNextScreen || undefined}
             loading={isLoadingLnurl}
-            disabled={
-              !goToNextScreen || !validAmount || !isNonZeroMoneyAmount(settlementAmount)
-            }
+            disabled={!goToNextScreen || !amountStatus.validAmount}
             title={LL.common.next()}
           />
         </View>
@@ -652,3 +522,115 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
 }
 
 export default SendBitcoinDetailsScreen
+
+const useStyles = makeStyles(({ colors }) => ({
+  sendBitcoinAmountContainer: {
+    flex: 1,
+  },
+  fieldBackground: {
+    flexDirection: "row",
+    borderStyle: "solid",
+    overflow: "hidden",
+    backgroundColor: colors.grey5,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    alignItems: "center",
+    height: 60,
+  },
+  walletContainer: {
+    flexDirection: "row",
+    borderStyle: "solid",
+    overflow: "hidden",
+    backgroundColor: colors.grey5,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    alignItems: "center",
+    marginBottom: 10,
+    height: 60,
+  },
+  walletSelectorTypeContainer: {
+    justifyContent: "center",
+    alignItems: "flex-start",
+    width: 50,
+    marginRight: 20,
+  },
+  walletSelectorTypeLabelBitcoin: {
+    height: 30,
+    width: 50,
+    borderRadius: 10,
+    backgroundColor: colors.primary,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  walletSelectorTypeLabelUsd: {
+    height: 30,
+    width: 50,
+    backgroundColor: colors.green,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  walletSelectorTypeLabelUsdText: {
+    fontWeight: "bold",
+    color: colors.black,
+  },
+  walletSelectorTypeLabelBtcText: {
+    fontWeight: "bold",
+    color: colors.white,
+  },
+  walletSelectorInfoContainer: {
+    flex: 1,
+    flexDirection: "column",
+  },
+  walletCurrencyText: {
+    fontWeight: "bold",
+    fontSize: 18,
+  },
+  walletSelectorTypeTextContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  walletSelectorBalanceContainer: {
+    flex: 1,
+    flexDirection: "row",
+  },
+  fieldTitleText: {
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  fieldContainer: {
+    marginBottom: 12,
+  },
+  currencyInputContainer: {
+    flexDirection: "column",
+  },
+  switchCurrencyIconContainer: {
+    width: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  modal: {
+    marginBottom: "90%",
+  },
+  pickWalletIcon: {
+    marginRight: 12,
+  },
+  screenStyle: {
+    padding: 20,
+    flexGrow: 1,
+  },
+  amountText: {
+    fontWeight: "bold",
+  },
+  amountRightMaxField: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+    height: 18,
+  },
+}))

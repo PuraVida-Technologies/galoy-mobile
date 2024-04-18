@@ -1,16 +1,16 @@
 import { useNavigation } from "@react-navigation/native"
 import * as React from "react"
-import { Pressable, StyleProp, Text, TextStyle } from "react-native"
+import { Pressable } from "react-native"
 import DeviceInfo from "react-native-device-info"
 import type { StackNavigationProp } from "@react-navigation/stack"
 import type { RootStackParamList } from "../../navigation/stack-param-lists"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { testProps } from "../../utils/testProps"
-import { makeStyles } from "@rneui/themed"
+import { Text, makeStyles } from "@rneui/themed"
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ colors }) => ({
   version: {
-    color: theme.colors.grey1,
+    color: colors.grey0,
     fontSize: 18,
     marginTop: 18,
     textAlign: "center",
@@ -22,14 +22,14 @@ type VersionComponentNavigationProp = StackNavigationProp<
   "getStarted" | "settings"
 >
 
-export const VersionComponent = ({ style }: { style?: StyleProp<TextStyle> }) => {
+export const VersionComponent = () => {
   const styles = useStyles()
   const { navigate } = useNavigation<VersionComponentNavigationProp>()
   const { LL } = useI18nContext()
   const [secretMenuCounter, setSecretMenuCounter] = React.useState(0)
   React.useEffect(() => {
     if (secretMenuCounter > 2) {
-      navigate("Debug")
+      navigate("developerScreen")
       setSecretMenuCounter(0)
     }
   }, [navigate, secretMenuCounter])
@@ -38,7 +38,7 @@ export const VersionComponent = ({ style }: { style?: StyleProp<TextStyle> }) =>
 
   return (
     <Pressable onPress={() => setSecretMenuCounter(secretMenuCounter + 1)}>
-      <Text {...testProps("Version Build Text")} style={[styles.version, style]}>
+      <Text {...testProps("Version Build Text")} style={styles.version}>
         {readableVersion}
         {"\n"}
         {LL.GetStartedScreen.headline()}

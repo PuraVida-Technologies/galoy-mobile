@@ -5,37 +5,11 @@ import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { groupTransactionsByDate } from "@app/graphql/transactions"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import crashlytics from "@react-native-firebase/crashlytics"
-import { makeStyles } from "@rneui/themed"
+import { makeStyles, useTheme } from "@rneui/themed"
 import * as React from "react"
 import { ActivityIndicator, SectionList, Text, View } from "react-native"
 import { TransactionItem } from "../../components/transaction-item"
-import { palette } from "../../theme/palette"
 import { toastShow } from "../../utils/toast"
-
-const useStyles = makeStyles((theme) => ({
-  loadingContainer: { justifyContent: "center", alignItems: "center", flex: 1 },
-  noTransactionText: {
-    fontSize: 24,
-  },
-
-  noTransactionView: {
-    alignItems: "center",
-    flex: 1,
-    marginVertical: 48,
-  },
-  sectionHeaderContainer: {
-    backgroundColor: theme.colors.lighterGreyOrBlack,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 18,
-  },
-
-  sectionHeaderText: {
-    color: theme.colors.darkGreyOrWhite,
-    fontSize: 18,
-  },
-  transactionGroup: {},
-}))
 
 gql`
   query transactionListForDefaultAccount(
@@ -57,6 +31,9 @@ gql`
 `
 
 export const TransactionHistoryScreen: React.FC = () => {
+  const {
+    theme: { colors },
+  } = useTheme()
   const styles = useStyles()
 
   const { LL } = useI18nContext()
@@ -87,7 +64,7 @@ export const TransactionHistoryScreen: React.FC = () => {
   if (!transactions) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator color={palette.coolGrey} size={"large"} />
+        <ActivityIndicator color={colors.primary} size={"large"} />
       </View>
     )
   }
@@ -108,7 +85,6 @@ export const TransactionHistoryScreen: React.FC = () => {
     <Screen>
       <SectionList
         showsVerticalScrollIndicator={false}
-        style={styles.transactionGroup}
         renderItem={({ item, index, section }) => (
           <TransactionItem
             key={`txn-${item.id}`}
@@ -141,3 +117,28 @@ export const TransactionHistoryScreen: React.FC = () => {
     </Screen>
   )
 }
+
+const useStyles = makeStyles(({ colors }) => ({
+  loadingContainer: { justifyContent: "center", alignItems: "center", flex: 1 },
+  noTransactionText: {
+    fontSize: 24,
+  },
+
+  noTransactionView: {
+    alignItems: "center",
+    flex: 1,
+    marginVertical: 48,
+  },
+
+  sectionHeaderContainer: {
+    backgroundColor: colors.white,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 18,
+  },
+
+  sectionHeaderText: {
+    color: colors.black,
+    fontSize: 18,
+  },
+}))

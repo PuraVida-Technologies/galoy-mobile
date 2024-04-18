@@ -2,7 +2,6 @@ import jwtDecode from "jwt-decode"
 
 import { GALOY_INSTANCES, GaloyInstance, GaloyInstanceInput } from "@app/config"
 import { Network } from "@app/graphql/generated"
-import { defaultTheme, Theme } from "@app/theme/default-theme"
 import { loadString } from "@app/utils/storage"
 
 type PersistentState_0 = {
@@ -13,14 +12,12 @@ type PersistentState_0 = {
 type PersistentState_1 = {
   schemaVersion: 1
   isUsdDisabled: boolean
-  theme?: Theme
 }
 
 type PersistentState_2 = {
   schemaVersion: 2
   hasShownStableSatsWelcome: boolean
   isUsdDisabled: boolean
-  theme?: Theme
 }
 
 type PersistentState_3 = {
@@ -30,7 +27,6 @@ type PersistentState_3 = {
   galoyInstance: GaloyInstance
   galoyAuthToken: string
   isAnalyticsEnabled: boolean
-  theme?: Theme
 }
 
 type PersistentState_4 = {
@@ -40,7 +36,6 @@ type PersistentState_4 = {
   galoyInstance: GaloyInstance
   galoyAuthToken: string
   isAnalyticsEnabled: boolean
-  theme?: Theme
 }
 
 type PersistentState_5 = {
@@ -49,6 +44,11 @@ type PersistentState_5 = {
   galoyAuthToken: string
 }
 
+type PersistentState_6 = {
+  schemaVersion: 6
+  galoyInstance: GaloyInstanceInput
+  galoyAuthToken: string
+}
 type JwtPayload = {
   uid: string
   network: Network
@@ -66,8 +66,15 @@ const decodeToken = (token: string): { uid: string; network: Network } | null =>
   }
 }
 
-const migrate5ToCurrent = (state: PersistentState_5): Promise<PersistentState> =>
+const migrate6ToCurrent = (state: PersistentState_6): Promise<PersistentState> =>
   Promise.resolve(state)
+
+const migrate5ToCurrent = (state: PersistentState_5): Promise<PersistentState> => {
+  return migrate6ToCurrent({
+    ...state,
+    schemaVersion: 6,
+  })
+}
 
 const migrate4ToCurrent = (state: PersistentState_4): Promise<PersistentState> => {
   const newGaloyInstance = GALOY_INSTANCES.find(
@@ -92,7 +99,7 @@ const migrate4ToCurrent = (state: PersistentState_4): Promise<PersistentState> =
     // we only keep the full object if we are on Custom
     // otherwise data will be stored in GaloyInstancesInput[]
     galoyInstance = { ...state.galoyInstance, id: "Custom" }
-  } else if (state.galoyInstance.name === "PVW" || state.galoyInstance.name === "Blink") {
+  } else if (state.galoyInstance.name === "PVW") {
     // we are using "Main" instead of "PVW", so that the bankName is not hardcoded in the saved json
     galoyInstance = { id: "Main" } as const
   } else {
@@ -131,7 +138,7 @@ const migrate2ToCurrent = async (state: PersistentState_2): Promise<PersistentSt
     const network = decodedToken?.network
     if (network === "mainnet") {
       const galoyInstance = GALOY_INSTANCES.find(
-        (instance) => instance.name === "PVW" || instance.name === "Blink",
+        (instance) => instance.name === "PVW"
       )
       if (galoyInstance) {
         return migrate3ToCurrent({
@@ -146,7 +153,7 @@ const migrate2ToCurrent = async (state: PersistentState_2): Promise<PersistentSt
   }
 
   const newGaloyInstance = GALOY_INSTANCES.find(
-    (instance) => instance.name === "PVW" || instance.name === "Blink",
+    (instance) => instance.name === "PVW"
   )
   if (!newGaloyInstance) {
     throw new Error("Galoy instance not found")
@@ -173,7 +180,6 @@ const migrate0ToCurrent = (state: PersistentState_0): Promise<PersistentState> =
   return migrate1ToCurrent({
     schemaVersion: 1,
     isUsdDisabled: state.isUsdDisabled,
-    theme: defaultTheme,
   })
 }
 
@@ -184,6 +190,7 @@ type StateMigrations = {
   3: (state: PersistentState_3) => Promise<PersistentState>
   4: (state: PersistentState_4) => Promise<PersistentState>
   5: (state: PersistentState_5) => Promise<PersistentState>
+  6: (state: PersistentState_6) => Promise<PersistentState>
 }
 
 const stateMigrations: StateMigrations = {
@@ -193,12 +200,13 @@ const stateMigrations: StateMigrations = {
   3: migrate3ToCurrent,
   4: migrate4ToCurrent,
   5: migrate5ToCurrent,
+  6: migrate6ToCurrent,
 }
 
-export type PersistentState = PersistentState_5
+export type PersistentState = PersistentState_6
 
 export const defaultPersistentState: PersistentState = {
-  schemaVersion: 5,
+  schemaVersion: 6,
   galoyInstance: { id: "Main" },
   galoyAuthToken: "",
 }

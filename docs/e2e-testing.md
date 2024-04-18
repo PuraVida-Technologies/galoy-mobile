@@ -71,19 +71,18 @@ Here are the other env variables you need to set
 ```
 GALOY_TEST_TOKENS={YOUR_TOKEN}
 GALOY_TOKEN_2={SECOND_WALLET_TOKEN}
+MAILSLURP_API_KEY={MAILSLURP_API_KEY}
 E2E_DEVICE={ios or android}
 ```
 
 to simplify your workflow, you can put those env variables in a .env and use [direnv](https://direnv.net/)
 
-## Running Single Tests that Require Authentication
+## Running Specific Tests without Clearing State
 
-To run the authenticated tests you need to set the env variable `GALOY_TEST_TOKENS`.
-
-State in the application in cleared between testing invocations. The following command will always run tests 01 and 02 in order to authenticate the app, then run the test specified by the `TEST` env variable.
+If you would like to run specific tests without clearing any state in the application, you can use the following command.
 
 ```
-TEST="03" yarn test:e2e:ios:auth
+yarn test-ios [test-name]
 ```
 
 ## Troubleshooting
@@ -116,7 +115,7 @@ ios
   "platformName": "iOS",
   "appium:deviceName": "iPhone 13",
   "appium:bundleId": "io.galoy.bitcoinbeach",
-  "appium:automationName": "XCUITest",
+  "appium:automationName": "XCUITest"
 }
 ```
 
@@ -144,9 +143,6 @@ ios on browserstack - choose 'select cloud providers' then 'browserstack'
 
 ## Develop locally
 
-those properties can be added to capabilities to avoid the app been reset across tests:
+To disable state reset between tests, you can set the `NO_RESET` env variable to `true`
 
-```
-  "appium:noReset" : "true",
-  "appium:fullReset" : "false"
 ```

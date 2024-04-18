@@ -1,14 +1,75 @@
 /* eslint-disable camelcase */
-
-import { GaloyInstanceNames } from "@app/config"
-import { PaymentSendResult, WalletCurrency } from "@app/graphql/generated"
-import { PaymentRequestType } from "@app/screens/receive-bitcoin-screen/payment-requests/index.types"
+import { GaloyInstanceName } from "@app/config/galoy-instances"
+import {
+  PaymentSendResult,
+  PhoneCodeChannelType,
+  WalletCurrency,
+} from "@app/graphql/generated"
+import { ValidatePhoneCodeErrorsType } from "@app/screens/phone-auth-screen"
+import { InvoiceType } from "@app/screens/receive-bitcoin-screen/payment/index.types"
 import { ParseDestinationResult } from "@app/screens/send-bitcoin-screen/payment-destination/index.types"
-import { PaymentType as ParsedPaymentType } from "@galoymoney/client/dist/parsing-v2"
+import { PaymentType as ParsedPaymentType } from "@galoymoney/client"
 import analytics from "@react-native-firebase/analytics"
 
-export const logRequestAuthCode = (instance: GaloyInstanceNames) => {
-  // analytics().logEvent("request_auth_code", { instance })
+export const logRequestAuthCode = ({
+  instance,
+  channel,
+}: {
+  instance: GaloyInstanceName
+  channel: PhoneCodeChannelType
+}) => {
+  // analytics().logEvent("request_auth_code", { instance, channel })
+}
+
+export const logCreatedDeviceAccount = () => {
+  // analytics().logEvent("created_device_account")
+}
+
+export const logAttemptCreateDeviceAccount = () => {
+  // analytics().logEvent("attempt_create_device_account")
+}
+
+export const logCreateDeviceAccountFailure = () => {
+  // analytics().logEvent("create_device_account_failure")
+}
+
+export const logGetStartedAction = ({
+  action,
+  createDeviceAccountEnabled,
+}: {
+  action: "log_in" | "create_device_account" | "explore_wallet" | "login_with_email"
+  createDeviceAccountEnabled: boolean
+}) => {
+  // analytics().logEvent("get_started_action", {
+  //   action,
+  //   create_device_account_enabled: createDeviceAccountEnabled,
+  // })
+}
+
+export const logValidateAuthCodeFailure = ({
+  error,
+}: {
+  error: ValidatePhoneCodeErrorsType
+}) => {
+  // analytics().logEvent("validate_auth_code_failure", {
+  //   error,
+  // })
+}
+
+export const logStartCaptcha = () => {
+  // analytics().logEvent("start_captcha")
+}
+
+export const logUpgradeLoginAttempt = () => {
+  // analytics().logEvent("upgrade_login_attempt")
+}
+
+export const logAddPhoneAttempt = () => {
+  // analytics().logEvent("add_phone_attempt")
+}
+
+export const logUpgradeLoginSuccess = () => {
+  // analytics().logEvent("upgrade_login_success")
 }
 
 export const logParseDestinationResult = (parsedDestination: ParseDestinationResult) => {
@@ -77,7 +138,7 @@ export const logConversionResult = (params: LogConversionResultParams) => {
 }
 
 type LogGeneratePaymentRequestParams = {
-  paymentType: PaymentRequestType
+  paymentType: InvoiceType
   hasAmount: boolean
   receivingWallet: WalletCurrency
 }
@@ -113,5 +174,15 @@ export const logToastShown = (params: LogToastShownParams) => {
   //   message: params.message,
   //   type: params.type,
   //   is_translated: params.isTranslated,
+  // })
+}
+
+type LogAppFeedbackParams = {
+  isEnjoingApp: boolean
+}
+
+export const logAppFeedback = (params: LogAppFeedbackParams) => {
+  // analytics().logEvent("app_feedback", {
+  //   is_enjoying_app: params.isEnjoingApp,
   // })
 }

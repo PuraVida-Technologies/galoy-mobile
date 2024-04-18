@@ -4,10 +4,9 @@ import { makeStyles, Text } from "@rneui/themed"
 import { View } from "react-native"
 import { GaloyIconButton } from "../atomic/galoy-icon-button"
 import { GaloyPrimaryButton } from "../atomic/galoy-primary-button"
-import { GaloyWarning } from "../atomic/galoy-warning"
+import { GaloyErrorBox } from "../atomic/galoy-error-box"
 import { CurrencyKeyboard } from "../currency-keyboard"
 import { Key } from "./number-pad-reducer"
-import { testProps } from "@app/utils/testProps"
 
 export type AmountInputScreenUIProps = {
   primaryCurrencySymbol?: string
@@ -87,7 +86,7 @@ export const AmountInputScreenUI: React.FC<AmountInputScreenUIProps> = ({
           )}
         </View>
         <View style={styles.infoContainer}>
-          {errorMessage && <GaloyWarning errorMessage={errorMessage} highlight />}
+          {errorMessage && <GaloyErrorBox errorMessage={errorMessage} />}
         </View>
         <View style={styles.keyboardContainer}>
           <CurrencyKeyboard onPress={onKeyPress} />
@@ -96,24 +95,22 @@ export const AmountInputScreenUI: React.FC<AmountInputScreenUIProps> = ({
           disabled={!onSetAmountPress || setAmountDisabled}
           onPress={onSetAmountPress}
           title={LL.AmountInputScreen.setAmount()}
-          {...testProps(LL.AmountInputScreen.setAmount())}
         />
       </View>
     </View>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ colors }) => ({
   amountInputScreenContainer: {
     flex: 1,
-    backgroundColor: theme.colors.white,
   },
   headerContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     padding: 16,
-    borderBottomColor: theme.colors.primary9,
+    borderBottomColor: colors.primary4,
     borderBottomWidth: 1,
   },
   amountContainer: {
@@ -139,7 +136,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: 32,
     flex: 1,
     fontWeight: "bold",
-    color: theme.colors.grey8,
+    color: colors.grey3,
   },
   primaryCurrencyCodeText: {
     fontSize: 28,
@@ -167,7 +164,7 @@ const useStyles = makeStyles((theme) => ({
     marginVertical: 8,
   },
   horizontalLine: {
-    borderBottomColor: theme.colors.primary9,
+    borderBottomColor: colors.primary4,
     borderBottomWidth: 1,
     flex: 1,
   },

@@ -16,10 +16,11 @@
 		4FFA67C249A90ABDF3D1A7B1 /* libPods-GaloyApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BF3F16B9970ED9E2ACFEC81 /* libPods-GaloyApp.a */; };
 		560415592C5B4119B9F91553 /* (null) in Resources */ = {isa = PBXBuildFile; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		94D9F3C84EB547D68D41C50F /* (null) in Resources */ = {isa = PBXBuildFile; };
+		94D9F3C84EB547D68D41C50F /* BuildFile in Resources */ = {isa = PBXBuildFile; };
 		AEBBD0A1234A4C5490A44CC1 /* DMSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6C8483F4C3424986AEBE74CC /* DMSans-Bold.ttf */; };
-		BD157A9851974C298EB06CB7 /* (null) in Resources */ = {isa = PBXBuildFile; };
-		C426C81D58C8450C878B6086 /* (null) in Resources */ = {isa = PBXBuildFile; };
+		BD157A9851974C298EB06CB7 /* BuildFile in Resources */ = {isa = PBXBuildFile; };
+		BFD1E05462E2DE8ADB6856A2 /* libPods-GaloyApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BF3F16B9970ED9E2ACFEC81 /* libPods-GaloyApp.a */; };
+		C426C81D58C8450C878B6086 /* BuildFile in Resources */ = {isa = PBXBuildFile; };
 		C61EE0AD23C530E30054100C /* AuthenticationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C61EE0AC23C530E30054100C /* AuthenticationServices.framework */; };
 		C6E810012333FDA500D41794 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C6E810002333FDA400D41794 /* GoogleService-Info.plist */; };
 		F1D71F3628CE5C9A00636277 /* AppDelegate.h in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FAF1A68108700A75B9A /* AppDelegate.h */; };
@@ -166,7 +167,7 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				C655A53423D256CE008ACDDA /* [CP-User] [RNFB] Crashlytics Configuration */,
+				C655A53423D256CE008ACDDA /* ShellScript */,
 				78418C574DC18CE95CF69F31 /* [CP] Embed Pods Frameworks */,
 				EADAB63B097F5332783D5E4B /* [CP] Copy Pods Resources */,
 				1530B4368395BA5AC71FF394 /* [CP-User] [RNFB] Core Configuration */,

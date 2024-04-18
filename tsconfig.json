@@ -10,7 +10,6 @@
     "noUnusedLocals": false,
     "strictNullChecks": false,
     "sourceMap": true,
-    "skipLibCheck": true,
     "baseUrl": "./",
     "paths": {
       "@app/*": ["app/*"]
