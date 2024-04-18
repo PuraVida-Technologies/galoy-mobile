@@ -1,3 +1,5 @@
+import { LnUrlPayServiceResponse } from "lnurl-pay/dist/types/types"
+
 import {
   GraphQlApplicationError,
   IntraLedgerPaymentSendMutationHookResult,
@@ -27,7 +29,6 @@ import {
 } from "@app/types/amounts"
 import { WalletDescriptor } from "@app/types/wallets"
 import { PaymentType } from "@galoymoney/client"
-import { LnUrlPayServiceResponse } from "lnurl-pay/dist/types/types"
 
 export type ConvertMoneyAmount = <W extends WalletOrDisplayCurrency>(
   moneyAmount: MoneyAmount<WalletOrDisplayCurrency>,
@@ -81,7 +82,12 @@ export type SendPaymentMutation = (
 ) => Promise<{
   status: PaymentSendResult | null | undefined
   errors?: readonly GraphQlApplicationError[]
+  extraInfo?: PaymentSendExtraInfo
 }>
+
+export type PaymentSendExtraInfo = {
+  arrivalAtMempoolEstimate?: number
+}
 
 export type SetAmount<T extends WalletCurrency> = (
   unitOfAccountAmount: MoneyAmount<WalletOrDisplayCurrency>,

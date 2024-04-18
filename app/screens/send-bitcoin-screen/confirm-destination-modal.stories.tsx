@@ -1,12 +1,15 @@
-import { MockedProvider } from "@apollo/client/testing"
-import { Meta } from "@storybook/react"
 import React from "react"
+
+import { MockedProvider } from "@apollo/client/testing"
+import { createIntraLedgerDestination } from "@app/screens/send-bitcoin-screen/payment-destination"
+import { Meta } from "@storybook/react"
+
 import { StoryScreen } from "../../../.storybook/views"
 import { createCache } from "../../graphql/cache"
 import { IsAuthedContextProvider } from "../../graphql/is-authed-context"
-import { ConfirmDestinationModal } from "./confirm-destination-modal"
 import mocks from "../../graphql/mocks"
-import { createIntraLedgerDestination } from "@app/screens/send-bitcoin-screen/payment-destination"
+import { ConfirmDestinationModal } from "./confirm-destination-modal"
+import { DestinationState } from "./send-bitcoin-reducer"
 
 export default {
   title: "ConfirmDestinationModal",
@@ -38,7 +41,7 @@ intraLedgerDestination.createPaymentDetail
 const params = {
   destinationState: {
     unparsedDestination: "user@blink.sv",
-    destinationState: "requires-confirmation",
+    destinationState: DestinationState.RequiresUsernameConfirmation,
     destination: {
       valid: true,
       validDestination: {
@@ -50,7 +53,7 @@ const params = {
       destinationDirection: "Send",
       createPaymentDetail: intraLedgerDestination.createPaymentDetail,
     },
-    confirmationType: {
+    confirmationUsernameType: {
       type: "new-username",
       username: "destination-username",
     },

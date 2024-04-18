@@ -1,35 +1,33 @@
 import React from "react"
 import { View } from "react-native"
-import Icon from "react-native-vector-icons/Ionicons"
 
-// eslint-disable-next-line camelcase
 import { useFragment } from "@apollo/client"
 import {
   TransactionFragment,
   TransactionFragmentDoc,
   WalletCurrency,
-  useHideBalanceQuery,
 } from "@app/graphql/generated"
+import { useHideAmount } from "@app/graphql/hide-amount-context"
+import { useAppConfig } from "@app/hooks"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
+import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
+import { toWalletAmount } from "@app/types/amounts"
 import { testProps } from "@app/utils/testProps"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-
-import { useAppConfig } from "@app/hooks"
-import { toWalletAmount } from "@app/types/amounts"
 import { Text, makeStyles, ListItem } from "@rneui/themed"
-import HideableArea from "../hideable-area/hideable-area"
+
 import { IconTransaction } from "../icon-transactions"
 import { TransactionDate } from "../transaction-date"
-import { useI18nContext } from "@app/i18n/i18n-react"
+import { DeepPartialObject } from "./index.types"
 
 // This should extend the Transaction directly from the cache
 export const useDescriptionDisplay = ({
   tx,
   bankName,
 }: {
-  tx: TransactionFragment | undefined
+  tx: TransactionFragment | DeepPartialObject<TransactionFragment>
   bankName: string
 }) => {
   const { LL } = useI18nContext()
@@ -45,7 +43,7 @@ export const useDescriptionDisplay = ({
 
   const isReceive = direction === "RECEIVE"
 
-  switch (settlementVia.__typename) {
+  switch (settlementVia?.__typename) {
     case "SettlementViaOnChain":
       return "OnChain Payment"
     case "SettlementViaLn":
@@ -59,36 +57,22 @@ export const useDescriptionDisplay = ({
   }
 }
 
-const AmountDisplayStyle = ({
-  isReceive,
-  isPending,
-}: {
-  isReceive: boolean
-  isPending: boolean
-}) => {
-  const styles = useStyles()
-
-  if (isPending) {
-    return styles.pending
-  }
-
-  return isReceive ? styles.receive : styles.send
-}
-
 type Props = {
   txid: string
   subtitle?: boolean
   isFirst?: boolean
   isLast?: boolean
   isOnHomeScreen?: boolean
+  testId?: string
 }
 
-export const TransactionItem: React.FC<Props> = ({
+const TransactionItem: React.FC<Props> = ({
   txid,
   subtitle = false,
   isFirst = false,
   isLast = false,
   isOnHomeScreen = false,
+  testId = "transaction-item",
 }) => {
   const styles = useStyles({
     isFirst,
@@ -111,8 +95,8 @@ export const TransactionItem: React.FC<Props> = ({
     appConfig: { galoyInstance },
   } = useAppConfig()
   const { formatMoneyAmount, formatCurrency } = useDisplayCurrency()
-  const { data: { hideBalance } = {} } = useHideBalanceQuery()
-  const isBalanceVisible = hideBalance ?? false
+
+  const { hideAmount } = useHideAmount()
 
   const description = useDescriptionDisplay({
     tx,
@@ -123,8 +107,25 @@ export const TransactionItem: React.FC<Props> = ({
     return null
   }
 
+  if (
+    !tx.settlementCurrency ||
+    !tx.settlementDisplayAmount ||
+    !tx.settlementDisplayCurrency ||
+    !tx.id ||
+    !tx.createdAt ||
+    !tx.status
+  ) {
+    return null
+  }
+
   const isReceive = tx.direction === "RECEIVE"
   const isPending = tx.status === "PENDING"
+
+  const amountStyle = isPending
+    ? styles.pending
+    : isReceive
+      ? styles.receive
+      : styles.send
 
   const walletCurrency = tx.settlementCurrency as WalletCurrency
 
@@ -147,16 +148,16 @@ export const TransactionItem: React.FC<Props> = ({
 
   return (
     <ListItem
-      {...testProps("transaction-item")}
+      {...testProps(testId)}
       containerStyle={styles.container}
       onPress={() =>
         navigation.navigate("transactionDetail", {
-          txid: tx.id,
+          txid,
         })
       }
     >
       <IconTransaction
-        onChain={tx.settlementVia.__typename === "SettlementViaOnChain"}
+        onChain={tx.settlementVia?.__typename === "SettlementViaOnChain"}
         isReceive={isReceive}
         pending={isPending}
         walletCurrency={walletCurrency}
@@ -170,28 +171,31 @@ export const TransactionItem: React.FC<Props> = ({
           {description}
         </ListItem.Title>
         <ListItem.Subtitle>
-          {subtitle ? <TransactionDate diffDate={true} {...tx} /> : undefined}
+          {subtitle ? (
+            <TransactionDate
+              createdAt={tx.createdAt}
+              status={tx.status}
+              includeTime={false}
+            />
+          ) : undefined}
         </ListItem.Subtitle>
       </ListItem.Content>
 
-      <HideableArea
-        isContentVisible={isBalanceVisible}
-        hiddenContent={<Icon style={styles.hiddenBalanceContainer} name="eye" />}
-      >
+      {hideAmount ? (
+        <Text>****</Text>
+      ) : (
         <View>
-          <Text style={AmountDisplayStyle({ isReceive, isPending })}>
-            {formattedDisplayAmount}
-          </Text>
-          {formattedSecondaryAmount ? (
-            <Text style={AmountDisplayStyle({ isReceive, isPending })}>
-              {formattedSecondaryAmount}
-            </Text>
-          ) : null}
+          <Text style={amountStyle}>{formattedDisplayAmount}</Text>
+          {formattedSecondaryAmount && (
+            <Text style={amountStyle}>{formattedSecondaryAmount}</Text>
+          )}
         </View>
-      </HideableArea>
+      )}
     </ListItem>
   )
 }
+
+export const MemoizedTransactionItem = React.memo(TransactionItem)
 
 type UseStyleProps = {
   isFirst?: boolean
@@ -220,7 +224,7 @@ const useStyles = makeStyles(({ colors }, props: UseStyleProps) => ({
     flexWrap: "wrap",
   },
   receive: {
-    color: colors.green,
+    color: colors._green,
     textAlign: "right",
     flexWrap: "wrap",
   },

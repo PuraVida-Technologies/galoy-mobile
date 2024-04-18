@@ -1,6 +1,8 @@
-import { gql } from "@apollo/client"
 import * as React from "react"
 import { PropsWithChildren } from "react"
+
+import { gql } from "@apollo/client"
+
 import { useLevelQuery } from "./generated"
 import { useIsAuthed } from "./is-authed-context"
 import { LevelContextProvider } from "./level-context"
@@ -30,11 +32,14 @@ export const LevelContainer: React.FC<PropsWithChildren> = ({ children }) => {
   const { data } = useLevelQuery({ fetchPolicy: "cache-only" })
   const level = data?.me?.defaultAccount?.level
   const isAtLeastLevelOne = level === "ONE" || level === "TWO"
+  const isAtLeastLevelTwo = level === "TWO"
 
   const currentLevel = isAuthed && level ? level : "NonAuth"
 
   return (
-    <LevelContextProvider value={{ isAtLeastLevelZero, isAtLeastLevelOne, currentLevel }}>
+    <LevelContextProvider
+      value={{ isAtLeastLevelZero, isAtLeastLevelOne, isAtLeastLevelTwo, currentLevel }}
+    >
       {children}
     </LevelContextProvider>
   )

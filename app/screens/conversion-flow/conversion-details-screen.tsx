@@ -5,12 +5,14 @@ import { ScrollView } from "react-native-gesture-handler"
 import { gql } from "@apollo/client"
 import SwitchButton from "@app/assets/icons-redesign/transfer.svg"
 import { AmountInput } from "@app/components/amount-input"
+import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { Screen } from "@app/components/screen"
 import {
   useConversionScreenQuery,
   useRealtimePriceQuery,
   WalletCurrency,
 } from "@app/graphql/generated"
+import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
@@ -22,10 +24,9 @@ import {
   toUsdMoneyAmount,
   toWalletAmount,
 } from "@app/types/amounts"
+import { testProps } from "@app/utils/testProps"
 import { NavigationProp, useNavigation } from "@react-navigation/native"
 import { makeStyles, Text, useTheme } from "@rneui/themed"
-import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
-import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
 
 gql`
   query conversionScreen {
@@ -58,7 +59,7 @@ export const ConversionDetailsScreen = () => {
   })
 
   const { data } = useConversionScreenQuery({
-    fetchPolicy: "cache-first",
+    fetchPolicy: "cache-and-network",
     returnPartialData: true,
   })
 
@@ -216,24 +217,28 @@ export const ConversionDetailsScreen = () => {
           <View style={styles.percentageContainer}>
             <View style={styles.percentageFieldContainer}>
               <TouchableOpacity
+                {...testProps("convert-25%")}
                 style={styles.percentageField}
                 onPress={() => setAmountToBalancePercentage(25)}
               >
                 <Text>25%</Text>
               </TouchableOpacity>
               <TouchableOpacity
+                {...testProps("convert-50%")}
                 style={styles.percentageField}
                 onPress={() => setAmountToBalancePercentage(50)}
               >
                 <Text>50%</Text>
               </TouchableOpacity>
               <TouchableOpacity
+                {...testProps("convert-75%")}
                 style={styles.percentageField}
                 onPress={() => setAmountToBalancePercentage(75)}
               >
                 <Text>75%</Text>
               </TouchableOpacity>
               <TouchableOpacity
+                {...testProps("convert-100%")}
                 style={styles.percentageField}
                 onPress={() => setAmountToBalancePercentage(100)}
               >

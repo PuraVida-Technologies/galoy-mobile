@@ -1,4 +1,5 @@
 import { bech32 } from "bech32"
+
 import { i18nObject } from "../app/i18n/i18n-util"
 import { loadLocale } from "../app/i18n/i18n-util.sync"
 import {
@@ -12,6 +13,7 @@ import {
   addSmallAmount,
   waitTillButtonDisplayed,
   waitTillPressableDisplayed,
+  swipeButton,
 } from "./utils"
 
 loadLocale("en")
@@ -175,8 +177,8 @@ describe("Lightning Payments Flow", () => {
     await feeDisplay.waitForDisplayed({ timeout })
   })
 
-  it("Click 'Confirm Payment' and navigate to move money screen", async () => {
-    await clickButton(LL.SendBitcoinConfirmationScreen.title())
+  it("Slides to confirm payment and navigate to move money screen", async () => {
+    await swipeButton(LL.SendBitcoinConfirmationScreen.slideToConfirm())
     await waitTillOnHomeScreen()
   })
 })

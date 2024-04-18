@@ -1,9 +1,15 @@
+import { CountryCode } from "libphonenumber-js/mobile"
+import { Region } from "react-native-maps"
+
 import { ApolloClient, gql } from "@apollo/client"
+
 import {
   BetaDocument,
   BetaQuery,
   ColorSchemeDocument,
   ColorSchemeQuery,
+  CountryCodeDocument,
+  CountryCodeQuery,
   FeedbackModalShownDocument,
   FeedbackModalShownQuery,
   HasPromptedSetDefaultAccountDocument,
@@ -15,6 +21,8 @@ import {
   InnerCircleValueQuery,
   IntroducingCirclesModalShownDocument,
   IntroducingCirclesModalShownQuery,
+  RegionDocument,
+  RegionQuery,
 } from "./generated"
 
 export default gql`
@@ -32,6 +40,19 @@ export default gql`
 
   query colorScheme {
     colorScheme @client # "system" | "light" | "dark"
+  }
+
+  query countryCode {
+    countryCode @client
+  }
+
+  query region {
+    region @client {
+      latitude
+      longitude
+      latitudeDelta
+      longitudeDelta
+    }
   }
 
   query feedbackModalShown {
@@ -111,7 +132,41 @@ export const updateColorScheme = (client: ApolloClient<unknown>, colorScheme: st
       },
     })
   } catch {
-    console.warn("impossible to update beta")
+    console.warn("impossible to update color scheme")
+  }
+}
+
+export const updateCountryCode = (
+  client: ApolloClient<unknown>,
+  countryCode: CountryCode,
+) => {
+  try {
+    client.writeQuery<CountryCodeQuery>({
+      query: CountryCodeDocument,
+      data: {
+        __typename: "Query",
+        countryCode,
+      },
+    })
+  } catch {
+    console.warn("impossible to update country code")
+  }
+}
+
+export const updateMapLastCoords = (client: ApolloClient<unknown>, region: Region) => {
+  try {
+    client.writeQuery<RegionQuery>({
+      query: RegionDocument,
+      data: {
+        __typename: "Query",
+        region: {
+          __typename: "Region",
+          ...region,
+        },
+      },
+    })
+  } catch {
+    console.warn("impossible to update map last coords")
   }
 }
 

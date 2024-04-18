@@ -1,5 +1,6 @@
 import * as React from "react"
-import { Image, Linking, ScrollView, View } from "react-native"
+import { Image, Linking, View } from "react-native"
+import { ScrollView } from "react-native-gesture-handler"
 import Modal from "react-native-modal"
 
 import { useI18nContext } from "@app/i18n/i18n-react"

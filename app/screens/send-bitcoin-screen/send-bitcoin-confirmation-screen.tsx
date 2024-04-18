@@ -1,40 +1,44 @@
+import React, { useState } from "react"
+import { ActivityIndicator, TouchableOpacity, View } from "react-native"
+import ReactNativeHapticFeedback from "react-native-haptic-feedback"
+
 import { gql } from "@apollo/client"
-import DestinationIcon from "@app/assets/icons/destination.svg"
-import NoteIcon from "@app/assets/icons/note.svg"
+import { GaloyIcon } from "@app/components/atomic/galoy-icon"
+import GaloySliderButton from "@app/components/atomic/galoy-slider-button/galoy-slider-button"
 import { PaymentDestinationDisplay } from "@app/components/payment-destination-display"
 import { Screen } from "@app/components/screen"
 import {
   useSendBitcoinConfirmationScreenQuery,
   WalletCurrency,
 } from "@app/graphql/generated"
+import { useHideAmount } from "@app/graphql/hide-amount-context"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
+import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import {
   addMoneyAmounts,
   DisplayCurrency,
+  greaterThan,
   lessThanOrEqualTo,
   moneyAmountIsCurrencyType,
+  multiplyMoneyAmounts,
   toBtcMoneyAmount,
   toUsdMoneyAmount,
-  ZeroBtcMoneyAmount,
   ZeroUsdMoneyAmount,
 } from "@app/types/amounts"
 import { logPaymentAttempt, logPaymentResult } from "@app/utils/analytics"
+import { toastShow } from "@app/utils/toast"
+import Clipboard from "@react-native-clipboard/clipboard"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { CommonActions, RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { makeStyles, Text, useTheme } from "@rneui/themed"
-import React, { useMemo, useState } from "react"
-import { ActivityIndicator, View } from "react-native"
-import ReactNativeHapticFeedback from "react-native-haptic-feedback"
+
 import { testProps } from "../../utils/testProps"
 import useFee from "./use-fee"
 import { useSendPayment } from "./use-send-payment"
-import { AmountInput } from "@app/components/amount-input"
-import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
-import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
 
 gql`
   query sendBitcoinConfirmationScreen {
@@ -62,6 +66,8 @@ const SendBitcoinConfirmationScreen: React.FC<Props> = ({ route }) => {
 
   const navigation =
     useNavigation<StackNavigationProp<RootStackParamList, "sendBitcoinConfirmation">>()
+
+  const { hideAmount } = useHideAmount()
 
   const { paymentDetail } = route.params
 
@@ -118,62 +124,79 @@ const SendBitcoinConfirmationScreen: React.FC<Props> = ({ route }) => {
       walletAmount: fee.amount,
     })
   } else {
-    feeDisplayText = "Unable to calculate fee"
+    feeDisplayText = LL.SendBitcoinConfirmationScreen.feeError()
   }
 
-  const handleSendPayment = useMemo(() => {
+  const handleSendPayment = React.useCallback(async () => {
     if (!sendPayment || !sendingWalletDescriptor?.currency) {
       return sendPayment
     }
 
-    return async () => {
-      try {
-        logPaymentAttempt({
-          paymentType: paymentDetail.paymentType,
-          sendingWallet: sendingWalletDescriptor.currency,
+    try {
+      logPaymentAttempt({
+        paymentType: paymentDetail.paymentType,
+        sendingWallet: sendingWalletDescriptor.currency,
+      })
+      const { status, errorsMessage, extraInfo } = await sendPayment()
+      logPaymentResult({
+        paymentType: paymentDetail.paymentType,
+        paymentStatus: status,
+        sendingWallet: sendingWalletDescriptor.currency,
+      })
+
+      if (status === "SUCCESS" || status === "PENDING") {
+        navigation.dispatch((state) => {
+          const routes = [
+            { name: "Primary" },
+            {
+              name: "sendBitcoinCompleted",
+              params: {
+                arrivalAtMempoolEstimate: extraInfo?.arrivalAtMempoolEstimate,
+                status,
+              },
+            },
+          ]
+          return CommonActions.reset({
+            ...state,
+            routes,
+            index: routes.length - 1,
+          })
         })
-        const { status, errorsMessage } = await sendPayment()
-        logPaymentResult({
-          paymentType: paymentDetail.paymentType,
-          paymentStatus: status,
-          sendingWallet: sendingWalletDescriptor.currency,
+        ReactNativeHapticFeedback.trigger("notificationSuccess", {
+          ignoreAndroidSystemSettings: true,
         })
+        return
+      }
 
-        if (status === "SUCCESS" || status === "PENDING") {
-          navigation.dispatch((state) => {
-            const routes = [{ name: "Primary" }, { name: "sendBitcoinSuccess" }]
-            return CommonActions.reset({
-              ...state,
-              routes,
-              index: routes.length - 1,
-            })
-          })
-          ReactNativeHapticFeedback.trigger("notificationSuccess", {
-            ignoreAndroidSystemSettings: true,
-          })
-          return
-        }
-
-        if (status === "ALREADY_PAID") {
-          setPaymentError("Invoice is already paid")
-          ReactNativeHapticFeedback.trigger("notificationError", {
-            ignoreAndroidSystemSettings: true,
-          })
-          return
-        }
-
-        setPaymentError(errorsMessage || "Something went wrong")
+      if (status === "ALREADY_PAID") {
+        setPaymentError(LL.SendBitcoinConfirmationScreen.invoiceAlreadyPaid())
         ReactNativeHapticFeedback.trigger("notificationError", {
           ignoreAndroidSystemSettings: true,
         })
-      } catch (err) {
-        if (err instanceof Error) {
-          crashlytics().recordError(err)
-          setPaymentError(err.message || err.toString())
+        return
+      }
+
+      setPaymentError(
+        errorsMessage || LL.SendBitcoinConfirmationScreen.somethingWentWrong(),
+      )
+      ReactNativeHapticFeedback.trigger("notificationError", {
+        ignoreAndroidSystemSettings: true,
+      })
+    } catch (err) {
+      if (err instanceof Error) {
+        crashlytics().recordError(err)
+
+        const indempotencyErrorPattern = /409: Conflict/i
+        if (indempotencyErrorPattern.test(err.message)) {
+          setPaymentError(LL.SendBitcoinConfirmationScreen.paymentAlreadyAttempted())
+          return
         }
+
+        setPaymentError(err.message || err.toString())
       }
     }
   }, [
+    LL,
     navigation,
     paymentDetail.paymentType,
     sendPayment,
@@ -184,15 +207,16 @@ const SendBitcoinConfirmationScreen: React.FC<Props> = ({ route }) => {
   let validAmount = true
   let invalidAmountErrorMessage = ""
 
+  const totalAmount = addMoneyAmounts({
+    a: settlementAmount,
+    b: fee.amount || ZeroUsdMoneyAmount,
+  })
+
   if (
     moneyAmountIsCurrencyType(settlementAmount, WalletCurrency.Btc) &&
     btcBalanceMoneyAmount &&
     !isSendingMax
   ) {
-    const totalAmount = addMoneyAmounts({
-      a: settlementAmount,
-      b: fee.amount || ZeroBtcMoneyAmount,
-    })
     validAmount = lessThanOrEqualTo({
       value: totalAmount,
       lessThanOrEqualTo: btcBalanceMoneyAmount,
@@ -209,10 +233,6 @@ const SendBitcoinConfirmationScreen: React.FC<Props> = ({ route }) => {
     usdBalanceMoneyAmount &&
     !isSendingMax
   ) {
-    const totalAmount = addMoneyAmounts({
-      a: settlementAmount,
-      b: fee.amount || ZeroUsdMoneyAmount,
-    })
     validAmount = lessThanOrEqualTo({
       value: totalAmount,
       lessThanOrEqualTo: usdBalanceMoneyAmount,
@@ -224,44 +244,82 @@ const SendBitcoinConfirmationScreen: React.FC<Props> = ({ route }) => {
     }
   }
 
+  const copyToClipboard = () => {
+    Clipboard.setString(destination)
+    toastShow({
+      type: "success",
+      message: LL.SendBitcoinConfirmationScreen.copiedDestination(),
+      LL,
+    })
+  }
+
   const errorMessage = paymentError || invalidAmountErrorMessage
+
+  const displayAmount = convertMoneyAmount(settlementAmount, DisplayCurrency)
+
+  const transactionType = () => {
+    if (paymentType === "intraledger") return LL.common.intraledger()
+    if (paymentType === "onchain") return LL.common.onchain()
+    if (paymentType === "lightning") return LL.common.lightning()
+    if (paymentType === "lnurl") return LL.common.lightning()
+  }
+
+  const isLightningRecommended = () => {
+    const ratioFeeToAmount = 50 // 2%
+
+    if (!fee.amount) return false
+
+    const feeMultiplied = multiplyMoneyAmounts({
+      value: fee.amount,
+      multiplier: ratioFeeToAmount,
+    })
+
+    if (
+      paymentType === "onchain" &&
+      greaterThan({ value: feeMultiplied, greaterThan: totalAmount })
+    )
+      return true
+    return false
+  }
+
+  const LightningRecommendedComponent = isLightningRecommended() ? (
+    <View style={styles.feeWarning}>
+      <GaloyIcon name="warning" size={18} color={colors.warning} />
+      <Text
+        type="p3"
+        style={styles.feeWarningText}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+      >
+        {" "}
+        {LL.SendBitcoinConfirmationScreen.lightningRecommended()}
+      </Text>
+    </View>
+  ) : (
+    <></>
+  )
 
   return (
     <Screen preset="scroll" style={styles.screenStyle} keyboardOffset="navigationHeader">
       <View style={styles.sendBitcoinConfirmationContainer}>
         <View style={styles.fieldContainer}>
-          <Text style={styles.fieldTitleText}>{LL.SendBitcoinScreen.destination()}</Text>
+          <Text style={styles.fieldTitleText}>
+            {LL.SendBitcoinScreen.destination()} - {transactionType()}
+          </Text>
           <View style={styles.fieldBackground}>
-            <View style={styles.destinationIconContainer}>
-              <DestinationIcon fill={colors.black} />
-            </View>
             <PaymentDestinationDisplay
               destination={destination}
               paymentType={paymentType}
             />
+            <TouchableOpacity
+              style={styles.iconContainer}
+              onPress={copyToClipboard}
+              hitSlop={30}
+            >
+              <GaloyIcon name={"copy-paste"} size={18} color={colors.primary} />
+            </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.fieldContainer}>
-          <Text style={styles.fieldTitleText}>{LL.SendBitcoinScreen.amount()}</Text>
-          <AmountInput
-            unitOfAccountAmount={unitOfAccountAmount}
-            canSetAmount={false}
-            isSendingMax={paymentDetail.isSendingMax}
-            convertMoneyAmount={convertMoneyAmount}
-            walletCurrency={sendingWalletDescriptor.currency}
-          />
-        </View>
-        {note ? (
-          <View style={styles.fieldContainer}>
-            <Text style={styles.fieldTitleText}>{LL.SendBitcoinScreen.note()}</Text>
-            <View style={styles.fieldBackground}>
-              <View style={styles.noteIconContainer}>
-                <NoteIcon style={styles.noteIcon} />
-              </View>
-              <Text>{note}</Text>
-            </View>
-          </View>
-        ) : null}
         <View style={styles.fieldContainer}>
           <Text style={styles.fieldTitleText}>{LL.common.from()}</Text>
           <View style={styles.fieldBackground}>
@@ -289,34 +347,68 @@ const SendBitcoinConfirmationScreen: React.FC<Props> = ({ route }) => {
                 )}
               </View>
               <View style={styles.walletSelectorBalanceContainer}>
-                {sendingWalletDescriptor.currency === WalletCurrency.Btc ? (
-                  <Text>{btcWalletText}</Text>
-                ) : (
-                  <Text>{usdWalletText}</Text>
-                )}
+                <Text>
+                  {hideAmount
+                    ? "****"
+                    : sendingWalletDescriptor.currency === WalletCurrency.Btc
+                      ? btcWalletText
+                      : usdWalletText}
+                </Text>
               </View>
               <View />
             </View>
           </View>
         </View>
         <View style={styles.fieldContainer}>
-          <Text style={styles.fieldTitleText}>
-            {LL.SendBitcoinConfirmationScreen.feeLabel()}
-          </Text>
+          <Text style={styles.fieldTitleText}>{LL.SendBitcoinScreen.amount()}</Text>
           <View style={styles.fieldBackground}>
+            <Text type="p2">
+              {formatDisplayAndWalletAmount({
+                primaryAmount: unitOfAccountAmount,
+                displayAmount,
+                walletAmount: settlementAmount,
+              })}
+            </Text>
+          </View>
+        </View>
+        {note ? (
+          <View style={styles.fieldContainer}>
+            <Text style={styles.fieldTitleText}>{LL.SendBitcoinScreen.note()}</Text>
+            <View style={styles.fieldBackground}>
+              <Text type="p2" style={styles.noteText}>
+                {note}
+              </Text>
+            </View>
+          </View>
+        ) : null}
+        <View style={styles.fieldContainer}>
+          <View style={styles.feeTextContainer}>
+            <Text style={styles.fieldTitleText}>
+              {LL.SendBitcoinConfirmationScreen.feeLabel()}
+            </Text>
+            {LightningRecommendedComponent}
+          </View>
+          <View
+            style={[
+              styles.fieldBackground,
+              isLightningRecommended() ? styles.warningOutline : undefined,
+            ]}
+          >
             {fee.status === "loading" && <ActivityIndicator />}
             {fee.status === "set" && (
-              <Text {...testProps("Successful Fee")}>{feeDisplayText}</Text>
+              <Text type="p2" {...testProps("Successful Fee")}>
+                {feeDisplayText}
+              </Text>
             )}
             {fee.status === "error" && Boolean(fee.amount) && (
-              <Text>{feeDisplayText} *</Text>
+              <Text type="p2">{feeDisplayText} *</Text>
             )}
             {fee.status === "error" && !fee.amount && (
-              <Text>{LL.SendBitcoinConfirmationScreen.feeError()}</Text>
+              <Text type="p2">{LL.SendBitcoinConfirmationScreen.feeError()}</Text>
             )}
           </View>
           {fee.status === "error" && Boolean(fee.amount) && (
-            <Text style={styles.maxFeeWarningText}>
+            <Text type="p2" style={styles.maxFeeWarningText}>
               {"*" + LL.SendBitcoinConfirmationScreen.maxFeeSelected()}
             </Text>
           )}
@@ -324,15 +416,18 @@ const SendBitcoinConfirmationScreen: React.FC<Props> = ({ route }) => {
 
         {errorMessage ? (
           <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>{errorMessage}</Text>
+            <Text type="p2" style={styles.errorText}>
+              {errorMessage}
+            </Text>
           </View>
         ) : null}
         <View style={styles.buttonContainer}>
-          <GaloyPrimaryButton
-            loading={sendPaymentLoading}
-            title={LL.SendBitcoinConfirmationScreen.title()}
-            disabled={!handleSendPayment || !validAmount || hasAttemptedSend}
-            onPress={handleSendPayment || undefined}
+          <GaloySliderButton
+            isLoading={sendPaymentLoading}
+            initialText={LL.SendBitcoinConfirmationScreen.slideToConfirm()}
+            loadingText={LL.SendBitcoinConfirmationScreen.slideConfirming()}
+            onSwipe={handleSendPayment}
+            disabled={!validAmount || hasAttemptedSend}
           />
         </View>
       </View>
@@ -349,24 +444,26 @@ const useStyles = makeStyles(({ colors }) => ({
   fieldContainer: {
     marginBottom: 12,
   },
+  noteText: {
+    flex: 1,
+  },
   fieldBackground: {
     flexDirection: "row",
     borderStyle: "solid",
     overflow: "hidden",
     backgroundColor: colors.grey5,
-    paddingHorizontal: 14,
+    padding: 14,
+    minHeight: 60,
     borderRadius: 10,
     alignItems: "center",
-    height: 60,
+  },
+  warningOutline: {
+    borderColor: colors.warning,
+    borderWidth: 2,
   },
   fieldTitleText: {
     fontWeight: "bold",
     marginBottom: 4,
-  },
-  destinationIconContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
   },
   walletSelectorTypeContainer: {
     justifyContent: "center",
@@ -385,7 +482,7 @@ const useStyles = makeStyles(({ colors }) => ({
   walletSelectorTypeLabelUsd: {
     height: 30,
     width: 50,
-    backgroundColor: colors.green,
+    backgroundColor: colors._green,
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
@@ -442,5 +539,25 @@ const useStyles = makeStyles(({ colors }) => ({
   screenStyle: {
     padding: 20,
     flexGrow: 1,
+  },
+  iconContainer: {
+    justifyContent: "center",
+    alignItems: "flex-start",
+    paddingLeft: 20,
+  },
+  feeWarning: {
+    paddingBottom: 4,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 0.95,
+  },
+  feeWarningText: {
+    color: colors.warning,
+  },
+  feeTextContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 }))

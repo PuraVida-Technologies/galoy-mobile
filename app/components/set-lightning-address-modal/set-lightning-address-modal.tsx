@@ -1,16 +1,18 @@
 import React, { useState } from "react"
 import { View, TextInput } from "react-native"
-import CustomModal from "../custom-modal/custom-modal"
-import { Text, makeStyles, useTheme } from "@rneui/themed"
+
+import { gql } from "@apollo/client"
 import { useAppConfig } from "@app/hooks"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { GaloyErrorBox } from "../atomic/galoy-error-box"
-import { gql } from "@apollo/client"
+import { Text, makeStyles, useTheme } from "@rneui/themed"
+
 import {
   useUserUpdateUsernameMutation,
   MyUserIdDocument,
   MyUserIdQuery,
 } from "../../graphql/generated"
+import { GaloyErrorBox } from "../atomic/galoy-error-box"
+import CustomModal from "../custom-modal/custom-modal"
 
 gql`
   mutation userUpdateUsername($input: UserUpdateUsernameInput!) {
@@ -173,11 +175,11 @@ export const SetLightningAddressModalUI = ({
 
   return (
     <CustomModal
-      title={LL.SetAddressModal.title({ bankName })}
-      minHeight={"50%"}
+      title={LL.SetAddressModal.setLightningAddress()}
+      minHeight={380}
       toggleModal={toggleModal}
       isVisible={isVisible}
-      primaryButtonTitle={LL.SetAddressModal.title({ bankName })}
+      primaryButtonTitle={LL.SetAddressModal.setLightningAddress()}
       primaryButtonLoading={loading}
       primaryButtonOnPress={setLightningAddress}
       primaryButtonDisabled={!lnAddress}
@@ -272,7 +274,7 @@ const useStyles = makeStyles(({ colors }) => ({
     paddingHorizontal: 12,
     borderRadius: 8,
     minHeight: 60,
-    backgroundColor: colors.grey5,
+    backgroundColor: colors.grey4,
     alignItems: "center",
     justifyContent: "space-between",
   },

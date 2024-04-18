@@ -9,15 +9,18 @@ import af from './af'
 import ar from './ar'
 import ca from './ca'
 import cs from './cs'
+import da from './da'
 import de from './de'
 import el from './el'
 import en from './en'
 import es from './es'
 import fr from './fr'
 import hr from './hr'
+import hu from './hu'
 import hy from './hy'
 import it from './it'
 import ja from './ja'
+import lg from './lg'
 import ms from './ms'
 import nl from './nl'
 import pt from './pt'
@@ -33,15 +36,18 @@ const localeTranslations = {
 	ar,
 	ca,
 	cs,
+	da,
 	de,
 	el,
 	en,
 	es,
 	fr,
 	hr,
+	hu,
 	hy,
 	it,
 	ja,
+	lg,
 	ms,
 	nl,
 	pt,

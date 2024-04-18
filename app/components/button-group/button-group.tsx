@@ -1,8 +1,9 @@
 import React from "react"
 import { StyleProp, TouchableWithoutFeedback, View, ViewStyle } from "react-native"
-import { Text, makeStyles } from "@rneui/themed"
 import Icon from "react-native-vector-icons/Ionicons"
+
 import { testProps } from "@app/utils/testProps"
+import { Text, makeStyles } from "@rneui/themed"
 
 type ButtonForButtonGroupProps = {
   id: string
@@ -25,7 +26,12 @@ const ButtonForButtonGroup: React.FC<
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <View style={styles.button}>
-        <Text {...testProps(text)} style={styles.text}>
+        <Text
+          {...testProps(text)}
+          style={styles.text}
+          ellipsizeMode="tail"
+          numberOfLines={1}
+        >
           {text}
         </Text>
         {typeof icon === "string" ? (

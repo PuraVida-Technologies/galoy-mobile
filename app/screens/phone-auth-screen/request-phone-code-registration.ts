@@ -1,16 +1,21 @@
-import { useAppConfig } from "@app/hooks"
-import { useEffect, useMemo, useState } from "react"
 import parsePhoneNumber, {
   AsYouType,
   CountryCode,
   getCountryCallingCode,
 } from "libphonenumber-js/mobile"
+import { useEffect, useMemo, useState } from "react"
+
 import { gql } from "@apollo/client"
 import {
   PhoneCodeChannelType,
   useSupportedCountriesQuery,
   useUserPhoneRegistrationInitiateMutation,
 } from "@app/graphql/generated"
+import { useAppConfig } from "@app/hooks"
+import useDeviceLocation from "@app/hooks/use-device-location"
+import { RootStackParamList } from "@app/navigation/stack-param-lists"
+import { useNavigation } from "@react-navigation/native"
+import { StackNavigationProp } from "@react-navigation/stack"
 
 export const RequestPhoneCodeStatus = {
   LoadingCountryCode: "LoadingCountryCode",
@@ -27,11 +32,6 @@ export const ErrorType = {
   UnsupportedCountryError: "UnsupportedCountryError",
 } as const
 
-import axios from "axios"
-import { useNavigation } from "@react-navigation/native"
-import { StackNavigationProp } from "@react-navigation/stack"
-import { RootStackParamList } from "@app/navigation/stack-param-lists"
-
 type ErrorType = (typeof ErrorType)[keyof typeof ErrorType]
 
 export type RequestPhoneCodeStatus =
@@ -45,7 +45,7 @@ type PhoneInputInfo = {
 }
 
 export type UseRequestPhoneCodeReturn = {
-  submitPhoneNumber: (phoneCodeChannel: PhoneCodeChannelType) => void
+  userSubmitPhoneNumber: (phoneCodeChannel: PhoneCodeChannelType) => void
   setStatus: (status: RequestPhoneCodeStatus) => void
   status: RequestPhoneCodeStatus
   phoneInputInfo?: PhoneInputInfo
@@ -97,6 +97,7 @@ export const useRequestPhoneCodeRegistration = (): UseRequestPhoneCodeReturn => 
     useNavigation<StackNavigationProp<RootStackParamList, "phoneRegistrationInitiate">>()
 
   const { data } = useSupportedCountriesQuery()
+  const { countryCode: detectedCountryCode } = useDeviceLocation()
 
   const { isWhatsAppSupported, isSmsSupported, allSupportedCountries } = useMemo(() => {
     const currentCountry = data?.globals?.supportedCountries.find(
@@ -120,33 +121,13 @@ export const useRequestPhoneCodeRegistration = (): UseRequestPhoneCodeReturn => 
     }
   }, [data?.globals, countryCode])
 
+  // setting default country code from IP
   useEffect(() => {
-    const getCountryCodeFromIP = async () => {
-      let defaultCountryCode = "SV" as CountryCode
-      try {
-        const response = await axios({
-          method: "get",
-          url: "https://ipapi.co/json/",
-          timeout: 5000,
-        })
-        const data = response.data
-
-        if (data && data.country_code) {
-          const countryCode = data.country_code
-          defaultCountryCode = countryCode
-        } else {
-          console.warn("no data or country_code in response")
-        }
-      } catch (error) {
-        console.error(error)
-      }
-
-      setCountryCode(defaultCountryCode)
+    if (detectedCountryCode) {
+      setCountryCode(detectedCountryCode)
       setStatus(RequestPhoneCodeStatus.InputtingPhoneNumber)
     }
-
-    getCountryCodeFromIP()
-  }, [])
+  }, [detectedCountryCode])
 
   const setPhoneNumber = (number: string) => {
     if (status === RequestPhoneCodeStatus.RequestingCode) {
@@ -166,7 +147,7 @@ export const useRequestPhoneCodeRegistration = (): UseRequestPhoneCodeReturn => 
     setStatus(RequestPhoneCodeStatus.InputtingPhoneNumber)
   }
 
-  const submitPhoneNumber = async (phoneCodeChannel: PhoneCodeChannelType) => {
+  const userSubmitPhoneNumber = async (phoneCodeChannel: PhoneCodeChannelType) => {
     if (
       status === RequestPhoneCodeStatus.LoadingCountryCode ||
       status === RequestPhoneCodeStatus.RequestingCode
@@ -244,7 +225,7 @@ export const useRequestPhoneCodeRegistration = (): UseRequestPhoneCodeReturn => 
     phoneInputInfo,
     validatedPhoneNumber,
     error,
-    submitPhoneNumber,
+    userSubmitPhoneNumber,
     phoneCodeChannel,
     isWhatsAppSupported,
     isSmsSupported,

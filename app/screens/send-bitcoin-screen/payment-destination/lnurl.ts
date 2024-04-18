@@ -1,16 +1,14 @@
+import { getParams } from "js-lnurl"
+import { requestPayServiceParams } from "lnurl-pay"
+import { LnUrlPayServiceResponse } from "lnurl-pay/dist/types/types"
+
 import {
   AccountDefaultWalletLazyQueryHookResult,
   WalletCurrency,
 } from "@app/graphql/generated"
-import {
-  LnurlPaymentDestination,
-  PaymentType,
-  fetchLnurlPaymentParams,
-} from "@galoymoney/client"
+import { toBtcMoneyAmount } from "@app/types/amounts"
+import { LnurlPaymentDestination, PaymentType } from "@galoymoney/client"
 
-import { ZeroBtcMoneyAmount } from "@app/types/amounts"
-import { getParams } from "js-lnurl"
-import { LnUrlPayServiceResponse } from "lnurl-pay/dist/types/types"
 import { createLnurlPaymentDetails } from "../payment-details"
 import {
   CreatePaymentDetailParams,
@@ -22,7 +20,6 @@ import {
   ResolvedLnurlPaymentDestination,
 } from "./index.types"
 import { resolveIntraledgerDestination } from "./intraledger"
-import { ZeroBtcMoneyAmount } from "@app/types/amounts"
 
 export type ResolveLnurlDestinationParams = {
   parsedLnurlDestination: LnurlPaymentDestination
@@ -58,7 +55,7 @@ export const resolveLnurlDestination = async ({
 
     // Check for lnurl pay request
     try {
-      const lnurlPayParams = await fetchLnurlPaymentParams({
+      const lnurlPayParams = await requestPayServiceParams({
         lnUrlOrAddress: parsedLnurlDestination.lnurl,
       })
 
@@ -151,13 +148,15 @@ export const createLnurlPaymentDestination = (
     convertMoneyAmount,
     sendingWalletDescriptor,
   }: CreatePaymentDetailParams<T>) => {
+    const minAmount = resolvedLnurlPaymentDestination.lnurlParams.min || 0
+
     return createLnurlPaymentDetails({
       lnurl: resolvedLnurlPaymentDestination.lnurl,
       lnurlParams: resolvedLnurlPaymentDestination.lnurlParams,
       sendingWalletDescriptor,
       destinationSpecifiedMemo: resolvedLnurlPaymentDestination.lnurlParams.description,
       convertMoneyAmount,
-      unitOfAccountAmount: ZeroBtcMoneyAmount,
+      unitOfAccountAmount: toBtcMoneyAmount(minAmount),
     })
   }
   return {

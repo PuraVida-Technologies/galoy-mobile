@@ -4,17 +4,17 @@ import { Pressable, View } from "react-native"
 
 import { gql } from "@apollo/client"
 import { useWalletOverviewScreenQuery, WalletCurrency } from "@app/graphql/generated"
+import { useHideAmount } from "@app/graphql/hide-amount-context"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
+import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
+import { useI18nContext } from "@app/i18n/i18n-react"
 import { toBtcMoneyAmount, toUsdMoneyAmount } from "@app/types/amounts"
+import { testProps } from "@app/utils/testProps"
 import { makeStyles, Text, useTheme } from "@rneui/themed"
 
 import { GaloyCurrencyBubble } from "../atomic/galoy-currency-bubble"
 import { GaloyIcon } from "../atomic/galoy-icon"
-import HideableArea from "../hideable-area/hideable-area"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { testProps } from "@app/utils/testProps"
-import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
 
 const Loader = () => {
   const styles = useStyles()
@@ -51,17 +51,12 @@ gql`
 
 type Props = {
   loading: boolean
-  isContentVisible: boolean
-  setIsContentVisible: React.Dispatch<React.SetStateAction<boolean>>
   setIsStablesatModalVisible: (value: boolean) => void
 }
 
-const WalletOverview: React.FC<Props> = ({
-  loading,
-  isContentVisible,
-  setIsContentVisible,
-  setIsStablesatModalVisible,
-}) => {
+const WalletOverview: React.FC<Props> = ({ loading, setIsStablesatModalVisible }) => {
+  const { hideAmount, switchMemoryHideAmount } = useHideAmount()
+
   const { LL } = useI18nContext()
   const isAuthed = useIsAuthed()
   const {
@@ -103,18 +98,14 @@ const WalletOverview: React.FC<Props> = ({
     }
   }
 
-  const toggleIsContentVisible = () => {
-    setIsContentVisible((prevState) => !prevState)
-  }
-
   return (
     <View style={styles.container}>
       <View style={styles.myAccounts}>
         <Text type="p1" bold {...testProps(LL.HomeScreen.myAccounts())}>
           {LL.HomeScreen.myAccounts()}
         </Text>
-        <Pressable onPress={toggleIsContentVisible}>
-          <GaloyIcon name={isContentVisible ? "eye" : "eye-slash"} size={24} />
+        <Pressable onPress={switchMemoryHideAmount}>
+          <GaloyIcon name={hideAmount ? "eye-slash" : "eye"} size={24} />
         </Pressable>
       </View>
       <View style={[styles.separator, styles.titleSeparator]}></View>
@@ -125,14 +116,14 @@ const WalletOverview: React.FC<Props> = ({
         </View>
         {loading ? (
           <Loader />
+        ) : hideAmount ? (
+          <Text>****</Text>
         ) : (
           <View style={styles.hideableArea}>
-            <HideableArea isContentVisible={isContentVisible}>
-              <Text type="p1" bold>
-                {btcInUnderlyingCurrency}
-              </Text>
-              <Text type="p3">{btcInDisplayCurrencyFormatted}</Text>
-            </HideableArea>
+            <Text type="p1" bold {...testProps("bitcoin-balance")}>
+              {btcInUnderlyingCurrency}
+            </Text>
+            <Text type="p3">{btcInDisplayCurrencyFormatted}</Text>
           </View>
         )}
       </View>
@@ -140,7 +131,7 @@ const WalletOverview: React.FC<Props> = ({
       <View style={styles.displayTextView}>
         <View style={styles.currency}>
           <GaloyCurrencyBubble currency="USD" />
-          <Text type="p1">Stablesats</Text>
+          <Text type="p1">Dollar</Text>
           <Pressable onPress={() => setIsStablesatModalVisible(true)}>
             <GaloyIcon color={colors.grey1} name="question" size={18} />
           </Pressable>
@@ -149,19 +140,23 @@ const WalletOverview: React.FC<Props> = ({
           <Loader />
         ) : (
           <View style={styles.hideableArea}>
-            <HideableArea isContentVisible={isContentVisible}>
-              {usdInUnderlyingCurrency ? (
-                <Text type="p1" bold>
-                  {usdInUnderlyingCurrency}
+            {!hideAmount && (
+              <>
+                {usdInUnderlyingCurrency ? (
+                  <Text type="p1" bold>
+                    {usdInUnderlyingCurrency}
+                  </Text>
+                ) : null}
+                <Text
+                  {...testProps("stablesats-balance")}
+                  type={usdInUnderlyingCurrency ? "p3" : "p1"}
+                  bold={!usdInUnderlyingCurrency}
+                >
+                  {usdInDisplayCurrencyFormatted}
                 </Text>
-              ) : null}
-              <Text
-                type={usdInUnderlyingCurrency ? "p3" : "p1"}
-                bold={!usdInUnderlyingCurrency}
-              >
-                {usdInDisplayCurrencyFormatted}
-              </Text>
-            </HideableArea>
+              </>
+            )}
+            {hideAmount && <Text>****</Text>}
           </View>
         )}
       </View>
@@ -176,7 +171,6 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.grey5,
     display: "flex",
     flexDirection: "column",
-    marginBottom: 20,
     borderRadius: 12,
     padding: 12,
   },

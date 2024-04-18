@@ -22,6 +22,7 @@ export type CustomInstance = {
   graphqlUri: string
   graphqlWsUri: string
   authUrl: string
+  kycUrl: string
   posUrl: string
   lnAddressHostname: string
   blockExplorer: string
@@ -35,6 +36,7 @@ export type GaloyInstance = {
   graphqlUri: string
   graphqlWsUri: string
   authUrl: string
+  kycUrl: string
   posUrl: string
   lnAddressHostname: string
   blockExplorer: string
@@ -67,6 +69,7 @@ export const GALOY_INSTANCES: readonly GaloyInstance[] = [
     posUrl: PURAVIDA_POS_MAINNET_URL,
     lnAddressHostname: PURAVIDA_LN_MAINNET_ADDRESS,
     authUrl: "https://api.blink.sv", 
+    kycUrl: "https://kyc.puravidabitcoin.io",
     blockExplorer: "https://mempool.space/tx/",
   },
   {
@@ -76,6 +79,7 @@ export const GALOY_INSTANCES: readonly GaloyInstance[] = [
     graphqlWsUri: PURAVIDA_GRAPHQL_TESTNET_WS_URI,
     posUrl: PURAVIDA_POS_URL,
     lnAddressHostname: PURAVIDA_LN_ADDRESS,
+    kycUrl: "https://kyc.puravidabitcoin.io",
     authUrl: "https://api.staging.galoy.io",
     blockExplorer: "https://mempool.space/signet/tx/",
   },
@@ -86,6 +90,7 @@ export const GALOY_INSTANCES: readonly GaloyInstance[] = [
     graphqlWsUri: `ws://localhost:4002/graphqlws`,
     authUrl: `http://localhost:4002`,
     posUrl: `http://localhost:3000`,
+    kycUrl: "https://kyc.puravidabitcoin.io",
     lnAddressHostname: `localhost:3000`,
     blockExplorer: "https://mempool.space/signet/tx/",
   },

@@ -1,12 +1,12 @@
 import React from "react"
-import { View } from "react-native"
-import { TouchableOpacity } from "react-native-gesture-handler"
+import { View, TouchableOpacity } from "react-native"
 import Modal from "react-native-modal"
 
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
+import { useAppConfig } from "@app/hooks"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { makeStyles, Text, useTheme } from "@rneui/themed"
-import { useAppConfig } from "@app/hooks"
+
 const useStyles = makeStyles(({ colors }) => ({
   modalView: {
     backgroundColor: colors.white,

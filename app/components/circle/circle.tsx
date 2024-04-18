@@ -1,10 +1,10 @@
-import { View } from "react-native"
-import { Text, makeStyles, useTheme } from "@rneui/themed"
-
-import { useCountUp } from "use-count-up"
-import Icon from "react-native-vector-icons/Ionicons"
-import { testProps } from "@app/utils/testProps"
 import { forwardRef, useImperativeHandle } from "react"
+import { View } from "react-native"
+import Icon from "react-native-vector-icons/Ionicons"
+import { useCountUp } from "use-count-up"
+
+import { testProps } from "@app/utils/testProps"
+import { Text, makeStyles, useTheme } from "@rneui/themed"
 
 type CircleProps = {
   heading: string
@@ -51,10 +51,18 @@ export const Circle = forwardRef<CircleRef, CircleProps>(
       subtitleGreen,
     })
 
+    const easedCountUpDuration = getcBackValue(
+      countUpDuration,
+      minValue,
+      maxValue,
+      0.5 * countUpDuration,
+      countUpDuration,
+    )
+
     const { value: countUpValue, reset } = useCountUp({
       isCounting: true,
       end: value,
-      duration: countUpDuration,
+      duration: easedCountUpDuration,
     })
 
     useImperativeHandle(
@@ -132,6 +140,7 @@ const useStyles = makeStyles(
         position: "relative",
         width: "100%",
         paddingTop: 4,
+        zIndex: -1,
       },
       circleValue: {
         fontWeight: "700",
@@ -144,14 +153,13 @@ const useStyles = makeStyles(
         maxWidth: "35%",
         marginBottom: 6,
         lineHeight: 20,
-        color: colors.grey2,
       },
       helpBtn: {
         alignSelf: "center",
       },
       circleSubtitle: {
         textAlign: "left",
-        backgroundColor: subtitleGreen ? colors.green : colors.black,
+        backgroundColor: subtitleGreen ? colors._green : colors.black,
         borderRadius: 10,
         paddingHorizontal: 10,
         alignSelf: "flex-start",

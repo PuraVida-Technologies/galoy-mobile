@@ -1,3 +1,5 @@
+import { LnUrlPayServiceResponse } from "lnurl-pay/dist/types/types"
+
 import { WalletCurrency } from "@app/graphql/generated"
 import {
   BtcMoneyAmount,
@@ -8,7 +10,7 @@ import {
   WalletOrDisplayCurrency,
 } from "@app/types/amounts"
 import { PaymentType } from "@galoymoney/client"
-import { LnUrlPayServiceResponse } from "lnurl-pay/dist/types/types"
+
 import {
   ConvertMoneyAmount,
   SetInvoice,
@@ -438,16 +440,15 @@ export const createLnurlPaymentDetails = <T extends WalletCurrency>(
         },
       }
 
-  const setMemo: PaymentDetailSetMemo<T> = destinationSpecifiedMemo
-    ? { canSetMemo: false }
-    : {
-        setMemo: (newMemo) =>
-          createLnurlPaymentDetails({
-            ...params,
-            senderSpecifiedMemo: newMemo,
-          }),
-        canSetMemo: true,
-      }
+  const setMemo: PaymentDetailSetMemo<T> = {
+    setMemo: (newMemo) =>
+      createLnurlPaymentDetails({
+        ...params,
+        senderSpecifiedMemo: newMemo,
+        destinationSpecifiedMemo: newMemo,
+      }),
+    canSetMemo: true,
+  }
 
   const setConvertMoneyAmount = (newConvertMoneyAmount: ConvertMoneyAmount) => {
     return createLnurlPaymentDetails({

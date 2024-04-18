@@ -1,15 +1,8 @@
-import { useMyQuizQuestionsQuery, useQuizSatsQuery } from "@app/graphql/generated"
-import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { gql, WatchQueryFetchPolicy } from "@apollo/client"
+import { Quiz, useMyQuizQuestionsQuery } from "@app/graphql/generated"
+import { useIsAuthed } from "@app/graphql/is-authed-context"
 
 gql`
-  query quizSats {
-    quizQuestions {
-      id
-      earnAmount
-    }
-  }
-
   query myQuizQuestions {
     me {
       id
@@ -20,6 +13,7 @@ gql`
             id
             amount
             completed
+            notBefore
           }
         }
       }
@@ -34,36 +28,58 @@ export const useQuizServer = (
 ) => {
   const isAuthed = useIsAuthed()
 
-  const { data: dataAuth, loading: loadingAuth } = useMyQuizQuestionsQuery({
+  const { data, loading } = useMyQuizQuestionsQuery({
     fetchPolicy,
     skip: !isAuthed,
   })
 
-  const { data: dataUnauth, loading: loadingUnauth } = useQuizSatsQuery({
-    fetchPolicy,
-    skip: isAuthed,
-  })
-
-  const loading = loadingAuth || loadingUnauth
-
-  let quizServerData: {
-    readonly __typename: "Quiz"
-    readonly id: string
-    readonly amount: number
-    readonly completed: boolean
-  }[]
+  let quizServerData: Quiz[]
 
   if (isAuthed) {
-    quizServerData = dataAuth?.me?.defaultAccount.quiz.slice() ?? []
+    quizServerData = data?.me?.defaultAccount.quiz.slice() ?? []
   } else {
-    quizServerData =
-      dataUnauth?.quizQuestions?.map((quiz) => ({
+    quizServerData = [
+      {
         __typename: "Quiz",
-        id: quiz?.id ?? "id", // type issue, should be non-nullable
-        amount: quiz?.earnAmount ?? 0,
+        id: "whatIsBitcoin",
+        amount: 1,
         completed: false,
-      })) ?? []
+        notBefore: undefined,
+      },
+      {
+        __typename: "Quiz",
+        id: "sat",
+        amount: 1,
+        completed: false,
+        notBefore: undefined,
+      },
+      {
+        __typename: "Quiz",
+        id: "whereBitcoinExist",
+        amount: 1,
+        completed: false,
+        notBefore: undefined,
+      },
+      {
+        __typename: "Quiz",
+        id: "whoControlsBitcoin",
+        amount: 1,
+        completed: false,
+        notBefore: undefined,
+      },
+      {
+        __typename: "Quiz",
+        id: "copyBitcoin",
+        amount: 1,
+        completed: false,
+        notBefore: undefined,
+      },
+    ]
   }
 
-  return { loading, quizServerData }
+  const earnedSats = quizServerData
+    .filter((quiz) => quiz.completed)
+    .reduce((acc, { amount }) => acc + amount, 0)
+
+  return { loading, quizServerData, earnedSats }
 }

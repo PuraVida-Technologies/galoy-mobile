@@ -1,22 +1,27 @@
-import { useAppConfig, useGeetestCaptcha } from "@app/hooks"
-import { useEffect, useMemo, useState } from "react"
+import axios, { isAxiosError } from "axios"
 import parsePhoneNumber, {
   AsYouType,
   CountryCode,
   getCountryCallingCode,
 } from "libphonenumber-js/mobile"
-import { logRequestAuthCode } from "@app/utils/analytics"
+import { useEffect, useMemo, useState } from "react"
+
 import { gql } from "@apollo/client"
 import {
   PhoneCodeChannelType,
   useCaptchaRequestAuthCodeMutation,
   useSupportedCountriesQuery,
 } from "@app/graphql/generated"
+import { useAppConfig, useGeetestCaptcha } from "@app/hooks"
+import useDeviceLocation from "@app/hooks/use-device-location"
+import { logRequestAuthCode } from "@app/utils/analytics"
+
+import useAppCheckToken from "../get-started-screen/use-device-token"
 
 export const RequestPhoneCodeStatus = {
   LoadingCountryCode: "LoadingCountryCode",
   InputtingPhoneNumber: "InputtingPhoneNumber",
-  CompletingCaptcha: "CompletingCaptcha",
+  CompletingCaptchaOrAppcheck: "CompletingCaptchaOrAppcheck",
   RequestingCode: "RequestingCode",
   SuccessRequestingCode: "SuccessRequestingCode",
   Error: "Error",
@@ -29,8 +34,6 @@ export const ErrorType = {
   RequestCodeError: "RequestCodeError",
   UnsupportedCountryError: "UnsupportedCountryError",
 } as const
-
-import axios from "axios"
 
 type ErrorType = (typeof ErrorType)[keyof typeof ErrorType]
 
@@ -45,7 +48,7 @@ type PhoneInputInfo = {
 }
 
 export type UseRequestPhoneCodeReturn = {
-  submitPhoneNumber: (phoneCodeChannel: PhoneCodeChannelType) => void
+  userSubmitPhoneNumber: (phoneCodeChannel: PhoneCodeChannelType) => void
   setStatus: (status: RequestPhoneCodeStatus) => void
   status: RequestPhoneCodeStatus
   phoneInputInfo?: PhoneInputInfo
@@ -97,13 +100,33 @@ export const useRequestPhoneCodeLogin = (): UseRequestPhoneCodeReturn => {
   const [phoneCodeChannel, setPhoneCodeChannel] = useState<PhoneCodeChannelType>(
     PhoneCodeChannelType.Sms,
   )
+
+  const {
+    appConfig: {
+      galoyInstance: { authUrl },
+    },
+  } = useAppConfig()
+
   const { appConfig } = useAppConfig()
-  const skipRequestPhoneCode = appConfig.galoyInstance.name === "Local"
 
   const [error, setError] = useState<ErrorType | undefined>()
   const [captchaRequestAuthCode] = useCaptchaRequestAuthCodeMutation()
 
   const { data, loading: loadingSupportedCountries } = useSupportedCountriesQuery()
+  const { countryCode: detectedCountryCode, loading: loadingDetectedCountryCode } =
+    useDeviceLocation()
+
+  const appCheckToken = useAppCheckToken({})
+
+  const {
+    geetestError,
+    geetestValidationData,
+    loadingRegisterCaptcha,
+    registerCaptcha,
+    resetError,
+    resetValidationData,
+  } = useGeetestCaptcha()
+
   const { isWhatsAppSupported, isSmsSupported, allSupportedCountries } = useMemo(() => {
     const currentCountry = data?.globals?.supportedCountries.find(
       (country) => country.id === countryCode,
@@ -126,103 +149,21 @@ export const useRequestPhoneCodeLogin = (): UseRequestPhoneCodeReturn => {
     }
   }, [data?.globals, countryCode])
 
-  const {
-    geetestError,
-    geetestValidationData,
-    loadingRegisterCaptcha,
-    registerCaptcha,
-    resetError,
-    resetValidationData,
-  } = useGeetestCaptcha()
-
+  // setting default country code from IP
   useEffect(() => {
-    const getCountryCodeFromIP = async () => {
-      let defaultCountryCode = "SV" as CountryCode
-      try {
-        const response = await axios({
-          method: "get",
-          url: "https://ipapi.co/json/",
-          timeout: 5000,
-        })
-        const data = response.data
-
-        if (data && data.country_code) {
-          const countryCode = data.country_code
-          defaultCountryCode = countryCode
-        } else {
-          console.warn("no data or country_code in response")
-        }
-      } catch (error) {
-        console.error(error)
-      }
-
-      setCountryCode(defaultCountryCode)
+    if (detectedCountryCode) {
+      setCountryCode(detectedCountryCode)
       setStatus(RequestPhoneCodeStatus.InputtingPhoneNumber)
     }
+  }, [detectedCountryCode])
 
-    getCountryCodeFromIP()
-  }, [])
-
-  const setPhoneNumber = (number: string) => {
-    if (status === RequestPhoneCodeStatus.RequestingCode) {
-      return
-    }
-    // handle paste
-    if (number.length - rawPhoneNumber.length > 1) {
-      const parsedPhoneNumber = parsePhoneNumber(number, countryCode)
-
-      if (parsedPhoneNumber?.isValid()) {
-        parsedPhoneNumber.country && setCountryCode(parsedPhoneNumber.country)
-      }
-    }
-
-    setRawPhoneNumber(number)
-    setError(undefined)
-    setStatus(RequestPhoneCodeStatus.InputtingPhoneNumber)
-  }
-
-  const submitPhoneNumber = (phoneCodeChannel: PhoneCodeChannelType) => {
-    if (
-      status === RequestPhoneCodeStatus.LoadingCountryCode ||
-      status === RequestPhoneCodeStatus.RequestingCode
-    ) {
-      return
-    }
-
-    const parsedPhoneNumber = parsePhoneNumber(rawPhoneNumber, countryCode)
-    phoneCodeChannel && setPhoneCodeChannel(phoneCodeChannel)
-    if (parsedPhoneNumber?.isValid()) {
-      if (
-        !parsedPhoneNumber.country ||
-        (phoneCodeChannel === PhoneCodeChannelType.Sms && !isSmsSupported) ||
-        (phoneCodeChannel === PhoneCodeChannelType.Whatsapp && !isWhatsAppSupported)
-      ) {
-        setStatus(RequestPhoneCodeStatus.Error)
-        setError(ErrorType.UnsupportedCountryError)
-        return
-      }
-
-      setValidatedPhoneNumber(parsedPhoneNumber.number)
-
-      if (skipRequestPhoneCode) {
-        setStatus(RequestPhoneCodeStatus.SuccessRequestingCode)
-        return
-      }
-
-      setStatus(RequestPhoneCodeStatus.CompletingCaptcha)
-      registerCaptcha()
-    } else {
-      setStatus(RequestPhoneCodeStatus.Error)
-      setError(ErrorType.InvalidPhoneNumberError)
-    }
-  }
-
+  // when phone number is submitted and either captcha is requested, or appcheck is used
   useEffect(() => {
-    if (status !== RequestPhoneCodeStatus.CompletingCaptcha) {
+    if (status !== RequestPhoneCodeStatus.CompletingCaptchaOrAppcheck) {
       return
     }
 
-    ;(async () => {
+    const captchaPath = async () => {
       if (geetestError) {
         setStatus(RequestPhoneCodeStatus.Error)
         setError(ErrorType.FailedCaptchaError)
@@ -266,8 +207,52 @@ export const useRequestPhoneCodeLogin = (): UseRequestPhoneCodeReturn => {
           setStatus(RequestPhoneCodeStatus.Error)
           setError(ErrorType.RequestCodeError)
         }
+      } else {
+        // we first register captcha, which will set geetestValidationData
+        registerCaptcha()
       }
-    })()
+    }
+
+    const appCheckPath = async () => {
+      try {
+        await axios.post(
+          authUrl + "/auth/phone/code-appcheck",
+          {
+            phone: validatedPhoneNumber,
+            channel: phoneCodeChannel,
+          },
+          {
+            headers: {
+              Appcheck: appCheckToken,
+            },
+          },
+        )
+
+        setStatus(RequestPhoneCodeStatus.SuccessRequestingCode)
+      } catch (err) {
+        setStatus(RequestPhoneCodeStatus.Error)
+        if (
+          isAxiosError(err) &&
+          err.response?.data.error === "UserCodeAttemptIdentifierRateLimiterExceededError"
+        ) {
+          setError(ErrorType.TooManyAttemptsError)
+        } else {
+          setError(ErrorType.RequestCodeError)
+        }
+      }
+    }
+
+    const skipRequestPhoneCode =
+      appConfig.galoyInstance.name === "Local" ||
+      appConfig.galoyInstance.name === "Staging"
+
+    if (skipRequestPhoneCode) {
+      setStatus(RequestPhoneCodeStatus.SuccessRequestingCode)
+    } else if (appCheckToken) {
+      appCheckPath()
+    } else {
+      captchaPath()
+    }
   }, [
     status,
     geetestValidationData,
@@ -278,7 +263,55 @@ export const useRequestPhoneCodeLogin = (): UseRequestPhoneCodeReturn => {
     phoneCodeChannel,
     resetError,
     resetValidationData,
+    registerCaptcha,
+    appCheckToken,
+    authUrl,
   ])
+
+  const setPhoneNumber = (number: string) => {
+    if (status === RequestPhoneCodeStatus.RequestingCode) {
+      return
+    }
+
+    const parsedPhoneNumber = parsePhoneNumber(number, countryCode)
+    if (parsedPhoneNumber?.country) {
+      setCountryCode(parsedPhoneNumber.country)
+    }
+
+    setRawPhoneNumber(number)
+    setError(undefined)
+    setStatus(RequestPhoneCodeStatus.InputtingPhoneNumber)
+  }
+
+  const userSubmitPhoneNumber = (phoneCodeChannel: PhoneCodeChannelType) => {
+    if (
+      status === RequestPhoneCodeStatus.LoadingCountryCode ||
+      status === RequestPhoneCodeStatus.RequestingCode
+    ) {
+      return
+    }
+
+    const parsedPhoneNumber = parsePhoneNumber(rawPhoneNumber, countryCode)
+    phoneCodeChannel && setPhoneCodeChannel(phoneCodeChannel)
+    if (parsedPhoneNumber?.isValid()) {
+      if (
+        !parsedPhoneNumber.country ||
+        (phoneCodeChannel === PhoneCodeChannelType.Sms && !isSmsSupported) ||
+        (phoneCodeChannel === PhoneCodeChannelType.Whatsapp && !isWhatsAppSupported)
+      ) {
+        setStatus(RequestPhoneCodeStatus.Error)
+        setError(ErrorType.UnsupportedCountryError)
+        return
+      }
+
+      setValidatedPhoneNumber(parsedPhoneNumber.number)
+
+      setStatus(RequestPhoneCodeStatus.CompletingCaptchaOrAppcheck)
+    } else {
+      setStatus(RequestPhoneCodeStatus.Error)
+      setError(ErrorType.InvalidPhoneNumberError)
+    }
+  }
 
   let phoneInputInfo: PhoneInputInfo | undefined = undefined
   if (countryCode) {
@@ -296,7 +329,7 @@ export const useRequestPhoneCodeLogin = (): UseRequestPhoneCodeReturn => {
     phoneInputInfo,
     validatedPhoneNumber,
     error,
-    submitPhoneNumber,
+    userSubmitPhoneNumber,
     phoneCodeChannel,
     isWhatsAppSupported,
     isSmsSupported,
@@ -304,6 +337,6 @@ export const useRequestPhoneCodeLogin = (): UseRequestPhoneCodeReturn => {
     setCountryCode,
     setPhoneNumber,
     supportedCountries: allSupportedCountries,
-    loadingSupportedCountries,
+    loadingSupportedCountries: loadingSupportedCountries || loadingDetectedCountryCode,
   }
 }

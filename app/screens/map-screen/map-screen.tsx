@@ -1,48 +1,53 @@
-import { useFocusEffect } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import * as React from "react";
-import { useCallback } from "react";
+import { CountryCode } from "libphonenumber-js/mobile"
+import * as React from "react"
 // eslint-disable-next-line react-native/split-platform-components
-import { PermissionsAndroid, Text, View } from "react-native"
-import { Button } from "@rneui/base"
-import MapView, {
-  Callout,
-  CalloutSubview,
-  MapMarkerProps,
-  Marker,
-} from "react-native-maps"
+import { Alert, Dimensions } from "react-native"
+import { Region, MapMarker as MapMarkerType } from "react-native-maps"
+import { check, PermissionStatus, RESULTS } from "react-native-permissions"
+
+import { gql } from "@apollo/client"
+import MapComponent from "@app/components/map-component"
+import {
+  MapMarker,
+  useBusinessMapMarkersQuery,
+  useRegionQuery,
+} from "@app/graphql/generated"
+import { useIsAuthed } from "@app/graphql/is-authed-context"
+import useDeviceLocation from "@app/hooks/use-device-location"
+import { useI18nContext } from "@app/i18n/i18n-react"
+import Geolocation from "@react-native-community/geolocation"
+import { useFocusEffect } from "@react-navigation/native"
+import { StackNavigationProp } from "@react-navigation/stack"
+
+import countryCodes from "../../../utils/countryInfo.json"
 import { Screen } from "../../components/screen"
 import { RootStackParamList } from "../../navigation/stack-param-lists"
-import { isIos } from "../../utils/helper"
 import { toastShow } from "../../utils/toast"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import crashlytics from "@react-native-firebase/crashlytics"
-import { useBusinessMapMarkersQuery } from "@app/graphql/generated"
-import { gql } from "@apollo/client"
-import { useIsAuthed } from "@app/graphql/is-authed-context"
-import { makeStyles, useTheme } from "@rneui/themed"
+import { PhoneLoginInitiateType } from "../phone-auth-screen"
+import { LOCATION_PERMISSION, getUserRegion } from "./functions"
 
-const useStyles = makeStyles(({ colors }) => ({
-  android: { marginTop: 18 },
+const EL_ZONTE_COORDS = {
+  latitude: 13.496743,
+  longitude: -89.439462,
+  latitudeDelta: 0.02,
+  longitudeDelta: 0.02,
+}
 
-  customView: {
-    alignItems: "center",
-    margin: 12,
-  },
-
-  ios: { paddingTop: 12 },
-
-  map: {
-    height: "100%",
-    width: "100%",
-  },
-
-  title: { color: colors._darkGrey, fontSize: 18 },
-}))
+// essentially calculates zoom for location being set based on country
+const { height, width } = Dimensions.get("window")
+const LATITUDE_DELTA = 15 // <-- decrease for more zoom
+const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height)
 
 type Props = {
   navigation: StackNavigationProp<RootStackParamList, "Primary">;
 };
+
+Geolocation.setRNConfiguration({
+  skipPermissionRequests: true,
+  enableBackgroundLocationUpdates: false,
+  authorizationLevel: "whenInUse",
+  locationProvider: "auto",
+})
 
 gql`
   query businessMapMarkers {
@@ -60,18 +65,23 @@ gql`
 `;
 
 export const MapScreen: React.FC<Props> = ({ navigation }) => {
-  const {
-    theme: { colors },
-  } = useTheme()
-  const styles = useStyles()
   const isAuthed = useIsAuthed()
+  const { countryCode, loading } = useDeviceLocation()
+  const { data: lastRegion, error: lastRegionError } = useRegionQuery()
+  const { LL } = useI18nContext()
 
-  const [isRefreshed, setIsRefreshed] = React.useState(false);
   const { data, error, refetch } = useBusinessMapMarkersQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "cache-and-network",
-  });
-  const { LL } = useI18nContext();
+  })
+
+  const focusedMarkerRef = React.useRef<MapMarkerType | null>(null)
+
+  const [initialLocation, setInitialLocation] = React.useState<Region>()
+  const [isRefreshed, setIsRefreshed] = React.useState(false)
+  const [focusedMarker, setFocusedMarker] = React.useState<MapMarker | null>(null)
+  const [isInitializing, setInitializing] = React.useState(true)
+  const [permissionsStatus, setPermissionsStatus] = React.useState<PermissionStatus>()
 
   useFocusEffect(() => {
     if (!isRefreshed) {
@@ -81,110 +91,118 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
   });
 
   if (error) {
-    toastShow({ message: error.message });
+    toastShow({ message: error.message, LL })
   }
 
-  const maps = data?.businessMapMarkers ?? [];
-
-  const requestLocationPermission = useCallback(() => {
-    const asyncRequestLocationPermission = async () => {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          {
-            title: LL.MapScreen.locationPermissionTitle(),
-            message: LL.MapScreen.locationPermissionMessage(),
-            buttonNeutral: LL.MapScreen.locationPermissionNeutral(),
-            buttonNegative: LL.MapScreen.locationPermissionNegative(),
-            buttonPositive: LL.MapScreen.locationPermissionPositive(),
-          },
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.debug("You can use the location");
-        } else {
-          console.debug("Location permission denied");
-        }
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          crashlytics().recordError(err);
-        }
-        console.debug(err);
+  // On screen load, check (NOT request) if location permissions are given
+  React.useEffect(() => {
+    ;(async () => {
+      const status = await check(LOCATION_PERMISSION)
+      setPermissionsStatus(status)
+      if (status === RESULTS.GRANTED) {
+        getUserRegion(async (region) => {
+          if (region) {
+            setInitialLocation(region)
+          } else {
+            setInitializing(false)
+          }
+        })
+      } else {
+        setInitializing(false)
       }
-    };
-    asyncRequestLocationPermission();
-    // disable eslint because we don't want to re-run this function when the language changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    })()
+  }, [])
 
-  useFocusEffect(requestLocationPermission);
+  const alertOnLocationError = React.useCallback(() => {
+    Alert.alert(LL.common.error(), LL.MapScreen.error())
+  }, [LL])
 
-  const markers: ReturnType<React.FC<MapMarkerProps>>[] = [];
-  maps.forEach((item) => {
-    if (item) {
-      const onPress = () => {
-        if (isAuthed && item?.username) {
-          navigation.navigate("sendBitcoinDestination", {
-            username: item.username,
-          });
-        } else {
-          navigation.navigate("phoneFlow");
-        }
-      };
-
-      markers.push(
-        <Marker
-          coordinate={item.mapInfo.coordinates}
-          key={item.username}
-          pinColor={colors._orange}
-        >
-          <Callout
-            // alphaHitTest
-            // tooltip
-            onPress={() => (Boolean(item.username) && !isIos
-              ? onPress()
-              : null)}
-          >
-            <View style={styles.customView}>
-              <Text style={styles.title}>{item.mapInfo.title}</Text>
-              {Boolean(item.username) && !isIos && (
-                <Button
-                  containerStyle={styles.android}
-                  title={LL.MapScreen.payBusiness()}
-                />
-              )}
-              {isIos && (
-                <CalloutSubview
-                  onPress={() => (item.username ? onPress() : null)}
-                >
-                  {Boolean(item.username) && (
-                    <Button
-                      style={styles.ios}
-                      title={LL.MapScreen.payBusiness()}
-                    />
-                  )}
-                </CalloutSubview>
-              )}
-            </View>
-          </Callout>
-        </Marker>,
-      );
+  React.useEffect(() => {
+    if (lastRegionError) {
+      setInitializing(false)
+      setInitialLocation(EL_ZONTE_COORDS)
+      alertOnLocationError()
     }
-  });
+  }, [lastRegionError, alertOnLocationError])
+
+  // Flow when location permissions are denied
+  React.useEffect(() => {
+    if (countryCode && lastRegion && !isInitializing && !loading && !initialLocation) {
+      // User has used map before, so we use their last viewed coords
+      if (lastRegion.region) {
+        const { latitude, longitude, latitudeDelta, longitudeDelta } = lastRegion.region
+        const region: Region = {
+          latitude,
+          longitude,
+          latitudeDelta,
+          longitudeDelta,
+        }
+        setInitialLocation(region)
+        // User is using maps for the first time, so we center on the center of their IP's country
+      } else {
+        // JSON 'hashmap' with every countrys' code listed with their lat and lng
+        const countryCodesToCoords: {
+          data: Record<CountryCode, { lat: number; lng: number }>
+        } = JSON.parse(JSON.stringify(countryCodes))
+        const countryCoords: { lat: number; lng: number } =
+          countryCodesToCoords.data[countryCode]
+        if (countryCoords) {
+          const region: Region = {
+            latitude: countryCoords.lat,
+            longitude: countryCoords.lng,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA,
+          }
+          setInitialLocation(region)
+          // backup if country code is not recognized
+        } else {
+          setInitialLocation(EL_ZONTE_COORDS)
+        }
+      }
+    }
+  }, [isInitializing, countryCode, lastRegion, loading, initialLocation])
+
+  const handleCalloutPress = (item: MapMarker) => {
+    if (isAuthed) {
+      navigation.navigate("sendBitcoinDestination", { username: item.username })
+    } else {
+      navigation.navigate("phoneFlow", {
+        screen: "phoneLoginInitiate",
+        params: {
+          type: PhoneLoginInitiateType.CreateAccount,
+        },
+      })
+    }
+  }
+
+  const handleMarkerPress = (item: MapMarker, ref?: MapMarkerType) => {
+    setFocusedMarker(item)
+    if (ref) {
+      focusedMarkerRef.current = ref
+    }
+  }
+
+  const handleMapPress = () => {
+    setFocusedMarker(null)
+    focusedMarkerRef.current = null
+  }
 
   return (
     <Screen>
-      <MapView
-        style={styles.map}
-        showsUserLocation={true}
-        initialRegion={{
-          latitude: 13.496743,
-          longitude: -89.439462,
-          latitudeDelta: 0.02,
-          longitudeDelta: 0.02,
-        }}
-      >
-        {markers}
-      </MapView>
+      {initialLocation && (
+        <MapComponent
+          data={data}
+          userLocation={initialLocation}
+          permissionsStatus={permissionsStatus}
+          setPermissionsStatus={setPermissionsStatus}
+          handleMapPress={handleMapPress}
+          handleMarkerPress={handleMarkerPress}
+          focusedMarker={focusedMarker}
+          focusedMarkerRef={focusedMarkerRef}
+          handleCalloutPress={handleCalloutPress}
+          alertOnLocationError={alertOnLocationError}
+        />
+      )}
     </Screen>
   );
 };

@@ -1,13 +1,19 @@
-import { DisplayCurrency, MoneyAmount, WalletOrDisplayCurrency } from "@app/types/amounts"
-import { AuthenticationScreenPurpose, PinScreenPurpose } from "../utils/enum"
-import { PhoneCodeChannelType, WalletCurrency } from "@app/graphql/generated"
+import { PhoneCodeChannelType, UserContact, WalletCurrency } from "@app/graphql/generated"
 import { EarnSectionType } from "@app/screens/earns-screen/sections"
-import { PaymentDetail } from "@app/screens/send-bitcoin-screen/payment-details/index.types"
+import { PhoneLoginInitiateType } from "@app/screens/phone-auth-screen"
 import {
   PaymentDestination,
   ReceiveDestination,
 } from "@app/screens/send-bitcoin-screen/payment-destination/index.types"
+import { PaymentDetail } from "@app/screens/send-bitcoin-screen/payment-details/index.types"
+import { PaymentSendCompletedStatus } from "@app/screens/send-bitcoin-screen/use-send-payment"
+import { DisplayCurrency, MoneyAmount, WalletOrDisplayCurrency } from "@app/types/amounts"
 import { WalletDescriptor } from "@app/types/wallets"
+import { NavigatorScreenParams } from "@react-navigation/native"
+
+import { AuthenticationScreenPurpose, PinScreenPurpose } from "../utils/enum"
+
+//Puravida Stack
 import { PostAttributes } from "@app/modules/market-place/redux/reducers/store-reducer"
 
 export type RootStackParamList = {
@@ -30,7 +36,7 @@ export type RootStackParamList = {
   addressScreen: undefined
   defaultWallet: undefined
   theme: undefined
-  sendBitcoinDestination: {
+  sendBitcoinDestination?: {
     payment?: string
     username?: string
     autoValidate?: boolean
@@ -47,7 +53,10 @@ export type RootStackParamList = {
     moneyAmount: MoneyAmount<WalletOrDisplayCurrency>
   }
   conversionSuccess: undefined
-  sendBitcoinSuccess: undefined
+  sendBitcoinCompleted: {
+    arrivalAtMempoolEstimate?: number
+    status: PaymentSendCompletedStatus
+  }
   language: undefined
   currency: undefined
   security: {
@@ -73,13 +82,14 @@ export type RootStackParamList = {
     settlementAmount: MoneyAmount<typeof WalletCurrency.Btc>
     displayAmount: MoneyAmount<DisplayCurrency>
   }
-  phoneFlow: undefined
+  phoneFlow: NavigatorScreenParams<PhoneValidationStackParamList>
   phoneRegistrationInitiate: undefined
   phoneRegistrationValidate: { phone: string; channel: PhoneCodeChannelType }
   transactionDetail: { txid: string }
   transactionHistory?: undefined
   Earn: undefined
   accountScreen: undefined
+  notificationSettingsScreen: undefined
   transactionLimitsScreen: undefined
   emailRegistrationInitiate: undefined
   emailRegistrationValidate: { email: string; emailRegistrationId: string }
@@ -88,22 +98,32 @@ export type RootStackParamList = {
   totpRegistrationInitiate: undefined
   totpRegistrationValidate: { totpRegistrationId: string }
   totpLoginValidate: { authToken: string }
+  webView: { url: string; initialTitle?: string }
+  fullOnboardingFlow: undefined
+  chatbot: undefined
 
+  // Puravida Stack
   PostDetail: { editable?: boolean; postInfo: PostAttributes, postId?: string, title?: string, isMyPost?: boolean },
   LocationPicker: undefined
 }
 
 export type PeopleStackParamList = {
   peopleHome: undefined
-  contactDetail: { contact: Contact }
+  contactDetail: { contact: UserContact }
   circlesDashboard: undefined
   allContacts: undefined
 }
 
 export type PhoneValidationStackParamList = {
   Primary: undefined
-  phoneLoginInitiate: undefined
-  phoneLoginValidate: { phone: string; channel: PhoneCodeChannelType }
+  phoneLoginInitiate: {
+    type: PhoneLoginInitiateType
+  }
+  phoneLoginValidate: {
+    phone: string
+    channel: PhoneCodeChannelType
+    type: PhoneLoginInitiateType
+  }
   authentication: {
     screenPurpose: AuthenticationScreenPurpose
   }
@@ -118,5 +138,6 @@ export type PrimaryStackParamList = {
   Earn: undefined
   Web: undefined
 
+  //Puravida Stack
   MarketPlaceStack: undefined
 }

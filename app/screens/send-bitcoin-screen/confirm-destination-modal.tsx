@@ -1,15 +1,19 @@
+import React, { Dispatch, useCallback, useState } from "react"
+import { View, TouchableOpacity } from "react-native"
+
+import { GaloyIcon } from "@app/components/atomic/galoy-icon"
+import CustomModal from "@app/components/custom-modal/custom-modal"
 import { useAppConfig } from "@app/hooks"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { CheckBox, Text, makeStyles, useTheme } from "@rneui/themed"
-import React, { Dispatch, useCallback, useState } from "react"
-import { View, TouchableOpacity } from "react-native"
+
 import { testProps } from "../../utils/testProps"
 import {
+  DestinationState,
+  SendBitcoinActions,
   SendBitcoinDestinationAction,
   SendBitcoinDestinationState,
 } from "./send-bitcoin-reducer"
-import CustomModal from "@app/components/custom-modal/custom-modal"
-import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 
 export type ConfirmDestinationModalProps = {
   destinationState: SendBitcoinDestinationState
@@ -30,14 +34,22 @@ export const ConfirmDestinationModal: React.FC<ConfirmDestinationModalProps> = (
   const [confirmationEnabled, setConfirmationEnabled] = useState(false)
   const confirmDestination = useCallback(() => {
     dispatchDestinationStateAction({
-      type: "set-confirmed",
+      type: SendBitcoinActions.SetConfirmed,
       payload: { unparsedDestination: destinationState.unparsedDestination },
     })
   }, [destinationState, dispatchDestinationStateAction])
 
-  if (destinationState.destinationState !== "requires-confirmation") return null
+  if (destinationState.destinationState !== DestinationState.RequiresUsernameConfirmation)
+    return null
 
-  const lnAddress = destinationState.confirmationType.username + "@" + lnDomain
+  const lnAddress = destinationState?.confirmationUsernameType?.username + "@" + lnDomain
+
+  const goBack = () => {
+    dispatchDestinationStateAction({
+      type: SendBitcoinActions.SetUnparsedDestination,
+      payload: { unparsedDestination: destinationState.unparsedDestination },
+    })
+  }
 
   const goBack = () => {
     dispatchDestinationStateAction({
@@ -48,14 +60,19 @@ export const ConfirmDestinationModal: React.FC<ConfirmDestinationModalProps> = (
 
   return (
     <CustomModal
-      isVisible={destinationState.destinationState === "requires-confirmation"}
+      isVisible={
+        destinationState.destinationState ===
+        DestinationState.RequiresUsernameConfirmation
+      }
       toggleModal={goBack}
-      title={LL.SendBitcoinDestinationScreen.confirmModal.title()}
+      title={LL.SendBitcoinDestinationScreen.confirmUsernameModal.title()}
       image={<GaloyIcon name="info" size={100} color={colors.primary3} />}
       body={
         <View style={styles.body}>
           <Text type={"p2"} color={colors.warning} style={styles.warningText}>
-            {LL.SendBitcoinDestinationScreen.confirmModal.warning({ bankName })}
+            {LL.SendBitcoinDestinationScreen.confirmUsernameModal.warning({
+              bankName,
+            })}
           </Text>
         </View>
       }
@@ -67,7 +84,9 @@ export const ConfirmDestinationModal: React.FC<ConfirmDestinationModalProps> = (
           <View style={styles.checkBoxContainer}>
             <CheckBox
               {...testProps(
-                LL.SendBitcoinDestinationScreen.confirmModal.checkBox({ lnAddress }),
+                LL.SendBitcoinDestinationScreen.confirmUsernameModal.checkBox({
+                  lnAddress,
+                }),
               )}
               containerStyle={styles.checkBox}
               checked={confirmationEnabled}
@@ -76,15 +95,17 @@ export const ConfirmDestinationModal: React.FC<ConfirmDestinationModalProps> = (
               uncheckedIcon={"square-outline"}
               onPress={() => setConfirmationEnabled(!confirmationEnabled)}
             />
-            <Text type={"p2"} style={styles.checkBoxText}>
-              {LL.SendBitcoinDestinationScreen.confirmModal.checkBox({ lnAddress })}
+            <Text testID="address-is-right" type={"p2"} style={styles.checkBoxText}>
+              {LL.SendBitcoinDestinationScreen.confirmUsernameModal.checkBox({
+                lnAddress,
+              })}
             </Text>
           </View>
         </TouchableOpacity>
       }
       primaryButtonOnPress={confirmDestination}
       primaryButtonDisabled={!confirmationEnabled}
-      primaryButtonTitle={LL.SendBitcoinDestinationScreen.confirmModal.confirmButton()}
+      primaryButtonTitle={LL.SendBitcoinDestinationScreen.confirmUsernameModal.confirmButton()}
       secondaryButtonTitle={LL.common.back()}
       secondaryButtonOnPress={goBack}
     />

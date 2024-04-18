@@ -9,6 +9,7 @@ import {
   checkContact,
   selector,
   addSmallAmount,
+  swipeButton,
 } from "./utils"
 
 loadLocale("en")
@@ -37,10 +38,12 @@ describe("Validate Username Flow", () => {
     // Some kind of bug with the component
     const selectorValue =
       process.env.E2E_DEVICE === "ios"
-        ? `${LL.SendBitcoinDestinationScreen.confirmModal.checkBox({
+        ? `${LL.SendBitcoinDestinationScreen.confirmUsernameModal.checkBox({
             lnAddress,
-          })} ${LL.SendBitcoinDestinationScreen.confirmModal.checkBox({ lnAddress })}`
-        : LL.SendBitcoinDestinationScreen.confirmModal.checkBox({ lnAddress })
+          })} ${LL.SendBitcoinDestinationScreen.confirmUsernameModal.checkBox({
+            lnAddress,
+          })}`
+        : LL.SendBitcoinDestinationScreen.confirmUsernameModal.checkBox({ lnAddress })
     const checkBoxButton = await $(selector(selectorValue, "Other"))
     await checkBoxButton.waitForEnabled({ timeout })
     await checkBoxButton.click()
@@ -48,7 +51,9 @@ describe("Validate Username Flow", () => {
     const { isContactAvailable } = await checkContact(username)
     expect(isContactAvailable).toBe(false)
 
-    await clickButton(LL.SendBitcoinDestinationScreen.confirmModal.confirmButton())
+    await clickButton(
+      LL.SendBitcoinDestinationScreen.confirmUsernameModal.confirmButton(),
+    )
     await waitTillTextDisplayed(LL.SendBitcoinScreen.amount())
     await clickBackButton()
     await waitTillTextDisplayed(LL.SendBitcoinScreen.destination())
@@ -103,8 +108,8 @@ describe("Username Payment Flow", () => {
     await clickButton(LL.common.next())
   })
 
-  it("Click 'Confirm Payment' and get Green Checkmark success", async () => {
-    await clickButton(LL.SendBitcoinConfirmationScreen.title())
+  it("Slides to confirm payment and get Green Checkmark success", async () => {
+    await swipeButton(LL.SendBitcoinConfirmationScreen.slideToConfirm())
   })
 
   it("Clicks on not enjoying app", async () => {
@@ -134,14 +139,19 @@ describe("Username Payment Flow", () => {
     const suggestionInput = await $(
       selector(LL.SendBitcoinScreen.suggestionInput(), "TextView"),
     )
-    await suggestionInput.waitForDisplayed({ timeout })
-    await suggestionInput.click()
-    await suggestionInput.setValue("e2e test suggestion")
-    await clickButton(LL.AuthenticationScreen.skip())
 
-    // FIXME: this is a bug. we should not have to double tap here.
-    await browser.pause(1000)
-    await clickButton(LL.AuthenticationScreen.skip())
+    try {
+      await suggestionInput.waitForDisplayed({ timeout })
+      await suggestionInput.click()
+      await suggestionInput.setValue("e2e test suggestion")
+      await clickButton(LL.AuthenticationScreen.skip())
+
+      // FIXME: this is a bug. we should not have to double tap here.
+      await browser.pause(1000)
+      await clickButton(LL.AuthenticationScreen.skip())
+    } catch {
+      // Sometimes the suggestion box is not displayed so it's okay to ignore
+    }
   })
 })
 

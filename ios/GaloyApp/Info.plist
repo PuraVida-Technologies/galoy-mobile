@@ -40,17 +40,8 @@
 				<string>lightning</string>
 				<string>bitcoin</string>
 				<string>bitcoinbeach</string>
+				<string>blink</string>
 				<string>lapp</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>ln.bitcoinbeach.com</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>ln.bitcoinbeach.com</string>
 			</array>
 		</dict>
 		<dict>
@@ -84,14 +75,10 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-		<key>NSExceptionDomains</key>
-		<dict>
-			<key>localhost</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-			</dict>
-		</dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Activate your camera to scan QR codes</string>

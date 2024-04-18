@@ -3,8 +3,8 @@ import { makeStyles } from "@rneui/themed"
 
 import { Screen } from "../../components/screen"
 import { CirclesCardPeopleHome } from "./circles/circles-card-people-home"
-import { ContactsCard } from "./contacts/contacts-card"
 import { InviteFriendsCard } from "./circles/invite-friends-card"
+import { ContactsCard } from "./contacts/contacts-card"
 
 export const PeopleScreen: React.FC = () => {
   const styles = useStyles()
@@ -20,6 +20,6 @@ export const PeopleScreen: React.FC = () => {
 
 const useStyles = makeStyles(() => ({
   screen: {
-    padding: 24,
+    padding: 20,
   },
 }))

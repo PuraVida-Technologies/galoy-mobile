@@ -61,7 +61,6 @@ ios/AppStore_io.galoy.app.mobileprovision
 ios/fastlane/report.xml
 app/services/lnd/generated/*
 android/api-8350101450647692243-59029-b9bec84a7e5a.json
-android/app/fastlane-supply-service-account-key.json
 android/fastlane/report.xml
 android/fastlane/metadata/android/en-US/
 android/app/release/
@@ -76,20 +75,22 @@ yalc.lock
 
 *.log
 
-.env
-.envrc
 .dependencies
 ios/assets
 ios/GaloyApp/assets
 android/app/src/main/assets
-ios/gems
-ios/specifications
-ios/extensions
-ios/cache
-ios/bin
-
 
 # Temporary files created by Metro to check the health of the file watcher
 .metro-health-check*
 
-puravida-app.properties
+# testing
+/coverage
+
+.env.local
+*.tmp.ci
+artifacts
+ios-recordings
+android-recordings
+.direnv
+
+ios/.xcode.env.local

@@ -1,11 +1,13 @@
+import React, { useState } from "react"
+import { Alert } from "react-native"
+
 import useLogout from "@app/hooks/use-logout"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { toastShow } from "@app/utils/toast"
-import React, { useState } from "react"
-import { NetworkErrorCode } from "./error-code"
-import { Alert } from "react-native"
-import { useNetworkError } from "./network-error-context"
 import { CommonActions, useNavigation } from "@react-navigation/native"
+
+import { NetworkErrorCode } from "./error-code"
+import { useNetworkError } from "./network-error-context"
 
 export const NetworkErrorComponent: React.FC = () => {
   const navigation = useNavigation()
@@ -25,7 +27,7 @@ export const NetworkErrorComponent: React.FC = () => {
       // TODO translation
       toastShow({
         message: (translations) => translations.errors.network.server(),
-        currentTranslation: LL,
+        LL,
       })
 
       return
@@ -33,7 +35,9 @@ export const NetworkErrorComponent: React.FC = () => {
 
     if (networkError.statusCode >= 400 && networkError.statusCode < 500) {
       let errorCode =
-        "result" in networkError ? networkError.result?.errors?.[0]?.code : undefined
+        "result" in networkError && typeof networkError.result !== "string"
+          ? networkError.result?.errors?.[0]?.code
+          : undefined
 
       if (!errorCode) {
         switch (networkError.statusCode) {
@@ -56,7 +60,7 @@ export const NetworkErrorComponent: React.FC = () => {
                 onPress: () => {
                   setShowedAlert(false)
                   navigation.dispatch(() => {
-                    const routes = [{ name: "Primary" }]
+                    const routes = [{ name: "getStarted" }]
                     return CommonActions.reset({
                       routes,
                       index: routes.length - 1,
@@ -75,7 +79,7 @@ export const NetworkErrorComponent: React.FC = () => {
               `StatusCode: ${
                 networkError.statusCode
               }\nError code: ${errorCode}\n${translations.errors.network.request()}`,
-            currentTranslation: LL,
+            LL,
           })
           break
       }
@@ -88,7 +92,7 @@ export const NetworkErrorComponent: React.FC = () => {
       // TODO translation
       toastShow({
         message: (translations) => translations.errors.network.connection(),
-        currentTranslation: LL,
+        LL,
       })
     }
     clearNetworkError()

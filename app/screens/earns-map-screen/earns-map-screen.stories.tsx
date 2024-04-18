@@ -1,6 +1,8 @@
+import React from "react"
+
 import { MockedProvider } from "@apollo/client/testing"
 import { Meta } from "@storybook/react"
-import React from "react"
+
 import { StoryScreen } from "../../../.storybook/views"
 import { createCache } from "../../graphql/cache"
 import { MyQuizQuestionsDocument } from "../../graphql/generated"
@@ -92,7 +94,7 @@ const mocksSection0 = [
                 __typename: "Quiz",
               },
               {
-                id: "moneySocialAggrement",
+                id: "moneySocialAgreement",
                 amount: 4,
                 completed: false,
                 __typename: "Quiz",
@@ -259,7 +261,7 @@ const mocksSection1 = [
                 __typename: "Quiz",
               },
               {
-                id: "moneySocialAggrement",
+                id: "moneySocialAgreement",
                 amount: 4,
                 completed: false,
                 __typename: "Quiz",

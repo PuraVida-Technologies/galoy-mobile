@@ -26,6 +26,7 @@ fragment Transaction on Transaction {
     }
     ... on InitiationViaLn {
       paymentHash
+      paymentRequest
       __typename
     }
     ... on InitiationViaOnChain {
@@ -38,14 +39,16 @@ fragment Transaction on Transaction {
     ... on SettlementViaIntraLedger {
       counterPartyWalletId
       counterPartyUsername
+      preImage
       __typename
     }
     ... on SettlementViaLn {
-      paymentSecret
+      preImage
       __typename
     }
     ... on SettlementViaOnChain {
       transactionHash
+      arrivalInMempoolEstimatedAt
       __typename
     }
     __typename
@@ -78,6 +81,94 @@ mutation accountDelete {
       __typename
     }
     success
+    __typename
+  }
+}
+
+mutation accountDisableNotificationCategory($input: AccountDisableNotificationCategoryInput!) {
+  accountDisableNotificationCategory(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    account {
+      id
+      notificationSettings {
+        push {
+          enabled
+          disabledCategories
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+mutation accountDisableNotificationChannel($input: AccountDisableNotificationChannelInput!) {
+  accountDisableNotificationChannel(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    account {
+      id
+      notificationSettings {
+        push {
+          enabled
+          disabledCategories
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+mutation accountEnableNotificationCategory($input: AccountEnableNotificationCategoryInput!) {
+  accountEnableNotificationCategory(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    account {
+      id
+      notificationSettings {
+        push {
+          enabled
+          disabledCategories
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+mutation accountEnableNotificationChannel($input: AccountEnableNotificationChannelInput!) {
+  accountEnableNotificationChannel(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    account {
+      id
+      notificationSettings {
+        push {
+          enabled
+          disabledCategories
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
     __typename
   }
 }
@@ -192,9 +283,11 @@ mutation lnInvoiceCreate($input: LnInvoiceCreateInput!) {
       __typename
     }
     invoice {
+      createdAt
       paymentHash
       paymentRequest
-      paymentSecret
+      paymentStatus
+      externalId
       satoshis
       __typename
     }
@@ -231,9 +324,11 @@ mutation lnNoAmountInvoiceCreate($input: LnNoAmountInvoiceCreateInput!) {
       __typename
     }
     invoice {
+      createdAt
       paymentHash
       paymentRequest
-      paymentSecret
+      paymentStatus
+      externalId
       __typename
     }
     __typename
@@ -291,9 +386,11 @@ mutation lnUsdInvoiceCreate($input: LnUsdInvoiceCreateInput!) {
       __typename
     }
     invoice {
+      createdAt
       paymentHash
       paymentRequest
-      paymentSecret
+      paymentStatus
+      externalId
       satoshis
       __typename
     }
@@ -325,6 +422,16 @@ mutation onChainAddressCurrent($input: OnChainAddressCurrentInput!) {
 
 mutation onChainPaymentSend($input: OnChainPaymentSendInput!) {
   onChainPaymentSend(input: $input) {
+    transaction {
+      settlementVia {
+        ... on SettlementViaOnChain {
+          arrivalInMempoolEstimatedAt
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
     errors {
       message
       __typename
@@ -367,15 +474,42 @@ mutation onChainUsdPaymentSendAsBtcDenominated($input: OnChainUsdPaymentSendAsBt
   }
 }
 
-mutation quizCompleted($input: QuizCompletedInput!) {
-  quizCompleted(input: $input) {
+mutation onboardingFlowStart($input: OnboardingFlowStartInput!) {
+  onboardingFlowStart(input: $input) {
+    workflowRunId
+    tokenWeb
+    __typename
+  }
+}
+
+mutation quizClaim($input: QuizClaimInput!) {
+  quizClaim(input: $input) {
     errors {
       message
       __typename
     }
-    quiz {
+    quizzes {
       id
+      amount
       completed
+      notBefore
+      __typename
+    }
+    __typename
+  }
+}
+
+mutation supportChatMessageAdd($input: SupportChatMessageAddInput!) {
+  supportChatMessageAdd(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    supportMessage {
+      id
+      message
+      role
+      timestamp
       __typename
     }
     __typename
@@ -483,6 +617,13 @@ mutation userLoginUpgrade($input: UserLoginUpgradeInput!) {
   }
 }
 
+mutation userLogout($input: UserLogoutInput!) {
+  userLogout(input: $input) {
+    success
+    __typename
+  }
+}
+
 mutation userPhoneDelete {
   userPhoneDelete {
     errors {
@@ -536,8 +677,8 @@ mutation userPhoneRegistrationValidate($input: UserPhoneRegistrationValidateInpu
   }
 }
 
-mutation userTotpDelete($input: UserTotpDeleteInput!) {
-  userTotpDelete(input: $input) {
+mutation userTotpDelete {
+  userTotpDelete {
     errors {
       message
       __typename
@@ -557,8 +698,8 @@ mutation userTotpDelete($input: UserTotpDeleteInput!) {
   }
 }
 
-mutation userTotpRegistrationInitiate($input: UserTotpRegistrationInitiateInput!) {
-  userTotpRegistrationInitiate(input: $input) {
+mutation userTotpRegistrationInitiate {
+  userTotpRegistrationInitiate {
     errors {
       message
       __typename
@@ -576,6 +717,7 @@ mutation userTotpRegistrationValidate($input: UserTotpRegistrationValidateInput!
       __typename
     }
     me {
+      id
       totpEnabled
       phone
       email {
@@ -621,6 +763,7 @@ mutation userUpdateUsername($input: UserUpdateUsernameInput!) {
 
 query Circles {
   me {
+    id
     username
     defaultAccount {
       id
@@ -658,8 +801,47 @@ query ContactsCard {
   }
 }
 
-query accountDefaultWallet($username: Username!) {
-  accountDefaultWallet(username: $username) {
+query ExportCsvSetting($walletIds: [WalletId!]!) {
+  me {
+    id
+    defaultAccount {
+      id
+      csvTransactions(walletIds: $walletIds)
+      __typename
+    }
+    __typename
+  }
+}
+
+query SettingsScreen {
+  me {
+    id
+    username
+    language
+    defaultAccount {
+      id
+      defaultWalletId
+      wallets {
+        id
+        balance
+        walletCurrency
+        __typename
+      }
+      __typename
+    }
+    totpEnabled
+    phone
+    email {
+      address
+      verified
+      __typename
+    }
+    __typename
+  }
+}
+
+query accountDefaultWallet($walletCurrency: WalletCurrency, $username: Username!) {
+  accountDefaultWallet(walletCurrency: $walletCurrency, username: $username) {
     id
     __typename
   }
@@ -689,31 +871,6 @@ query accountLimits {
           interval
           __typename
         }
-        __typename
-      }
-      __typename
-    }
-    __typename
-  }
-}
-
-query accountScreen {
-  me {
-    id
-    phone
-    totpEnabled
-    email {
-      address
-      verified
-      __typename
-    }
-    defaultAccount {
-      id
-      level
-      wallets {
-        id
-        balance
-        walletCurrency
         __typename
       }
       __typename
@@ -827,6 +984,10 @@ query conversionScreen {
   }
 }
 
+query countryCode {
+  countryCode @client
+}
+
 query currencyList {
   currencyList {
     __typename
@@ -865,6 +1026,21 @@ query feedbackModalShown {
   feedbackModalShown @client
 }
 
+query fullOnboardingScreen {
+  me {
+    id
+    defaultAccount {
+      ... on ConsumerAccount {
+        id
+        onboardingStatus
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
 query hasPromptedSetDefaultAccount {
   hasPromptedSetDefaultAccount @client
 }
@@ -892,6 +1068,10 @@ query homeAuthed {
       id
       level
       defaultWalletId
+      pendingIncomingTransactions {
+        ...Transaction
+        __typename
+      }
       transactions(first: 20) {
         ...TransactionList
         __typename
@@ -933,6 +1113,7 @@ query introducingCirclesModalShown {
 
 query invite {
   me {
+    id
     username
     __typename
   }
@@ -977,6 +1158,7 @@ query myQuizQuestions {
           id
           amount
           completed
+          notBefore
           __typename
         }
         __typename
@@ -997,6 +1179,25 @@ query myUserId {
 query network {
   globals {
     network
+    __typename
+  }
+}
+
+query notificationSettings {
+  me {
+    id
+    defaultAccount {
+      id
+      notificationSettings {
+        push {
+          enabled
+          disabledCategories
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
     __typename
   }
 }
@@ -1057,36 +1258,13 @@ query paymentRequest {
   }
 }
 
-query onChainUsdTxFee($walletId: WalletId!, $address: OnChainAddress!, $amount: CentAmount!, $targetConfirmations: TargetConfirmations) {
-  onChainUsdTxFee(
-    walletId: $walletId
-    address: $address
-    amount: $amount
-    targetConfirmations: $targetConfirmations
-  ) {
-    amount
-    targetConfirmations
-    __typename
-  }
-}
-
-query onChainUsdTxFeeAsBtcDenominated($walletId: WalletId!, $address: OnChainAddress!, $amount: SatAmount!, $targetConfirmations: TargetConfirmations) {
-  onChainUsdTxFeeAsBtcDenominated(
-    walletId: $walletId
-    address: $address
-    amount: $amount
-    targetConfirmations: $targetConfirmations
-  ) {
-    amount
-    targetConfirmations
-    __typename
-  }
-}
-
-query quizSats {
-  quizQuestions {
+query priceHistoryScreen {
+  me {
     id
-    earnAmount
+    defaultAccount {
+      id
+      __typename
+    }
     __typename
   }
 }
@@ -1114,6 +1292,16 @@ query realtimePrice {
       }
       __typename
     }
+    __typename
+  }
+}
+
+query region {
+  region @client {
+    latitude
+    longitude
+    latitudeDelta
+    longitudeDelta
     __typename
   }
 }
@@ -1177,6 +1365,8 @@ query sendBitcoinDestination {
     contacts {
       id
       username
+      alias
+      transactionsCount
       __typename
     }
     __typename
@@ -1281,21 +1471,14 @@ query setDefaultWalletScreen {
   }
 }
 
-query settingsScreen {
+query supportChat {
   me {
     id
-    phone
-    username
-    language
-    defaultAccount {
+    supportChat {
       id
-      defaultWalletId
-      wallets {
-        id
-        balance
-        walletCurrency
-        __typename
-      }
+      message
+      role
+      timestamp
       __typename
     }
     __typename
@@ -1315,6 +1498,7 @@ query supportedCountries {
 
 query totpRegistrationScreen {
   me {
+    id
     username
     __typename
   }
@@ -1339,22 +1523,14 @@ query transactionListForDefaultAccount($first: Int, $after: String, $last: Int, 
     id
     defaultAccount {
       id
+      pendingIncomingTransactions {
+        ...Transaction
+        __typename
+      }
       transactions(first: $first, after: $after, last: $last, before: $before) {
         ...TransactionList
         __typename
       }
-      __typename
-    }
-    __typename
-  }
-}
-
-query walletCSVTransactions($walletIds: [WalletId!]!) {
-  me {
-    id
-    defaultAccount {
-      id
-      csvTransactions(walletIds: $walletIds)
       __typename
     }
     __typename

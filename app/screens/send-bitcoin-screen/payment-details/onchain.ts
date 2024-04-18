@@ -6,6 +6,7 @@ import {
   toWalletAmount,
 } from "@app/types/amounts"
 import { PaymentType } from "@galoymoney/client"
+
 import {
   ConvertMoneyAmount,
   PaymentDetail,
@@ -139,6 +140,15 @@ export const createNoAmountOnchainPaymentDetails = <T extends WalletCurrency>(
       return {
         status: data?.onChainPaymentSend.status,
         errors: data?.onChainPaymentSend.errors,
+        extraInfo: {
+          arrivalAtMempoolEstimate:
+            data?.onChainPaymentSend.transaction?.settlementVia.__typename ===
+              "SettlementViaOnChain" &&
+            data.onChainPaymentSend.transaction.settlementVia.arrivalInMempoolEstimatedAt
+              ? data.onChainPaymentSend.transaction.settlementVia
+                  .arrivalInMempoolEstimatedAt
+              : undefined,
+        },
       }
     }
 

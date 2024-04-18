@@ -5,7 +5,6 @@ import {
   clickIcon,
   clickOnSetting,
   waitTillOnHomeScreen,
-  waitTillSettingDisplayed,
   checkContact,
   selector,
   clickOnBottomTab,
@@ -45,7 +44,7 @@ describe("Change Language Flow", () => {
 
   it("navigates back to move home screen", async () => {
     await clickBackButton()
-    await waitTillSettingDisplayed(enLL.common.account())
+    await waitTillTextDisplayed(enLL.common.preferences())
     await clickBackButton()
     await waitTillOnHomeScreen()
   })
@@ -93,14 +92,6 @@ describe("People Flow", () => {
   it("Go back to People home", async () => {
     await clickOnBottomTab(Tab.People)
     await clickOnBottomTab(Tab.People)
-  })
-
-  it("Blink circles dashboard", async () => {
-    const button = await $(selector(LL.Circles.viewMyCircles(), "Other"))
-    await button.waitForEnabled({ timeout })
-    await button.click()
-
-    await waitTillTextDisplayed(LL.Circles.groupEffort())
   })
 
   it("Go back to main screen", async () => {

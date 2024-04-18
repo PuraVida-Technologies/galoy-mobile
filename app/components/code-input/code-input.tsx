@@ -1,10 +1,12 @@
+import * as React from "react"
+import { useState } from "react"
+import { ActivityIndicator, View } from "react-native"
+
 import { GaloyErrorBox } from "@app/components/atomic/galoy-error-box"
 import { testProps } from "@app/utils/testProps"
 import { useTheme } from "@react-navigation/native"
 import { Input, Text, makeStyles } from "@rneui/themed"
-import * as React from "react"
-import { useState } from "react"
-import { ActivityIndicator, View } from "react-native"
+
 import { Screen } from "../screen"
 
 const useStyles = makeStyles(({ colors }) => ({
@@ -67,7 +69,9 @@ export const CodeInput: React.FC<Props> = ({
 
   const [code, _setCode] = useState("")
 
-  const setCode = (code: string) => {
+  const setCode = (codeInput: string) => {
+    const code = codeInput.trim()
+
     if (code.length > 6) {
       return
     }
@@ -92,7 +96,7 @@ export const CodeInput: React.FC<Props> = ({
         </View>
 
         <Input
-          {...testProps(placeholder)}
+          {...testProps("code-input")}
           placeholder={placeholder}
           containerStyle={styles.inputComponentContainerStyle}
           inputContainerStyle={styles.inputContainerStyle}

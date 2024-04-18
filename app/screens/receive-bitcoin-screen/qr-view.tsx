@@ -14,26 +14,21 @@ import {
 import QRCode from "react-native-qrcode-svg"
 
 import Logo from "@app/assets/logo/blink-logo-icon.png"
-
-import { Invoice, InvoiceType, GetFullUriFn } from "./payment/index.types"
+import { GaloyIcon } from "@app/components/atomic/galoy-icon"
+import { GaloyTertiaryButton } from "@app/components/atomic/galoy-tertiary-button"
+import { SuccessIconAnimation } from "@app/components/success-animation"
+import { useI18nContext } from "@app/i18n/i18n-react"
+import { makeStyles, Text, useTheme } from "@rneui/themed"
 
 import { testProps } from "../../utils/testProps"
-import { GaloyIcon } from "@app/components/atomic/galoy-icon"
-import { SuccessIconAnimation } from "@app/components/success-animation"
-<<<<<<< HEAD
-import { makeStyles } from "@rneui/themed"
-=======
-import { makeStyles, Text, useTheme } from "@rneui/themed"
-import { GaloyTertiaryButton } from "@app/components/atomic/galoy-tertiary-button"
-import { useI18nContext } from "@app/i18n/i18n-react"
->>>>>>> galoy-upstream
+import { Invoice, InvoiceType, GetFullUriFn } from "./payment/index.types"
 
 const configByType = {
   [Invoice.Lightning]: {
     copyToClipboardLabel: "ReceiveScreen.copyClipboard",
     shareButtonLabel: "common.shareLightning",
     ecl: "L" as const,
-    icon: "ios-flash",
+    icon: "flash",
   },
   [Invoice.OnChain]: {
     copyToClipboardLabel: "ReceiveScreen.copyClipboardBitcoin",
@@ -81,8 +76,6 @@ export const QRView: React.FC<Props> = ({
   canUsePayCode,
   toggleIsSetLightningAddressModalVisible,
 }) => {
-<<<<<<< HEAD
-=======
   const {
     theme: { colors },
   } = useTheme()
@@ -92,7 +85,6 @@ export const QRView: React.FC<Props> = ({
   const displayingQR =
     !completed && isReady && !expired && (!isPayCode || isPayCodeAndCanUsePayCode)
 
->>>>>>> galoy-upstream
   const styles = useStyles()
   const { scale } = useWindowDimensions()
 
@@ -122,14 +114,7 @@ export const QRView: React.FC<Props> = ({
   const renderSuccessView = useMemo(() => {
     if (completed) {
       return (
-<<<<<<< HEAD
-        <View
-          {...testProps("Success Icon")}
-          style={[styles.container, styles.containerSuccess]}
-        >
-=======
         <View {...testProps("Success Icon")} style={[styles.container, style]}>
->>>>>>> galoy-upstream
           <SuccessIconAnimation>
             <GaloyIcon name={"payment-success"} size={128} />
           </SuccessIconAnimation>
@@ -137,11 +122,7 @@ export const QRView: React.FC<Props> = ({
       )
     }
     return null
-<<<<<<< HEAD
-  }, [completed, styles])
-=======
   }, [completed, styles, style])
->>>>>>> galoy-upstream
 
   const renderQRCode = useMemo(() => {
     const getQrLogo = () => {
@@ -151,21 +132,14 @@ export const QRView: React.FC<Props> = ({
       return null
     }
 
-    const getQrSize = () => {
-      if (Platform.OS === "android") {
-        if (scale > 3) {
-          return 195
-        }
-      }
-      return size
-    }
+    const qrSize = Platform.OS === "android" && scale > 3 ? 240 : size
 
     if (displayingQR && getFullUri) {
       const uri = getFullUri({ uppercase: true })
       return (
-        <View style={[styles.container, style]}>
+        <View style={[styles.container, style]} {...testProps("QR-Code")}>
           <QRCode
-            size={getQrSize()}
+            size={qrSize}
             value={uri}
             logoBackgroundColor="white"
             ecl={type && configByType[type].ecl}
@@ -177,11 +151,7 @@ export const QRView: React.FC<Props> = ({
       )
     }
     return null
-<<<<<<< HEAD
-  }, [completed, isReady, type, getFullUri, size, scale, styles])
-=======
   }, [displayingQR, type, getFullUri, size, scale, styles, style])
->>>>>>> galoy-upstream
 
   const renderStatusView = useMemo(() => {
     if (!completed && !isReady) {
@@ -222,9 +192,6 @@ export const QRView: React.FC<Props> = ({
       )
     }
     return null
-<<<<<<< HEAD
-  }, [err, isReady, completed, styles])
-=======
   }, [
     err,
     isReady,
@@ -239,7 +206,6 @@ export const QRView: React.FC<Props> = ({
     regenerateInvoiceFn,
     toggleIsSetLightningAddressModalVisible,
   ])
->>>>>>> galoy-upstream
 
   return (
     <View style={styles.qr}>
@@ -257,11 +223,7 @@ export const QRView: React.FC<Props> = ({
   )
 }
 
-<<<<<<< HEAD
-const useStyles = makeStyles((theme) => ({
-=======
 const useStyles = makeStyles(({ colors }) => ({
->>>>>>> galoy-upstream
   container: {
     justifyContent: "center",
     alignItems: "center",
@@ -274,11 +236,7 @@ const useStyles = makeStyles(({ colors }) => ({
     padding: 16,
   },
   containerSuccess: {
-<<<<<<< HEAD
-    backgroundColor: theme.colors.white,
-=======
     backgroundColor: colors.white,
->>>>>>> galoy-upstream
   },
   errorContainer: {
     justifyContent: "center",
@@ -288,8 +246,6 @@ const useStyles = makeStyles(({ colors }) => ({
   qr: {
     alignItems: "center",
   },
-<<<<<<< HEAD
-=======
   expiredInvoice: {
     marginBottom: 10,
   },
@@ -299,7 +255,6 @@ const useStyles = makeStyles(({ colors }) => ({
   cantUsePayCodeText: {
     marginBottom: 10,
   },
->>>>>>> galoy-upstream
 }))
 
 export default React.memo(QRView)

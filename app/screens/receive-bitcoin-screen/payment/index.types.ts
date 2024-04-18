@@ -5,6 +5,7 @@
  * PaymentRequest - Generated quotation which contains the finalized invoice data
  * Invoice - (not specific to LN) The quoted invoice that contains invoice type specific data
  */
+import { GraphQLError } from "graphql"
 
 import {
   GraphQlApplicationError,
@@ -17,15 +18,14 @@ import {
   OnChainAddressCurrentMutationHookResult,
   Network,
 } from "@app/graphql/generated"
+import { ConvertMoneyAmount } from "@app/screens/send-bitcoin-screen/payment-details"
 import {
   BtcMoneyAmount,
   MoneyAmount,
   WalletAmount,
   WalletOrDisplayCurrency,
 } from "@app/types/amounts"
-import { ConvertMoneyAmount } from "@app/screens/send-bitcoin-screen/payment-details"
 import { BtcWalletDescriptor, WalletDescriptor } from "@app/types/wallets"
-import { GraphQLError } from "graphql"
 
 // ------------------------ COMMONS ------------------------
 
@@ -46,7 +46,13 @@ export type InvoiceData = (
   getFullUriFn: GetFullUriFn
   getCopyableInvoiceFn: GetCopyableInvoiceFn
 }
-export type LightningInvoiceData = (LnInvoice | LnNoAmountInvoice) & {
+
+export type LnInvoiceNoSecret = Omit<LnInvoice, "paymentSecret">
+type LnInvoiceNoSecretNoAmount = Omit<LnNoAmountInvoice, "paymentSecret">
+
+type LnInvoiceWithOrWithoutAmountNoSecret = LnInvoiceNoSecret | LnInvoiceNoSecretNoAmount
+
+export type LightningInvoiceData = LnInvoiceWithOrWithoutAmountNoSecret & {
   invoiceType: typeof Invoice.Lightning
   expiresAt?: Date
   memo?: string

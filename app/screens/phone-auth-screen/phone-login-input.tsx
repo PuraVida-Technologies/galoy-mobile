@@ -1,5 +1,7 @@
-import { useNavigation } from "@react-navigation/native"
-import { StackNavigationProp } from "@react-navigation/stack"
+import {
+  CountryCode as PhoneNumberCountryCode,
+  getCountryCallingCode,
+} from "libphonenumber-js/mobile"
 import * as React from "react"
 import { useEffect } from "react"
 import { ActivityIndicator, View } from "react-native"
@@ -9,13 +11,21 @@ import CountryPicker, {
   DEFAULT_THEME,
   Flag,
 } from "react-native-country-picker-modal"
-import {
-  CountryCode as PhoneNumberCountryCode,
-  getCountryCallingCode,
-} from "libphonenumber-js/mobile"
+import { TouchableOpacity } from "react-native-gesture-handler"
+
+import { GaloyErrorBox } from "@app/components/atomic/galoy-error-box"
+import { GaloyInfo } from "@app/components/atomic/galoy-info"
+import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
+import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
 import { ContactSupportButton } from "@app/components/contact-support-button/contact-support-button"
+import { PhoneCodeChannelType } from "@app/graphql/generated"
+import { useAppConfig } from "@app/hooks"
 import { useI18nContext } from "@app/i18n/i18n-react"
+import { testProps } from "@app/utils/testProps"
+import { RouteProp, useNavigation } from "@react-navigation/native"
+import { StackNavigationProp } from "@react-navigation/stack"
 import { makeStyles, useTheme, Text, Input } from "@rneui/themed"
+
 import { Screen } from "../../components/screen"
 import type { PhoneValidationStackParamList } from "../../navigation/stack-param-lists"
 import {
@@ -23,11 +33,6 @@ import {
   RequestPhoneCodeStatus,
   useRequestPhoneCodeLogin,
 } from "./request-phone-code-login"
-import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
-import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
-import { GaloyErrorBox } from "@app/components/atomic/galoy-error-box"
-import { PhoneCodeChannelType } from "@app/graphql/generated"
-import { TouchableOpacity } from "react-native-gesture-handler"
 
 const DEFAULT_COUNTRY_CODE = "SV"
 const PLACEHOLDER_PHONE_NUMBER = "123-456-7890"
@@ -88,6 +93,9 @@ const useStyles = makeStyles(({ colors }) => ({
   errorContainer: {
     marginBottom: 20,
   },
+  infoContainer: {
+    marginBottom: 20,
+  },
   whatsAppButton: {
     marginBottom: 20,
   },
@@ -98,7 +106,23 @@ const useStyles = makeStyles(({ colors }) => ({
   loadingView: { flex: 1, justifyContent: "center", alignItems: "center" },
 }))
 
-export const PhoneLoginInitiateScreen: React.FC = () => {
+export const PhoneLoginInitiateType = {
+  Login: "Login",
+  CreateAccount: "CreateAccount",
+} as const
+
+const DisableCountriesForAccountCreation = ["US"]
+
+export type PhoneLoginInitiateType =
+  (typeof PhoneLoginInitiateType)[keyof typeof PhoneLoginInitiateType]
+type PhoneLoginInitiateScreenProps = {
+  route: RouteProp<PhoneValidationStackParamList, "phoneLoginInitiate">
+}
+export const PhoneLoginInitiateScreen: React.FC<PhoneLoginInitiateScreenProps> = ({
+  route,
+}) => {
+  const { appConfig } = useAppConfig()
+
   const styles = useStyles()
 
   const navigation =
@@ -111,7 +135,7 @@ export const PhoneLoginInitiateScreen: React.FC = () => {
   } = useTheme()
 
   const {
-    submitPhoneNumber,
+    userSubmitPhoneNumber,
     captchaLoading,
     status,
     setPhoneNumber,
@@ -129,15 +153,33 @@ export const PhoneLoginInitiateScreen: React.FC = () => {
 
   const { LL } = useI18nContext()
 
+  const screenType = route.params.type
+
+  const isDisabledCountryAndCreateAccount =
+    screenType === PhoneLoginInitiateType.CreateAccount &&
+    phoneInputInfo?.countryCode &&
+    DisableCountriesForAccountCreation.includes(phoneInputInfo.countryCode)
+
   useEffect(() => {
     if (status === RequestPhoneCodeStatus.SuccessRequestingCode) {
       setStatus(RequestPhoneCodeStatus.InputtingPhoneNumber)
       navigation.navigate("phoneLoginValidate", {
+        type: screenType,
         phone: validatedPhoneNumber || "",
         channel: phoneCodeChannel,
       })
     }
-  }, [status, phoneCodeChannel, validatedPhoneNumber, navigation, setStatus])
+  }, [status, phoneCodeChannel, validatedPhoneNumber, navigation, setStatus, screenType])
+
+  useEffect(() => {
+    if (!appConfig || appConfig.galoyInstance.id !== "Local") {
+      return
+    }
+
+    setTimeout(() => setPhoneNumber("66667777"), 0)
+    // we intentionally do not want to add setPhoneNumber so that we can use other phone if needed
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appConfig])
 
   if (status === RequestPhoneCodeStatus.LoadingCountryCode || loadingSupportedCountries) {
     return (
@@ -172,6 +214,9 @@ export const PhoneLoginInitiateScreen: React.FC = () => {
   if (!isSmsSupported && !isWhatsAppSupported) {
     errorMessage = LL.PhoneLoginInitiateScreen.errorUnsupportedCountry()
   }
+  if (isDisabledCountryAndCreateAccount) {
+    errorMessage = LL.PhoneLoginInitiateScreen.errorUnsupportedCountry()
+  }
 
   let PrimaryButton = undefined
   let SecondaryButton = undefined
@@ -181,7 +226,8 @@ export const PhoneLoginInitiateScreen: React.FC = () => {
         <GaloyPrimaryButton
           title={LL.PhoneLoginInitiateScreen.sms()}
           loading={captchaLoading && phoneCodeChannel === PhoneCodeChannelType.Sms}
-          onPress={() => submitPhoneNumber(PhoneCodeChannelType.Sms)}
+          onPress={() => userSubmitPhoneNumber(PhoneCodeChannelType.Sms)}
+          disabled={isDisabledCountryAndCreateAccount}
         />
       )
       SecondaryButton = (
@@ -189,7 +235,8 @@ export const PhoneLoginInitiateScreen: React.FC = () => {
           title={LL.PhoneLoginInitiateScreen.whatsapp()}
           containerStyle={styles.whatsAppButton}
           loading={captchaLoading && phoneCodeChannel === PhoneCodeChannelType.Whatsapp}
-          onPress={() => submitPhoneNumber(PhoneCodeChannelType.Whatsapp)}
+          onPress={() => userSubmitPhoneNumber(PhoneCodeChannelType.Whatsapp)}
+          disabled={isDisabledCountryAndCreateAccount}
         />
       )
       break
@@ -198,7 +245,8 @@ export const PhoneLoginInitiateScreen: React.FC = () => {
         <GaloyPrimaryButton
           title={LL.PhoneLoginInitiateScreen.sms()}
           loading={captchaLoading && phoneCodeChannel === PhoneCodeChannelType.Sms}
-          onPress={() => submitPhoneNumber(PhoneCodeChannelType.Sms)}
+          onPress={() => userSubmitPhoneNumber(PhoneCodeChannelType.Sms)}
+          disabled={isDisabledCountryAndCreateAccount}
         />
       )
       break
@@ -207,10 +255,16 @@ export const PhoneLoginInitiateScreen: React.FC = () => {
         <GaloyPrimaryButton
           title={LL.PhoneLoginInitiateScreen.whatsapp()}
           loading={captchaLoading && phoneCodeChannel === PhoneCodeChannelType.Whatsapp}
-          onPress={() => submitPhoneNumber(PhoneCodeChannelType.Whatsapp)}
+          onPress={() => userSubmitPhoneNumber(PhoneCodeChannelType.Whatsapp)}
+          disabled={isDisabledCountryAndCreateAccount}
         />
       )
       break
+  }
+
+  let info: string | undefined = undefined
+  if (phoneInputInfo?.countryCode && phoneInputInfo.countryCode === "AR") {
+    info = LL.PhoneLoginInitiateScreen.infoArgentina()
   }
 
   return (
@@ -256,6 +310,7 @@ export const PhoneLoginInitiateScreen: React.FC = () => {
             withCallingCode={true}
           />
           <Input
+            {...testProps("telephoneNumber")}
             placeholder={PLACEHOLDER_PHONE_NUMBER}
             containerStyle={styles.inputComponentContainerStyle}
             inputContainerStyle={styles.inputContainerStyle}
@@ -267,13 +322,17 @@ export const PhoneLoginInitiateScreen: React.FC = () => {
             autoFocus={true}
           />
         </View>
+        {info && (
+          <View style={styles.infoContainer}>
+            <GaloyInfo>{info}</GaloyInfo>
+          </View>
+        )}
         {errorMessage && (
           <View style={styles.errorContainer}>
             <GaloyErrorBox errorMessage={errorMessage} />
             <ContactSupportButton containerStyle={styles.contactSupportButton} />
           </View>
         )}
-
         <View style={styles.buttonsContainer}>
           {SecondaryButton}
           {PrimaryButton}

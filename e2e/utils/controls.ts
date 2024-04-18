@@ -21,9 +21,9 @@ export const clickAlertLastButton = async (title: string) => {
   await okButton.click()
 }
 
-export const clickButton = async (title: string) => {
+export const clickButton = async (title: string, wait = true) => {
   const button = await $(selector(title, "Button"))
-  await button.waitForEnabled({ timeout })
+  if (wait) await button.waitForEnabled({ timeout })
   await button.click()
 }
 
@@ -34,7 +34,7 @@ export const waitTillButtonDisplayed = async (title: string) => {
 
 export const clickPressable = async (title: string) => {
   const button = await $(selector(title, "Other"))
-  await button.waitForEnabled({ timeout })
+  await button.waitForDisplayed({ timeout })
   await button.click()
 }
 
@@ -182,4 +182,26 @@ export const clickOnText = async (text: string) => {
   const textElement = await $(elementSelector)
   await textElement.waitForEnabled({ timeout })
   await textElement.click()
+}
+
+export const swipeButton = async (title: string) => {
+  const sliderButton = await $(selector(title, "Other"))
+  await sliderButton.waitForDisplayed({ timeout })
+
+  const location = await sliderButton.getLocation()
+  const size = await sliderButton.getSize()
+
+  const thumbWidthPercentage = 0.1
+
+  const thumbWidth = size.width * thumbWidthPercentage
+  const startX = location.x + thumbWidth
+  const startY = location.y + size.height / 2
+
+  const endX = location.x + size.width
+  await driver.touchAction([
+    { action: "press", x: startX, y: startY },
+    { action: "wait", ms: 1500 },
+    { action: "moveTo", x: endX, y: startY },
+    "release",
+  ])
 }

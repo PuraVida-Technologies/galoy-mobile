@@ -1,27 +1,29 @@
-import { RouteProp, useIsFocused, useNavigation } from "@react-navigation/native"
-import { StackNavigationProp } from "@react-navigation/stack"
-import { Button } from "@rneui/base"
 import * as React from "react"
 import { useState } from "react"
 import { Dimensions, Text, View, Alert } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
+import { useSharedValue } from "react-native-reanimated"
 import Carousel from "react-native-reanimated-carousel"
 import Icon from "react-native-vector-icons/Ionicons"
 
 import { PaginationItem } from "@app/components/pagination"
 import { useLevel } from "@app/graphql/level-context"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { useSharedValue } from "react-native-reanimated"
+import { RouteProp, useIsFocused, useNavigation } from "@react-navigation/native"
+import { StackNavigationProp } from "@react-navigation/stack"
+import { Button } from "@rneui/base"
+import { makeStyles, useTheme } from "@rneui/themed"
+
 import { Screen } from "../../components/screen"
 import type { RootStackParamList } from "../../navigation/stack-param-lists"
 import { useQuizServer } from "../earns-map-screen/use-quiz-server"
+import { PhoneLoginInitiateType } from "../phone-auth-screen"
 import { SVGs } from "./earn-svg-factory"
 import {
   augmentCardWithGqlData,
   getCardsFromSection,
   getQuizQuestionsContent,
 } from "./earns-utils"
-import { makeStyles, useTheme } from "@rneui/themed"
 
 const { width: screenWidth } = Dimensions.get("window")
 
@@ -34,9 +36,10 @@ export type QuizQuestion = {
   feedback: string[]
   amount: number
   completed: boolean
+  notBefore: Date | undefined
 }
 
-export type QuizQuestionContent = Omit<QuizQuestion, "amount" | "completed">
+export type QuizQuestionContent = Omit<QuizQuestion, "amount" | "completed" | "notBefore">
 
 export type QuizQuestionForSectionScreen = QuizQuestion & {
   enabled: boolean
@@ -213,7 +216,14 @@ export const EarnSection = ({ route }: Props) => {
           onPress: () => console.log("Cancel Pressed"),
           style: "cancel",
         },
-        { text: "OK", onPress: () => navigation.navigate("phoneFlow") },
+        {
+          text: "OK",
+          onPress: () =>
+            navigation.navigate("phoneFlow", {
+              screen: "phoneLoginInitiate",
+              params: { type: PhoneLoginInitiateType.CreateAccount },
+            }),
+        },
       ])
       return
     }
@@ -255,7 +265,7 @@ export const EarnSection = ({ route }: Props) => {
               icon={
                 item.completed ? (
                   <Icon
-                    name="ios-checkmark-circle-outline"
+                    name="checkmark-circle-outline"
                     size={36}
                     color={colors._white}
                     style={styles.icon}

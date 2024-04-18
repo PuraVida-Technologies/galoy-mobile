@@ -29,6 +29,7 @@ export default gql`
       }
       ... on InitiationViaLn {
         paymentHash
+        paymentRequest
       }
       ... on InitiationViaOnChain {
         address
@@ -38,12 +39,14 @@ export default gql`
       ... on SettlementViaIntraLedger {
         counterPartyWalletId
         counterPartyUsername
+        preImage
       }
       ... on SettlementViaLn {
-        paymentSecret
+        preImage
       }
       ... on SettlementViaOnChain {
         transactionHash
+        arrivalInMempoolEstimatedAt
       }
     }
   }

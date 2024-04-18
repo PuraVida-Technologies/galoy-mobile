@@ -4,19 +4,19 @@ import { TouchableOpacity, View } from "react-native"
 
 import { gql } from "@apollo/client"
 import { useBalanceHeaderQuery } from "@app/graphql/generated"
+import { useHideAmount } from "@app/graphql/hide-amount-context"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
+import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
 import { usePriceConversion } from "@app/hooks"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
-import { makeStyles, Text } from "@rneui/themed"
-
-import HideableArea from "../hideable-area/hideable-area"
 import {
   DisplayCurrency,
   addMoneyAmounts,
   toBtcMoneyAmount,
   toUsdMoneyAmount,
 } from "@app/types/amounts"
-import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
+import { testProps } from "@app/utils/testProps"
+import { makeStyles, Text } from "@rneui/themed"
 
 const Loader = () => {
   const styles = useStyles()
@@ -51,16 +51,12 @@ gql`
 
 type Props = {
   loading: boolean
-  isContentVisible: boolean
-  setIsContentVisible: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const BalanceHeader: React.FC<Props> = ({
-  loading,
-  isContentVisible,
-  setIsContentVisible,
-}) => {
+export const BalanceHeader: React.FC<Props> = ({ loading }) => {
   const styles = useStyles()
+
+  const { hideAmount, switchMemoryHideAmount } = useHideAmount()
 
   const isAuthed = useIsAuthed()
   const { formatMoneyAmount } = useDisplayCurrency()
@@ -100,25 +96,18 @@ export const BalanceHeader: React.FC<Props> = ({
     }
   }
 
-  const toggleIsContentVisible = () => {
-    setIsContentVisible((prevState) => !prevState)
-  }
-
   return (
-    <View style={styles.balanceHeaderContainer}>
-      <HideableArea
-        isContentVisible={isContentVisible}
-        hiddenContent={
-          <TouchableOpacity
-            onPress={toggleIsContentVisible}
-            style={styles.hiddenBalanceTouchableOpacity}
-          >
-            <Text style={styles.balanceHiddenText}>****</Text>
-          </TouchableOpacity>
-        }
-      >
+    <View {...testProps("balance-header")} style={styles.balanceHeaderContainer}>
+      {hideAmount ? (
+        <TouchableOpacity
+          onPress={switchMemoryHideAmount}
+          style={styles.hiddenBalanceTouchableOpacity}
+        >
+          <Text style={styles.balanceHiddenText}>****</Text>
+        </TouchableOpacity>
+      ) : (
         <View style={styles.balancesContainer}>
-          <TouchableOpacity onPress={toggleIsContentVisible}>
+          <TouchableOpacity onPress={switchMemoryHideAmount}>
             <View style={styles.marginBottom}>
               {loading ? (
                 <Loader />
@@ -128,7 +117,7 @@ export const BalanceHeader: React.FC<Props> = ({
             </View>
           </TouchableOpacity>
         </View>
-      </HideableArea>
+      )}
     </View>
   )
 }

@@ -74,12 +74,12 @@ export const logUpgradeLoginSuccess = () => {
 
 export const logParseDestinationResult = (parsedDestination: ParseDestinationResult) => {
   // if (parsedDestination.valid) {
-  //   analytics().logEvent("payment_destination_accepted", {
+    // analytics().logEvent("payment_destination_accepted", {
   //     paymentType: parsedDestination.validDestination.paymentType,
   //     direction: parsedDestination.destinationDirection,
   //   })
   // } else {
-  //   analytics().logEvent("payment_destination_rejected", {
+    // analytics().logEvent("payment_destination_rejected", {
   //     reason: parsedDestination.invalidReason,
   //     paymentType: parsedDestination.invalidPaymentDestination.paymentType,
   //   })
@@ -183,6 +183,6 @@ type LogAppFeedbackParams = {
 
 export const logAppFeedback = (params: LogAppFeedbackParams) => {
   // analytics().logEvent("app_feedback", {
-  //   is_enjoying_app: params.isEnjoingApp,
+    // is_enjoying_app: params.isEnjoingApp,
   // })
 }

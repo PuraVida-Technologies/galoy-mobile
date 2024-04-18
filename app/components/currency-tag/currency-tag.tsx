@@ -1,7 +1,8 @@
-import { WalletCurrency } from "@app/graphql/generated"
-import { makeStyles, useTheme } from "@rneui/themed"
 import React, { FC } from "react"
 import { Text, View } from "react-native"
+
+import { WalletCurrency } from "@app/graphql/generated"
+import { makeStyles, useTheme } from "@rneui/themed"
 
 const useStyles = makeStyles(() => ({
   currencyTag: {
@@ -33,7 +34,7 @@ export const CurrencyTag: FC<CurrencyTagProps> = ({ walletCurrency }) => {
     },
     USD: {
       textColor: colors.black,
-      backgroundColor: colors.green,
+      backgroundColor: colors._green,
     },
   }
 

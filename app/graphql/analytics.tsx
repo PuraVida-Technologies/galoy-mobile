@@ -1,10 +1,12 @@
-import analytics from "@react-native-firebase/analytics"
-import { useAnalyticsQuery } from "@app/graphql/generated"
-import { gql } from "@apollo/client"
 import { useEffect } from "react"
+
+import { gql } from "@apollo/client"
+import { useAnalyticsQuery } from "@app/graphql/generated"
+import { useAppConfig } from "@app/hooks"
+import analytics from "@react-native-firebase/analytics"
+
 import { useIsAuthed } from "./is-authed-context"
 import { useLevel } from "./level-context"
-import { useAppConfig } from "@app/hooks"
 
 gql`
   query analytics {
@@ -49,11 +51,11 @@ export const AnalyticsContainer = () => {
   }, [data?.globals?.network])
 
   useEffect(() => {
-    analytics().setUserProperty("accountLevel", level.currentLevel)
+    // analytics().setUserProperty("accountLevel", level.currentLevel)
   }, [level])
 
   useEffect(() => {
-    analytics().setUserProperty("galoyInstance", galoyInstanceName)
+    // analytics().setUserProperty("galoyInstance", galoyInstanceName)
   }, [galoyInstanceName])
 
   return null

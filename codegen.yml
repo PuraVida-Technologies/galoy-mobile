@@ -1,6 +1,6 @@
 overwrite: true
 schema: "https://api.staging.galoy.io/graphql"
-# schema: "https://raw.githubusercontent.com/GaloyMoney/galoy/main/src/graphql/main/schema.graphql"
+# schema: "./supergraph.graphql"
 documents:
   - "app/**/*.ts"
   - "app/**/*.tsx"
@@ -62,3 +62,8 @@ generates:
         join__FieldSet: "string"
         link__Import: "string"
         _FieldSet: "string"
+        EndpointId: "string"
+        EndpointUrl: "string"
+        NotificationCategory: "string"
+        DateTime: "string"
+        TxExternalId: "string"

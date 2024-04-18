@@ -9,7 +9,6 @@ import { PricePoint, useBtcPriceListQuery } from "@app/graphql/generated"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { testProps } from "@app/utils/testProps"
 import { Button } from "@rneui/base"
-
 import { Text, makeStyles, useTheme } from "@rneui/themed"
 
 const multiple = (currentUnit: string) => {
@@ -101,7 +100,7 @@ export const PriceHistory = () => {
     (currentPriceData.base / 10 ** currentPriceData.offset) *
     multiple(currentPriceData.currencyUnit)
   const delta = currentPriceData.base / startPriceData.base - 1
-  const color = delta > 0 ? { color: colors.green } : { color: colors.red }
+  const color = delta > 0 ? { color: colors._green } : { color: colors.red }
 
   // get min and max prices for domain
   prices.forEach((p) => {
@@ -212,35 +211,46 @@ export const PriceHistory = () => {
         <Button
           {...testProps(LL.PriceHistoryScreen.oneDay())}
           title={LL.PriceHistoryScreen.oneDay()}
+          /* eslint @typescript-eslint/ban-ts-comment: "off" */
+          // @ts-ignore-next-line no-implicit-any error
           buttonStyle={buttonStyleForRange(GraphRange.ONE_DAY)}
+          // @ts-ignore-next-line no-implicit-any error
           titleStyle={titleStyleForRange(GraphRange.ONE_DAY)}
           onPress={() => setGraphRange(GraphRange.ONE_DAY)}
         />
         <Button
           {...testProps(LL.PriceHistoryScreen.oneWeek())}
           title={LL.PriceHistoryScreen.oneWeek()}
+          // @ts-ignore-next-line no-implicit-any error
           buttonStyle={buttonStyleForRange(GraphRange.ONE_WEEK)}
+          // @ts-ignore-next-line no-implicit-any error
           titleStyle={titleStyleForRange(GraphRange.ONE_WEEK)}
           onPress={() => setGraphRange(GraphRange.ONE_WEEK)}
         />
         <Button
           {...testProps(LL.PriceHistoryScreen.oneMonth())}
           title={LL.PriceHistoryScreen.oneMonth()}
+          // @ts-ignore-next-line no-implicit-any error
           buttonStyle={buttonStyleForRange(GraphRange.ONE_MONTH)}
+          // @ts-ignore-next-line no-implicit-any error
           titleStyle={titleStyleForRange(GraphRange.ONE_MONTH)}
           onPress={() => setGraphRange(GraphRange.ONE_MONTH)}
         />
         <Button
           {...testProps(LL.PriceHistoryScreen.oneYear())}
           title={LL.PriceHistoryScreen.oneYear()}
+          // @ts-ignore-next-line no-implicit-any error
           buttonStyle={buttonStyleForRange(GraphRange.ONE_YEAR)}
+          // @ts-ignore-next-line no-implicit-any error
           titleStyle={titleStyleForRange(GraphRange.ONE_YEAR)}
           onPress={() => setGraphRange(GraphRange.ONE_YEAR)}
         />
         <Button
           {...testProps(LL.PriceHistoryScreen.fiveYears())}
           title={LL.PriceHistoryScreen.fiveYears()}
+          // @ts-ignore-next-line no-implicit-any error
           buttonStyle={buttonStyleForRange(GraphRange.FIVE_YEARS)}
+          // @ts-ignore-next-line no-implicit-any error
           titleStyle={titleStyleForRange(GraphRange.FIVE_YEARS)}
           onPress={() => setGraphRange(GraphRange.FIVE_YEARS)}
         />

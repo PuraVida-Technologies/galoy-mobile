@@ -2,23 +2,15 @@ import React, { useEffect } from "react"
 import { View } from "react-native"
 import Modal from "react-native-modal"
 
+import { useApolloClient } from "@apollo/client"
+import { setIntroducingCirclesModalShown } from "@app/graphql/client-only-query"
+import { useIntroducingCirclesModalShownQuery } from "@app/graphql/generated"
+import { useI18nContext } from "@app/i18n/i18n-react"
 import { makeStyles, useTheme, Text } from "@rneui/themed"
 
-import { GaloyPrimaryButton } from "../atomic/galoy-primary-button"
 import { GaloyIcon } from "../atomic/galoy-icon"
-import { useNavigation } from "@react-navigation/native"
-import { StackNavigationProp } from "@react-navigation/stack"
-import {
-  PeopleStackParamList,
-  PrimaryStackParamList,
-  RootStackParamList,
-} from "@app/navigation/stack-param-lists"
-import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs"
 import { GaloyIconButton } from "../atomic/galoy-icon-button"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { setIntroducingCirclesModalShown } from "@app/graphql/client-only-query"
-import { useApolloClient } from "@apollo/client"
-import { useIntroducingCirclesModalShownQuery } from "@app/graphql/generated"
+import { GaloyPrimaryButton } from "../atomic/galoy-primary-button"
 
 type Props = {
   isVisible: boolean
@@ -27,10 +19,6 @@ type Props = {
 
 export const IntroducingCirclesModal: React.FC<Props> = ({ isVisible, setIsVisible }) => {
   const { LL } = useI18nContext()
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
-  const primaryNavigator =
-    navigation.getParent<BottomTabNavigationProp<PrimaryStackParamList>>()
-  const peopleNavigator = useNavigation<StackNavigationProp<PeopleStackParamList>>()
 
   const client = useApolloClient()
   const { data } = useIntroducingCirclesModalShownQuery()
@@ -48,12 +36,6 @@ export const IntroducingCirclesModal: React.FC<Props> = ({ isVisible, setIsVisib
 
   const acknowledgeModal = () => {
     setIsVisible(false)
-  }
-
-  const navigateToCircles = () => {
-    setIsVisible(false)
-    primaryNavigator.navigate("People")
-    setTimeout(() => peopleNavigator.navigate("circlesDashboard"), 100)
   }
 
   return (
@@ -82,7 +64,7 @@ export const IntroducingCirclesModal: React.FC<Props> = ({ isVisible, setIsVisib
             <View>
               <GaloyPrimaryButton
                 title={LL.Circles.viewMyCircles()}
-                onPress={navigateToCircles}
+                onPress={acknowledgeModal}
               />
             </View>
           </View>

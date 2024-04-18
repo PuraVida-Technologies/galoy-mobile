@@ -1,22 +1,21 @@
-import { StackNavigationProp } from "@react-navigation/stack"
-import { SearchBar } from "@rneui/base"
-import { ListItem, makeStyles, useTheme } from "@rneui/themed"
 import * as React from "react"
 import { useCallback, useMemo, useState } from "react"
 import { ActivityIndicator, Text, View } from "react-native"
 import { FlatList } from "react-native-gesture-handler"
 import Icon from "react-native-vector-icons/Ionicons"
 
+import { gql } from "@apollo/client"
 import { Screen } from "@app/components/screen"
+import { UserContact, useContactsQuery } from "@app/graphql/generated"
+import { useIsAuthed } from "@app/graphql/is-authed-context"
+import { useI18nContext } from "@app/i18n/i18n-react"
 import { PeopleStackParamList } from "@app/navigation/stack-param-lists"
 import { testProps } from "@app/utils/testProps"
 import { toastShow } from "@app/utils/toast"
-
-import { gql } from "@apollo/client"
-import { useContactsQuery } from "@app/graphql/generated"
-import { useIsAuthed } from "@app/graphql/is-authed-context"
-import { useI18nContext } from "@app/i18n/i18n-react"
 import { useNavigation } from "@react-navigation/native"
+import { StackNavigationProp } from "@react-navigation/stack"
+import { SearchBar } from "@rneui/base"
+import { ListItem, makeStyles, useTheme } from "@rneui/themed"
 
 gql`
   query contacts {
@@ -42,7 +41,7 @@ export const AllContactsScreen: React.FC = () => {
 
   const isAuthed = useIsAuthed()
 
-  const [matchingContacts, setMatchingContacts] = useState<Contact[]>([])
+  const [matchingContacts, setMatchingContacts] = useState<UserContact[]>([])
   const [searchText, setSearchText] = useState("")
   const { LL } = useI18nContext()
   const { loading, data, error } = useContactsQuery({
@@ -51,10 +50,10 @@ export const AllContactsScreen: React.FC = () => {
   })
 
   if (error) {
-    toastShow({ message: error.message })
+    toastShow({ message: error.message, LL })
   }
 
-  const contacts: Contact[] = useMemo(() => {
+  const contacts: UserContact[] = useMemo(() => {
     return data?.me?.contacts.slice() ?? []
   }, [data])
 
@@ -87,7 +86,7 @@ export const AllContactsScreen: React.FC = () => {
     [contacts],
   )
 
-  const wordMatchesContact = (searchWord: string, contact: Contact): boolean => {
+  const wordMatchesContact = (searchWord: string, contact: UserContact): boolean => {
     let contactPrettyNameMatchesSearchWord: boolean
 
     const contactNameMatchesSearchWord = contact.username
@@ -172,7 +171,7 @@ export const AllContactsScreen: React.FC = () => {
             containerStyle={styles.itemContainer}
             onPress={() => navigation.navigate("contactDetail", { contact: item })}
           >
-            <Icon name={"ios-person-outline"} size={24} color={colors.primary} />
+            <Icon name={"person-outline"} size={24} color={colors.primary} />
             <ListItem.Content>
               <ListItem.Title style={styles.itemText}>{item.alias}</ListItem.Title>
             </ListItem.Content>

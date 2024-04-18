@@ -1,4 +1,7 @@
 import { GraphQLError } from "graphql"
+
+import { ApolloError } from "@apollo/client"
+
 import { GraphQlApplicationError } from "./generated"
 import { ApolloError } from "@apollo/client"
 

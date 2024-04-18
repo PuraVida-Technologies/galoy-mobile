@@ -1,3 +1,7 @@
+import {
+  CountryCode as PhoneNumberCountryCode,
+  getCountryCallingCode,
+} from "libphonenumber-js/mobile"
 import * as React from "react"
 import { ActivityIndicator, View } from "react-native"
 import CountryPicker, {
@@ -6,24 +10,23 @@ import CountryPicker, {
   DEFAULT_THEME,
   Flag,
 } from "react-native-country-picker-modal"
-import {
-  CountryCode as PhoneNumberCountryCode,
-  getCountryCallingCode,
-} from "libphonenumber-js/mobile"
+import { TouchableOpacity } from "react-native-gesture-handler"
+
+import { GaloyErrorBox } from "@app/components/atomic/galoy-error-box"
+import { GaloyInfo } from "@app/components/atomic/galoy-info"
+import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
+import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
 import { ContactSupportButton } from "@app/components/contact-support-button/contact-support-button"
+import { PhoneCodeChannelType } from "@app/graphql/generated"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { makeStyles, useTheme, Text, Input } from "@rneui/themed"
+
 import { Screen } from "../../components/screen"
 import {
   ErrorType,
   RequestPhoneCodeStatus,
   useRequestPhoneCodeRegistration,
 } from "./request-phone-code-registration"
-import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
-import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
-import { GaloyErrorBox } from "@app/components/atomic/galoy-error-box"
-import { PhoneCodeChannelType } from "@app/graphql/generated"
-import { TouchableOpacity } from "react-native-gesture-handler"
 
 const DEFAULT_COUNTRY_CODE = "SV"
 const PLACEHOLDER_PHONE_NUMBER = "123-456-7890"
@@ -36,7 +39,7 @@ export const PhoneRegistrationInitiateScreen: React.FC = () => {
   } = useTheme()
 
   const {
-    submitPhoneNumber,
+    userSubmitPhoneNumber,
     status,
     setPhoneNumber,
     isSmsSupported,
@@ -92,7 +95,7 @@ export const PhoneRegistrationInitiateScreen: React.FC = () => {
             status === RequestPhoneCodeStatus.RequestingCode &&
             phoneCodeChannel === PhoneCodeChannelType.Sms
           }
-          onPress={() => submitPhoneNumber(PhoneCodeChannelType.Sms)}
+          onPress={() => userSubmitPhoneNumber(PhoneCodeChannelType.Sms)}
         />
       )
       SecondaryButton = (
@@ -103,7 +106,7 @@ export const PhoneRegistrationInitiateScreen: React.FC = () => {
             status === RequestPhoneCodeStatus.RequestingCode &&
             phoneCodeChannel === PhoneCodeChannelType.Whatsapp
           }
-          onPress={() => submitPhoneNumber(PhoneCodeChannelType.Whatsapp)}
+          onPress={() => userSubmitPhoneNumber(PhoneCodeChannelType.Whatsapp)}
         />
       )
       break
@@ -115,7 +118,7 @@ export const PhoneRegistrationInitiateScreen: React.FC = () => {
             status === RequestPhoneCodeStatus.RequestingCode &&
             phoneCodeChannel === PhoneCodeChannelType.Sms
           }
-          onPress={() => submitPhoneNumber(PhoneCodeChannelType.Sms)}
+          onPress={() => userSubmitPhoneNumber(PhoneCodeChannelType.Sms)}
         />
       )
       break
@@ -127,10 +130,15 @@ export const PhoneRegistrationInitiateScreen: React.FC = () => {
             status === RequestPhoneCodeStatus.RequestingCode &&
             phoneCodeChannel === PhoneCodeChannelType.Whatsapp
           }
-          onPress={() => submitPhoneNumber(PhoneCodeChannelType.Whatsapp)}
+          onPress={() => userSubmitPhoneNumber(PhoneCodeChannelType.Whatsapp)}
         />
       )
       break
+  }
+
+  let info: string | undefined = undefined
+  if (phoneInputInfo?.countryCode && phoneInputInfo.countryCode === "AR") {
+    info = LL.PhoneLoginInitiateScreen.infoArgentina()
   }
 
   return (
@@ -187,6 +195,11 @@ export const PhoneRegistrationInitiateScreen: React.FC = () => {
             autoFocus={true}
           />
         </View>
+        {info && (
+          <View style={styles.infoContainer}>
+            <GaloyInfo>{info}</GaloyInfo>
+          </View>
+        )}
         {errorMessage && (
           <View style={styles.errorContainer}>
             <GaloyErrorBox errorMessage={errorMessage} />
@@ -257,6 +270,9 @@ const useStyles = makeStyles(({ colors }) => ({
     borderRadius: 8,
   },
   errorContainer: {
+    marginBottom: 20,
+  },
+  infoContainer: {
     marginBottom: 20,
   },
   whatsAppButton: {

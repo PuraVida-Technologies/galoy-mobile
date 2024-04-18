@@ -1,9 +1,9 @@
 import React from "react"
 import { ActivityIndicator, View } from "react-native"
-
-import { ListItem, ListItemProps, makeStyles, useTheme } from "@rneui/themed"
 import Icon from "react-native-vector-icons/Ionicons"
+
 import { testProps } from "@app/utils/testProps"
+import { ListItem, ListItemProps, makeStyles, useTheme } from "@rneui/themed"
 
 export type ItemProps = {
   children: React.ReactNode
@@ -50,7 +50,7 @@ export const Item: React.FC<ItemProps> = ({
     <ListItem {...props} key={value} bottomDivider onPress={onPress}>
       <View style={styles.iconContainer}>
         {showActivityIndicator && <ActivityIndicator />}
-        {selected && <Icon name="ios-checkmark-circle" size={18} color={colors.green} />}
+        {selected && <Icon name="checkmark-circle" size={18} color={colors._green} />}
       </View>
       <ListItem.Title {...(testPropId ? testProps(testPropId) : {})}>
         {children}

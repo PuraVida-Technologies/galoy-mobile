@@ -1,17 +1,14 @@
 import React from "react"
-import { Meta } from "@storybook/react"
 import { MockedProvider } from "@apollo/client/testing"
-import { createCache } from "../../graphql/cache"
+import { Meta } from "@storybook/react"
+
 import { StoryScreen } from "../../../.storybook/views"
-<<<<<<< HEAD:app/screens/phone-auth-screen/phone-flow.stories.tsx
-import { PhoneValidationNavigator } from "../../navigation/root-navigator"
-=======
-import { PhoneLoginNavigator } from "../../navigation/root-navigator"
->>>>>>> galoy-upstream:app/screens/phone-auth-screen/phone-login-flow.stories.tsx
+import { createCache } from "../../graphql/cache"
 import {
   CaptchaCreateChallengeDocument,
   CaptchaRequestAuthCodeDocument,
 } from "../../graphql/generated"
+import { PhoneLoginNavigator } from "../../navigation/root-navigator"
 
 const mocks = [
   {

@@ -1,16 +1,31 @@
+import { requestInvoice, utils } from "lnurl-pay"
+import { Satoshis } from "lnurl-pay/dist/types/types"
+import React, { useEffect, useState } from "react"
+import { TouchableOpacity, TouchableWithoutFeedback, View } from "react-native"
+import ReactNativeModal from "react-native-modal"
+import Icon from "react-native-vector-icons/Ionicons"
+
 import { gql } from "@apollo/client"
 import { AmountInput } from "@app/components/amount-input/amount-input"
+import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
+import { GaloyTertiaryButton } from "@app/components/atomic/galoy-tertiary-button"
+import { NoteInput } from "@app/components/note-input"
+import { PaymentDestinationDisplay } from "@app/components/payment-destination-display"
 import { Screen } from "@app/components/screen"
 import {
+  Network,
+  useOnChainTxFeeLazyQuery,
   useSendBitcoinDetailsScreenQuery,
   useSendBitcoinInternalLimitsQuery,
   useSendBitcoinWithdrawalLimitsQuery,
   Wallet,
   WalletCurrency,
 } from "@app/graphql/generated"
+import { useHideAmount } from "@app/graphql/hide-amount-context"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { useLevel } from "@app/graphql/level-context"
+import { getBtcWallet, getDefaultWallet, getUsdWallet } from "@app/graphql/wallets-utils"
 import { usePriceConversion } from "@app/hooks"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
 import { useI18nContext } from "@app/i18n/i18n-react"
@@ -22,22 +37,18 @@ import {
   toUsdMoneyAmount,
   WalletOrDisplayCurrency,
 } from "@app/types/amounts"
+import { toastShow } from "@app/utils/toast"
 import { decodeInvoiceString, Network as NetworkLibGaloy } from "@galoymoney/client"
+import Clipboard from "@react-native-clipboard/clipboard"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { NavigationProp, RouteProp, useNavigation } from "@react-navigation/native"
 import { makeStyles, Text, useTheme } from "@rneui/themed"
-import React, { useEffect, useState } from "react"
-import { TouchableWithoutFeedback, View } from "react-native"
-import ReactNativeModal from "react-native-modal"
-import Icon from "react-native-vector-icons/Ionicons"
+
 import { testProps } from "../../utils/testProps"
+import { ConfirmFeesModal } from "./confirm-fees-modal"
 import { isValidAmount } from "./payment-details"
 import { PaymentDetail } from "./payment-details/index.types"
 import { SendBitcoinDetailsExtraInfo } from "./send-bitcoin-details-extra-info"
-import { requestInvoice, utils } from "lnurl-pay"
-import { GaloyTertiaryButton } from "@app/components/atomic/galoy-tertiary-button"
-import { getBtcWallet, getDefaultWallet, getUsdWallet } from "@app/graphql/wallets-utils"
-import { NoteInput } from "@app/components/note-input"
 
 gql`
   query sendBitcoinDetailsScreen {
@@ -106,6 +117,8 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
 
   const { currentLevel } = useLevel()
 
+  const { hideAmount } = useHideAmount()
+
   const { data } = useSendBitcoinDetailsScreenQuery({
     fetchPolicy: "cache-first",
     returnPartialData: true,
@@ -115,6 +128,7 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
   const { formatDisplayAndWalletAmount } = useDisplayCurrency()
   const { LL } = useI18nContext()
   const [isLoadingLnurl, setIsLoadingLnurl] = useState(false)
+  const [modalHighFeesVisible, setModalHighFeesVisible] = useState(false)
 
   const { convertMoneyAmount: _convertMoneyAmount } = usePriceConversion()
   const { zeroDisplayAmount } = useDisplayCurrency()
@@ -199,6 +213,12 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
     zeroDisplayAmount,
   ])
 
+  const alertHighFees = useOnchainFeeAlert(
+    paymentDetail,
+    btcWallet?.id as string,
+    network,
+  )
+
   if (!paymentDetail) {
     return <></>
   }
@@ -233,6 +253,15 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
     setIsModalVisible(!isModalVisible)
   }
 
+  const copyToClipboard = () => {
+    Clipboard.setString(paymentDetail.destination)
+    toastShow({
+      type: "success",
+      message: LL.SendBitcoinScreen.copiedDestination(),
+      LL,
+    })
+  }
+
   const chooseWallet = (wallet: Pick<Wallet, "id" | "walletCurrency">) => {
     let updatedPaymentDetail = paymentDetail.setSendingWalletDescriptor({
       id: wallet.id,
@@ -252,6 +281,13 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
     toggleModal()
   }
 
+  const transactionType = () => {
+    if (paymentDetail?.paymentType === "intraledger") return LL.common.intraledger()
+    if (paymentDetail?.paymentType === "onchain") return LL.common.onchain()
+    if (paymentDetail?.paymentType === "lightning") return LL.common.lightning()
+    if (paymentDetail?.paymentType === "lnurl") return LL.common.lightning()
+  }
+
   const ChooseWalletModal = wallets && (
     <ReactNativeModal
       style={styles.modal}
@@ -266,6 +302,7 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
           return (
             <TouchableWithoutFeedback
               key={wallet.id}
+              {...testProps(wallet.walletCurrency)}
               onPress={() => {
                 chooseWallet(wallet)
               }}
@@ -330,10 +367,20 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
             "BTC",
           )
 
-          const result = await requestInvoice({
+          const requestInvoiceParams: {
+            lnUrlOrAddress: string
+            tokens: Satoshis
+            comment?: string
+          } = {
             lnUrlOrAddress: paymentDetail.destination,
             tokens: utils.toSats(btcAmount.amount),
-          })
+          }
+
+          if (lnurlParams?.commentAllowed) {
+            requestInvoiceParams.comment = paymentDetail.memo
+          }
+
+          const result = await requestInvoice(requestInvoiceParams)
           setIsLoadingLnurl(false)
           const invoice = result.invoice
           const decodedInvoice = decodeInvoiceString(invoice, network as NetworkLibGaloy)
@@ -342,15 +389,6 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
             Math.round(Number(decodedInvoice.millisatoshis) / 1000) !== btcAmount.amount
           ) {
             setAsyncErrorMessage(LL.SendBitcoinScreen.lnurlInvoiceIncorrectAmount())
-            return
-          }
-
-          const decodedDescriptionHash = decodedInvoice.tags.find(
-            (tag) => tag.tagName === "purpose_commit_hash",
-          )?.data
-
-          if (paymentDetail.lnurlParams.metadataHash !== decodedDescriptionHash) {
-            setAsyncErrorMessage(LL.SendBitcoinScreen.lnurlInvoiceIncorrectDescription())
             return
           }
 
@@ -369,9 +407,13 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
       }
 
       if (paymentDetailForConfirmation.sendPaymentMutation) {
-        navigation.navigate("sendBitcoinConfirmation", {
-          paymentDetail: paymentDetailForConfirmation,
-        })
+        if (alertHighFees) {
+          setModalHighFeesVisible(true)
+        } else {
+          navigation.navigate("sendBitcoinConfirmation", {
+            paymentDetail: paymentDetailForConfirmation,
+          })
+        }
       }
     })
 
@@ -412,10 +454,42 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
       keyboardOffset="navigationHeader"
       keyboardShouldPersistTaps="handled"
     >
+      <ConfirmFeesModal
+        action={() => {
+          setModalHighFeesVisible(false)
+          navigation.navigate("sendBitcoinConfirmation", { paymentDetail })
+        }}
+        isVisible={modalHighFeesVisible}
+        cancel={() => setModalHighFeesVisible(false)}
+      />
       <View style={styles.sendBitcoinAmountContainer}>
         <View style={styles.fieldContainer}>
+          <Text style={styles.fieldTitleText}>
+            {LL.SendBitcoinScreen.destination()} - {transactionType()}
+          </Text>
+          <View style={styles.destinationFieldContainer}>
+            <View style={styles.disabledFieldBackground}>
+              <PaymentDestinationDisplay
+                destination={paymentDetail.destination}
+                paymentType={paymentDetail.paymentType}
+              />
+            </View>
+            <TouchableOpacity
+              style={styles.iconContainer}
+              onPress={copyToClipboard}
+              hitSlop={30}
+            >
+              <GaloyIcon name={"copy-paste"} size={18} color={colors.primary} />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={styles.fieldContainer}>
           <Text style={styles.fieldTitleText}>{LL.common.from()}</Text>
-          <TouchableWithoutFeedback onPress={toggleModal} accessible={false}>
+          <TouchableWithoutFeedback
+            {...testProps("choose-wallet-to-send-from")}
+            onPress={toggleModal}
+            accessible={false}
+          >
             <View style={styles.fieldBackground}>
               <View style={styles.walletSelectorTypeContainer}>
                 <View
@@ -452,12 +526,13 @@ const SendBitcoinDetailsScreen: React.FC<Props> = ({ route }) => {
                   <Text
                     {...testProps(`${sendingWalletDescriptor.currency} Wallet Balance`)}
                   >
-                    {sendingWalletDescriptor.currency === WalletCurrency.Btc
-                      ? btcWalletText
-                      : usdWalletText}
+                    {hideAmount
+                      ? "****"
+                      : sendingWalletDescriptor.currency === WalletCurrency.Btc
+                        ? btcWalletText
+                        : usdWalletText}
                   </Text>
                 </View>
-                <View />
               </View>
 
               <View style={styles.pickWalletIcon}>
@@ -532,10 +607,26 @@ const useStyles = makeStyles(({ colors }) => ({
     borderStyle: "solid",
     overflow: "hidden",
     backgroundColor: colors.grey5,
-    paddingHorizontal: 14,
     borderRadius: 10,
     alignItems: "center",
-    height: 60,
+    padding: 14,
+    minHeight: 60,
+  },
+  destinationFieldContainer: {
+    flexDirection: "row",
+    borderStyle: "solid",
+    overflow: "hidden",
+    backgroundColor: colors.grey5,
+    borderRadius: 10,
+    alignItems: "center",
+    padding: 14,
+    minHeight: 60,
+  },
+  disabledFieldBackground: {
+    flex: 1,
+    opacity: 0.5,
+    flexDirection: "row",
+    alignItems: "center",
   },
   walletContainer: {
     flexDirection: "row",
@@ -546,7 +637,7 @@ const useStyles = makeStyles(({ colors }) => ({
     borderRadius: 10,
     alignItems: "center",
     marginBottom: 10,
-    height: 60,
+    minHeight: 60,
   },
   walletSelectorTypeContainer: {
     justifyContent: "center",
@@ -565,7 +656,7 @@ const useStyles = makeStyles(({ colors }) => ({
   walletSelectorTypeLabelUsd: {
     height: 30,
     width: 50,
-    backgroundColor: colors.green,
+    backgroundColor: colors._green,
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
@@ -630,7 +721,69 @@ const useStyles = makeStyles(({ colors }) => ({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 8,
-    height: 18,
+  },
+  iconContainer: {
+    justifyContent: "center",
+    alignItems: "flex-start",
+    paddingLeft: 20,
   },
 }))
+
+const useOnchainFeeAlert = (
+  paymentDetail: PaymentDetail<WalletCurrency> | null,
+  walletId: string,
+  network: Network | undefined,
+) => {
+  const dummyAddress =
+    network === "mainnet"
+      ? "bc1qk2cpytjea36ry6vga8wwr7297sl3tdkzwzy2cw"
+      : "tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx"
+
+  // we need to have an approximate value for the onchain fees
+  // by the time the user tap on the next button
+  // so we are fetching some fees when the screen loads
+  // the fees are approximate but that doesn't matter for the use case
+  // of warning the user if the fees are high compared to the amount sent
+
+  // TODO: check if the BTC wallet is empty, and only USD wallet is used, if the query works
+  const [getOnChainTxFee] = useOnChainTxFeeLazyQuery({
+    fetchPolicy: "cache-and-network",
+    variables: {
+      walletId,
+      amount: 1000,
+      address: dummyAddress,
+    },
+  })
+
+  const [onChainTxFee, setOnChainTxFee] = useState(0)
+
+  useEffect(() => {
+    ;(async () => {
+      const result = await getOnChainTxFee()
+      const fees = result.data?.onChainTxFee.amount
+
+      if (fees) {
+        setOnChainTxFee(fees)
+      } else {
+        console.error("failed to get onchain fees")
+      }
+    })()
+  }, [getOnChainTxFee])
+
+  if (!walletId || !paymentDetail || paymentDetail.paymentType !== "onchain") {
+    return false
+  }
+
+  const { convertMoneyAmount } = paymentDetail
+
+  // alert will shows if amount is less than fees * ratioFeesToAmount
+  const ratioFeesToAmount = 2
+  const ratioedFees = toBtcMoneyAmount(onChainTxFee * ratioFeesToAmount)
+
+  const alertHighFees =
+    paymentDetail.paymentType === "onchain" &&
+    convertMoneyAmount(paymentDetail.settlementAmount, WalletCurrency.Btc).amount <
+      ratioedFees.amount
+
+  return alertHighFees
+}

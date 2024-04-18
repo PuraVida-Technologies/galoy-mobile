@@ -1,22 +1,24 @@
 import { RouteProp, useFocusEffect, useNavigation } from "@react-navigation/native"
 import * as React from "react"
-import { Alert, Image, View } from "react-native"
+import { Alert, View } from "react-native"
 
+import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
+import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
+import { useI18nContext } from "@app/i18n/i18n-react"
+import { useAuthenticationContext } from "@app/navigation/navigation-container-wrapper"
+import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
+import { makeStyles, useTheme } from "@rneui/themed"
+
+import AppLogoDarkMode from "../../assets/logo/app-logo-dark.svg"
+import AppLogoLightMode from "../../assets/logo/app-logo-light.svg"
 import { Screen } from "../../components/screen"
+import useLogout from "../../hooks/use-logout"
 import type { RootStackParamList } from "../../navigation/stack-param-lists"
 import BiometricWrapper from "../../utils/biometricAuthentication"
 import { AuthenticationScreenPurpose, PinScreenPurpose } from "../../utils/enum"
 import KeyStoreWrapper from "../../utils/storage/secureStorage"
 
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { useAuthenticationContext } from "@app/navigation/navigation-container-wrapper"
-import { makeStyles, useTheme } from "@rneui/themed"
-import useLogout from "../../hooks/use-logout"
-import AppLogoLightMode from "../../assets/logo/app-logo-light.svg"
-import AppLogoDarkMode from "../../assets/logo/app-logo-dark.svg"
-import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
-import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
 import AppLogoImage from '../get-started-screen/app-logo.png'
 
 type Props = {
@@ -38,26 +40,7 @@ export const AuthenticationScreen: React.FC<Props> = ({ route }) => {
   const { setAppUnlocked } = useAuthenticationContext()
   const { LL } = useI18nContext()
 
-  useFocusEffect(() => {
-    attemptAuthentication()
-  })
-
-  const attemptAuthentication = () => {
-    let description = "attemptAuthentication. should not be displayed?"
-    if (screenPurpose === AuthenticationScreenPurpose.Authenticate) {
-      description = LL.AuthenticationScreen.authenticationDescription()
-    } else if (screenPurpose === AuthenticationScreenPurpose.TurnOnAuthentication) {
-      description = LL.AuthenticationScreen.setUpAuthenticationDescription()
-    }
-    // Presents the OS specific authentication prompt
-    BiometricWrapper.authenticate(
-      description,
-      handleAuthenticationSuccess,
-      handleAuthenticationFailure,
-    )
-  }
-
-  const handleAuthenticationSuccess = async () => {
+  const handleAuthenticationSuccess = React.useCallback(async () => {
     if (screenPurpose === AuthenticationScreenPurpose.Authenticate) {
       KeyStoreWrapper.resetPinAttempts()
     } else if (screenPurpose === AuthenticationScreenPurpose.TurnOnAuthentication) {
@@ -65,21 +48,45 @@ export const AuthenticationScreen: React.FC<Props> = ({ route }) => {
     }
     setAppUnlocked()
     navigation.replace("Primary")
-  }
+  }, [navigation, screenPurpose, setAppUnlocked])
 
-  const handleAuthenticationFailure = () => {
-    // This is called when a user cancels or taps out of the authentication prompt,
-    // so no action is necessary.
-  }
+  const attemptAuthentication = React.useCallback(() => {
+    let description = "attemptAuthentication. should not be displayed?"
+    if (screenPurpose === AuthenticationScreenPurpose.Authenticate) {
+      description = LL.AuthenticationScreen.authenticationDescription()
+    } else if (screenPurpose === AuthenticationScreenPurpose.TurnOnAuthentication) {
+      description = LL.AuthenticationScreen.setUpAuthenticationDescription()
+    }
+    // Presents the OS specific authentication prompt
+    BiometricWrapper.authenticate(description, handleAuthenticationSuccess, () => {})
+  }, [screenPurpose, handleAuthenticationSuccess, LL.AuthenticationScreen])
 
-  const logoutAndNavigateToPrimary = async () => {
+  React.useEffect(() => {
+    attemptAuthentication()
+    // only run this on first visit to screen
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const logoutAndNavigateToLanding = async () => {
     await logout()
-    Alert.alert(LL.common.loggedOut(), "", [
+    Alert.alert(LL.common.logout(), LL.common.loggedOut(), [
       {
         text: LL.common.ok(),
         onPress: () => {
-          navigation.replace("Primary")
+          navigation.replace("getStarted")
         },
+      },
+    ])
+  }
+
+  const confirmLogout = () => {
+    Alert.alert(LL.common.confirm(), LL.AuthenticationScreen.confirmLogout(), [
+      {
+        text: LL.common.cancel(),
+      },
+      {
+        text: LL.common.confirm(),
+        onPress: logoutAndNavigateToLanding,
       },
     ])
   }
@@ -107,7 +114,7 @@ export const AuthenticationScreen: React.FC<Props> = ({ route }) => {
         {PinButtonContent}
         <GaloySecondaryButton
           title={LL.common.logout()}
-          onPress={logoutAndNavigateToPrimary}
+          onPress={confirmLogout}
           containerStyle={styles.buttonContainer}
         />
       </>

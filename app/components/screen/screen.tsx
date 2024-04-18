@@ -1,16 +1,12 @@
 import * as React from "react"
-import {
-  KeyboardAvoidingView,
-  ScrollView,
-  StatusBar,
-  View,
-  SafeAreaView,
-} from "react-native"
+import { KeyboardAvoidingView, StatusBar, View, SafeAreaView } from "react-native"
+import { ScrollView } from "react-native-gesture-handler"
 
-import { ScreenProps } from "./screen.props"
-import { isNonScrolling, offsets, presets } from "./screen.presets"
-import { isIos } from "../../utils/helper"
 import { useTheme } from "@rneui/themed"
+
+import { isIos } from "../../utils/helper"
+import { isNonScrolling, offsets, presets } from "./screen.presets"
+import { ScreenProps } from "./screen.props"
 
 function ScreenWithoutScrolling(props: ScreenProps) {
   const {
@@ -67,6 +63,7 @@ function ScreenWithScrolling(props: ScreenProps) {
       />
       <Wrapper style={[preset.outer, backgroundStyle]}>
         <ScrollView
+          {...props}
           style={[preset.outer, backgroundStyle]}
           contentContainerStyle={[preset.inner, style]}
           keyboardShouldPersistTaps={props.keyboardShouldPersistTaps}

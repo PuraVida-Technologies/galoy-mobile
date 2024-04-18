@@ -1,23 +1,30 @@
+import React, { useEffect, useState } from "react"
+import { TouchableOpacity, View } from "react-native"
+import nfcManager from "react-native-nfc-manager"
+import Icon from "react-native-vector-icons/Ionicons"
+
+import { useApolloClient } from "@apollo/client"
+import { AmountInput } from "@app/components/amount-input"
+import { GaloyCurrencyBubble } from "@app/components/atomic/galoy-currency-bubble"
+import { ButtonGroup } from "@app/components/button-group"
+import { CustomIcon } from "@app/components/custom-icon"
+import { ModalNfc } from "@app/components/modal-nfc"
+import { NoteInput } from "@app/components/note-input"
 import { Screen } from "@app/components/screen"
+import { SetLightningAddressModal } from "@app/components/set-lightning-address-modal"
 import { WalletCurrency } from "@app/graphql/generated"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { requestNotificationPermission } from "@app/utils/notifications"
+import { addDeviceToken, requestNotificationPermission } from "@app/utils/notifications"
+import messaging from "@react-native-firebase/messaging"
 import { useIsFocused, useNavigation } from "@react-navigation/native"
-import React, { useEffect } from "react"
-import { TouchableOpacity, View } from "react-native"
+import { makeStyles, Text, useTheme } from "@rneui/themed"
+
 import { testProps } from "../../utils/testProps"
 import { withMyLnUpdateSub } from "./my-ln-updates-sub"
-import { makeStyles, Text, useTheme } from "@rneui/themed"
-import { ButtonGroup } from "@app/components/button-group"
-import { useReceiveBitcoin } from "./use-receive-bitcoin"
 import { Invoice, InvoiceType, PaymentRequestState } from "./payment/index.types"
 import { QRView } from "./qr-view"
-import { AmountInput } from "@app/components/amount-input"
-import { NoteInput } from "@app/components/note-input"
-import Icon from "react-native-vector-icons/Ionicons"
-import { SetLightningAddressModal } from "@app/components/set-lightning-address-modal"
-import { GaloyCurrencyBubble } from "@app/components/atomic/galoy-currency-bubble"
+import { useReceiveBitcoin } from "./use-receive-bitcoin"
 
 const ReceiveScreen = () => {
   const {
@@ -26,37 +33,62 @@ const ReceiveScreen = () => {
   const styles = useStyles()
   const { LL } = useI18nContext()
   const navigation = useNavigation()
+  const client = useApolloClient()
 
   const isAuthed = useIsAuthed()
   const isFocused = useIsFocused()
 
   const request = useReceiveBitcoin()
 
+  const [displayReceiveNfc, setDisplayReceiveNfc] = useState(false)
+
+  const nfcText = LL.ReceiveScreen.nfc()
+  useEffect(() => {
+    ;(async () => {
+      if (
+        request?.type === "Lightning" &&
+        request?.state === "Created" &&
+        (await nfcManager.isSupported())
+      ) {
+        navigation.setOptions({
+          headerRight: () => (
+            <TouchableOpacity
+              style={styles.nfcIcon}
+              onPress={() => setDisplayReceiveNfc(true)}
+            >
+              <Text type="p2">{nfcText}</Text>
+              <CustomIcon name="nfc" color={colors.black} />
+            </TouchableOpacity>
+          ),
+        })
+      } else {
+        navigation.setOptions({ headerRight: () => <></> })
+      }
+    })()
+    // Disable exhaustive-deps because styles.nfcIcon was causing an infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nfcText, colors.black, navigation, request?.state, request?.type])
+
   // notification permission
   useEffect(() => {
     let timeout: NodeJS.Timeout
-    if (isAuthed && isFocused) {
+    if (isAuthed && isFocused && client) {
       const WAIT_TIME_TO_PROMPT_USER = 5000
       timeout = setTimeout(
-        requestNotificationPermission, // no op if already requested
+        async () => {
+          const result = await requestNotificationPermission()
+          if (
+            result === messaging.AuthorizationStatus.PROVISIONAL ||
+            result === messaging.AuthorizationStatus.AUTHORIZED
+          ) {
+            await addDeviceToken(client)
+          }
+        }, // no op if already requested
         WAIT_TIME_TO_PROMPT_USER,
       )
     }
     return () => timeout && clearTimeout(timeout)
-  }, [isAuthed, isFocused])
-
-  useEffect(() => {
-    switch (request?.type) {
-      case Invoice.OnChain:
-        navigation.setOptions({ title: LL.ReceiveScreen.receiveViaOnchain() })
-        break
-      case Invoice.Lightning:
-        navigation.setOptions({ title: LL.ReceiveScreen.receiveViaInvoice() })
-        break
-      case Invoice.PayCode:
-        navigation.setOptions({ title: LL.ReceiveScreen.receiveViaPaycode() })
-    }
-  }, [request?.type, LL.ReceiveScreen, navigation])
+  }, [isAuthed, isFocused, client])
 
   useEffect(() => {
     if (request?.state === PaymentRequestState.Paid) {
@@ -90,13 +122,14 @@ const ReceiveScreen = () => {
         keyboardOffset="navigationHeader"
         keyboardShouldPersistTaps="handled"
         style={styles.screenStyle}
+        {...testProps("receive-screen")}
       >
         <ButtonGroup
           selectedId={request.receivingWalletDescriptor.currency}
           buttons={[
             {
               id: WalletCurrency.Btc,
-              text: LL.ReceiveScreen.bitcoin(),
+              text: "Bitcoin",
               icon: {
                 selected: <GaloyCurrencyBubble currency="BTC" iconSize={16} />,
                 normal: (
@@ -106,7 +139,7 @@ const ReceiveScreen = () => {
             },
             {
               id: WalletCurrency.Usd,
-              text: LL.ReceiveScreen.stablesats(),
+              text: "Dollar",
               icon: {
                 selected: <GaloyCurrencyBubble currency="USD" iconSize={16} />,
                 normal: (
@@ -175,11 +208,11 @@ const ReceiveScreen = () => {
             )}
         </View>
 
-        <TouchableOpacity onPress={request.copyToClipboard}>
-          <View style={styles.extraDetails}>
-            {request.readablePaymentRequest ? (
-              request.type === Invoice.OnChain ? (
-                <View style={styles.btcHighContainer}>
+        <TouchableOpacity style={styles.extraDetails} onPress={request.copyToClipboard}>
+          {request.readablePaymentRequest ? (
+            request.type === Invoice.OnChain ? (
+              <View style={styles.btcHighContainer}>
+                <Text ellipsizeMode="middle" numberOfLines={1}>
                   <Text style={styles.btcHigh}>
                     {request.readablePaymentRequest.slice(0, 6)}
                   </Text>
@@ -192,16 +225,16 @@ const ReceiveScreen = () => {
                   <Text style={styles.btcHigh}>
                     {request.readablePaymentRequest.slice(-6)}
                   </Text>
-                </View>
-              ) : (
-                <Text {...testProps("readable-payment-request")}>
-                  {request.readablePaymentRequest}
                 </Text>
-              )
+              </View>
             ) : (
-              <></>
-            )}
-          </View>
+              <Text {...testProps("readable-payment-request")}>
+                {request.readablePaymentRequest}
+              </Text>
+            )
+          ) : (
+            <></>
+          )}
         </TouchableOpacity>
 
         <ButtonGroup
@@ -209,13 +242,13 @@ const ReceiveScreen = () => {
           buttons={[
             {
               id: Invoice.Lightning,
-              text: LL.ReceiveScreen.lightning(),
-              icon: "md-flash",
+              text: "Lightning",
+              icon: "flash",
             },
-            { id: Invoice.PayCode, text: LL.ReceiveScreen.paycode(), icon: "md-at" },
+            { id: Invoice.PayCode, text: "Paycode", icon: "at" },
             {
               id: Invoice.OnChain,
-              text: LL.ReceiveScreen.onchain(),
+              text: "Onchain",
               icon: "logo-bitcoin",
             },
           ]}
@@ -246,6 +279,13 @@ const ReceiveScreen = () => {
           isVisible={request.isSetLightningAddressModalVisible}
           toggleModal={request.toggleIsSetLightningAddressModalVisible}
         />
+
+        <ModalNfc
+          isActive={displayReceiveNfc}
+          setIsActive={setDisplayReceiveNfc}
+          settlementAmount={request.settlementAmount}
+          receiveViaNFC={request.receiveViaNFC}
+        />
       </Screen>
     </>
   )
@@ -264,7 +304,7 @@ const useStyles = makeStyles(({ colors }) => ({
     marginTop: 12,
   },
   usdActive: {
-    backgroundColor: colors.green,
+    backgroundColor: colors._green,
     borderRadius: 7,
     justifyContent: "center",
     alignItems: "center",
@@ -307,7 +347,7 @@ const useStyles = makeStyles(({ colors }) => ({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 15,
-    minHeight: 24,
+    minHeight: 20,
   },
   invoiceActions: {
     flexDirection: "row",
@@ -328,16 +368,21 @@ const useStyles = makeStyles(({ colors }) => ({
   btcHighContainer: {
     display: "flex",
     flexDirection: "row",
-    columnGap: 4,
     alignItems: "flex-end",
   },
   btcHigh: {
     fontWeight: "700",
-    fontSize: 18,
   },
-  btcLow: {
-    fontSize: 10,
-    marginBottom: 2,
+  btcLow: {},
+  nfcIcon: {
+    marginTop: -1,
+    marginRight: 14,
+    padding: 8,
+    display: "flex",
+    flexDirection: "row",
+    columnGap: 4,
+    backgroundColor: colors.grey5,
+    borderRadius: 4,
   },
 }))
 

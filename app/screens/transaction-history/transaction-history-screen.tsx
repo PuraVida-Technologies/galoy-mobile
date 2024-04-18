@@ -1,3 +1,6 @@
+import * as React from "react"
+import { ActivityIndicator, SectionList, Text, View } from "react-native"
+
 import { gql } from "@apollo/client"
 import { Screen } from "@app/components/screen"
 import { useTransactionListForDefaultAccountQuery } from "@app/graphql/generated"
@@ -6,9 +9,8 @@ import { groupTransactionsByDate } from "@app/graphql/transactions"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { makeStyles, useTheme } from "@rneui/themed"
-import * as React from "react"
-import { ActivityIndicator, SectionList, Text, View } from "react-native"
-import { TransactionItem } from "../../components/transaction-item"
+
+import { MemoizedTransactionItem } from "../../components/transaction-item"
 import { toastShow } from "../../utils/toast"
 
 gql`
@@ -22,6 +24,9 @@ gql`
       id
       defaultAccount {
         id
+        pendingIncomingTransactions {
+          ...Transaction
+        }
         transactions(first: $first, after: $after, last: $last, before: $before) {
           ...TransactionList
         }
@@ -36,19 +41,25 @@ export const TransactionHistoryScreen: React.FC = () => {
   } = useTheme()
   const styles = useStyles()
 
-  const { LL } = useI18nContext()
+  const { LL, locale } = useI18nContext()
   const { data, error, fetchMore, refetch, loading } =
     useTransactionListForDefaultAccountQuery({ skip: !useIsAuthed() })
 
+  const pendingIncomingTransactions =
+    data?.me?.defaultAccount?.pendingIncomingTransactions
   const transactions = data?.me?.defaultAccount?.transactions
 
   const sections = React.useMemo(
     () =>
       groupTransactionsByDate({
+        pendingIncomingTxs: pendingIncomingTransactions
+          ? [...pendingIncomingTransactions]
+          : [],
         txs: transactions?.edges?.map((edge) => edge.node) ?? [],
-        common: LL.common,
+        LL,
+        locale,
       }),
-    [transactions, LL],
+    [pendingIncomingTransactions, transactions, LL, locale],
   )
 
   if (error) {
@@ -56,7 +67,7 @@ export const TransactionHistoryScreen: React.FC = () => {
     crashlytics().recordError(error)
     toastShow({
       message: (translations) => translations.common.transactionsError(),
-      currentTranslation: LL,
+      LL,
     })
     return <></>
   }
@@ -85,16 +96,18 @@ export const TransactionHistoryScreen: React.FC = () => {
     <Screen>
       <SectionList
         showsVerticalScrollIndicator={false}
+        maxToRenderPerBatch={10}
+        initialNumToRender={20}
         renderItem={({ item, index, section }) => (
-          <TransactionItem
+          <MemoizedTransactionItem
             key={`txn-${item.id}`}
             isFirst={index === 0}
             isLast={index === section.data.length - 1}
             txid={item.id}
             subtitle
+            testId={`transaction-by-index-${index}`}
           />
         )}
-        initialNumToRender={20}
         renderSectionHeader={({ section: { title } }) => (
           <View style={styles.sectionHeaderContainer}>
             <Text style={styles.sectionHeaderText}>{title}</Text>

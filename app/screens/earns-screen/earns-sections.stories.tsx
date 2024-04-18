@@ -1,11 +1,13 @@
+import React from "react"
+
 import { MockedProvider } from "@apollo/client/testing"
 import { Meta } from "@storybook/react"
-import React from "react"
+
 import { StoryScreen } from "../../../.storybook/views"
 import { createCache } from "../../graphql/cache"
 import { MyQuizQuestionsDocument } from "../../graphql/generated"
-import { EarnSection } from "./earns-section"
 import { IsAuthedContextProvider } from "../../graphql/is-authed-context"
+import { EarnSection } from "./earns-section"
 
 const mocksSection0 = [
   {
@@ -92,7 +94,7 @@ const mocksSection0 = [
                 __typename: "Quiz",
               },
               {
-                id: "moneySocialAggrement",
+                id: "moneySocialAgreement",
                 amount: 4,
                 completed: false,
                 __typename: "Quiz",

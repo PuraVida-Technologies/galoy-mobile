@@ -1,16 +1,16 @@
+import { useCallback, useEffect, useState } from "react"
 import { ActivityIndicator, View } from "react-native"
+import { useCountUp } from "use-count-up"
 
-import { makeStyles, Text } from "@rneui/themed"
-import { useFocusEffect, useNavigation } from "@react-navigation/native"
-import { PeopleStackParamList } from "@app/navigation/stack-param-lists"
-import { StackNavigationProp } from "@react-navigation/stack"
+import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
+import { getcBackValue } from "@app/components/circle"
+import { PressableCard } from "@app/components/pressable-card"
 import { useCirclesQuery } from "@app/graphql/generated"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
-import { PressableCard } from "@app/components/pressable-card"
-import { useCountUp } from "use-count-up"
-import { getcBackValue } from "@app/components/circle"
-import { useCallback, useEffect, useState } from "react"
+import { PeopleStackParamList } from "@app/navigation/stack-param-lists"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
+import { StackNavigationProp } from "@react-navigation/stack"
+import { makeStyles, Text } from "@rneui/themed"
 
 export const CirclesCardPeopleHome = () => {
   const styles = useStyles()
@@ -33,12 +33,6 @@ export const CirclesCardPeopleHome = () => {
 
   const [prevInnerCircleCount, setPrevInnerCircleCount] = useState(peopleInInnerCircle)
 
-  useEffect(() => {
-    if (prevInnerCircleCount !== peopleInInnerCircle) {
-      reset()
-    }
-  }, [prevInnerCircleCount, peopleInInnerCircle])
-
   const { value: peopleInInnerCircleCountUp, reset } = useCountUp({
     isCounting: true,
     start: prevInnerCircleCount,
@@ -48,6 +42,12 @@ export const CirclesCardPeopleHome = () => {
       setPrevInnerCircleCount(peopleInInnerCircle)
     },
   })
+
+  useEffect(() => {
+    if (prevInnerCircleCount !== peopleInInnerCircle) {
+      reset()
+    }
+  }, [prevInnerCircleCount, peopleInInnerCircle, reset])
 
   const cBackValue = getcBackValue(Number(peopleInInnerCircleCountUp), 1, 100, 250, 360)
 
@@ -65,12 +65,20 @@ export const CirclesCardPeopleHome = () => {
         <View>
           <View style={styles.blinkCircles}>
             <Text type="h2">{LL.Circles.titleBlinkCircles()}</Text>
+            <View style={styles.loadingInfoContainer}>
+              {loading && (
+                <View style={styles.loadingView}>
+                  <Text type={"p3"}>{LL.Circles.fetchingLatestCircles()}</Text>
+                  <ActivityIndicator />
+                </View>
+              )}
+            </View>
           </View>
           <View style={styles.separator}></View>
         </View>
         <View>
           <Text type={isLonely ? "p1" : "p2"} style={styles.textCenter}>
-            {isLonely ? LL.Circles.groupEffort() : LL.Circles.circlesGrowingKeepGoing()}
+            {LL.Circles.circlesExplainer()}
           </Text>
         </View>
         <View style={styles.pointsContainer}>
@@ -78,14 +86,6 @@ export const CirclesCardPeopleHome = () => {
           <Text style={styles.pointsText} type="p2">
             {LL.Circles.peopleYouWelcomed()}
           </Text>
-        </View>
-        <View style={styles.loadingInfoContainer}>
-          {loading && (
-            <View style={styles.loadingView}>
-              <Text type={"p3"}>{LL.Circles.fetchingLatestCircles()}</Text>
-              <ActivityIndicator />
-            </View>
-          )}
         </View>
         <GaloySecondaryButton
           style={styles.viewCirclescta}
@@ -115,6 +115,7 @@ const useStyles = makeStyles(({ colors }) => ({
   loadingInfoContainer: {
     justifyContent: "center",
     alignItems: "center",
+    minHeight: 20,
   },
   loadingView: {
     flexDirection: "row",

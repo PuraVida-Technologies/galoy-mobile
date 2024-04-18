@@ -1,13 +1,15 @@
-import { ModalTooltip } from "@app/components/modal-tooltip/modal-tooltip"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { TranslationFunctions } from "@app/i18n/i18n-types"
-import { useAppConfig } from "@app/hooks"
 import React from "react"
 import { View } from "react-native"
-import { DestinationState, SendBitcoinDestinationState } from "./send-bitcoin-reducer"
+
+import { ModalTooltip } from "@app/components/modal-tooltip/modal-tooltip"
+import { useAppConfig } from "@app/hooks"
+import { useI18nContext } from "@app/i18n/i18n-react"
+import { TranslationFunctions } from "@app/i18n/i18n-types"
 import { IntraledgerPaymentDestination } from "@galoymoney/client"
-import { InvalidDestinationReason } from "./payment-destination/index.types"
 import { Text, makeStyles, useTheme } from "@rneui/themed"
+
+import { InvalidDestinationReason } from "./payment-destination/index.types"
+import { DestinationState, SendBitcoinDestinationState } from "./send-bitcoin-reducer"
 
 const createToLnAddress = (lnDomain: string) => {
   return (handle: string) => {
@@ -35,7 +37,7 @@ const destinationStateToInformation = (
   }
 
   if (sendBitcoinReducerState.destinationState === DestinationState.Invalid) {
-    switch (sendBitcoinReducerState.invalidDestination.invalidReason) {
+    switch (sendBitcoinReducerState?.invalidDestination?.invalidReason) {
       case InvalidDestinationReason.InvoiceExpired:
         return {
           error: translate.SendBitcoinDestinationScreen.expiredInvoice(),
@@ -53,7 +55,7 @@ const destinationStateToInformation = (
           error: translate.SendBitcoinDestinationScreen.usernameDoesNotExist({
             lnAddress: toLnAddress(
               (
-                sendBitcoinReducerState.invalidDestination
+                sendBitcoinReducerState?.invalidDestination
                   .invalidPaymentDestination as IntraledgerPaymentDestination
               ).handle,
             ),
@@ -106,11 +108,11 @@ const destinationStateToInformation = (
 
   if (
     sendBitcoinReducerState.destinationState === "valid" &&
-    sendBitcoinReducerState.confirmationType
+    sendBitcoinReducerState.confirmationUsernameType
   ) {
     return {
       warning: translate.SendBitcoinDestinationScreen.newBankAddressUsername({
-        lnAddress: toLnAddress(sendBitcoinReducerState.confirmationType.username),
+        lnAddress: toLnAddress(sendBitcoinReducerState.confirmationUsernameType.username),
         bankName,
       }),
     }
@@ -163,6 +165,7 @@ const useStyles = makeStyles(() => ({
     flexDirection: "row",
     alignItems: "center",
     flexWrap: "wrap",
+    marginTop: 5,
   },
   informationText: {
     paddingLeft: 2,

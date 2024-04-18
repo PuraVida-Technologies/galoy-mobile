@@ -1,8 +1,11 @@
 import React from "react"
+import { StyleProp, View, ViewStyle } from "react-native"
 
+import ArrowLeft from "@app/assets/icons-redesign/arrow-left.svg"
 import ArrowRight from "@app/assets/icons-redesign/arrow-right.svg"
 import BackSpace from "@app/assets/icons-redesign/back-space.svg"
 import Bank from "@app/assets/icons-redesign/bank.svg"
+import Bell from "@app/assets/icons-redesign/bell.svg"
 import Bitcoin from "@app/assets/icons-redesign/bitcoin.svg"
 import Book from "@app/assets/icons-redesign/book.svg"
 import BtcBook from "@app/assets/icons-redesign/btc-book.svg"
@@ -12,10 +15,9 @@ import CaretRight from "@app/assets/icons-redesign/caret-right.svg"
 import CaretUp from "@app/assets/icons-redesign/caret-up.svg"
 import CheckCircle from "@app/assets/icons-redesign/check-circle.svg"
 import Check from "@app/assets/icons-redesign/check.svg"
-import Close from "@app/assets/icons-redesign/close.svg"
 import CloseCrossWithBackground from "@app/assets/icons-redesign/close-cross-with-background.svg"
+import Close from "@app/assets/icons-redesign/close.svg"
 import Coins from "@app/assets/icons-redesign/coins.svg"
-import People from "@app/assets/icons/people.svg"
 import CopyPaste from "@app/assets/icons-redesign/copy-paste.svg"
 import Dollar from "@app/assets/icons-redesign/dollar.svg"
 import EyeSlash from "@app/assets/icons-redesign/eye-slash.svg"
@@ -31,6 +33,9 @@ import Loading from "@app/assets/icons-redesign/loading.svg"
 import MagnifyingGlass from "@app/assets/icons-redesign/magnifying-glass.svg"
 import Map from "@app/assets/icons-redesign/map.svg"
 import Menu from "@app/assets/icons-redesign/menu.svg"
+import PaymentError from "@app/assets/icons-redesign/payment-error.svg"
+import PaymentPending from "@app/assets/icons-redesign/payment-pending.svg"
+import PaymentSuccess from "@app/assets/icons-redesign/payment-success.svg"
 import Pencil from "@app/assets/icons-redesign/pencil.svg"
 import QrCode from "@app/assets/icons-redesign/qr-code.svg"
 import Question from "@app/assets/icons-redesign/question.svg"
@@ -41,18 +46,17 @@ import Share from "@app/assets/icons-redesign/share.svg"
 import Transfer from "@app/assets/icons-redesign/transfer.svg"
 import User from "@app/assets/icons-redesign/user.svg"
 import Video from "@app/assets/icons-redesign/video.svg"
-import Warning from "@app/assets/icons-redesign/warning.svg"
 import WarningWithBackground from "@app/assets/icons-redesign/warning-with-background.svg"
-import PaymentSuccess from "@app/assets/icons-redesign/payment-success.svg"
-import PaymentPending from "@app/assets/icons-redesign/payment-pending.svg"
-import PaymentError from "@app/assets/icons-redesign/payment-error.svg"
-import Rank from "@app/assets/icons/rank.svg"
+import Warning from "@app/assets/icons-redesign/warning.svg"
 import Note from "@app/assets/icons/note.svg"
+import People from "@app/assets/icons/people.svg"
+import Rank from "@app/assets/icons/rank.svg"
+import Refresh from "@app/assets/icons/refresh.svg"
 import { makeStyles, useTheme } from "@rneui/themed"
-import { StyleProp, View, ViewStyle } from "react-native"
 
 export const icons = {
   "arrow-right": ArrowRight,
+  "arrow-left": ArrowLeft,
   "back-space": BackSpace,
   "bank": Bank,
   "bitcoin": Bitcoin,
@@ -100,6 +104,8 @@ export const icons = {
   "payment-success": PaymentSuccess,
   "payment-pending": PaymentPending,
   "payment-error": PaymentError,
+  "bell": Bell,
+  "refresh": Refresh,
 } as const
 
 export type IconNamesType = keyof typeof icons

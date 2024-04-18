@@ -6,7 +6,7 @@ const androidValueForAppiumInspector = {
   "appium:app": "./android/app/build/outputs/apk/debug/app-universal-debug.apk",
   "appium:automationName": "UiAutomator2",
   "appium:snapshotMaxDepth": 500,
-  "appium:autoGrantPermissions": false
+  "appium:autoGrantPermissions": false,
 }
 
 const iOSValueForAppiumInspector = {
@@ -15,7 +15,7 @@ const iOSValueForAppiumInspector = {
   "appium:bundleId": "io.galoy.bitcoinbeach",
   "appium:automationName": "XCUITest",
   "appium:snapshotMaxDepth": 500,
-  "appium:autoAcceptAlerts": false
+  "appium:autoDismissAlerts": true
 }
 
 // value to copy to appium inspector
@@ -54,8 +54,8 @@ if (process.env.NO_RESET) {
 const baseSpec = {
   specs: [
     [
-      "../01-welcome-screen-flow.e2e.spec.ts",
-      "../02-login-flow.e2e.spec.ts",
+      "../01-phone-flow-and-resets.e2e.spec.ts",
+      "../02-email-flow.e2e.spec.ts",
       "../03-intraledger-flow.e2e.spec.ts",
       "../04-payment-send-flow.e2e.spec.ts",
       "../05-payments-receive-flow.e2e.spec.ts",

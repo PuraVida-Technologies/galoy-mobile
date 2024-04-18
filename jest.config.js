@@ -1,15 +1,12 @@
 module.exports = {
   preset: "react-native",
-  setupFiles: [
-    "<rootDir>/jest-ts-auto-mock-config.ts",
-    "./node_modules/react-native-gesture-handler/jestSetup.js",
-  ],
+  setupFiles: ["./node_modules/react-native-gesture-handler/jestSetup.js"],
   setupFilesAfterEnv: ["@testing-library/jest-native/extend-expect"],
   transform: {
     "\\.(ts|tsx)$": [
       "ts-jest",
       {
-        compiler: "ttypescript",
+        compiler: "ttsc",
         tsconfig: "tsconfig.jest.json",
       },
     ],
@@ -30,7 +27,6 @@ module.exports = {
       "|@react-native" +
       "|@react-navigation" +
       "|react-native-animatable" +
-      "|react-native-camera" +
       "|react-native-country-picker-modal" +
       "|react-native-error-boundary" +
       "|react-native-extended-stylesheet" +
@@ -55,6 +51,7 @@ module.exports = {
       "|react-native-status-bar-height" +
       "|react-native-auto-height-image" +
       "|react-native-nfc-manager" +
+      "|uuid" +
       ")/)",
   ],
 }

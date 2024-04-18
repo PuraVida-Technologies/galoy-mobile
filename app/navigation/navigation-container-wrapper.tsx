@@ -1,3 +1,8 @@
+import * as React from "react"
+import { useRef } from "react"
+import { Linking } from "react-native"
+import RNBootSplash from "react-native-bootsplash"
+
 import { PREFIX_LINKING } from "@app/config"
 import analytics from "@react-native-firebase/analytics"
 import {
@@ -8,9 +13,8 @@ import {
   PartialState,
   DarkTheme,
 } from "@react-navigation/native"
-import * as React from "react"
-import { useRef } from "react"
-import { Linking } from "react-native"
+import { useTheme } from "@rneui/themed"
+
 import { useIsAuthed } from "../graphql/is-authed-context"
 import { RootStackParamList } from "./stack-param-lists"
 import { useTheme } from "@rneui/themed"
@@ -45,10 +49,9 @@ export const NavigationContainerWrapper: React.FC<React.PropsWithChildren> = ({
 }) => {
   const isAuthed = useIsAuthed()
 
-  const processLink = useRef<((url: string) => void) | null>(null)
-  processLink.current = () => {
+  const processLink = useRef<((url: string) => void) | null>(() => {
     return undefined
-  }
+  })
 
   const setAppUnlocked = React.useMemo(
     () => async () => {
@@ -56,7 +59,7 @@ export const NavigationContainerWrapper: React.FC<React.PropsWithChildren> = ({
       const url = await Linking.getInitialURL()
 
       if (url && isAuthed && processLink.current) {
-        processLink.current(url)
+        return processLink.current(url)
       }
     },
     [isAuthed],
@@ -92,29 +95,46 @@ export const NavigationContainerWrapper: React.FC<React.PropsWithChildren> = ({
     prefixes: [...PREFIX_LINKING, "bitcoin://", "lightning://", "lapp://"],
     config: {
       screens: {
-        sendBitcoinDestination: ":payment",
         Primary: {
           screens: {
-            Home: "/",
+            Home: "home",
+            People: {
+              path: "people",
+              initialRouteName: "peopleHome",
+              screens: {
+                circlesDashboard: "circles",
+              },
+            },
+            Earn: "earn",
+            Map: "map",
           },
         },
+        priceHistory: "price",
+        receiveBitcoin: "receive",
+        conversionDetails: "convert",
+        scanningQRCode: "scan-qr",
+        transactionDetail: {
+          path: "transaction/:txid",
+        },
+        sendBitcoinDestination: ":payment",
       },
     },
     getInitialURL: async () => {
       const url = await Linking.getInitialURL()
+      console.log("getInitialURL", url)
       if (Boolean(url) && isAuthed && !isAppLocked) {
         return url
       }
       return null
     },
     subscribe: (listener) => {
+      processLink.current = listener
       const onReceiveURL = ({ url }: { url: string }) => {
         console.log("onReceiveURL", url)
         listener(url)
       }
       // Listen to incoming links from deep linking
       const subscription = Linking.addEventListener("url", onReceiveURL)
-      processLink.current = listener
 
       return () => {
         // Clean up the event listeners
@@ -131,7 +151,7 @@ export const NavigationContainerWrapper: React.FC<React.PropsWithChildren> = ({
         linking={linking}
         ref={navigationRef}
         onReady={() => {
-          RNBootSplash.hide({ fade: true, duration: 220 })
+          RNBootSplash.hide({ fade: true })
           console.log("NavigationContainer onReady")
         }}
         onStateChange={(state) => {

@@ -1,37 +1,39 @@
 // Welcome to the main entry point of the app.
 //
 // In this file, we'll be kicking off our app
-
 // language related import
 import "intl-pluralrules"
-
-import "react-native-reanimated"
-
-import "@react-native-firebase/crashlytics"
-import { ThemeProvider } from "@rneui/themed"
-import "node-libs-react-native/globals" // needed for Buffer?
+import "node-libs-react-native/globals"
+// needed for Buffer?
 import * as React from "react"
 import ErrorBoundary from "react-native-error-boundary"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
+import "react-native-reanimated"
 import { RootSiblingParent } from "react-native-root-siblings"
+// for URL; need a polyfill on react native
+import "react-native-url-polyfill/auto"
+
+import "@react-native-firebase/crashlytics"
+
+import { GaloyThemeProvider } from "./components/galoy-theme-provider"
 import { GaloyToast } from "./components/galoy-toast"
-import { NotificationComponent } from "./components/notification"
+import { NotificationsProvider } from "./components/notifications/index"
+import { PushNotificationComponent } from "./components/push-notification"
+import { FeatureFlagContextProvider } from "./config/feature-flags-context"
 import { GaloyClient } from "./graphql/client"
+import { NetworkErrorComponent } from "./graphql/network-error-component"
 import TypesafeI18n from "./i18n/i18n-react"
 import { loadAllLocales } from "./i18n/i18n-util.sync"
+import "./i18n/mapping"
 import { AppStateWrapper } from "./navigation/app-state"
 import { NavigationContainerWrapper } from "./navigation/navigation-container-wrapper"
 import { RootStack } from "./navigation/root-navigator"
-import theme from "./rne-theme/theme"
 import { ErrorScreen } from "./screens/error-screen"
 import { PersistentStateProvider } from "./store/persistent-state"
 import { detectDefaultLocale } from "./utils/locale-detector"
-
-import { Provider } from "react-redux"
-import store from "./modules/market-place/redux"
-import { ThemeSyncGraphql } from "./utils/theme-sync"
-import { NetworkErrorComponent } from "./graphql/network-error-component"
-import { FeatureFlagContextProvider } from "./config/feature-flags-context"
 import "./utils/logs"
+import { Provider } from "react-redux"
+import store from "./modules/market-place/redux/index"
 
 // FIXME should we only load the currently used local?
 // this would help to make the app load faster
@@ -45,28 +47,33 @@ loadAllLocales()
  * This is the root component of our app.
  */
 export const App = () => (
-  <PersistentStateProvider>
-    <Provider store={store}>
-      <TypesafeI18n locale={detectDefaultLocale()}>
-        <ThemeProvider theme={theme}>
+  /* eslint-disable-next-line react-native/no-inline-styles */
+  <GestureHandlerRootView style={{ flex: 1 }}>
+    <PersistentStateProvider>
+
+      <Provider store={store}>
+        <TypesafeI18n locale={detectDefaultLocale()}>
           <GaloyClient>
-            <FeatureFlagContextProvider>
-              <ErrorBoundary FallbackComponent={ErrorScreen}>
+            <GaloyThemeProvider>
+              <FeatureFlagContextProvider>
                 <NavigationContainerWrapper>
-                  <RootSiblingParent>
-                    <AppStateWrapper />
-                    <NotificationComponent />
-                    <RootStack />
-                    <GaloyToast />
-                    <NetworkErrorComponent />
-                  </RootSiblingParent>
+                  <ErrorBoundary FallbackComponent={ErrorScreen}>
+                    <RootSiblingParent>
+                      <NotificationsProvider>
+                        <AppStateWrapper />
+                        <PushNotificationComponent />
+                        <RootStack />
+                        <NetworkErrorComponent />
+                      </NotificationsProvider>
+                      <GaloyToast />
+                    </RootSiblingParent>
+                  </ErrorBoundary>
                 </NavigationContainerWrapper>
-              </ErrorBoundary>
-              <ThemeSyncGraphql />
-            </FeatureFlagContextProvider>
+              </FeatureFlagContextProvider>
+            </GaloyThemeProvider>
           </GaloyClient>
-        </ThemeProvider>
-      </TypesafeI18n>
-    </Provider>
-  </PersistentStateProvider>
+        </TypesafeI18n>
+    </PersistentStateProvider>
+  </Provider>
+  </GestureHandlerRootView >
 )

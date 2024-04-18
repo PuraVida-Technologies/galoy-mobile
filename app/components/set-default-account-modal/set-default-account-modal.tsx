@@ -1,28 +1,25 @@
 import React from "react"
-import {
-  Platform,
-  View,
-  ScrollView,
-  TouchableOpacity,
-  ActivityIndicator,
-} from "react-native"
+import { Platform, View, TouchableOpacity, ActivityIndicator } from "react-native"
+import { ScrollView } from "react-native-gesture-handler"
 import Modal from "react-native-modal"
-import { makeStyles, Text, useTheme } from "@rneui/themed"
-import { GaloyIcon } from "../atomic/galoy-icon"
-import { GaloyCurrencyBubble } from "../atomic/galoy-currency-bubble"
+
+import { gql, useApolloClient } from "@apollo/client"
+import { setHasPromptedSetDefaultAccount } from "@app/graphql/client-only-query"
 import {
   WalletCurrency,
   useAccountUpdateDefaultWalletIdMutation,
   useSetDefaultAccountModalQuery,
 } from "@app/graphql/generated"
-import { gql, useApolloClient } from "@apollo/client"
 import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
-import crashlytics from "@react-native-firebase/crashlytics"
-import { setHasPromptedSetDefaultAccount } from "@app/graphql/client-only-query"
 import { useI18nContext } from "@app/i18n/i18n-react"
+import { RootStackParamList } from "@app/navigation/stack-param-lists"
+import crashlytics from "@react-native-firebase/crashlytics"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { RootStackParamList } from "@app/navigation/stack-param-lists"
+import { makeStyles, Text, useTheme } from "@rneui/themed"
+
+import { GaloyCurrencyBubble } from "../atomic/galoy-currency-bubble"
+import { GaloyIconButton } from "../atomic/galoy-icon-button"
 
 gql`
   query setDefaultAccountModal {
@@ -151,15 +148,21 @@ export const SetDefaultAccountModalUI: React.FC<SetDefaultAccountModalUIProps> =
   return (
     <Modal
       isVisible={isVisible}
-      backdropOpacity={0.7}
-      backdropColor={colors.grey3}
+      backdropOpacity={0.8}
+      backdropColor={colors.white}
       backdropTransitionOutTiming={0}
       avoidKeyboard={true}
+      onBackdropPress={toggleModal}
+      onBackButtonPress={toggleModal}
     >
       <View style={styles.container}>
-        <TouchableOpacity style={styles.closeIcon} onPress={toggleModal}>
-          <GaloyIcon name="close" size={30} color={colors.grey0} />
-        </TouchableOpacity>
+        <GaloyIconButton
+          style={styles.closeIcon}
+          name="close"
+          size="medium"
+          color={colors.grey0}
+          onPress={toggleModal}
+        />
         <ScrollView
           style={styles.modalCard}
           persistentScrollbar={true}
@@ -229,7 +232,7 @@ const useStyles = makeStyles(({ colors }) => ({
     flexDirection: "column",
   },
   container: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.grey5,
     maxHeight: "80%",
     minHeight: "auto",
     borderRadius: 16,

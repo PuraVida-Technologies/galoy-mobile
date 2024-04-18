@@ -1,7 +1,10 @@
+import React, { useCallback, useState } from "react"
+import { Alert } from "react-native"
+
 import { gql } from "@apollo/client"
 import { CodeInput } from "@app/components/code-input"
 import {
-  AccountScreenDocument,
+  SettingsScreenDocument,
   useUserTotpRegistrationValidateMutation,
 } from "@app/graphql/generated"
 import { useAppConfig } from "@app/hooks"
@@ -9,8 +12,6 @@ import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-import React, { useCallback, useState } from "react"
-import { Alert } from "react-native"
 
 gql`
   mutation userTotpRegistrationValidate($input: UserTotpRegistrationValidateInput!) {
@@ -19,6 +20,7 @@ gql`
         message
       }
       me {
+        id
         totpEnabled
         phone
         email {
@@ -57,7 +59,7 @@ export const TotpRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
 
         const res = await totpRegistrationValidate({
           variables: { input: { totpCode: code, totpRegistrationId, authToken } },
-          refetchQueries: [AccountScreenDocument],
+          refetchQueries: [SettingsScreenDocument],
         })
 
         if (res.data?.userTotpRegistrationValidate.errors) {
@@ -71,7 +73,14 @@ export const TotpRegistrationValidateScreen: React.FC<Props> = ({ route }) => {
             {
               text: LL.common.ok(),
               onPress: () => {
-                navigation.navigate("accountScreen")
+                navigation.reset({
+                  routes: [
+                    {
+                      name: "Primary",
+                    },
+                    { name: "accountScreen" },
+                  ],
+                })
               },
             },
           ])

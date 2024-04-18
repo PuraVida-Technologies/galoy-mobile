@@ -1,13 +1,15 @@
-import { RouteProp, useFocusEffect } from "@react-navigation/native"
-import { StackNavigationProp } from "@react-navigation/stack"
 import * as React from "react"
 import { useState } from "react"
-import { Switch, View } from "react-native"
+import { View } from "react-native"
 
 import { useApolloClient } from "@apollo/client"
+import { GaloyTertiaryButton } from "@app/components/atomic/galoy-tertiary-button"
 import { useHideBalanceQuery } from "@app/graphql/generated"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { Text, makeStyles } from "@rneui/themed"
+import { RouteProp, useFocusEffect } from "@react-navigation/native"
+import { StackNavigationProp } from "@react-navigation/stack"
+import { Text, makeStyles, Switch } from "@rneui/themed"
+
 import { Screen } from "../../components/screen"
 import {
   saveHiddenBalanceToolTip,
@@ -18,36 +20,6 @@ import BiometricWrapper from "../../utils/biometricAuthentication"
 import { PinScreenPurpose } from "../../utils/enum"
 import KeyStoreWrapper from "../../utils/storage/secureStorage"
 import { toastShow } from "../../utils/toast"
-import { GaloyTertiaryButton } from "@app/components/atomic/galoy-tertiary-button"
-
-const useStyles = makeStyles(() => ({
-  container: {
-    minHeight: "100%",
-    paddingLeft: 24,
-    paddingRight: 24,
-  },
-
-  description: {
-    fontSize: 14,
-    marginTop: 2,
-  },
-
-  settingContainer: {
-    flexDirection: "row",
-  },
-
-  switch: {
-    bottom: 18,
-    position: "absolute",
-    right: 0,
-  },
-
-  textContainer: {
-    marginBottom: 12,
-    marginRight: 60,
-    marginTop: 32,
-  },
-}))
 
 type Props = {
   navigation: StackNavigationProp<RootStackParamList, "security">
@@ -59,7 +31,7 @@ export const SecurityScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const client = useApolloClient()
   const { mIsBiometricsEnabled, mIsPinEnabled } = route.params
-  const { data: { hideBalance } = {} } = useHideBalanceQuery()
+  const { data: { hideBalance } = { hideBalance: false } } = useHideBalanceQuery()
   const { LL } = useI18nContext()
   const [isBiometricsEnabled, setIsBiometricsEnabled] = useState(mIsBiometricsEnabled)
   const [isPinEnabled, setIsPinEnabled] = useState(mIsPinEnabled)
@@ -90,13 +62,13 @@ export const SecurityScreen: React.FC<Props> = ({ route, navigation }) => {
         } else {
           toastShow({
             message: (translations) => translations.SecurityScreen.biometryNotAvailable(),
-            currentTranslation: LL,
+            LL,
           })
         }
       } catch {
         toastShow({
           message: (translations) => translations.SecurityScreen.biometryNotEnrolled(),
-          currentTranslation: LL,
+          LL,
         })
       }
     } else if (await KeyStoreWrapper.removeIsBiometricsEnabled()) {
@@ -123,13 +95,13 @@ export const SecurityScreen: React.FC<Props> = ({ route, navigation }) => {
     }
   }
 
-  const onHideBalanceValueChanged = async (value: boolean) => {
+  const onHideBalanceValueChanged = (value: boolean) => {
     if (value) {
-      setIsHideBalanceEnabled(await saveHideBalance(client, true))
-      await saveHiddenBalanceToolTip(client, true)
+      setIsHideBalanceEnabled(saveHideBalance(client, true))
+      saveHiddenBalanceToolTip(client, true)
     } else {
-      setIsHideBalanceEnabled(await saveHideBalance(client, false))
-      await saveHiddenBalanceToolTip(client, false)
+      setIsHideBalanceEnabled(saveHideBalance(client, false))
+      saveHiddenBalanceToolTip(client, false)
     }
   }
 
@@ -157,6 +129,12 @@ export const SecurityScreen: React.FC<Props> = ({ route, navigation }) => {
         <View style={styles.textContainer}>
           <Text type="h1">{LL.SecurityScreen.pinTitle()}</Text>
           <Text type="p2">{LL.SecurityScreen.pinDescription()}</Text>
+          <GaloyTertiaryButton
+            title={LL.SecurityScreen.setPin()}
+            onPress={() =>
+              navigation.navigate("pin", { screenPurpose: PinScreenPurpose.SetPin })
+            }
+          />
         </View>
         <Switch
           style={styles.switch}
@@ -165,15 +143,6 @@ export const SecurityScreen: React.FC<Props> = ({ route, navigation }) => {
         />
       </View>
       <View style={styles.settingContainer}>
-        <GaloyTertiaryButton
-          title={LL.SecurityScreen.setPin()}
-          onPress={() =>
-            navigation.navigate("pin", { screenPurpose: PinScreenPurpose.SetPin })
-          }
-        />
-      </View>
-      <View style={styles.settingContainer}>
-        <View style={styles.settingContainer}></View>
         <View style={styles.textContainer}>
           <Text type="h1">{LL.SecurityScreen.hideBalanceTitle()}</Text>
           <Text type="p2">{LL.SecurityScreen.hideBalanceDescription()}</Text>
@@ -187,3 +156,28 @@ export const SecurityScreen: React.FC<Props> = ({ route, navigation }) => {
     </Screen>
   )
 }
+
+const useStyles = makeStyles(() => ({
+  container: {
+    margin: 24,
+    display: "flex",
+    flexDirection: "column",
+    rowGap: 20,
+  },
+
+  settingContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+
+  switch: {
+    position: "absolute",
+    right: 0,
+  },
+
+  textContainer: {
+    display: "flex",
+    flexDirection: "column",
+    rowGap: 8,
+  },
+}))

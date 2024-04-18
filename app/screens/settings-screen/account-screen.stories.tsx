@@ -1,18 +1,20 @@
 import * as React from "react"
-import { StoryScreen } from "../../../.storybook/views"
-import { Meta } from "@storybook/react"
-import { createCache } from "../../graphql/cache"
-import { AccountScreenDocument } from "../../graphql/generated"
-import mocks from "../../graphql/mocks"
-import { AccountScreen } from "./account-screen"
+
 import { MockedProvider } from "@apollo/client/testing"
+import { Meta } from "@storybook/react"
+
+import { StoryScreen } from "../../../.storybook/views"
+import { createCache } from "../../graphql/cache"
+import { SettingsScreenDocument } from "../../graphql/generated"
 import { AccountLevel, LevelContextProvider } from "../../graphql/level-context"
+import mocks from "../../graphql/mocks"
+import { AccountScreen } from "../settings-screen/account/account-screen"
 
 const mocksLevelOne = [
   ...mocks,
   {
     request: {
-      query: AccountScreenDocument,
+      query: SettingsScreenDocument,
     },
     result: {
       data: {
@@ -53,7 +55,7 @@ const mocksNoEmail = [
   ...mocks,
   {
     request: {
-      query: AccountScreenDocument,
+      query: SettingsScreenDocument,
     },
     result: {
       data: {
@@ -101,6 +103,7 @@ export const Unauthed = () => (
     value={{
       isAtLeastLevelZero: false,
       isAtLeastLevelOne: false,
+      isAtLeastLevelTwo: true,
       currentLevel: AccountLevel.NonAuth,
     }}
   >
@@ -115,6 +118,7 @@ export const AuthedEmailNotSet = () => (
     value={{
       isAtLeastLevelZero: true,
       isAtLeastLevelOne: true,
+      isAtLeastLevelTwo: true,
       currentLevel: AccountLevel.One,
     }}
   >
@@ -129,6 +133,7 @@ export const AuthedEmailSet = () => (
     value={{
       isAtLeastLevelZero: true,
       isAtLeastLevelOne: true,
+      isAtLeastLevelTwo: true,
       currentLevel: AccountLevel.One,
     }}
   >

@@ -1,7 +1,8 @@
-import { useAppConfig } from "@app/hooks"
-import { Text, makeStyles } from "@rneui/themed"
 import React from "react"
 import { ActivityIndicator } from "react-native"
+
+import { useAppConfig } from "@app/hooks"
+import { Text, makeStyles } from "@rneui/themed"
 
 const useStyles = makeStyles(() => ({
   highlight: {
@@ -34,7 +35,12 @@ export const PaymentDestinationDisplay = ({
 
   if (destination.length < 40) {
     return (
-      <Text type="p1" numberOfLines={1} ellipsizeMode={"middle"}>
+      <Text
+        type="p1"
+        numberOfLines={1}
+        ellipsizeMode={"middle"}
+        style={styles.primaryTextStyle}
+      >
         {destination}
         {paymentType === "intraledger" ? `@${lnDomain}` : ""}
       </Text>
@@ -48,10 +54,19 @@ export const PaymentDestinationDisplay = ({
   const lastSix = destination.slice(-6)
 
   return (
-    <Text style={styles.primaryTextStyle} numberOfLines={1} ellipsizeMode={"middle"}>
-      <Text style={styles.highlight}>{firstSix}</Text>
+    <Text
+      type="p2"
+      style={styles.primaryTextStyle}
+      numberOfLines={1}
+      ellipsizeMode={"middle"}
+    >
+      <Text type="p2" style={styles.highlight}>
+        {firstSix}
+      </Text>
       {middle}
-      <Text style={styles.highlight}>{lastSix}</Text>
+      <Text type="p2" style={styles.highlight}>
+        {lastSix}
+      </Text>
     </Text>
   )
 }

@@ -7,26 +7,15 @@
 // side effect of breaking other tooling like mobile-center and react-native-rename.
 //
 // It's easier just to leave it here.
-
-import { AppRegistry, LogBox } from "react-native"
-import { App } from "./app/app.tsx"
 import * as React from "react"
-import codePush from "react-native-code-push";
+import { AppRegistry, LogBox } from "react-native"
 
-const ignoreLogs = [
-  /Non-serializable values were found in the navigation state. Check:\s*sendBitcoinDetails/, // SendBitcoin navigation values are not serializable to prevent boiler plate serialization and deserialization across the flow.
-]
-LogBox.ignoreLogs(ignoreLogs)
+import { App } from "./app/app.tsx"
 
-const codePushOptions = {
-  checkFrequency: codePush.CheckFrequency.ON_APP_START,
-  installMode: codePush.InstallMode.ON_NEXT_RESTART,
-  mandatoryInstallMode: codePush.InstallMode.IMMEDIATE,
-  rollbackRetryOptions: {
-    delayInHours: 1,
-    maxRetryAttempts: 10,
-  },
-};
+// Disables showing errors and warnings on UI - they still get shown on console
+// Ensures elements are visible deterministically during tests
+LogBox.ignoreAllLogs(true)
+
 /**
  * This needs to match what's found in your app_delegate.m and MainActivity.java.
  */
@@ -37,10 +26,7 @@ const APP_NAME = "GaloyApp"
 // ⚠️ Leave this as `false` when checking into git.
 const SHOW_STORYBOOK = false
 
-let RootComponent = () => {
-  return __DEV__ ?codePush(codePushOptions)(App)
-    : codePush(codePushOptions)(App);
-}
+let RootComponent = () => <App />
 
 if (__DEV__ && SHOW_STORYBOOK) {
   // Only include Storybook if we're in dev mode
@@ -49,11 +35,4 @@ if (__DEV__ && SHOW_STORYBOOK) {
   RootComponent = StorybookUIRoot
 }
 
-// AppRegistry.registerComponent(APP_NAME, () => RootComponent)
-
-AppRegistry.registerComponent(APP_NAME, () => {
-  return __DEV__ 
-    ? App
-    : codePush(codePushOptions)(App);
-});
-
+AppRegistry.registerComponent(APP_NAME, () => RootComponent)
