@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Pressable, TouchableOpacity, View } from "react-native"
+import { Image, Pressable, TouchableOpacity, View } from "react-native"
 
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
@@ -20,6 +20,7 @@ import { RootStackParamList } from "../../navigation/stack-param-lists"
 import { PhoneLoginInitiateType } from "../phone-auth-screen"
 import { DeviceAccountModal } from "./device-account-modal"
 import useAppCheckToken from "./use-device-token"
+import AppLogoImage from "../get-started-screen/app-logo.png"
 
 export const GetStartedScreen: React.FC = () => {
   const navigation =
@@ -122,7 +123,11 @@ export const GetStartedScreen: React.FC = () => {
         style={styles.logoContainer}
         {...testProps("logo-button")}
       >
-        <AppLogo width={"100%"} height={"100%"} />
+        <Image
+          style={{ maxHeight: "50%", maxWidth: "60%",alignSelf:'center' }}
+          source={AppLogoImage}
+          resizeMode="contain"
+        />
       </Pressable>
       <DeviceAccountModal
         isVisible={confirmationModalVisible}

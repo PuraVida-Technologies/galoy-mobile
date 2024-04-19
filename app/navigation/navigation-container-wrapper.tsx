@@ -17,10 +17,6 @@ import { useTheme } from "@rneui/themed"
 
 import { useIsAuthed } from "../graphql/is-authed-context"
 import { RootStackParamList } from "./stack-param-lists"
-import { useTheme } from "@rneui/themed"
-
-import RNBootSplash from "react-native-bootsplash"
-
 export type AuthenticationContextType = {
   isAppLocked: boolean
   setAppUnlocked: () => void
@@ -40,7 +36,7 @@ export const navigationRef = createNavigationContainerRef()
 
 export const navigate = (name: string, params: any) => {
   if (navigationRef.isReady()) {
-    navigationRef.navigate(name, params);
+    navigationRef.navigate(name, params)
   }
 }
 
@@ -157,6 +153,7 @@ export const NavigationContainerWrapper: React.FC<React.PropsWithChildren> = ({
         onStateChange={(state) => {
           const currentRouteName = getActiveRouteName(state)
 
+          console.log("===currentRouteName:", currentRouteName)
           if (routeName.current !== currentRouteName && currentRouteName) {
             /* eslint-disable camelcase */
             // analytics().logScreenView({
@@ -164,8 +161,7 @@ export const NavigationContainerWrapper: React.FC<React.PropsWithChildren> = ({
             //   screen_class: currentRouteName,
             //   is_manual_log: true,
             // })
-            console.log("current screen:", currentRouteName);
-            
+
             routeName.current = currentRouteName
           }
         }}

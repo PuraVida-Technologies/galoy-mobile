@@ -15,7 +15,7 @@ import {
 import { Screen } from "@app/components/screen"
 import { MarketPlaceParamList } from "@app/modules/market-place/navigation/param-list"
 
-import { color, palette, spacing } from "@app/theme"
+import { color, palette, spacing } from "@app/modules/market-place/theme"
 import FilterSvg from "@app/modules/market-place/assets/svgs/filter.svg"
 import { images } from "@app/modules/market-place/assets/images"
 import { useDispatch } from "react-redux"
@@ -57,10 +57,7 @@ export const MarketPlace = ({ navigation }: Props) => {
     <SafeAreaView style={{ flex: 1 }}>
       <Screen style={styles.screenContainer}>
         <View style={styles.contentContainer}>
-          <Pressable
-            onPress={goesToStoreList}
-          >
-
+          <Pressable onPress={goesToStoreList}>
             <Row containerStyle={styles.rowContainer}>
               <Text style={styles.searchText}>{t.marketPlace.search()}</Text>
               <FilterSvg />
@@ -76,10 +73,7 @@ export const MarketPlace = ({ navigation }: Props) => {
             </Text>
           </View>
           <Row containerStyle={styles.buttonRow}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={onCreatePostPress}
-            >
+            <TouchableOpacity style={styles.button} onPress={onCreatePostPress}>
               <Text style={styles.text}>{t.marketPlace.create_post()}</Text>
             </TouchableOpacity>
             <View style={{ width: 30 }} />
@@ -116,8 +110,8 @@ const styles = StyleSheet.create({
   searchText: {
     flex: 1,
     fontSize: fontSize.font22,
-    color:"#9499A5",
-    paddingVertical: Platform.OS == "android" ? 10 : 0
+    color: "#9499A5",
+    paddingVertical: Platform.OS == "android" ? 10 : 0,
   },
   rowContainer: {
     borderRadius: 20,
@@ -126,7 +120,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 30,
     paddingRight: spacing[3],
-    paddingVertical: Platform.OS === 'android' ? 0 : 9,
+    paddingVertical: Platform.OS === "android" ? 0 : 9,
     alignItems: "center",
   },
   contentContainer: {

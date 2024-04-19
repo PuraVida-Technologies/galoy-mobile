@@ -1,7 +1,6 @@
 import React, { FunctionComponent, PropsWithChildren } from "react"
 import { TouchableHighlight } from "react-native"
 
-import { testProps } from "@app/utils/testProps"
 import { Button, ButtonProps, makeStyles, useTheme } from "@rneui/themed"
 
 import { GaloyIcon, IconNamesType } from "../galoy-icon"

@@ -24,10 +24,12 @@ import {
 
 import { setContext } from "@apollo/client/link/context"
 import { useAppConfig } from "@app/hooks"
-import { GRAPHQL_MARKET_PLACE_MAINNET_URI, GRAPHQL_MARKET_PLACE_STAGING_URI } from "../config"
+import {
+  GRAPHQL_MARKET_PLACE_MAINNET_URI,
+  GRAPHQL_MARKET_PLACE_STAGING_URI,
+} from "../config"
 import { PostListScreen } from "../screens/post-list-screen"
 import { StoreListViewScreen } from "../screens/post-list-screen/list-view-screen"
-
 
 export const cache = new InMemoryCache({ addTypename: false })
 
@@ -42,19 +44,21 @@ const defaultOptions: DefaultOptions = {
   },
 }
 
-export let client: any = undefined;
-
+export let client: any = undefined
 
 export const MarketPlaceStacks = () => {
   const { appConfig } = useAppConfig()
-  const uri = appConfig.galoyInstance.name === "Staging" ? GRAPHQL_MARKET_PLACE_STAGING_URI : GRAPHQL_MARKET_PLACE_MAINNET_URI
+  const uri =
+    appConfig.galoyInstance.name === "Staging"
+      ? GRAPHQL_MARKET_PLACE_STAGING_URI
+      : GRAPHQL_MARKET_PLACE_MAINNET_URI
   const httpLink = createHttpLink({ uri })
 
   const authLink = setContext(async (_, { headers }) => {
     return {
       headers: {
         ...headers,
-        "authorization": `Bearer ${appConfig.token}`,
+        authorization: `Bearer ${appConfig.token}`,
       },
     }
   })

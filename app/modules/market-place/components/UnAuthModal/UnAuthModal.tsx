@@ -6,7 +6,7 @@ import Modal from "react-native-modal"
 import Icon from "react-native-vector-icons/Ionicons"
 import { useNavigation } from "@react-navigation/native"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { palette } from "@app/theme"
+import { palette } from "@app/modules/market-place/theme"
 import { makeStyles } from "@rneui/themed"
 
 type Props = {

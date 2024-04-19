@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios"
 import { PostAttributes } from "@app/modules/market-place/redux/reducers/store-reducer"
 import { GoogleMapLocation, MarketplaceTag, PlaceCoordinates } from "../models"
 import {
@@ -11,24 +11,30 @@ import {
   getMarketPlaceCategoriesHandler,
   getPostsHandler,
   myPostHandler,
-  getPostDetailHandler
+  getPostDetailHandler,
 } from "./handler"
-import { CREATE_TAG, CREATE_POST, USER_DEVICE, REPORT_POST } from "./mutations/marketplace-mutation"
+import {
+  CREATE_TAG,
+  CREATE_POST,
+  USER_DEVICE,
+  REPORT_POST,
+} from "./mutations/marketplace-mutation"
 import {
   AUTO_COMPLETE_LOCATION,
   AUTO_COMPLETE_TAGS,
   FILTER_MARKET_PLACE_POST,
   GET_LOCATION_LAT_LONG,
   GET_TAGS,
-  GET_CATEGORY, GET_POSTS,
+  GET_CATEGORY,
+  GET_POSTS,
   MY_POST,
-  GET_POST_DETAIL
+  GET_POST_DETAIL,
 } from "./queries/marketplace-query"
 
 import { getUniqueId } from "react-native-device-info"
-import { getStorage } from '../utils/helper';
-import { ACCESS_TOKEN } from '../config/constant';
-import { marketplaceClient } from '@app/graphql/client';
+import { getStorage } from "../utils/helper"
+import { ACCESS_TOKEN } from "../config/constant"
+import { marketplaceClient } from "@app/graphql/client"
 
 type FilterPostParams = {
   latitude: number
@@ -40,7 +46,10 @@ type FilterPostParams = {
   sortBy: string
 }
 export const autoCompleteTags = async (name: string): Promise<MarketplaceTag[]> => {
-  const res = await marketplaceClient.query({ query: AUTO_COMPLETE_TAGS, variables: { name } })
+  const res = await marketplaceClient.query({
+    query: AUTO_COMPLETE_TAGS,
+    variables: { name },
+  })
   const formattedResponse = autoCompleteTagHandler(res)
   return formattedResponse
 }
@@ -68,15 +77,18 @@ export const getPlaceCoordinates = async (id: string): Promise<PlaceCoordinates>
 }
 
 export const createTag = async (name: string) => {
-  const res = await marketplaceClient.mutate({ mutation: CREATE_TAG, variables: { name } })
+  const res = await marketplaceClient.mutate({
+    mutation: CREATE_TAG,
+    variables: { name },
+  })
   const formattedResponse = createTagHandle(res)
   return formattedResponse
 }
 export const filterPosts = async (
   params: FilterPostParams,
 ): Promise<PostAttributes[]> => {
-  console.log('params===:',params);
-  
+  console.log("params===:", params)
+
   const res = await marketplaceClient.query({
     query: FILTER_MARKET_PLACE_POST,
     variables: params,
@@ -93,19 +105,25 @@ export const getMartketPlaceCategories = async (): Promise<
   return formattedResponse
 }
 export const createPost = async (post: PostAttributes) => {
-  const res = await marketplaceClient.mutate({ mutation: CREATE_POST, variables: { ...post } })
+  const res = await marketplaceClient.mutate({
+    mutation: CREATE_POST,
+    variables: { ...post },
+  })
   return res
 }
 
-export const uploadImage = async (uri: any, name: string, type: string, baseUrl: string) => {
-
+export const uploadImage = async (
+  uri: any,
+  name: string,
+  type: string,
+  baseUrl: string,
+) => {
   const token = await getStorage(ACCESS_TOKEN)
-  
-  let data = new FormData();
-  data.append('image', { uri, name, filename: name, type });
 
-  const res = await axios.post(`${baseUrl}/media/single`, data,{
+  const data = new FormData()
+  data.append("image", { uri, name, filename: name, type })
 
+  const res = await axios.post(`${baseUrl}/media/single`, data, {
     headers: {
       "Content-Type": "multipart/form-data",
       "authorization": `Bearer ${token}`,
@@ -117,8 +135,8 @@ export const uploadImage = async (uri: any, name: string, type: string, baseUrl:
 
 export const getMyPost = async (): Promise<PostAttributes[]> => {
   const res = await marketplaceClient.query({ query: MY_POST })
-  
-  const formattedResponse = myPostHandler(res).map((post:any) => ({
+
+  const formattedResponse = myPostHandler(res).map((post: any) => ({
     ...post,
     location: {
       lat: post.location?.coordinates[1] || 0,
@@ -131,12 +149,15 @@ export const getMyPost = async (): Promise<PostAttributes[]> => {
 
 export const uploadDeviceToken = async (token: string) => {
   const deviceId = await getUniqueId()
-  await marketplaceClient.mutate({ mutation: USER_DEVICE, variables: { deviceId, token } })
+  await marketplaceClient.mutate({
+    mutation: USER_DEVICE,
+    variables: { deviceId, token },
+  })
 }
 
 export const getPostDetail = async (id: string): Promise<PostAttributes> => {
   const res = await marketplaceClient.query({ query: GET_POST_DETAIL, variables: { id } })
-  
+
   const formattedResponse = getPostDetailHandler(res)
 
   return {
@@ -148,7 +169,10 @@ export const getPostDetail = async (id: string): Promise<PostAttributes> => {
   }
 }
 
-export const reportPost = async (params: { postSlug: string, reason: string }) => {
-  const res = await marketplaceClient.mutate({ mutation: REPORT_POST, variables: { ...params } })
+export const reportPost = async (params: { postSlug: string; reason: string }) => {
+  const res = await marketplaceClient.mutate({
+    mutation: REPORT_POST,
+    variables: { ...params },
+  })
   return res
 }

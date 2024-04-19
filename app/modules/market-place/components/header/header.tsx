@@ -2,7 +2,7 @@ import * as React from "react"
 import { StyleProp, Text, TouchableOpacity, View, ViewStyle } from "react-native"
 import BackSvg from "@app/modules/market-place/assets/svgs/back-button.svg"
 import { useNavigation } from "@react-navigation/native"
-import { color } from "@app/theme"
+import { color } from "@app/modules/market-place/theme"
 import { Row } from "../row"
 import { fontSize } from "../../theme/typography"
 
@@ -36,9 +36,7 @@ export const HeaderComponent: React.FC<HeaderProps> = ({
         <BackSvg fill={color.primary} />
       </TouchableOpacity>
 
-      <Text style={{ fontSize: fontSize.font20 }}>
-        {title}
-      </Text>
+      <Text style={{ fontSize: fontSize.font20 }}>{title}</Text>
       {rightComponent ? rightComponent : <View style={{ width: 24, height: 24 }} />}
     </Row>
   )

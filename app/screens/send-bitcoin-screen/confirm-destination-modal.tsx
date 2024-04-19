@@ -51,13 +51,6 @@ export const ConfirmDestinationModal: React.FC<ConfirmDestinationModalProps> = (
     })
   }
 
-  const goBack = () => {
-    dispatchDestinationStateAction({
-      type: "set-unparsed-destination",
-      payload: { unparsedDestination: destinationState.unparsedDestination },
-    })
-  }
-
   return (
     <CustomModal
       isVisible={

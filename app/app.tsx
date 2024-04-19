@@ -50,7 +50,6 @@ export const App = () => (
   /* eslint-disable-next-line react-native/no-inline-styles */
   <GestureHandlerRootView style={{ flex: 1 }}>
     <PersistentStateProvider>
-
       <Provider store={store}>
         <TypesafeI18n locale={detectDefaultLocale()}>
           <GaloyClient>
@@ -73,7 +72,7 @@ export const App = () => (
             </GaloyThemeProvider>
           </GaloyClient>
         </TypesafeI18n>
+      </Provider>
     </PersistentStateProvider>
-  </Provider>
-  </GestureHandlerRootView >
+  </GestureHandlerRootView>
 )

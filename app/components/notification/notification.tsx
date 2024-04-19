@@ -83,34 +83,33 @@ export const NotificationComponent = (): JSX.Element => {
   useEffect(() => {
     // Assume a message-notification contains a "type" property in the data payload of the screen to open
 
-    messaging().onNotificationOpenedApp(remoteMessage => {
+    messaging().onNotificationOpenedApp((remoteMessage) => {
       console.log(
-        'Notification caused app to open from background state:',
+        "Notification caused app to open from background state:",
         remoteMessage.notification,
-      );
+      )
 
       deeplinkHandler(remoteMessage)
-    });
+    })
 
     // Check whether an initial notification is available
     messaging()
       .getInitialNotification()
-      .then(remoteMessage => {
+      .then((remoteMessage) => {
         if (remoteMessage) {
           console.log(
-            'Notification caused app to open from quit state:',
+            "Notification caused app to open from quit state:",
             remoteMessage.notification,
-          );
+          )
           deeplinkHandler(remoteMessage)
         }
         // setLoading(false);
-      });
+      })
 
-      messaging().setBackgroundMessageHandler(async remoteMessage => {
-        console.log('Message handled in the background!', remoteMessage);
-      });
-  }, []);
-
+    messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+      console.log("Message handled in the background!", remoteMessage)
+    })
+  }, [])
 
   return <></>
 }

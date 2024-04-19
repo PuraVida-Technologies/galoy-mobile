@@ -14,7 +14,8 @@ import type { RootStackParamList } from "../../navigation/stack-param-lists"
 import BiometricWrapper from "../../utils/biometricAuthentication"
 import { AuthenticationScreenPurpose, PinScreenPurpose } from "../../utils/enum"
 import KeyStoreWrapper from "../../utils/storage/secureStorage"
-import AppLogoImage from '../get-started-screen/app-logo.png'
+import AppLogoImage from "../get-started-screen/app-logo.png"
+import { Image } from "react-native"
 
 export const AuthenticationCheckScreen: React.FC = () => {
   const styles = useStyles()
@@ -54,7 +55,11 @@ export const AuthenticationCheckScreen: React.FC = () => {
     <Screen style={styles.container}>
       {/* <AppLogo width={"100%"} height={"60%"} /> */}
 
-      <Image style={{ maxHeight: "50%", maxWidth: "90%", }} source={AppLogoImage} resizeMode="contain" />
+      <Image
+        style={{ maxHeight: "50%", maxWidth: "90%" }}
+        source={AppLogoImage}
+        resizeMode="contain"
+      />
     </Screen>
   )
 }

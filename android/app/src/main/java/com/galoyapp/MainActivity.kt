@@ -21,7 +21,7 @@ class MainActivity : ReactActivity() {
    * which allows you to enable New Architecture with a single boolean flags [fabricEnabled]
    */
   override fun createReactActivityDelegate(): ReactActivityDelegate =
-      DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled)
+      DefaultReactActivityDelegate(this, "GaloyApp", fabricEnabled)
 
   override fun onCreate(savedInstanceState: Bundle?) {
     RNBootSplash.init(this, R.style.BootTheme) // ⬅️ initialize the splash screen

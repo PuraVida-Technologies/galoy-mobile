@@ -2,7 +2,7 @@ import * as React from "react"
 // eslint-disable-next-line react-native/split-platform-components
 import { StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native"
 
-import { color } from "@app/theme"
+import { color } from "@app/modules/market-place/theme"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { Row } from "../row"
 import { fontSize, typography } from "../../theme/typography"

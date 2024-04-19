@@ -1,4 +1,13 @@
-import { PURAVIDA_GRAPHQL_MAINNET_URI, PURAVIDA_GRAPHQL_MAINNET_WS_URI, PURAVIDA_GRAPHQL_TESTNET_URI,PURAVIDA_GRAPHQL_TESTNET_WS_URI, PURAVIDA_LN_ADDRESS, PURAVIDA_LN_MAINNET_ADDRESS, PURAVIDA_POS_MAINNET_URL, PURAVIDA_POS_URL } from "@app/modules/market-place/config"
+import {
+  PURAVIDA_GRAPHQL_MAINNET_URI,
+  PURAVIDA_GRAPHQL_MAINNET_WS_URI,
+  PURAVIDA_GRAPHQL_TESTNET_URI,
+  PURAVIDA_GRAPHQL_TESTNET_WS_URI,
+  PURAVIDA_LN_ADDRESS,
+  PURAVIDA_LN_MAINNET_ADDRESS,
+  PURAVIDA_POS_MAINNET_URL,
+  PURAVIDA_POS_URL,
+} from "@app/modules/market-place/config"
 import { NativeModules } from "react-native"
 
 // this is used for local development
@@ -68,7 +77,7 @@ export const GALOY_INSTANCES: readonly GaloyInstance[] = [
     graphqlWsUri: PURAVIDA_GRAPHQL_MAINNET_WS_URI,
     posUrl: PURAVIDA_POS_MAINNET_URL,
     lnAddressHostname: PURAVIDA_LN_MAINNET_ADDRESS,
-    authUrl: "https://api.blink.sv", 
+    authUrl: "https://api.blink.sv",
     kycUrl: "https://kyc.puravidabitcoin.io",
     blockExplorer: "https://mempool.space/tx/",
   },

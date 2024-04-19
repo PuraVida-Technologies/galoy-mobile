@@ -1,5 +1,5 @@
 import { HeaderComponent } from "../../components/header"
-import { spacing } from "@app/theme"
+import { spacing } from "@app/modules/market-place/theme"
 import { StackNavigationProp } from "@react-navigation/stack"
 import * as React from "react"
 // eslint-disable-next-line react-native/split-platform-components

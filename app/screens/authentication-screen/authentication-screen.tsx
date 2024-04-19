@@ -1,6 +1,5 @@
-import { RouteProp, useFocusEffect, useNavigation } from "@react-navigation/native"
 import * as React from "react"
-import { Alert, View } from "react-native"
+import { Alert, View, Image } from "react-native"
 
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
@@ -19,7 +18,7 @@ import BiometricWrapper from "../../utils/biometricAuthentication"
 import { AuthenticationScreenPurpose, PinScreenPurpose } from "../../utils/enum"
 import KeyStoreWrapper from "../../utils/storage/secureStorage"
 
-import AppLogoImage from '../get-started-screen/app-logo.png'
+import AppLogoImage from "../get-started-screen/app-logo.png"
 
 type Props = {
   route: RouteProp<RootStackParamList, "authentication">
@@ -140,7 +139,11 @@ export const AuthenticationScreen: React.FC<Props> = ({ route }) => {
 
   return (
     <Screen>
-      <Image style={{ maxHeight: "50%", maxWidth: "60%", }} source={AppLogoImage} resizeMode="contain" />
+      <Image
+        style={{ maxHeight: "50%", maxWidth: "60%" }}
+        source={AppLogoImage}
+        resizeMode="contain"
+      />
       <View style={styles.bottom}>
         <GaloyPrimaryButton
           title={buttonTitle}

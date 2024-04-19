@@ -39,8 +39,8 @@ const LATITUDE_DELTA = 15 // <-- decrease for more zoom
 const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height)
 
 type Props = {
-  navigation: StackNavigationProp<RootStackParamList, "Primary">;
-};
+  navigation: StackNavigationProp<RootStackParamList, "Primary">
+}
 
 Geolocation.setRNConfiguration({
   skipPermissionRequests: true,
@@ -62,7 +62,7 @@ gql`
       }
     }
   }
-`;
+`
 
 export const MapScreen: React.FC<Props> = ({ navigation }) => {
   const isAuthed = useIsAuthed()
@@ -85,10 +85,10 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
 
   useFocusEffect(() => {
     if (!isRefreshed) {
-      setIsRefreshed(true);
-      refetch();
+      setIsRefreshed(true)
+      refetch()
     }
-  });
+  })
 
   if (error) {
     toastShow({ message: error.message, LL })
@@ -204,5 +204,5 @@ export const MapScreen: React.FC<Props> = ({ navigation }) => {
         />
       )}
     </Screen>
-  );
-};
+  )
+}

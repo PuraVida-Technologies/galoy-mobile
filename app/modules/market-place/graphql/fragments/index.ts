@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "@apollo/client"
 
 export const MARKETPLACE_POST = gql`
   fragment MarketplacePost on MarketplacePost {
@@ -28,4 +28,4 @@ export const MARKETPLACE_POST = gql`
     }
     slug
   }
-`;
+`

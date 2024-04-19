@@ -13,7 +13,7 @@ import { NavigatorScreenParams } from "@react-navigation/native"
 
 import { AuthenticationScreenPurpose, PinScreenPurpose } from "../utils/enum"
 
-//Puravida Stack
+// Puravida Stack
 import { PostAttributes } from "@app/modules/market-place/redux/reducers/store-reducer"
 
 export type RootStackParamList = {
@@ -103,7 +103,13 @@ export type RootStackParamList = {
   chatbot: undefined
 
   // Puravida Stack
-  PostDetail: { editable?: boolean; postInfo: PostAttributes, postId?: string, title?: string, isMyPost?: boolean },
+  PostDetail: {
+    editable?: boolean
+    postInfo: PostAttributes
+    postId?: string
+    title?: string
+    isMyPost?: boolean
+  }
   LocationPicker: undefined
 }
 
@@ -138,6 +144,6 @@ export type PrimaryStackParamList = {
   Earn: undefined
   Web: undefined
 
-  //Puravida Stack
+  // Puravida Stack
   MarketPlaceStack: undefined
 }

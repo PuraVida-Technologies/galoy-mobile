@@ -1,11 +1,10 @@
 import * as React from "react"
 
-//Puravida Screens
+// Puravida Screens
 import { MarketPlaceStacks } from "@app/modules/market-place/navigation/marketplace-stack"
 import MarketPlaceSvg from "@app/modules/market-place/assets/svgs/market-place.svg"
 import { PostDetailScreen } from "@app/modules/market-place/screens/post-detail-screen/PostDetailScreen"
 import { LocationPickerScreen } from "@app/modules/market-place/screens/location-picker-screen"
-
 
 import HomeIcon from "@app/assets/icons/home.svg"
 import LearnIcon from "@app/assets/icons/learn.svg"

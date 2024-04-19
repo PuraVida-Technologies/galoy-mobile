@@ -4,7 +4,6 @@ apply plugin: "com.facebook.react"
 
 apply plugin: 'com.google.gms.google-services' // firebase
 apply plugin: 'com.google.firebase.crashlytics'
-apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 // https://github.com/react-native-community/discussions-and-proposals/issues/602

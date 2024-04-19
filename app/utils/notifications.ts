@@ -32,7 +32,6 @@ export const addDeviceToken = async (client: ApolloClient<unknown>): Promise<voi
     const deviceToken = await messaging().getToken()
 
     await uploadDeviceToken(deviceToken)
-    
 
     await client.mutate({
       mutation: DeviceNotificationTokenCreateDocument,

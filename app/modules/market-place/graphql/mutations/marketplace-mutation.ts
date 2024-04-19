@@ -40,8 +40,8 @@ export const CREATE_POST = gql`
 `
 
 export const CREATE_TAG = gql`
-  mutation createMarketplaceTag($name: String!,$icon:String) {
-    createMarketplaceTag(createMarketplaceTagInput: { name: $name,icon:$icon }) {
+  mutation createMarketplaceTag($name: String!, $icon: String) {
+    createMarketplaceTag(createMarketplaceTagInput: { name: $name, icon: $icon }) {
       name
       _id
     }
@@ -49,8 +49,8 @@ export const CREATE_TAG = gql`
 `
 
 export const USER_DEVICE = gql`
-  mutation addUserDevice($deviceId: String!,$token:String!) {
-    addUserDevice(addUserDeviceInput: { deviceId: $deviceId,token:$token }) {
+  mutation addUserDevice($deviceId: String!, $token: String!) {
+    addUserDevice(addUserDeviceInput: { deviceId: $deviceId, token: $token }) {
       token
     }
   }
@@ -58,15 +58,15 @@ export const USER_DEVICE = gql`
 
 export const REPORT_POST = gql`
   mutation reportMarketplacePost(
-        $postSlug: String!
-        $reason: String!
-        $description: String
+    $postSlug: String!
+    $reason: String!
+    $description: String
   ) {
     reportMarketplacePost(
       reportMarketplacePostInput: {
         postSlug: $postSlug
         reason: $reason
-        description: $description 
+        description: $description
       }
     ) {
       _id
