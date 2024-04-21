@@ -1,13 +1,13 @@
 import * as React from "react"
-import { Text, View } from "react-native"
-import { Button } from "@rneui/base"
+import { View } from "react-native"
 import { TouchableWithoutFeedback } from "react-native-gesture-handler"
 import Modal from "react-native-modal"
 import Icon from "react-native-vector-icons/Ionicons"
 import { useNavigation } from "@react-navigation/native"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { palette } from "@app/modules/market-place/theme"
-import { makeStyles } from "@rneui/themed"
+import { Text, makeStyles, useTheme } from "@rneui/themed"
+import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
+import { PhoneLoginInitiateType } from "@app/screens/phone-auth-screen"
 
 type Props = {
   modalVisible: boolean
@@ -22,10 +22,19 @@ export const UnAuthModal = ({ modalVisible, setModalVisible }: Props) => {
 
   const activateWallet = () => {
     setModalVisible(false)
-    navigation.navigate("phoneFlow")
+    navigation.navigate("phoneFlow", {
+      screen: "phoneLoginInitiate",
+      params: {
+        type: PhoneLoginInitiateType.CreateAccount,
+      },
+    })
   }
-
+ 
   const styles = useStyles()
+  const {
+    theme: { colors },
+  } = useTheme()
+
 
   return (
     <Modal
@@ -35,53 +44,44 @@ export const UnAuthModal = ({ modalVisible, setModalVisible }: Props) => {
       onSwipeComplete={() => setModalVisible(false)}
       swipeThreshold={50}
     >
-      <View style={styles.flex}>
-        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-          <View style={styles.cover} />
-        </TouchableWithoutFeedback>
-      </View>
-      <View style={styles.viewModal}>
-        <Icon name="ios-remove" size={64} color={palette.lightGrey} style={styles.icon} />
-        <Text style={styles.text}>{LL.common.needWallet()}</Text>
-        <Button
-          title={LL.common.openWallet()}
+    <View style={styles.flex}>
+      <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+        <View style={styles.cover} />
+      </TouchableWithoutFeedback>
+    </View>
+    <View style={styles.viewModal}>
+      <Icon name="remove" size={64} color={colors.grey3} style={styles.icon} />
+      <Text type="h1">{LL.common.needWallet()}</Text>
+      <View style={styles.openWalletContainer}>
+        <GaloyPrimaryButton
+          title={LL.GetStartedScreen.logInCreateAccount()}
           onPress={activateWallet}
-          type="outline"
-          buttonStyle={styles.buttonStyle}
-          titleStyle={styles.titleStyle}
-          containerStyle={styles.buttonContainerStyle}
         />
-        <View style={styles.flex} />
       </View>
+      <View style={styles.flex} />
+    </View>
     </Modal>
   )
 }
 
 const useStyles = makeStyles(({ colors }) => ({
+  openWalletContainer: {
+    alignSelf: "stretch",
+    marginTop: 20,
+  },
   scrollView: {
     flexGrow: 1,
     paddingBottom: 30,
   },
   tintColor: {
     color: colors.primary,
-  },
-  listItemsContainer: {
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    marginBottom: 20,
-    marginHorizontal: 30,
-    borderRadius: 12,
-    backgroundColor: colors.whiteOrDarkGrey,
-  },
+  }, 
   listItems: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-  },
-  background: {
-    color: colors.lighterGreyOrBlack,
-  },
+  }, 
   buttonContainerStyle: {
     marginTop: 16,
     width: "80%",
@@ -124,43 +124,7 @@ const useStyles = makeStyles(({ colors }) => ({
     height: "25%",
     justifyContent: "flex-end",
     paddingHorizontal: 20,
-  },
-  recentTransaction: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    columnGap: 10,
-    backgroundColor: colors.whiteOrDarkGrey,
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-    borderColor: colors.lighterGreyOrBlack,
-    borderBottomWidth: 2,
-    paddingVertical: 14,
-  },
-  transactionContainer: {
-    marginHorizontal: 30,
-  },
-  largeButton: {
-    display: "flex",
-    justifyContent: "space-between",
-    width: "100%",
-    maxWidth: 60,
-  },
-  header: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginHorizontal: 30,
-    height: 120,
-  },
-  topButton: {
-    backgroundColor: colors.whiteOrDarkGrey,
-    borderRadius: 38,
-    width: 45,
-    height: 45,
-  },
+  },  
   balanceHeaderContainer: {
     flex: 1,
     flexDirection: "column",

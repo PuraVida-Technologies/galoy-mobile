@@ -4743,19 +4743,7 @@ export const CirclesDocument = gql`
     id
     username
     defaultAccount {
-      id
-      ... on ConsumerAccount {
-        welcomeProfile {
-          allTimePoints
-          allTimeRank
-          innerCircleAllTimeCount
-          innerCircleThisMonthCount
-          outerCircleAllTimeCount
-          outerCircleThisMonthCount
-          thisMonthPoints
-          thisMonthRank
-        }
-      }
+      id 
     }
   }
 }
