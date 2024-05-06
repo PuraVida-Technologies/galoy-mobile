@@ -75,7 +75,9 @@ export const SettingsScreen: React.FC = () => {
       ThemeSetting,
     ],
     securityAndPrivacy: [TotpSetting, OnDeviceSecuritySetting],
-    advanced: [ExportCsvSetting, ApiAccessSetting],
+    advanced: [ExportCsvSetting
+      // , ApiAccessSetting
+    ],
     community: [NeedHelpSetting, JoinCommunitySetting],
   }
 

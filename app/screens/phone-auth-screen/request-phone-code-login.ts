@@ -139,8 +139,7 @@ export const useRequestPhoneCodeLogin = (): UseRequestPhoneCodeReturn => {
     const isWhatsAppSupported =
       currentCountry?.supportedAuthChannels.includes(PhoneCodeChannelType.Whatsapp) ||
       false
-    const isSmsSupported =
-      currentCountry?.supportedAuthChannels.includes(PhoneCodeChannelType.Sms) || false
+    const isSmsSupported = true
 
     return {
       isWhatsAppSupported,
@@ -242,9 +241,7 @@ export const useRequestPhoneCodeLogin = (): UseRequestPhoneCodeReturn => {
       }
     }
 
-    const skipRequestPhoneCode =
-      appConfig.galoyInstance.name === "Local" ||
-      appConfig.galoyInstance.name === "Staging"
+    const skipRequestPhoneCode = false
 
     if (skipRequestPhoneCode) {
       setStatus(RequestPhoneCodeStatus.SuccessRequestingCode)

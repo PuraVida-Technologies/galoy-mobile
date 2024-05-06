@@ -69,36 +69,36 @@ const ContactModal: React.FC<Props> = ({
       icon: <Icon name={"alert-circle-outline"} type="ionicon" />,
       action: () => {
         // TODO: extract in Instance
-        Linking.openURL(`https://blink.statuspage.io/`)
+        Linking.openURL(`https://status.puravidabitcoin.io/`)
       },
     },
-    {
-      id: SupportChannels.Faq,
-      name: LL.support.faq(),
-      icon: <Icon name={"book-outline"} type="ionicon" color={colors.black} />,
-      action: () => {
-        Linking.openURL(`https://faq.blink.sv`)
-        toggleModal()
-      },
-    },
+    // {
+    //   id: SupportChannels.Faq,
+    //   name: LL.support.faq(),
+    //   icon: <Icon name={"book-outline"} type="ionicon" color={colors.black} />,
+    //   action: () => {
+    //     Linking.openURL(`https://faq.blink.sv`)
+    //     toggleModal()
+    //   },
+    // },
     {
       id: SupportChannels.Telegram,
       name: LL.support.telegram(),
       icon: <TelegramOutline width={24} height={24} fill={colors.black} />,
       action: () => {
-        Linking.openURL(`https://t.me/blinkbtc`)
+        Linking.openURL(`https://t.me/pvbtc`)
         toggleModal()
       },
     },
-    {
-      id: SupportChannels.Mattermost,
-      name: LL.support.mattermost(),
-      icon: <Icon name={"chatbubbles-outline"} type="ionicon" color={colors.black} />,
-      action: () => {
-        Linking.openURL(`https://chat.galoy.io`)
-        toggleModal()
-      },
-    },
+    // {
+    //   id: SupportChannels.Mattermost,
+    //   name: LL.support.mattermost(),
+    //   icon: <Icon name={"chatbubbles-outline"} type="ionicon" color={colors.black} />,
+    //   action: () => {
+    //     Linking.openURL(`https://chat.galoy.io`)
+    //     toggleModal()
+    //   },
+    // },
     {
       id: SupportChannels.WhatsApp,
       name: LL.support.whatsapp(),
