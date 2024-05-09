@@ -1,19 +1,19 @@
-import { ScrollView } from "react-native-gesture-handler"
+import { ScrollView } from "react-native-gesture-handler";
 
-import { Screen } from "@app/components/screen"
-import { testProps } from "@app/utils/testProps"
-import { makeStyles } from "@rneui/themed"
+import { Screen } from "@app/components/screen";
+import { testProps } from "@app/utils/testProps";
+import { makeStyles } from "@rneui/themed";
 
-import { SettingsGroup } from "../group"
-import { AccountDeleteContextProvider } from "./account-delete-context"
-import { AccountBanner } from "./banner"
-import { AccountId } from "./id"
-import { DangerZoneSettings } from "./settings/danger-zone"
-import { UpgradeAccountLevelOne } from "./settings/upgrade"
-import { UpgradeTrialAccount } from "./settings/upgrade-trial-account"
+import { SettingsGroup } from "../group";
+import { AccountDeleteContextProvider } from "./account-delete-context";
+import { AccountBanner } from "./banner";
+import { AccountId } from "./id";
+import { DangerZoneSettings } from "./settings/danger-zone";
+import { UpgradeAccountLevelOne } from "./settings/upgrade";
+import { UpgradeTrialAccount } from "./settings/upgrade-trial-account";
 
 export const AccountScreen: React.FC = () => {
-  const styles = useStyles()
+  const styles = useStyles();
 
   return (
     <AccountDeleteContextProvider>
@@ -25,13 +25,12 @@ export const AccountScreen: React.FC = () => {
           <AccountBanner />
           <AccountId />
           <UpgradeTrialAccount />
-          <SettingsGroup items={[UpgradeAccountLevelOne]} />
           <DangerZoneSettings />
         </ScrollView>
       </Screen>
     </AccountDeleteContextProvider>
-  )
-}
+  );
+};
 
 const useStyles = makeStyles(() => ({
   outer: {
@@ -42,4 +41,4 @@ const useStyles = makeStyles(() => ({
     flexDirection: "column",
     rowGap: 12,
   },
-}))
+}));
