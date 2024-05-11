@@ -66,13 +66,15 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>400</string>
 	<key>CodePushDeploymentKey</key>
 	<string>DjhmHxhMEdODpeZ_-R33L3cFMUgX0TCiKGemo</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NFCReaderUsageDescription</key>
+	<string>We need to use NFC to receive payments from the card</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -92,8 +94,6 @@
 	<string>The app uses your location to show you relevant Bitcoin Marketplace postings around you.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Import a screenshot with a QR code</string>
-	<key>NFCReaderUsageDescription</key>
-	<string>We need to use NFC to receive payments from the card</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Ionicons.ttf</string>
