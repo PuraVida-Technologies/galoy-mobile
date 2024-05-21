@@ -137,9 +137,17 @@ export type PhoneValidationStackParamList = {
   totpLoginValidate: { authToken: string }
 }
 
+export type ContactStackParamList = {
+  contactList: undefined
+  contactDetail: { contact: Contact }
+  phoneFlow: undefined
+  sendBitcoinDestination: { username: string }
+  transactionDetail: { txid: string }
+}
+
 export type PrimaryStackParamList = {
   Home: undefined
-  People: undefined
+  Contacts: undefined
   Map: undefined
   Earn: undefined
   Web: undefined

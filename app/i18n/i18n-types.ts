@@ -210,6 +210,24 @@ type RootTranslation = {
 		 */
 		frequentContacts: string
 	}
+  ContactsScreen: {
+    /**
+     * N​o​ ​C​o​n​t​a​c​t​s​ ​F​o​u​n​d
+     */
+    noContactsTitle: string;
+    /**
+     * S​e​n​d​ ​o​r​ ​r​e​c​e​i​v​e​ ​a​ ​p​a​y​m​e​n​t​ ​u​s​i​n​g​ ​a​ ​u​s​e​r​n​a​m​e​ ​a​n​d​ ​c​o​n​t​a​c​t​s​ ​w​i​l​l​ ​a​u​t​o​m​a​t​i​c​a​l​l​y​ ​b​e​ ​a​d​d​e​d​ ​h​e​r​e
+     */
+    noContactsYet: string;
+    /**
+     * N​o​ ​c​o​n​t​a​c​t​s​ ​m​a​t​c​h​i​n​g​ ​y​o​u​r​ ​s​e​a​r​c​h​ ​w​e​r​e​ ​f​o​u​n​d​.
+     */
+    noMatchingContacts: string;
+    /**
+     * C​o​n​t​a​c​t​s
+     */
+    title: string;
+  };
 	ContactDetailsScreen: {
 		/**
 		 * T​r​a​n​s​a​c​t​i​o​n​s​ ​w​i​t​h​ ​{​u​s​e​r​n​a​m​e​}
@@ -9272,6 +9290,24 @@ export type TranslationFunctions = {
 		 */
 		frequentContacts: () => LocalizedString
 	}
+  ContactsScreen: {
+    /**
+     * No Contacts Found
+     */
+    noContactsTitle: () => LocalizedString;
+    /**
+     * Send or receive a payment using a username and contacts will automatically be added here
+     */
+    noContactsYet: () => LocalizedString;
+    /**
+     * No contacts matching your search were found.
+     */
+    noMatchingContacts: () => LocalizedString;
+    /**
+     * Contacts
+     */
+    title: () => LocalizedString;
+  }
 	ContactDetailsScreen: {
 		/**
 		 * Transactions with {username}
