@@ -1,94 +1,21 @@
-import { StackNavigationProp } from "@react-navigation/stack";
-import { ListItem, SearchBar } from "@rneui/base";
-import { makeStyles, useTheme } from "@rneui/themed";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/Ionicons";
 
-import { Screen } from "../../components/screen";
-import { ContactStackParamList } from "../../navigation/stack-param-lists";
-import { testProps } from "../../utils/testProps";
-import { toastShow } from "../../utils/toast";
-
 import { gql } from "@apollo/client";
-import { useContactsQuery } from "@app/graphql/generated";
+import { Screen } from "@app/components/screen";
+import { useContactsQuery, UserContact } from "@app/graphql/generated";
 import { useIsAuthed } from "@app/graphql/is-authed-context";
 import { useI18nContext } from "@app/i18n/i18n-react";
+import { PeopleStackParamList } from "@app/navigation/stack-param-lists";
+import { testProps } from "@app/utils/testProps";
+import { toastShow } from "@app/utils/toast";
 import { useNavigation } from "@react-navigation/native";
-import theme from "@app/rne-theme/theme";
-
-const useStyles = makeStyles((theme) => ({
-  activityIndicatorContainer: {
-    alignItems: "center",
-    flex: 1,
-    justifyContent: "center",
-  },
-
-  emptyListNoContacts: {
-    marginHorizontal: 12,
-    marginTop: 32,
-  },
-
-  emptyListNoMatching: {
-    marginHorizontal: 26,
-    marginTop: 8,
-  },
-
-  emptyListText: {
-    fontSize: 18,
-    marginTop: 30,
-    textAlign: "center",
-    color: theme.colors.black,
-  },
-
-  emptyListTitle: {
-    color: theme.colors.black,
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-
-  item: {
-    marginHorizontal: 32,
-    marginVertical: 8,
-  },
-
-  itemContainer: {
-    borderRadius: 8,
-    backgroundColor: theme.colors.loaderBackground,
-  },
-
-  listContainer: { flexGrow: 1 },
-
-  searchBarContainer: {
-    backgroundColor: theme.colors.white,
-    borderBottomColor: theme.colors.white,
-    borderTopColor: theme.colors.white,
-    marginHorizontal: 26,
-    marginVertical: 8,
-  },
-
-  searchBarInputContainerStyle: {
-    backgroundColor: theme.colors._lighterGrey,
-  },
-
-  searchBarRightIconStyle: {
-    padding: 8,
-  },
-
-  searchBarText: {
-    color: theme.colors.black,
-    textDecorationLine: "none",
-  },
-
-  itemText: { color: theme.colors.black },
-
-  icon: {
-    color: theme.colors.black,
-  },
-}));
+import { StackNavigationProp } from "@react-navigation/stack";
+import { SearchBar } from "@rneui/base";
+import { ListItem, makeStyles, useTheme } from "@rneui/themed";
 
 gql`
   query contacts {
@@ -106,15 +33,15 @@ gql`
 
 export const ContactsScreen: React.FC = () => {
   const styles = useStyles();
-  const { theme: { colors } } = useTheme();
+  const {
+    theme: { colors },
+  } = useTheme();
 
-  const navigation = useNavigation<
-    StackNavigationProp<ContactStackParamList, "contactList">
-  >();
+  const navigation = useNavigation<StackNavigationProp<PeopleStackParamList>>();
 
   const isAuthed = useIsAuthed();
 
-  const [matchingContacts, setMatchingContacts] = useState<Contact[]>([]);
+  const [matchingContacts, setMatchingContacts] = useState<UserContact[]>([]);
   const [searchText, setSearchText] = useState("");
   const { LL } = useI18nContext();
   const { loading, data, error } = useContactsQuery({
@@ -126,7 +53,7 @@ export const ContactsScreen: React.FC = () => {
     toastShow({ message: error.message, LL });
   }
 
-  const contacts: Contact[] = useMemo(() => {
+  const contacts: UserContact[] = useMemo(() => {
     return data?.me?.contacts.slice() ?? [];
   }, [data]);
 
@@ -161,7 +88,7 @@ export const ContactsScreen: React.FC = () => {
 
   const wordMatchesContact = (
     searchWord: string,
-    contact: Contact,
+    contact: UserContact,
   ): boolean => {
     let contactPrettyNameMatchesSearchWord: boolean;
 
@@ -216,30 +143,27 @@ export const ContactsScreen: React.FC = () => {
     ListEmptyContent = (
       <View style={styles.emptyListNoMatching}>
         <Text style={styles.emptyListTitle}>
-          {LL.ContactsScreen.noMatchingContacts()}
+          {LL.PeopleScreen.noMatchingContacts()}
         </Text>
       </View>
     );
   } else if (loading) {
     ListEmptyContent = (
       <View style={styles.activityIndicatorContainer}>
-        <ActivityIndicator
-          size="large"
-          color={colors._darkGrey}
-        />
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   } else {
     ListEmptyContent = (
       <View style={styles.emptyListNoContacts}>
         <Text
-          {...testProps(LL.ContactsScreen.noContactsTitle())}
+          {...testProps(LL.PeopleScreen.noContactsTitle())}
           style={styles.emptyListTitle}
         >
-          {LL.ContactsScreen.noContactsTitle()}
+          {LL.PeopleScreen.noContactsTitle()}
         </Text>
         <Text style={styles.emptyListText}>
-          {LL.ContactsScreen.noContactsYet()}
+          {LL.PeopleScreen.noContactsYet()}
         </Text>
       </View>
     );
@@ -260,11 +184,7 @@ export const ContactsScreen: React.FC = () => {
             onPress={() =>
               navigation.navigate("contactDetail", { contact: item })}
           >
-            <Icon
-              name={"ios-person-outline"}
-              size={24}
-              color={colors._green}
-            />
+            <Icon name={"person-outline"} size={24} color={colors.primary} />
             <ListItem.Content>
               <ListItem.Title style={styles.itemText}>
                 {item.alias}
@@ -277,3 +197,74 @@ export const ContactsScreen: React.FC = () => {
     </Screen>
   );
 };
+
+const useStyles = makeStyles(({ colors }) => ({
+  activityIndicatorContainer: {
+    alignItems: "center",
+    flex: 1,
+    justifyContent: "center",
+  },
+
+  emptyListNoContacts: {
+    marginHorizontal: 12,
+    marginTop: 32,
+  },
+
+  emptyListNoMatching: {
+    marginHorizontal: 26,
+    marginTop: 8,
+  },
+
+  emptyListText: {
+    fontSize: 18,
+    marginTop: 30,
+    textAlign: "center",
+    color: colors.black,
+  },
+
+  emptyListTitle: {
+    color: colors.black,
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+
+  item: {
+    marginHorizontal: 32,
+    marginVertical: 8,
+  },
+
+  itemContainer: {
+    borderRadius: 8,
+    backgroundColor: colors.grey5,
+  },
+
+  listContainer: { flexGrow: 1 },
+
+  searchBarContainer: {
+    backgroundColor: colors.white,
+    borderBottomColor: colors.white,
+    borderTopColor: colors.white,
+    marginHorizontal: 26,
+    marginVertical: 8,
+  },
+
+  searchBarInputContainerStyle: {
+    backgroundColor: colors.grey5,
+  },
+
+  searchBarRightIconStyle: {
+    padding: 8,
+  },
+
+  searchBarText: {
+    color: colors.black,
+    textDecorationLine: "none",
+  },
+
+  itemText: { color: colors.black },
+
+  icon: {
+    color: colors.black,
+  },
+}));
