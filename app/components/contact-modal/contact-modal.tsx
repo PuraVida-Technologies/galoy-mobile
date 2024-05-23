@@ -1,17 +1,17 @@
-import React from "react"
-import { Linking } from "react-native"
-import ReactNativeModal from "react-native-modal"
+import React from "react";
+import { Linking } from "react-native";
+import ReactNativeModal from "react-native-modal";
 
-import { CONTACT_EMAIL_ADDRESS, WHATSAPP_CONTACT_NUMBER } from "@app/config"
-import { useBetaQuery } from "@app/graphql/generated"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import { openWhatsApp } from "@app/utils/external"
-import { useNavigation } from "@react-navigation/native"
-import { StackNavigationProp } from "@react-navigation/stack"
-import { Icon, ListItem, makeStyles, useTheme } from "@rneui/themed"
+import { CONTACT_EMAIL_ADDRESS, WHATSAPP_CONTACT_NUMBER } from "@app/config";
+import { useBetaQuery } from "@app/graphql/generated";
+import { useI18nContext } from "@app/i18n/i18n-react";
+import { RootStackParamList } from "@app/navigation/stack-param-lists";
+import { openWhatsApp } from "@app/utils/external";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { Icon, ListItem, makeStyles, useTheme } from "@rneui/themed";
 
-import TelegramOutline from "./telegram.svg"
+import TelegramOutline from "./telegram.svg";
 
 export const SupportChannels = {
   Email: "email",
@@ -21,17 +21,18 @@ export const SupportChannels = {
   Mattermost: "mattermost",
   Faq: "faq",
   Chatbot: "chatbot",
-} as const
+} as const;
 
-export type SupportChannels = (typeof SupportChannels)[keyof typeof SupportChannels]
+export type SupportChannels =
+  (typeof SupportChannels)[keyof typeof SupportChannels];
 
 type Props = {
-  isVisible: boolean
-  toggleModal: () => void
-  messageBody: string
-  messageSubject: string
-  supportChannels: SupportChannels[]
-}
+  isVisible: boolean;
+  toggleModal: () => void;
+  messageBody: string;
+  messageSubject: string;
+  supportChannels: SupportChannels[];
+};
 
 /*
 A modal component that displays contact options at the bottom of the screen.
@@ -43,15 +44,15 @@ const ContactModal: React.FC<Props> = ({
   messageSubject,
   supportChannels,
 }) => {
-  const { LL } = useI18nContext()
-  const styles = useStyles()
+  const { LL } = useI18nContext();
+  const styles = useStyles();
   const {
     theme: { colors },
-  } = useTheme()
+  } = useTheme();
 
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
-  const betaActivated = useBetaQuery().data?.beta ?? false
+  const betaActivated = useBetaQuery().data?.beta ?? false;
 
   const contactOptionList = [
     {
@@ -59,8 +60,8 @@ const ContactModal: React.FC<Props> = ({
       name: LL.support.chatbot(),
       icon: <Icon name={"chatbubbles-outline"} type="ionicon" />,
       action: () => {
-        navigation.navigate("chatbot")
-        toggleModal()
+        navigation.navigate("chatbot");
+        toggleModal();
       },
     },
     {
@@ -69,7 +70,7 @@ const ContactModal: React.FC<Props> = ({
       icon: <Icon name={"alert-circle-outline"} type="ionicon" />,
       action: () => {
         // TODO: extract in Instance
-        Linking.openURL(`https://status.puravidabitcoin.io/`)
+        Linking.openURL(`https://status.puravidabitcoin.io/`);
       },
     },
     // {
@@ -86,8 +87,8 @@ const ContactModal: React.FC<Props> = ({
       name: LL.support.telegram(),
       icon: <TelegramOutline width={24} height={24} fill={colors.black} />,
       action: () => {
-        Linking.openURL(`https://t.me/pvbtc`)
-        toggleModal()
+        Linking.openURL(`https://t.me/puravidabitcoin`);
+        toggleModal();
       },
     },
     // {
@@ -104,8 +105,8 @@ const ContactModal: React.FC<Props> = ({
       name: LL.support.whatsapp(),
       icon: <Icon name={"logo-whatsapp"} type="ionicon" color={colors.black} />,
       action: () => {
-        openWhatsAppAction(messageBody)
-        toggleModal()
+        openWhatsAppAction(messageBody);
+        toggleModal();
       },
     },
     {
@@ -114,14 +115,16 @@ const ContactModal: React.FC<Props> = ({
       icon: <Icon name={"mail-outline"} type="ionicon" color={colors.black} />,
       action: () => {
         Linking.openURL(
-          `mailto:${CONTACT_EMAIL_ADDRESS}?subject=${encodeURIComponent(
-            messageSubject,
-          )}&body=${encodeURIComponent(messageBody)}`,
-        )
-        toggleModal()
+          `mailto:${CONTACT_EMAIL_ADDRESS}?subject=${
+            encodeURIComponent(
+              messageSubject,
+            )
+          }&body=${encodeURIComponent(messageBody)}`,
+        );
+        toggleModal();
       },
     },
-  ]
+  ];
 
   return (
     <ReactNativeModal
@@ -133,7 +136,9 @@ const ContactModal: React.FC<Props> = ({
     >
       {contactOptionList
         .filter((item) => supportChannels.includes(item.id))
-        .filter((item) => (item.id === SupportChannels.Chatbot ? betaActivated : true))
+        .filter((
+          item,
+        ) => (item.id === SupportChannels.Chatbot ? betaActivated : true))
         .map((item) => {
           return (
             <ListItem
@@ -144,21 +149,23 @@ const ContactModal: React.FC<Props> = ({
             >
               {item.icon}
               <ListItem.Content>
-                <ListItem.Title style={styles.listItemTitle}>{item.name}</ListItem.Title>
+                <ListItem.Title style={styles.listItemTitle}>
+                  {item.name}
+                </ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron name={"chevron-forward"} type="ionicon" />
             </ListItem>
-          )
+          );
         })}
     </ReactNativeModal>
-  )
-}
+  );
+};
 
-export default ContactModal
+export default ContactModal;
 
 export const openWhatsAppAction = (message: string) => {
-  openWhatsApp(WHATSAPP_CONTACT_NUMBER, message)
-}
+  openWhatsApp(WHATSAPP_CONTACT_NUMBER, message);
+};
 
 const useStyles = makeStyles(({ colors }) => ({
   modal: {
@@ -175,4 +182,4 @@ const useStyles = makeStyles(({ colors }) => ({
   icons: {
     color: colors.black,
   },
-}))
+}));
