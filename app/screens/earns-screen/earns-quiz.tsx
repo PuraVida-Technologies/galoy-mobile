@@ -1,68 +1,81 @@
 /* eslint-disable react-native/no-inline-styles */
-import { Button } from "@rneui/base"
 import * as React from "react"
 import { useEffect, useState } from "react"
-import { StyleSheet, Text, View } from "react-native"
-import { ScrollView, TouchableWithoutFeedback } from "react-native-gesture-handler"
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  TouchableWithoutFeedback,
+  Pressable,
+} from "react-native"
+import { ScrollView } from "react-native-gesture-handler"
 import Modal from "react-native-modal"
 import { SafeAreaView } from "react-native-safe-area-context"
 import Icon from "react-native-vector-icons/Ionicons"
 
 import { gql } from "@apollo/client"
-import { useQuizCompletedMutation } from "@app/graphql/generated"
+import { useQuizClaimMutation } from "@app/graphql/generated"
 import { getErrorMessages } from "@app/graphql/utils"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { toastShow } from "@app/utils/toast"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
+import { Button } from "@rneui/base"
+import { makeStyles, useTheme } from "@rneui/themed"
+
 import { CloseCross } from "../../components/close-cross"
 import { Screen } from "../../components/screen"
 import type { RootStackParamList } from "../../navigation/stack-param-lists"
-import { palette } from "../../theme/palette"
 import { shuffle } from "../../utils/helper"
 import { sleep } from "../../utils/sleep"
+import { useQuizServer } from "../earns-map-screen/use-quiz-server"
 import { SVGs } from "./earn-svg-factory"
 import { augmentCardWithGqlData, getQuizQuestionsContent } from "./earns-utils"
-import { useQuizServer } from "../earns-map-screen/use-quiz-server"
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors }) => ({
+  answersViewInner: {
+    rowGap: 20,
+  },
   answersView: {
-    flex: 1,
-    marginHorizontal: 48,
-    marginTop: 6,
+    padding: 20,
+  },
+  scrollViewStyle: {
+    width: "100%",
   },
 
   bottomContainer: {
     alignItems: "center",
-    backgroundColor: palette.white,
+    backgroundColor: colors._white,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingTop: 0,
-    shadowColor: palette.midGrey,
+    shadowColor: colors.grey2,
     shadowOpacity: 5,
     shadowRadius: 8,
   },
 
   buttonStyle: {
-    backgroundColor: palette.lightBlue,
+    backgroundColor: colors._lightBlue,
     borderRadius: 32,
     width: 224,
   },
 
   completedTitleStyle: {
-    color: palette.lightBlue,
+    color: colors._lightBlue,
     fontSize: 18,
     fontWeight: "bold",
   },
 
   correctAnswerText: {
-    color: palette.green,
+    color: colors._green,
+    flex: 1,
     fontSize: 16,
   },
 
   incorrectAnswerText: {
-    color: palette.red,
+    color: colors.error,
     fontSize: 16,
+    flex: 1,
   },
 
   keepDiggingContainerStyle: {
@@ -75,12 +88,11 @@ const styles = StyleSheet.create({
 
   modalBackground: {
     alignItems: "center",
-    backgroundColor: palette.white,
+    backgroundColor: colors._white,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     justifyContent: "flex-end",
-    minHeight: 630,
-    // flexGrow: 1,
+    height: 630,
   },
 
   quizButtonContainerStyle: {
@@ -88,41 +100,43 @@ const styles = StyleSheet.create({
     width: 48,
   },
 
+  buttonRow: {
+    flexDirection: "row",
+    columnGap: 20,
+    alignItems: "center",
+  },
+
   quizButtonStyle: {
-    backgroundColor: palette.lightBlue,
-    borderRadius: 32,
-    padding: 12,
+    backgroundColor: colors._lightBlue,
+    height: 50,
+    width: 50,
+    borderRadius: 50,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   quizButtonTitleStyle: {
-    color: palette.white,
+    color: colors._white,
     fontWeight: "bold",
+    fontSize: 16,
   },
 
   quizCorrectButtonStyle: {
-    backgroundColor: palette.green,
-    borderRadius: 32,
-    padding: 12,
-  },
-
-  quizTextAnswer: {
-    color: palette.darkGrey,
-    textAlign: "left",
-    // fontWeight: "bold"
-    // fontSize: 18,
-    width: "100%",
-  },
-
-  quizTextContainerStyle: {
-    alignItems: "flex-start",
-    marginLeft: 12,
-    marginRight: 36,
+    backgroundColor: colors._green,
+    height: 50,
+    width: 50,
+    borderRadius: 50,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   quizWrongButtonStyle: {
-    backgroundColor: palette.red,
-    borderRadius: 32,
-    padding: 12,
+    backgroundColor: colors.error,
+    height: 50,
+    width: 50,
+    borderRadius: 50,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   svgContainer: {
@@ -132,6 +146,13 @@ const styles = StyleSheet.create({
 
   text: {
     fontSize: 24,
+    color: colors._black,
+  },
+
+  answerChoiceText: {
+    fontSize: 20,
+    flex: 1,
+    color: colors._black,
   },
 
   textContainer: {
@@ -140,7 +161,7 @@ const styles = StyleSheet.create({
   },
 
   textEarn: {
-    color: palette.darkGrey,
+    color: colors._darkGrey,
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -149,14 +170,20 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     paddingBottom: 12,
+    color: colors._black,
   },
 
   titleStyle: {
-    color: palette.white,
+    color: colors._white,
     fontSize: 18,
     fontWeight: "bold",
   },
-})
+
+  buttonRowWithFeedback: {
+    rowGap: 10,
+    flex: 1,
+  },
+}))
 
 const mappingLetter = { 0: "A", 1: "B", 2: "C" }
 
@@ -165,20 +192,27 @@ type Props = {
 }
 
 gql`
-  mutation quizCompleted($input: QuizCompletedInput!) {
-    quizCompleted(input: $input) {
+  mutation quizClaim($input: QuizClaimInput!) {
+    quizClaim(input: $input) {
       errors {
         message
       }
-      quiz {
+      quizzes {
         id
+        amount
         completed
+        notBefore
       }
     }
   }
 `
 
 export const EarnQuiz = ({ route }: Props) => {
+  const {
+    theme: { colors },
+  } = useTheme()
+  const styles = useStyles()
+
   const { LL } = useI18nContext()
   const quizQuestionsContent = getQuizQuestionsContent({ LL })
   const navigation = useNavigation<StackNavigationProp<RootStackParamList, "earnsQuiz">>()
@@ -207,7 +241,7 @@ export const EarnQuiz = ({ route }: Props) => {
   const card = augmentCardWithGqlData({ card: cardNoMetadata, quizServerData })
   const { title, text, amount, answers, feedback, question, completed } = card
 
-  const [quizCompleted] = useQuizCompletedMutation()
+  const [quizClaim, { loading: quizClaimLoading }] = useQuizClaimMutation()
   const [quizVisible, setQuizVisible] = useState(false)
   const [recordedAnswer, setRecordedAnswer] = useState<number[]>([])
 
@@ -219,19 +253,21 @@ export const EarnQuiz = ({ route }: Props) => {
 
   useEffect(() => {
     ;(async () => {
-      if (recordedAnswer.indexOf(0) !== -1) {
-        const { data } = await quizCompleted({
+      if (recordedAnswer.indexOf(0) !== -1 && !completed && !quizClaimLoading) {
+        const { data } = await quizClaim({
           variables: { input: { id } },
         })
-        if (data?.quizCompleted?.errors?.length) {
+
+        if (data?.quizClaim?.errors?.length) {
           // FIXME: message is hidden by the modal
           toastShow({
-            message: getErrorMessages(data.quizCompleted.errors),
+            message: getErrorMessages(data.quizClaim.errors),
+            LL,
           })
         }
       }
     })()
-  }, [recordedAnswer, id, quizCompleted])
+  }, [recordedAnswer, id, quizClaim, LL, completed, quizClaimLoading])
 
   const close = async () => {
     if (quizVisible) {
@@ -247,36 +283,22 @@ export const EarnQuiz = ({ route }: Props) => {
     return recordedAnswer.indexOf(i) === -1
       ? styles.quizButtonStyle
       : i === 0
-      ? styles.quizCorrectButtonStyle
-      : styles.quizWrongButtonStyle
+        ? styles.quizCorrectButtonStyle
+        : styles.quizWrongButtonStyle
   }
 
   let j: ZeroTo2 = 0
   permutation.forEach((i) => {
     answersShuffled.push(
-      <View key={i} style={{ width: "100%" }}>
-        <View style={{ flexDirection: "row", alignItems: "center", width: "100%" }}>
-          <Button
-            title={mappingLetter[j]}
-            buttonStyle={buttonStyleHelper(i)}
-            disabledStyle={buttonStyleHelper(i)}
-            titleStyle={styles.quizButtonTitleStyle}
-            disabledTitleStyle={styles.quizButtonTitleStyle}
-            containerStyle={styles.quizButtonContainerStyle}
-            onPress={() => addRecordedAnswer(i)}
-            disabled={recordedAnswer.indexOf(0) !== -1}
-          />
-          <Button
-            title={answers[i]}
-            titleStyle={styles.quizTextAnswer}
-            disabledTitleStyle={styles.quizTextAnswer}
-            containerStyle={styles.quizTextContainerStyle}
-            // disabledStyle={styles.quizTextContainerStyle}
-            type="clear"
-            onPress={() => addRecordedAnswer(i)}
-            disabled={recordedAnswer.indexOf(0) !== -1}
-          />
-        </View>
+      <View key={i} style={styles.buttonRowWithFeedback}>
+        <TouchableOpacity onPress={() => addRecordedAnswer(i)}>
+          <View style={styles.buttonRow}>
+            <View style={buttonStyleHelper(i)}>
+              <Text style={styles.quizButtonTitleStyle}>{mappingLetter[j]}</Text>
+            </View>
+            <Text style={styles.answerChoiceText}>{answers[i]}</Text>
+          </View>
+        </TouchableOpacity>
         {recordedAnswer.length > 0 &&
         recordedAnswer.indexOf(i) === recordedAnswer.length - 1 ? (
           <Text style={i === 0 ? styles.correctAnswerText : styles.incorrectAnswerText}>
@@ -289,7 +311,7 @@ export const EarnQuiz = ({ route }: Props) => {
   })
 
   return (
-    <Screen backgroundColor={palette.lighterGrey} unsafe>
+    <Screen backgroundColor={colors._lighterGrey} unsafe>
       <Modal
         style={{ marginHorizontal: 0, marginBottom: 0, flexGrow: 1 }}
         isVisible={quizVisible}
@@ -307,29 +329,32 @@ export const EarnQuiz = ({ route }: Props) => {
         <View style={styles.modalBackground}>
           <View style={{ height: 14 }}>
             <Icon
-              name="ios-remove"
+              name="remove"
               size={72}
-              color={palette.lightGrey}
+              color={colors._lightGrey}
               style={{ height: 40, top: -30 }}
             />
           </View>
-          <View style={{ flex: 1 }}>
-            <View style={styles.answersView}>
+          <ScrollView
+            style={styles.scrollViewStyle}
+            contentContainerStyle={styles.answersView}
+          >
+            <Pressable style={styles.answersViewInner}>
               <Text style={styles.title}>{question ?? title}</Text>
               {answersShuffled}
-            </View>
-            <View>
-              {recordedAnswer.indexOf(0) === -1 ? null : (
-                <Button
-                  title={LL.EarnScreen.keepDigging()}
-                  type="outline"
-                  onPress={async () => close()}
-                  containerStyle={styles.keepDiggingContainerStyle}
-                  buttonStyle={styles.buttonStyle}
-                  titleStyle={styles.titleStyle}
-                />
-              )}
-            </View>
+            </Pressable>
+          </ScrollView>
+          <View>
+            {recordedAnswer.indexOf(0) === -1 ? null : (
+              <Button
+                title={LL.EarnScreen.keepDigging()}
+                type="outline"
+                onPress={async () => close()}
+                containerStyle={styles.keepDiggingContainerStyle}
+                buttonStyle={styles.buttonStyle}
+                titleStyle={styles.titleStyle}
+              />
+            )}
           </View>
         </View>
       </Modal>
@@ -342,7 +367,7 @@ export const EarnQuiz = ({ route }: Props) => {
           </View>
         </ScrollView>
       </SafeAreaView>
-      <CloseCross onPress={async () => close()} color={palette.darkGrey} />
+      <CloseCross onPress={async () => close()} color={colors._darkGrey} />
       <SafeAreaView style={styles.bottomContainer}>
         <View style={{ paddingVertical: 12 }}>
           {(completed && (

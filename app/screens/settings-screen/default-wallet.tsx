@@ -1,42 +1,20 @@
+import * as React from "react"
+import { View } from "react-native"
+
 import { gql } from "@apollo/client"
+import { GaloyInfo } from "@app/components/atomic/galoy-info"
+import { MenuSelect, MenuSelectItem } from "@app/components/menu-select"
 import {
   useAccountUpdateDefaultWalletIdMutation,
   useSetDefaultWalletScreenQuery,
 } from "@app/graphql/generated"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
+import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { ListItem } from "@rneui/base"
-import { Text, makeStyles, useTheme } from "@rneui/themed"
-import * as React from "react"
-import { ActivityIndicator, View } from "react-native"
-import Icon from "react-native-vector-icons/Ionicons"
+import { Text, makeStyles } from "@rneui/themed"
+
 import { Screen } from "../../components/screen"
-import { palette } from "../../theme/palette"
 import { testProps } from "../../utils/testProps"
-import { GaloyIcon } from "@app/components/atomic/galoy-icon"
-
-const useStyles = makeStyles((theme) => ({
-  viewSelectedIcon: { width: 18 },
-
-  container: { backgroundColor: theme.colors.white },
-
-  text: {
-    color: theme.colors.darkGreyOrWhite,
-  },
-
-  textDark: {
-    color: theme.colors.white,
-  },
-
-  containerInfo: {
-    margin: 20,
-  },
-
-  iconStyle: {
-    marginBottom: 8,
-    flex: 1,
-  },
-}))
 
 gql`
   mutation accountUpdateDefaultWalletId($input: AccountUpdateDefaultWalletIdInput!) {
@@ -57,11 +35,10 @@ gql`
       defaultAccount {
         id
         defaultWalletId
-        btcWallet @client {
+        wallets {
           id
-        }
-        usdWallet @client {
-          id
+          balance
+          walletCurrency
         }
       }
     }
@@ -72,17 +49,20 @@ export const DefaultWalletScreen: React.FC = () => {
   const { LL } = useI18nContext()
   const styles = useStyles()
   const isAuthed = useIsAuthed()
-  const { theme } = useTheme()
 
-  const [newDefaultWallet, setNewDefaultWallet] = React.useState("")
+  const [newDefaultWalletId, setNewDefaultWalletId] = React.useState("")
 
   const { data } = useSetDefaultWalletScreenQuery({
     fetchPolicy: "cache-first",
     skip: !isAuthed,
   })
 
-  const btcWalletId = data?.me?.defaultAccount?.btcWallet?.id
-  const usdWalletId = data?.me?.defaultAccount?.usdWallet?.id
+  const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
+  const usdWallet = getUsdWallet(data?.me?.defaultAccount?.wallets)
+
+  const btcWalletId = btcWallet?.id
+  const usdWalletId = usdWallet?.id
+
   const defaultWalletId = data?.me?.defaultAccount?.defaultWalletId
 
   const [accountUpdateDefaultWallet, { loading }] =
@@ -92,16 +72,17 @@ export const DefaultWalletScreen: React.FC = () => {
     return <Text>{"missing walletIds"}</Text>
   }
 
-  const handleSetDefaultWallet = (id: string) => {
+  const handleSetDefaultWallet = async (id: string) => {
+    if (loading) return
     if (id !== defaultWalletId) {
-      setNewDefaultWallet(id)
-      accountUpdateDefaultWallet({
+      await accountUpdateDefaultWallet({
         variables: {
           input: {
             walletId: id,
           },
         },
       })
+      setNewDefaultWalletId(id)
     }
   }
 
@@ -119,36 +100,25 @@ export const DefaultWalletScreen: React.FC = () => {
 
   return (
     <Screen preset="scroll">
-      {Wallets.map(({ name, id }) => (
-        <ListItem
-          key={id}
-          bottomDivider
-          containerStyle={styles.container}
-          onPress={() => handleSetDefaultWallet(id)}
-        >
-          <View style={styles.viewSelectedIcon}>
-            {newDefaultWallet === id && loading ? (
-              <ActivityIndicator />
-            ) : (
-              defaultWalletId === id && (
-                <Icon name="ios-checkmark-circle" size={18} color={palette.green} />
-              )
-            )}
-          </View>
-          <ListItem.Title {...testProps(name)} style={styles.text}>
+      <MenuSelect
+        value={newDefaultWalletId || defaultWalletId || ""}
+        onChange={handleSetDefaultWallet}
+      >
+        {Wallets.map(({ name, id }) => (
+          <MenuSelectItem key={id} value={id} {...testProps(name)}>
             {name}
-          </ListItem.Title>
-        </ListItem>
-      ))}
+          </MenuSelectItem>
+        ))}
+      </MenuSelect>
       <View style={styles.containerInfo}>
-        <GaloyIcon
-          style={styles.iconStyle}
-          name={"info"}
-          size={20}
-          color={theme.colors.primary}
-        />
-        <Text type="p1">{LL.DefaultWalletScreen.info()}</Text>
+        <GaloyInfo>{LL.DefaultWalletScreen.info()}</GaloyInfo>
       </View>
     </Screen>
   )
 }
+
+const useStyles = makeStyles(() => ({
+  containerInfo: {
+    margin: 20,
+  },
+}))

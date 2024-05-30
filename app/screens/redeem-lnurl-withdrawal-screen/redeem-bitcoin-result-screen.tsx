@@ -1,86 +1,26 @@
-import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import { palette } from "@app/theme"
-import { StackNavigationProp } from "@react-navigation/stack"
-import { Text } from "@rneui/base"
+import fetch from "cross-fetch"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { ActivityIndicator, View } from "react-native"
-import { PaymentRequest } from "../receive-bitcoin-screen/payment-requests/index.types"
 
+import { useApolloClient } from "@apollo/client"
+import { GaloyIcon } from "@app/components/atomic/galoy-icon"
+import { Screen } from "@app/components/screen"
 import {
   HomeAuthedDocument,
-  LnInvoice,
   useLnInvoiceCreateMutation,
   WalletCurrency,
 } from "@app/graphql/generated"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { logGeneratePaymentRequest } from "@app/utils/analytics"
-
-import { GaloyIcon } from "@app/components/atomic/galoy-icon"
-import fetch from "cross-fetch"
-import { testProps } from "../../utils/testProps"
-
-import { useApolloClient } from "@apollo/client"
 import { useLnUpdateHashPaid } from "@app/graphql/ln-update-context"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
+import { useI18nContext } from "@app/i18n/i18n-react"
+import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { RouteProp, useNavigation } from "@react-navigation/native"
-import { makeStyles } from "@rneui/themed"
-import { withMyLnUpdateSub } from "../receive-bitcoin-screen/my-ln-updates-sub"
-import { Screen } from "@app/components/screen"
+import { StackNavigationProp } from "@react-navigation/stack"
+import { makeStyles, Text, useTheme } from "@rneui/themed"
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 14,
-    marginLeft: 20,
-    marginRight: 20,
-  },
-  inputForm: {
-    marginVertical: 20,
-  },
-  currencyInputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 10,
-    marginTop: 10,
-    backgroundColor: palette.white,
-    borderRadius: 10,
-  },
-  infoText: {
-    color: palette.midGrey,
-    fontSize: 12,
-  },
-  withdrawableDescriptionText: {
-    color: palette.midGrey,
-    fontSize: 14,
-    textAlign: "center",
-  },
-  walletBalanceInput: {
-    color: theme.colors.lapisLazuliOrLightGrey,
-    fontSize: 20,
-    fontWeight: "600",
-  },
-  convertedAmountText: {
-    color: palette.coolGrey,
-    fontSize: 12,
-  },
-  currencyInput: {
-    flexDirection: "column",
-    flex: 1,
-  },
-  qr: {
-    alignItems: "center",
-  },
-  errorText: {
-    color: palette.red,
-    textAlign: "center",
-  },
-  contentContainer: {
-    backgroundColor: theme.colors.lighterGreyOrBlack,
-    padding: 20,
-    flexGrow: 1,
-  },
-}))
+import { testProps } from "../../utils/testProps"
+import { withMyLnUpdateSub } from "../receive-bitcoin-screen/my-ln-updates-sub"
+import { LnInvoiceNoSecret } from "../receive-bitcoin-screen/payment/index.types"
 
 type Prop = {
   route: RouteProp<RootStackParamList, "redeemBitcoinResult">
@@ -102,6 +42,9 @@ const RedeemBitcoinResultScreen: React.FC<Prop> = ({ route }) => {
   } = route.params
 
   const styles = useStyles()
+  const {
+    theme: { colors },
+  } = useTheme()
 
   const { formatDisplayAndWalletAmount } = useDisplayCurrency()
 
@@ -122,7 +65,7 @@ const RedeemBitcoinResultScreen: React.FC<Prop> = ({ route }) => {
 
   const [err, setErr] = useState("")
   const [lnServiceErrorReason, setLnServiceErrorReason] = useState("")
-  const [withdrawalInvoice, setInvoice] = useState<LnInvoice | null>(null)
+  const [withdrawalInvoice, setInvoice] = useState<LnInvoiceNoSecret | null>(null)
 
   const [memo] = useState(defaultDescription)
 
@@ -135,11 +78,11 @@ const RedeemBitcoinResultScreen: React.FC<Prop> = ({ route }) => {
     async (satAmount: number, memo: string) => {
       setInvoice(null)
       try {
-        logGeneratePaymentRequest({
-          paymentType: PaymentRequest.Lightning,
-          hasAmount: true,
-          receivingWallet: WalletCurrency.Btc,
-        })
+        // logGeneratePaymentRequest({
+        //   paymentType: PaymentRequest.Lightning,
+        //   hasAmount: true,
+        //   receivingWallet: WalletCurrency.Btc,
+        // })
         const { data } = await lnInvoiceCreate({
           variables: {
             input: { walletId: receivingWalletDescriptor.id, amount: satAmount, memo },
@@ -171,10 +114,13 @@ const RedeemBitcoinResultScreen: React.FC<Prop> = ({ route }) => {
   )
 
   const submitLNURLWithdrawRequest = useCallback(
-    async (generatedInvoice: LnInvoice) => {
-      const url = `${callback}${callback.includes("?") ? "&" : "?"}k1=${k1}&pr=${
-        generatedInvoice.paymentRequest
-      }`
+    async (generatedInvoice: LnInvoiceNoSecret) => {
+      const urlObject = new URL(callback)
+      const searchParams = urlObject.searchParams
+      searchParams.set("k1", k1)
+      searchParams.set("pr", generatedInvoice.paymentRequest)
+
+      const url = urlObject.toString()
 
       const result = await fetch(url)
 
@@ -247,32 +193,32 @@ const RedeemBitcoinResultScreen: React.FC<Prop> = ({ route }) => {
     if (err === "" && !invoicePaid) {
       return (
         <View style={styles.container}>
-          <ActivityIndicator size="large" color={palette.blue} />
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
       )
     }
     return null
-  }, [err, invoicePaid, styles])
+  }, [err, invoicePaid, styles, colors.primary])
 
   return (
     <Screen preset="scroll" style={styles.contentContainer}>
       <View style={[styles.inputForm, styles.container]}>
         {defaultDescription && (
-          <Text style={styles.withdrawableDescriptionText}>{defaultDescription}</Text>
+          <Text type={"p1"} style={styles.withdrawableDescriptionText}>
+            {defaultDescription}
+          </Text>
         )}
         <View style={styles.currencyInputContainer}>
-          <View style={styles.currencyInput}>
-            <Text style={styles.infoText}>
-              {LL.RedeemBitcoinScreen.redeemAmountFrom({
-                amountToRedeem: formatDisplayAndWalletAmount({
-                  primaryAmount: unitOfAccountAmount,
-                  walletAmount: settlementAmount,
-                  displayAmount,
-                }),
-                domain,
-              })}
-            </Text>
-          </View>
+          <Text>
+            {LL.RedeemBitcoinScreen.redeemAmountFrom({
+              amountToRedeem: formatDisplayAndWalletAmount({
+                primaryAmount: unitOfAccountAmount,
+                walletAmount: settlementAmount,
+                displayAmount,
+              }),
+              domain,
+            })}
+          </Text>
         </View>
 
         <View style={styles.qr}>
@@ -286,3 +232,36 @@ const RedeemBitcoinResultScreen: React.FC<Prop> = ({ route }) => {
 }
 
 export default withMyLnUpdateSub(RedeemBitcoinResultScreen)
+
+const useStyles = makeStyles(({ colors }) => ({
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 14,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  inputForm: {
+    marginVertical: 20,
+  },
+  currencyInputContainer: {
+    padding: 10,
+    marginTop: 10,
+    backgroundColor: colors.grey5,
+    borderRadius: 10,
+  },
+  withdrawableDescriptionText: {
+    textAlign: "center",
+  },
+  qr: {
+    alignItems: "center",
+  },
+  errorText: {
+    color: colors.error,
+    textAlign: "center",
+  },
+  contentContainer: {
+    padding: 20,
+    flexGrow: 1,
+  },
+}))

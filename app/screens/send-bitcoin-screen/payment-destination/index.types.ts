@@ -1,8 +1,11 @@
+import { LnUrlPayServiceResponse } from "lnurl-pay/dist/types/types"
+
 import {
   AccountDefaultWalletLazyQueryHookResult,
   Network,
   WalletCurrency,
 } from "@app/graphql/generated"
+import { WalletDescriptor } from "@app/types/wallets"
 import {
   IntraledgerPaymentDestination,
   LightningPaymentDestination,
@@ -10,10 +13,9 @@ import {
   OnchainPaymentDestination,
   ParsedPaymentDestination,
   PaymentType,
-} from "@galoymoney/client/dist/parsing-v2"
+} from "@galoymoney/client"
+
 import { ConvertMoneyAmount, PaymentDetail } from "../payment-details"
-import { WalletDescriptor } from "@app/types/wallets"
-import { LnUrlPayServiceResponse } from "lnurl-pay/dist/types/types"
 
 export type ParseDestinationResult = Destination | InvalidDestination
 
@@ -72,6 +74,7 @@ export const InvalidDestinationReason = {
   LnurlError: "LnurlError",
   UnknownLightning: "UnknownLightning",
   UnknownOnchain: "UnknownOnchain",
+  WrongDomain: "WrongDomain",
 } as const
 
 export type InvalidDestinationReason =

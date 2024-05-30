@@ -1,6 +1,6 @@
 import * as React from "react"
 import { StyleProp, Text, TouchableOpacity, ViewStyle } from "react-native"
-import { palette } from "@app/theme"
+import { palette } from "@app/modules/market-place/theme"
 import XSvg from "@app/modules/market-place/assets/svgs/x.svg"
 import { Row } from "../row"
 
@@ -11,12 +11,12 @@ export interface TagProps {
   onPress?: () => void
   disabled?: boolean
 
-  selectable?:boolean
-  isSelected?:boolean
+  selectable?: boolean
+  isSelected?: boolean
 }
 
 export const TagComponent: React.FC<TagProps> = React.memo(
-  ({ style, title, onClear, disabled, onPress,selectable,isSelected }: TagProps) => {
+  ({ style, title, onClear, disabled, onPress, selectable, isSelected }: TagProps) => {
     return (
       <TouchableOpacity
         activeOpacity={1}
@@ -27,15 +27,23 @@ export const TagComponent: React.FC<TagProps> = React.memo(
           containerStyle={[
             {
               paddingVertical: selectable ? 7 : 3,
-              paddingHorizontal: selectable?15:7,
-              borderRadius: selectable?20:12,
-              backgroundColor: selectable ? (isSelected ? palette.blue : 'white') : palette.blue,
+              paddingHorizontal: selectable ? 15 : 7,
+              borderRadius: selectable ? 20 : 12,
+              backgroundColor: selectable
+                ? isSelected
+                  ? palette.blue
+                  : "white"
+                : palette.blue,
             },
             style,
           ]}
           hc
         >
-          <Text style={{ color: selectable ? (isSelected ? 'white' : 'black') : "white" }}>{title}</Text>
+          <Text
+            style={{ color: selectable ? (isSelected ? "white" : "black") : "white" }}
+          >
+            {title}
+          </Text>
           {onClear ? (
             <TouchableOpacity
               onPress={() => onClear && onClear()}

@@ -1,128 +1,46 @@
-import React, { useCallback, useEffect, useMemo, useReducer } from "react"
-import { Text, TextInput, TouchableWithoutFeedback, View } from "react-native"
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from "react"
+import { ActivityIndicator, TouchableOpacity, View } from "react-native"
+import { FlatList } from "react-native-gesture-handler"
 import Icon from "react-native-vector-icons/Ionicons"
-import { Screen } from "@app/components/screen"
+
 import { gql } from "@apollo/client"
 import ScanIcon from "@app/assets/icons/scan.svg"
+import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
+import { Screen } from "@app/components/screen"
+import { LNURL_DOMAINS } from "@app/config"
 import {
+  UserContact,
   useAccountDefaultWalletLazyQuery,
   useRealtimePriceQuery,
   useSendBitcoinDestinationQuery,
 } from "@app/graphql/generated"
+import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import { palette } from "@app/theme"
 import { logParseDestinationResult } from "@app/utils/analytics"
 import { toastShow } from "@app/utils/toast"
-import { PaymentType } from "@galoymoney/client/dist/parsing-v2"
+import { PaymentType } from "@galoymoney/client"
 import Clipboard from "@react-native-clipboard/clipboard"
 import crashlytics from "@react-native-firebase/crashlytics"
-import { StackNavigationProp } from "@react-navigation/stack"
-
-import { LNURL_DOMAINS } from "@app/config"
-import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { RouteProp, useNavigation } from "@react-navigation/native"
-import { makeStyles } from "@rneui/themed"
+import { StackNavigationProp } from "@react-navigation/stack"
+import { SearchBar } from "@rneui/base"
+import { makeStyles, useTheme, Text, ListItem } from "@rneui/themed"
+
 import { testProps } from "../../utils/testProps"
 import { ConfirmDestinationModal } from "./confirm-destination-modal"
 import { DestinationInformation } from "./destination-information"
 import { parseDestination } from "./payment-destination"
-import { DestinationDirection } from "./payment-destination/index.types"
+import {
+  DestinationDirection,
+  InvalidDestinationReason,
+} from "./payment-destination/index.types"
 import {
   DestinationState,
   SendBitcoinActions,
   sendBitcoinDestinationReducer,
   SendBitcoinDestinationState,
 } from "./send-bitcoin-reducer"
-import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
-
-const usestyles = makeStyles((theme) => ({
-  backgroundColor: {
-    backgroundColor: theme.colors.lighterGreyOrBlack,
-  },
-  screenStyle: {
-    padding: 20,
-    flexGrow: 1,
-  },
-  scrollView: {
-    flexDirection: "column",
-    padding: 20,
-    flex: 1,
-    backgroundColor: theme.colors.lighterGreyOrBlack,
-  },
-  contentContainer: {
-    flexGrow: 1,
-  },
-  errorContainer: {
-    margin: 20,
-  },
-  errorText: {
-    textAlign: "center",
-  },
-  sendBitcoinDestinationContainer: {
-    flex: 1,
-  },
-  fieldBackground: {
-    flexDirection: "row",
-    borderStyle: "solid",
-    overflow: "hidden",
-    backgroundColor: palette.white,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    height: 60,
-    marginBottom: 10,
-  },
-  enteringInputContainer: {},
-  errorInputContainer: {
-    borderColor: palette.red,
-    borderWidth: 1,
-  },
-  validInputContainer: {
-    borderColor: palette.green,
-    borderWidth: 1,
-  },
-  warningInputContainer: {
-    borderColor: palette.orange,
-    borderWidth: 1,
-  },
-  buttonContainer: {
-    flex: 1,
-    justifyContent: "flex-end",
-  },
-  input: {
-    flex: 1,
-    paddingHorizontal: 12,
-  },
-  button: {
-    height: 50,
-    borderRadius: 10,
-  },
-  disabledButtonStyle: {
-    backgroundColor: palette.disabledButtonStyle,
-  },
-  disabledButtonTitleStyle: {
-    color: palette.lightBlue,
-    fontWeight: "600",
-  },
-  activeButtonStyle: {
-    backgroundColor: palette.lightBlue,
-  },
-  activeButtonTitleStyle: {
-    color: palette.white,
-    fontWeight: "bold",
-  },
-  fieldTitleText: {
-    fontWeight: "bold",
-    color: theme.colors.lapisLazuliOrLightGrey,
-    marginBottom: 5,
-  },
-  iconContainer: {
-    width: 50,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-}))
 
 gql`
   query sendBitcoinDestination {
@@ -140,12 +58,14 @@ gql`
       contacts {
         id
         username
+        alias
+        transactionsCount
       }
     }
   }
 
-  query accountDefaultWallet($username: Username!) {
-    accountDefaultWallet(username: $username) {
+  query accountDefaultWallet($walletCurrency: WalletCurrency, $username: Username!) {
+    accountDefaultWallet(walletCurrency: $walletCurrency, username: $username) {
       id
     }
   }
@@ -160,8 +80,43 @@ type Props = {
   route: RouteProp<RootStackParamList, "sendBitcoinDestination">
 }
 
+const wordMatchesContact = (searchWord: string, contact: UserContact): boolean => {
+  let contactPrettyNameMatchesSearchWord: boolean
+
+  const contactNameMatchesSearchWord = contact.username
+    .toLowerCase()
+    .includes(searchWord.toLowerCase())
+
+  if (contact.username) {
+    contactPrettyNameMatchesSearchWord = contact.username
+      .toLowerCase()
+      .includes(searchWord.toLowerCase())
+  } else {
+    contactPrettyNameMatchesSearchWord = false
+  }
+
+  return contactNameMatchesSearchWord || contactPrettyNameMatchesSearchWord
+}
+
+const matchCheck = (newSearchText: string, allContacts: UserContact[]): UserContact[] => {
+  if (newSearchText.length > 0) {
+    const searchWordArray = newSearchText
+      .split(" ")
+      .filter((text) => text.trim().length > 0)
+    const matchingContacts = allContacts.filter((contact) =>
+      searchWordArray.some((word) => wordMatchesContact(word, contact)),
+    )
+    return matchingContacts
+  }
+  // no match found
+  return allContacts
+}
+
 const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   const styles = usestyles()
+  const {
+    theme: { colors },
+  } = useTheme()
 
   const navigation =
     useNavigation<StackNavigationProp<RootStackParamList, "sendBitcoinDestination">>()
@@ -173,8 +128,8 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
   )
   const [goToNextScreenWhenValid, setGoToNextScreenWhenValid] = React.useState(false)
 
-  const { data } = useSendBitcoinDestinationQuery({
-    fetchPolicy: "cache-first",
+  const { loading, data } = useSendBitcoinDestinationQuery({
+    fetchPolicy: "cache-and-network",
     returnPartialData: true,
     skip: !isAuthed,
   })
@@ -185,8 +140,11 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     skip: !isAuthed,
   })
 
-  const wallets = data?.me?.defaultAccount.wallets
-  const bitcoinNetwork = data?.globals?.network
+  const wallets = useMemo(
+    () => data?.me?.defaultAccount.wallets,
+    [data?.me?.defaultAccount.wallets],
+  )
+  const bitcoinNetwork = useMemo(() => data?.globals?.network, [data?.globals?.network])
   const contacts = useMemo(() => data?.me?.contacts ?? [], [data?.me?.contacts])
 
   const { LL } = useI18nContext()
@@ -194,22 +152,108 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
     fetchPolicy: "no-cache",
   })
 
-  const validateDestination = useMemo(() => {
+  const [matchingContacts, setMatchingContacts] = useState<UserContact[]>([])
+
+  const allContacts: UserContact[] = useMemo(
+    () =>
+      (contacts.slice() ?? []).sort((a, b) => {
+        return b.transactionsCount - a.transactionsCount
+      }),
+    [contacts],
+  )
+
+  const [selectedId, setSelectedId] = useState("")
+
+  const handleSelection = (id: string) => {
+    if (selectedId === id) setSelectedId("")
+    else setSelectedId(id)
+  }
+
+  const reset = useCallback(() => {
+    dispatchDestinationStateAction({
+      type: "set-unparsed-destination",
+      payload: { unparsedDestination: "" },
+    })
+    setGoToNextScreenWhenValid(false)
+    setSelectedId("")
+    setMatchingContacts(allContacts)
+  }, [allContacts])
+
+  let ListEmptyContent: React.ReactNode
+
+  if (loading) {
+    ListEmptyContent = (
+      <View style={styles.activityIndicatorContainer}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    )
+  } else if (
+    // TODO: refactor: ideally this should come from destinationState.destination
+    // but currently this is not validated when the user is typing,
+    // only validated on paste, or when the user is pressing the send button
+    // so there is no way to dynamically know if this is a bitcoin or lightning or lnurl
+    // until a refactor is done
+    destinationState.unparsedDestination.startsWith("bc1") ||
+    destinationState.unparsedDestination.startsWith("tb1") ||
+    destinationState.unparsedDestination.startsWith("lnurl") ||
+    destinationState.unparsedDestination.startsWith("lightning:") ||
+    destinationState.unparsedDestination.startsWith("bitcoin:") ||
+    destinationState.unparsedDestination.startsWith("1") ||
+    destinationState.unparsedDestination.startsWith("3") ||
+    destinationState.unparsedDestination.startsWith("lnbc1") ||
+    // if the user is typing a lightning address
+    // ideally we should filter from the rules below contact from the same instance
+    // ie: test and test@blink.sv are the same user
+    // but anyhow, more refactor is needed for contacts to have extenral contacts
+    destinationState.unparsedDestination.includes("@")
+  ) {
+    ListEmptyContent = <></>
+  } else if (allContacts.length > 0) {
+    ListEmptyContent = (
+      <View style={styles.emptyListNoMatching}>
+        <Text style={styles.emptyListTitle}>{LL.PeopleScreen.noMatchingContacts()}</Text>
+      </View>
+    )
+  } else {
+    ListEmptyContent = (
+      <View style={styles.emptyListNoContacts}>
+        <Text
+          {...testProps(LL.PeopleScreen.noContactsTitle())}
+          style={styles.emptyListTitle}
+        >
+          {LL.PeopleScreen.noContactsTitle()}
+        </Text>
+        <Text style={styles.emptyListText}>{LL.PeopleScreen.noContactsYet()}</Text>
+      </View>
+    )
+  }
+
+  const updateMatchingContacts = useCallback(
+    (newSearchText: string) => {
+      const matching = matchCheck(newSearchText, allContacts)
+      setMatchingContacts(matching)
+    },
+    [allContacts],
+  )
+
+  const willInitiateValidation = React.useCallback(() => {
     if (!bitcoinNetwork || !wallets || !contacts) {
-      return null
+      return false
     }
 
-    return async (rawInput: string) => {
-      if (destinationState.destinationState !== "entering") {
+    dispatchDestinationStateAction({
+      type: SendBitcoinActions.SetValidating,
+      payload: {},
+    })
+    return true
+  }, [bitcoinNetwork, wallets, contacts])
+
+  const validateDestination = React.useCallback(
+    async (rawInput: string) => {
+      // extra check for typescript even though these were checked in willInitiateValidation
+      if (!bitcoinNetwork || !wallets || !contacts) {
         return
       }
-
-      dispatchDestinationStateAction({
-        type: "set-validating",
-        payload: {
-          unparsedDestination: rawInput,
-        },
-      })
 
       const destination = await parseDestination({
         rawInput,
@@ -221,13 +265,25 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
       logParseDestinationResult(destination)
 
       if (destination.valid === false) {
-        return dispatchDestinationStateAction({
+        if (destination.invalidReason === InvalidDestinationReason.SelfPayment) {
+          dispatchDestinationStateAction({
+            type: SendBitcoinActions.SetUnparsedDestination,
+            payload: {
+              unparsedDestination: rawInput,
+            },
+          })
+          navigation.navigate("conversionDetails")
+          return
+        }
+
+        dispatchDestinationStateAction({
           type: SendBitcoinActions.SetInvalid,
           payload: {
             invalidDestination: destination,
             unparsedDestination: rawInput,
           },
         })
+        return
       }
 
       if (
@@ -239,47 +295,52 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
             .map((contact) => contact.username.toLowerCase())
             .includes(destination.validDestination.handle.toLowerCase())
         ) {
-          return dispatchDestinationStateAction({
-            type: SendBitcoinActions.SetRequiresConfirmation,
+          dispatchDestinationStateAction({
+            type: SendBitcoinActions.SetRequiresUsernameConfirmation,
             payload: {
               validDestination: destination,
               unparsedDestination: rawInput,
-              confirmationType: {
+              confirmationUsernameType: {
                 type: "new-username",
                 username: destination.validDestination.handle,
               },
             },
           })
+          return
         }
       }
-
-      return dispatchDestinationStateAction({
+      dispatchDestinationStateAction({
         type: SendBitcoinActions.SetValid,
         payload: {
           validDestination: destination,
           unparsedDestination: rawInput,
         },
       })
-    }
-  }, [
-    bitcoinNetwork,
-    wallets,
-    contacts,
-    destinationState.destinationState,
-    accountDefaultWalletQuery,
-    dispatchDestinationStateAction,
-  ])
+    },
+    [
+      navigation,
+      accountDefaultWalletQuery,
+      dispatchDestinationStateAction,
+      bitcoinNetwork,
+      wallets,
+      contacts,
+    ],
+  )
 
   const handleChangeText = useCallback(
     (newDestination: string) => {
       dispatchDestinationStateAction({
-        type: "set-unparsed-destination",
+        type: SendBitcoinActions.SetUnparsedDestination,
         payload: { unparsedDestination: newDestination },
       })
       setGoToNextScreenWhenValid(false)
     },
     [dispatchDestinationStateAction, setGoToNextScreenWhenValid],
   )
+
+  useEffect(() => {
+    setMatchingContacts(allContacts)
+  }, [allContacts])
 
   useEffect(() => {
     if (
@@ -289,152 +350,215 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
       return
     }
 
-    if (destinationState.destination.destinationDirection === DestinationDirection.Send) {
+    if (
+      destinationState?.destination?.destinationDirection === DestinationDirection.Send
+    ) {
       // go to send bitcoin details screen
       setGoToNextScreenWhenValid(false)
-      return navigation.navigate("sendBitcoinDetails", {
+      navigation.navigate("sendBitcoinDetails", {
         paymentDestination: destinationState.destination,
       })
+      return
     }
 
     if (
-      destinationState.destination.destinationDirection === DestinationDirection.Receive
+      destinationState?.destination?.destinationDirection === DestinationDirection.Receive
     ) {
       // go to redeem bitcoin screen
       setGoToNextScreenWhenValid(false)
-      return navigation.navigate("redeemBitcoinDetail", {
+      navigation.navigate("redeemBitcoinDetail", {
         receiveDestination: destinationState.destination,
       })
     }
   }, [destinationState, goToNextScreenWhenValid, navigation, setGoToNextScreenWhenValid])
 
-  const initiateGoToNextScreen =
-    validateDestination &&
-    (async () => {
-      validateDestination(destinationState.unparsedDestination)
-      setGoToNextScreenWhenValid(true)
-    })
+  // setTimeout here allows for the main JS thread to update the UI before the long validateDestination call
+  const waitAndValidateDestination = React.useCallback(
+    (input: string) => {
+      setTimeout(() => validateDestination(input), 0)
+    },
+    [validateDestination],
+  )
+
+  const initiateGoToNextScreen = React.useCallback(
+    async (input: string) => {
+      if (willInitiateValidation()) {
+        setGoToNextScreenWhenValid(true)
+        waitAndValidateDestination(input)
+      }
+    },
+    [willInitiateValidation, waitAndValidateDestination],
+  )
+
+  useEffect(() => {
+    if (route.params?.payment) {
+      handleChangeText(route.params?.payment)
+      initiateGoToNextScreen(route.params?.payment)
+    }
+  }, [route.params?.payment, initiateGoToNextScreen, handleChangeText])
 
   useEffect(() => {
     // If we scan a QR code encoded with a payment url for a specific user e.g. https://{domain}/{username}
     // then we want to detect the username as the destination
-    if (route.params?.payment) {
-      handleChangeText(route.params?.payment)
-    }
-  }, [route.params?.payment, handleChangeText])
-
-  useEffect(() => {
     if (route.params?.username) {
       handleChangeText(route.params?.username)
     }
   }, [route.params?.username, handleChangeText])
 
-  let inputContainerStyle
-  switch (destinationState.destinationState) {
-    case "entering":
-    case "validating":
-      inputContainerStyle = styles.enteringInputContainer
-      break
-    case "invalid":
-      inputContainerStyle = styles.errorInputContainer
-      break
-    case "valid":
-      if (!destinationState.confirmationType) {
-        inputContainerStyle = styles.validInputContainer
-        break
+  const handlePaste = async () => {
+    setSelectedId("")
+    try {
+      const clipboard = await Clipboard.getString()
+      updateMatchingContacts(clipboard)
+      dispatchDestinationStateAction({
+        type: SendBitcoinActions.SetUnparsedPastedDestination,
+        payload: {
+          unparsedDestination: clipboard,
+        },
+      })
+      if (willInitiateValidation()) {
+        waitAndValidateDestination(clipboard)
       }
-      inputContainerStyle = styles.warningInputContainer
-      break
-    case "requires-confirmation":
-      inputContainerStyle = styles.warningInputContainer
+    } catch (err) {
+      if (err instanceof Error) {
+        crashlytics().recordError(err)
+      }
+      toastShow({
+        type: "error",
+        message: (translations) =>
+          translations.SendBitcoinDestinationScreen.clipboardError(),
+        LL,
+      })
+    }
   }
 
+  const handleContactPress = (item: UserContact) => {
+    handleSelection(item.id)
+    dispatchDestinationStateAction({
+      type: SendBitcoinActions.SetUnparsedDestination,
+      payload: { unparsedDestination: item.username },
+    })
+    initiateGoToNextScreen(item.username)
+  }
+
+  const handleScanPress = () => {
+    setSelectedId("")
+    dispatchDestinationStateAction({
+      type: SendBitcoinActions.SetUnparsedDestination,
+      payload: { unparsedDestination: "" },
+    })
+    navigation.navigate("scanningQRCode")
+  }
+
+  const inputContainerStyle = React.useMemo(() => {
+    switch (destinationState.destinationState) {
+      case DestinationState.Validating:
+        return styles.enteringInputContainer
+      case DestinationState.Invalid:
+        return styles.errorInputContainer
+      case DestinationState.RequiresUsernameConfirmation:
+        return styles.warningInputContainer
+      case DestinationState.Valid:
+        if (!destinationState.confirmationUsernameType) {
+          return styles.validInputContainer
+        }
+        return styles.warningInputContainer
+      default:
+        return {}
+    }
+  }, [
+    destinationState.destinationState,
+    destinationState.confirmationUsernameType,
+    styles,
+  ])
+
   return (
-    <Screen
-      preset="scroll"
-      backgroundColor={styles.backgroundColor.backgroundColor}
-      style={styles.screenStyle}
-      keyboardOffset="navigationHeader"
-      keyboardShouldPersistTaps="handled"
-    >
+    <Screen keyboardOffset="navigationHeader" keyboardShouldPersistTaps="handled">
       <ConfirmDestinationModal
         destinationState={destinationState}
         dispatchDestinationStateAction={dispatchDestinationStateAction}
       />
       <View style={styles.sendBitcoinDestinationContainer}>
-        <Text style={styles.fieldTitleText}>{LL.SendBitcoinScreen.destination()}</Text>
+        <Text
+          {...testProps(LL.SendBitcoinScreen.destination())}
+          style={styles.fieldTitleText}
+        >
+          {LL.SendBitcoinScreen.destination()}
+        </Text>
 
         <View style={[styles.fieldBackground, inputContainerStyle]}>
-          <TextInput
-            {...testProps(LL.SendBitcoinScreen.input())}
-            style={styles.input}
-            placeholder={LL.SendBitcoinScreen.input()}
-            onChangeText={handleChangeText}
+          <SearchBar
+            {...testProps(LL.SendBitcoinScreen.placeholder())}
+            placeholder={LL.SendBitcoinScreen.placeholder()}
             value={destinationState.unparsedDestination}
+            onChangeText={(text) => {
+              handleChangeText(text)
+              updateMatchingContacts(text)
+            }}
             onSubmitEditing={() =>
-              validateDestination &&
-              validateDestination(destinationState.unparsedDestination)
+              willInitiateValidation() &&
+              waitAndValidateDestination(destinationState.unparsedDestination)
             }
-            selectTextOnFocus
+            platform="default"
+            showLoading={false}
+            containerStyle={styles.searchBarContainer}
+            inputContainerStyle={styles.searchBarInputContainerStyle}
+            inputStyle={styles.searchBarText}
+            searchIcon={<></>}
             autoCapitalize="none"
             autoCorrect={false}
+            clearIcon={
+              <Icon name="close" size={24} onPress={reset} color={styles.icon.color} />
+            }
           />
-          <TouchableWithoutFeedback onPress={() => navigation.navigate("scanningQRCode")}>
+          <TouchableOpacity onPress={handleScanPress}>
             <View style={styles.iconContainer}>
-              <ScanIcon />
+              <ScanIcon fill={colors.primary} />
             </View>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback
-            onPress={async () => {
-              try {
-                const clipboard = await Clipboard.getString()
-                dispatchDestinationStateAction({
-                  type: "set-unparsed-destination",
-                  payload: {
-                    unparsedDestination: clipboard,
-                  },
-                })
-                validateDestination && (await validateDestination(clipboard))
-              } catch (err) {
-                if (err instanceof Error) {
-                  crashlytics().recordError(err)
-                }
-                toastShow({
-                  type: "error",
-                  message: (translations) =>
-                    translations.SendBitcoinDestinationScreen.clipboardError(),
-                  currentTranslation: LL,
-                })
-              }
-            }}
-          >
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handlePaste}>
             <View style={styles.iconContainer}>
-              {/* we could Paste from "FontAwesome" but as svg*/}
-              <Icon
-                name="ios-clipboard-outline"
-                color={palette.primaryButtonColor}
-                size={22}
-              />
+              <Icon name="clipboard-outline" color={colors.primary} size={22} />
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
         </View>
         <DestinationInformation destinationState={destinationState} />
+        <FlatList
+          style={styles.flatList}
+          contentContainerStyle={styles.flatListContainer}
+          data={matchingContacts}
+          extraData={selectedId}
+          ListEmptyComponent={ListEmptyContent}
+          renderItem={({ item }) => (
+            <ListItem
+              key={item.username}
+              style={styles.item}
+              containerStyle={
+                item.id === selectedId ? styles.selectedContainer : styles.itemContainer
+              }
+              onPress={() => handleContactPress(item)}
+            >
+              <Icon name={"person-outline"} size={24} color={colors.primary} />
+              <ListItem.Content>
+                <ListItem.Title style={styles.itemText}>{item.username}</ListItem.Title>
+              </ListItem.Content>
+            </ListItem>
+          )}
+          keyExtractor={(item) => item.username}
+        />
         <View style={styles.buttonContainer}>
           <GaloyPrimaryButton
-            {...testProps(LL.common.next())}
             title={
               destinationState.unparsedDestination
                 ? LL.common.next()
                 : LL.SendBitcoinScreen.destinationIsRequired()
             }
-            loading={destinationState.destinationState === "validating"}
+            loading={destinationState.destinationState === DestinationState.Validating}
             disabled={
-              destinationState.destinationState === "validating" ||
-              destinationState.destinationState === "invalid" ||
-              !destinationState.unparsedDestination ||
-              !initiateGoToNextScreen
+              destinationState.destinationState === DestinationState.Invalid ||
+              !destinationState.unparsedDestination
             }
-            onPress={initiateGoToNextScreen || undefined}
+            onPress={() => initiateGoToNextScreen(destinationState.unparsedDestination)}
           />
         </View>
       </View>
@@ -443,3 +567,116 @@ const SendBitcoinDestinationScreen: React.FC<Props> = ({ route }) => {
 }
 
 export default SendBitcoinDestinationScreen
+
+const usestyles = makeStyles(({ colors }) => ({
+  sendBitcoinDestinationContainer: {
+    padding: 20,
+    flex: 1,
+  },
+  fieldBackground: {
+    flexDirection: "row",
+    borderStyle: "solid",
+    overflow: "hidden",
+    backgroundColor: colors.grey5,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 60,
+    borderWidth: 1,
+    borderColor: "transparent",
+  },
+  enteringInputContainer: {},
+  errorInputContainer: {
+    borderColor: colors.error,
+    borderWidth: 1,
+  },
+  validInputContainer: {
+    borderColor: colors._green,
+    borderWidth: 1,
+  },
+  warningInputContainer: {
+    borderColor: colors.warning,
+    borderWidth: 1,
+  },
+  buttonContainer: {
+    marginTop: 26,
+    flex: 0,
+    justifyContent: "flex-end",
+  },
+  input: {
+    flex: 1,
+    paddingHorizontal: 12,
+    color: colors.black,
+  },
+  fieldTitleText: {
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  iconContainer: {
+    width: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  searchBarContainer: {
+    flex: 1,
+    backgroundColor: colors.grey5,
+    borderBottomColor: colors.grey5,
+    borderTopColor: colors.grey5,
+    padding: 0,
+  },
+  searchBarInputContainerStyle: {
+    backgroundColor: colors.grey5,
+  },
+  searchBarText: {
+    color: colors.black,
+    textDecorationLine: "none",
+  },
+  icon: {
+    color: colors.primary,
+  },
+  activityIndicatorContainer: {
+    alignItems: "center",
+    flex: 1,
+    justifyContent: "center",
+  },
+  emptyListNoContacts: {
+    marginHorizontal: 12,
+    marginTop: 32,
+  },
+  emptyListNoMatching: {
+    marginHorizontal: 26,
+    marginTop: 8,
+  },
+  emptyListText: {
+    fontSize: 18,
+    marginTop: 30,
+    textAlign: "center",
+    color: colors.black,
+  },
+  emptyListTitle: {
+    color: colors.warning,
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  flatList: {
+    flex: 1,
+    marginTop: 20,
+  },
+  flatListContainer: {
+    margin: 0,
+  },
+  item: {
+    marginHorizontal: 32,
+    marginBottom: 16,
+  },
+  itemContainer: {
+    borderRadius: 8,
+    backgroundColor: colors.grey5,
+  },
+  selectedContainer: {
+    borderRadius: 8,
+    backgroundColor: colors.grey3,
+  },
+  itemText: { color: colors.black },
+}))

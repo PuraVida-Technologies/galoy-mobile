@@ -2,7 +2,9 @@ import {
   AccountDefaultWalletLazyQueryHookResult,
   WalletCurrency,
 } from "@app/graphql/generated"
-import { IntraledgerPaymentDestination } from "@galoymoney/client/dist/parsing-v2"
+import { ZeroBtcMoneyAmount } from "@app/types/amounts"
+import { IntraledgerPaymentDestination } from "@galoymoney/client"
+
 import { createIntraledgerPaymentDetails } from "../payment-details"
 import {
   CreatePaymentDetailParams,
@@ -11,22 +13,35 @@ import {
   ParseDestinationResult,
   PaymentDestination,
 } from "./index.types"
-import { ZeroBtcMoneyAmount } from "@app/types/amounts"
 
 export type ResolveIntraledgerDestinationParams = {
   parsedIntraledgerDestination: IntraledgerPaymentDestination
   accountDefaultWalletQuery: AccountDefaultWalletLazyQueryHookResult[0]
   myWalletIds: string[]
+  flag?: string
 }
 
 export const resolveIntraledgerDestination = async ({
   parsedIntraledgerDestination,
   accountDefaultWalletQuery,
   myWalletIds,
+  flag,
 }: ResolveIntraledgerDestinationParams): Promise<ParseDestinationResult> => {
-  const { handle } = parsedIntraledgerDestination
+  const { valid, handle } = parsedIntraledgerDestination
 
-  const handleWalletId = await getUserWalletId(handle, accountDefaultWalletQuery)
+  if (!valid) {
+    return {
+      valid: false,
+      invalidReason: InvalidDestinationReason.WrongDomain,
+      invalidPaymentDestination: parsedIntraledgerDestination,
+    }
+  }
+
+  const handleWalletId = await getUserWalletId({
+    username: handle,
+    accountDefaultWalletQuery,
+    flag,
+  })
 
   if (!handleWalletId) {
     return {
@@ -84,10 +99,21 @@ export const createIntraLedgerDestination = (
   }
 }
 
-const getUserWalletId = async (
-  username: string,
-  accountDefaultWalletQuery: AccountDefaultWalletLazyQueryHookResult[0],
-) => {
+const getUserWalletId = async ({
+  flag,
+  username,
+  accountDefaultWalletQuery,
+}: {
+  flag: string | undefined
+  username: string
+  accountDefaultWalletQuery: AccountDefaultWalletLazyQueryHookResult[0]
+}) => {
+  if (flag?.toUpperCase() === "USD") {
+    const { data } = await accountDefaultWalletQuery({
+      variables: { username, walletCurrency: "USD" },
+    })
+    return data?.accountDefaultWallet?.id
+  }
   const { data } = await accountDefaultWalletQuery({ variables: { username } })
   return data?.accountDefaultWallet?.id
 }

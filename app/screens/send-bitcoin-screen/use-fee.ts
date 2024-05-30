@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
-import { WalletAmount } from "@app/types/amounts"
-import crashlytics from "@react-native-firebase/crashlytics"
+
+import { gql } from "@apollo/client"
 import {
   WalletCurrency,
   useLnInvoiceFeeProbeMutation,
@@ -11,7 +11,9 @@ import {
   useOnChainUsdTxFeeAsBtcDenominatedLazyQuery,
   useOnChainUsdTxFeeLazyQuery,
 } from "@app/graphql/generated"
-import { gql } from "@apollo/client"
+import { WalletAmount } from "@app/types/amounts"
+import crashlytics from "@react-native-firebase/crashlytics"
+
 import { GetFee } from "./payment-details/index.types"
 
 type FeeType =
@@ -69,16 +71,9 @@ gql`
     $walletId: WalletId!
     $address: OnChainAddress!
     $amount: SatAmount!
-    $targetConfirmations: TargetConfirmations
   ) {
-    onChainTxFee(
-      walletId: $walletId
-      address: $address
-      amount: $amount
-      targetConfirmations: $targetConfirmations
-    ) {
+    onChainTxFee(walletId: $walletId, address: $address, amount: $amount) {
       amount
-      targetConfirmations
     }
   }
 
@@ -86,16 +81,9 @@ gql`
     $walletId: WalletId!
     $address: OnChainAddress!
     $amount: CentAmount!
-    $targetConfirmations: TargetConfirmations
   ) {
-    onChainUsdTxFee(
-      walletId: $walletId
-      address: $address
-      amount: $amount
-      targetConfirmations: $targetConfirmations
-    ) {
+    onChainUsdTxFee(walletId: $walletId, address: $address, amount: $amount) {
       amount
-      targetConfirmations
     }
   }
 
@@ -103,16 +91,13 @@ gql`
     $walletId: WalletId!
     $address: OnChainAddress!
     $amount: SatAmount!
-    $targetConfirmations: TargetConfirmations
   ) {
     onChainUsdTxFeeAsBtcDenominated(
       walletId: $walletId
       address: $address
       amount: $amount
-      targetConfirmations: $targetConfirmations
     ) {
       amount
-      targetConfirmations
     }
   }
 `

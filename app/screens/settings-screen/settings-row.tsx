@@ -1,14 +1,14 @@
 import { CustomIcon } from "@app/components/custom-icon"
-import { palette } from "@app/theme"
 import React from "react"
 import { Divider, Icon, ListItem, Text, makeStyles, useTheme } from "@rneui/themed"
 import { testProps } from "../../utils/testProps"
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ colors }) => ({
   container: {
-    borderColor: theme.colors.grey10,
-    backgroundColor: theme.colors.white,
-    borderWidth: 1,
+    borderColor: colors.grey5,
+    backgroundColor: colors.white,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
   },
   styleDivider: {
     height: 18,
@@ -17,7 +17,9 @@ const useStyles = makeStyles((theme) => ({
 
 export const SettingsRow: React.FC<{ setting: SettingRow }> = ({ setting }) => {
   const styles = useStyles()
-  const { theme } = useTheme()
+  const {
+    theme: { colors },
+  } = useTheme()
 
   if (setting.hidden) {
     return null
@@ -27,10 +29,10 @@ export const SettingsRow: React.FC<{ setting: SettingRow }> = ({ setting }) => {
   let settingStyle: { color: string }
 
   if (setting?.dangerous) {
-    settingColor = setting.greyed ? palette.midGrey : palette.red
-    settingStyle = { color: palette.red }
+    settingColor = setting.greyed ? colors.grey2 : colors.error
+    settingStyle = { color: colors.error }
   } else {
-    settingColor = setting.greyed ? palette.midGrey : theme.colors.darkGreyOrWhite
+    settingColor = setting.greyed ? colors.grey2 : colors.black
     settingStyle = { color: settingColor }
   }
 
@@ -57,15 +59,17 @@ export const SettingsRow: React.FC<{ setting: SettingRow }> = ({ setting }) => {
             </ListItem.Subtitle>
           )}
         </ListItem.Content>
-        {setting.enabled && (
+        {setting.enabled && setting.chevron !== false && (
           <ListItem.Chevron
             name={setting.chevronLogo ?? "chevron-forward"}
+            color={setting.chevronColor}
+            size={setting.chevronSize ?? undefined}
             type="ionicon"
           />
         )}
       </ListItem>
       {setting.styleDivider && (
-        <Divider style={styles.styleDivider} color={theme.colors.lighterGreyOrBlack} />
+        <Divider style={styles.styleDivider} color={colors.grey4} />
       )}
     </React.Fragment>
   )

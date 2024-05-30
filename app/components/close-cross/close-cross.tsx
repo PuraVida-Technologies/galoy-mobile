@@ -1,8 +1,10 @@
-import { StyleSheet, View } from "react-native"
-import Icon from "react-native-vector-icons/Ionicons"
 import * as React from "react"
+import { View } from "react-native"
+import Icon from "react-native-vector-icons/Ionicons"
 
-const styles = StyleSheet.create({
+import { makeStyles } from "@rneui/themed"
+
+const useStyles = makeStyles(() => ({
   icon: {
     fontSize: 72,
   },
@@ -14,15 +16,19 @@ const styles = StyleSheet.create({
     right: 8,
     top: 16,
   },
-})
+}))
 
 type Props = {
   onPress: () => void
   color: string
 }
 
-export const CloseCross: React.FC<Props> = ({ onPress, color }) => (
-  <View style={styles.iconContainer}>
-    <Icon name="ios-close" style={styles.icon} onPress={onPress} color={color} />
-  </View>
-)
+export const CloseCross: React.FC<Props> = ({ onPress, color }) => {
+  const styles = useStyles()
+
+  return (
+    <View style={styles.iconContainer}>
+      <Icon name="close" style={styles.icon} onPress={onPress} color={color} />
+    </View>
+  )
+}

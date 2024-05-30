@@ -1,49 +1,38 @@
-import React from "react"
-import { Linking, View } from "react-native"
-import ReactNativeModal from "react-native-modal"
+import React from "react";
+import { Linking } from "react-native";
+import ReactNativeModal from "react-native-modal";
 
-import { CONTACT_EMAIL_ADDRESS, WHATSAPP_CONTACT_NUMBER } from "@app/config"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { palette } from "@app/theme"
-import { openWhatsApp } from "@app/utils/external"
-import { toastShow } from "@app/utils/toast"
-import Clipboard from "@react-native-clipboard/clipboard"
-import { Icon, ListItem } from "@rneui/base"
-import { makeStyles } from "@rneui/themed"
+import { CONTACT_EMAIL_ADDRESS, WHATSAPP_CONTACT_NUMBER } from "@app/config";
+import { useBetaQuery } from "@app/graphql/generated";
+import { useI18nContext } from "@app/i18n/i18n-react";
+import { RootStackParamList } from "@app/navigation/stack-param-lists";
+import { openWhatsApp } from "@app/utils/external";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { Icon, ListItem, makeStyles, useTheme } from "@rneui/themed";
 
-import { isIos } from "../../utils/helper"
-import TelegramOutline from "./telegram.svg"
+import TelegramOutline from "./telegram.svg";
 
-const useStyles = makeStyles((theme) => ({
-  modal: {
-    justifyContent: "flex-end",
-    margin: 0,
-    flexGrow: 1,
-  },
-  content: {
-    backgroundColor: theme.colors.whiteOrDarkGrey,
-    paddingBottom: 50,
-  },
-  listItemContainer: {
-    backgroundColor: theme.colors.whiteOrDarkGrey,
-  },
-  listItemTitle: {
-    color: theme.colors.darkGreyOrWhite,
-  },
-  icons: {
-    backgroundColor: palette.white,
-    borderRadius: 12,
-    padding: 2,
-  },
-}))
+export const SupportChannels = {
+  Email: "email",
+  Telegram: "telegram",
+  WhatsApp: "whatsapp",
+  StatusPage: "statusPage",
+  Mattermost: "mattermost",
+  Faq: "faq",
+  Chatbot: "chatbot",
+} as const;
+
+export type SupportChannels =
+  (typeof SupportChannels)[keyof typeof SupportChannels];
 
 type Props = {
-  isVisible: boolean
-  toggleModal: () => void
-  messageBody: string
-  messageSubject: string
-  showStatusPage?: boolean
-}
+  isVisible: boolean;
+  toggleModal: () => void;
+  messageBody: string;
+  messageSubject: string;
+  supportChannels: SupportChannels[];
+};
 
 /*
 A modal component that displays contact options at the bottom of the screen.
@@ -53,100 +42,144 @@ const ContactModal: React.FC<Props> = ({
   toggleModal,
   messageBody,
   messageSubject,
-  showStatusPage,
+  supportChannels,
 }) => {
-  const { LL } = useI18nContext()
-  const styles = useStyles()
+  const { LL } = useI18nContext();
+  const styles = useStyles();
+  const {
+    theme: { colors },
+  } = useTheme();
 
-  const openEmailAction = () => {
-    if (isIos) {
-      Clipboard.setString(CONTACT_EMAIL_ADDRESS)
-      toastShow({
-        message: LL.support.emailCopied({ email: CONTACT_EMAIL_ADDRESS }),
-        type: "success",
-      })
-    } else {
-      Linking.openURL(
-        `mailto:${CONTACT_EMAIL_ADDRESS}?subject=${messageSubject}&body=${messageBody}`,
-      )
-    }
-  }
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
-  // TODO: extract in Instance
-  const openTelegramAction = () => Linking.openURL(`https://t.me/pvbtc`)
+  const betaActivated = useBetaQuery().data?.beta ?? false;
 
   const contactOptionList = [
     {
+      id: SupportChannels.Chatbot,
+      name: LL.support.chatbot(),
+      icon: <Icon name={"chatbubbles-outline"} type="ionicon" />,
+      action: () => {
+        navigation.navigate("chatbot");
+        toggleModal();
+      },
+    },
+    {
+      id: SupportChannels.StatusPage,
       name: LL.support.statusPage(),
-      icon: () => (
-        <Icon
-          name={"alert-circle-outline"}
-          type="ionicon"
-          color={styles.listItemTitle.color}
-        />
-      ),
+      icon: <Icon name={"alert-circle-outline"} type="ionicon" />,
       action: () => {
         // TODO: extract in Instance
-        Linking.openURL(`https://pvbtc.statuspage.io/`)
+        Linking.openURL(`https://status.puravidabitcoin.io/`);
       },
-      hidden: !showStatusPage,
     },
+    // {
+    //   id: SupportChannels.Faq,
+    //   name: LL.support.faq(),
+    //   icon: <Icon name={"book-outline"} type="ionicon" color={colors.black} />,
+    //   action: () => {
+    //     Linking.openURL(`https://faq.blink.sv`)
+    //     toggleModal()
+    //   },
+    // },
     {
+      id: SupportChannels.Telegram,
       name: LL.support.telegram(),
-      icon: () => <TelegramOutline width={24} height={24} style={styles.icons} />,
+      icon: <TelegramOutline width={24} height={24} fill={colors.black} />,
       action: () => {
-        openTelegramAction()
-        toggleModal()
+        Linking.openURL(`https://t.me/puravidabitcoin`);
+        toggleModal();
       },
     },
+    // {
+    //   id: SupportChannels.Mattermost,
+    //   name: LL.support.mattermost(),
+    //   icon: <Icon name={"chatbubbles-outline"} type="ionicon" color={colors.black} />,
+    //   action: () => {
+    //     Linking.openURL(`https://chat.galoy.io`)
+    //     toggleModal()
+    //   },
+    // },
     {
+      id: SupportChannels.WhatsApp,
       name: LL.support.whatsapp(),
-      icon: () => <Icon name={"ios-logo-whatsapp"} type="ionicon" style={styles.icons} />,
+      icon: <Icon name={"logo-whatsapp"} type="ionicon" color={colors.black} />,
       action: () => {
-        openWhatsAppAction(messageBody)
-        toggleModal()
+        openWhatsAppAction(messageBody);
+        toggleModal();
       },
     },
     {
+      id: SupportChannels.Email,
       name: LL.support.email(),
-      icon: () => <Icon name={"mail-outline"} type="ionicon" style={styles.icons} />,
+      icon: <Icon name={"mail-outline"} type="ionicon" color={colors.black} />,
       action: () => {
-        openEmailAction()
-        toggleModal()
+        Linking.openURL(
+          `mailto:${CONTACT_EMAIL_ADDRESS}?subject=${
+            encodeURIComponent(
+              messageSubject,
+            )
+          }&body=${encodeURIComponent(messageBody)}`,
+        );
+        toggleModal();
       },
     },
-  ]
+  ];
+
   return (
     <ReactNativeModal
       isVisible={isVisible}
+      backdropOpacity={0.8}
+      backdropColor={colors.white}
       onBackdropPress={toggleModal}
       style={styles.modal}
     >
-      <View style={styles.content}>
-        {contactOptionList.map((item, i) => {
-          if (item.hidden) return null
+      {contactOptionList
+        .filter((item) => supportChannels.includes(item.id))
+        .filter((
+          item,
+        ) => (item.id === SupportChannels.Chatbot ? betaActivated : true))
+        .map((item) => {
           return (
             <ListItem
-              key={i}
+              key={item.name}
               bottomDivider
               onPress={item.action}
               containerStyle={styles.listItemContainer}
             >
-              {item.icon()}
+              {item.icon}
               <ListItem.Content>
-                <ListItem.Title style={styles.listItemTitle}>{item.name}</ListItem.Title>
+                <ListItem.Title style={styles.listItemTitle}>
+                  {item.name}
+                </ListItem.Title>
               </ListItem.Content>
-              <ListItem.Chevron />
+              <ListItem.Chevron name={"chevron-forward"} type="ionicon" />
             </ListItem>
-          )
+          );
         })}
-      </View>
     </ReactNativeModal>
-  )
-}
+  );
+};
 
-export default ContactModal
+export default ContactModal;
 
 export const openWhatsAppAction = (message: string) => {
-  openWhatsApp(WHATSAPP_CONTACT_NUMBER, message)
-}
+  openWhatsApp(WHATSAPP_CONTACT_NUMBER, message);
+};
+
+const useStyles = makeStyles(({ colors }) => ({
+  modal: {
+    justifyContent: "flex-end",
+    flexGrow: 1,
+    marginHorizontal: 0,
+  },
+  listItemContainer: {
+    backgroundColor: colors.grey5,
+  },
+  listItemTitle: {
+    color: colors.black,
+  },
+  icons: {
+    color: colors.black,
+  },
+}));

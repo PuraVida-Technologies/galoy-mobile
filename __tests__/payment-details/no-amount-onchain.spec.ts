@@ -1,5 +1,6 @@
 import { WalletCurrency } from "@app/graphql/generated"
 import * as PaymentDetails from "@app/screens/send-bitcoin-screen/payment-details/onchain"
+
 import {
   testAmount,
   btcSendingWalletDescriptor,
@@ -9,9 +10,6 @@ import {
   expectCannotGetFee,
   expectCannotSendPayment,
   expectDestinationSpecifiedMemoCannotSetMemo,
-  getTestSetAmount,
-  getTestSetMemo,
-  getTestSetSendingWalletDescriptor,
   usdSendingWalletDescriptor,
   zeroAmount,
 } from "./helpers"
@@ -22,16 +20,11 @@ const defaultParams: PaymentDetails.CreateNoAmountOnchainPaymentDetailsParams<Wa
     convertMoneyAmount: convertMoneyAmountMock,
     sendingWalletDescriptor: btcSendingWalletDescriptor,
     unitOfAccountAmount: testAmount,
+    isSendingMax: false,
   }
-
-const spy = jest.spyOn(PaymentDetails, "createNoAmountOnchainPaymentDetails")
 
 describe("no amount lightning payment details", () => {
   const { createNoAmountOnchainPaymentDetails } = PaymentDetails
-
-  beforeEach(() => {
-    spy.mockClear()
-  })
 
   it("properly sets fields with all arguments provided", () => {
     const paymentDetails = createNoAmountOnchainPaymentDetails(defaultParams)
@@ -94,7 +87,7 @@ describe("no amount lightning payment details", () => {
       }
 
       try {
-        await paymentDetails.sendPayment(sendPaymentMocks)
+        await paymentDetails.sendPaymentMutation(sendPaymentMocks)
       } catch {
         // do nothing as function is expected to throw since we are not mocking the send payment response
       }
@@ -151,7 +144,7 @@ describe("no amount lightning payment details", () => {
       }
 
       try {
-        await paymentDetails.sendPayment(sendPaymentMocks)
+        await paymentDetails.sendPaymentMutation(sendPaymentMocks)
       } catch {
         // do nothing as function is expected to throw since we are not mocking the send payment response
       }
@@ -192,29 +185,36 @@ describe("no amount lightning payment details", () => {
   })
 
   it("can set memo if no memo provided", () => {
-    const testSetMemo = getTestSetMemo()
-    testSetMemo({
-      defaultParams,
-      spy,
-      creatorFunction: createNoAmountOnchainPaymentDetails,
-    })
+    const paymentDetails = createNoAmountOnchainPaymentDetails(defaultParams)
+    const senderSpecifiedMemo = "sender memo"
+    if (!paymentDetails.canSetMemo) throw new Error("Memo is unable to be set")
+
+    const newPaymentDetails = paymentDetails.setMemo(senderSpecifiedMemo)
+    expect(newPaymentDetails.memo).toEqual(senderSpecifiedMemo)
   })
 
   it("can set amount", () => {
-    const testSetAmount = getTestSetAmount()
-    testSetAmount({
-      defaultParams,
-      spy,
-      creatorFunction: createNoAmountOnchainPaymentDetails,
-    })
+    const paymentDetails = createNoAmountOnchainPaymentDetails(defaultParams)
+    const unitOfAccountAmount = {
+      amount: 100,
+      currency: WalletCurrency.Btc,
+      currencyCode: "BTC",
+    }
+    if (!paymentDetails.canSetAmount) throw new Error("Amount is unable to be set")
+    const newPaymentDetails = paymentDetails.setAmount(unitOfAccountAmount)
+
+    expect(newPaymentDetails.unitOfAccountAmount).toEqual(unitOfAccountAmount)
   })
 
   it("can set sending wallet descriptor", () => {
-    const testSetSendingWalletDescriptor = getTestSetSendingWalletDescriptor()
-    testSetSendingWalletDescriptor({
-      defaultParams,
-      spy,
-      creatorFunction: createNoAmountOnchainPaymentDetails,
-    })
+    const paymentDetails = createNoAmountOnchainPaymentDetails(defaultParams)
+    const sendingWalletDescriptor = {
+      currency: WalletCurrency.Btc,
+      id: "newtestwallet",
+    }
+    const newPaymentDetails = paymentDetails.setSendingWalletDescriptor(
+      sendingWalletDescriptor,
+    )
+    expect(newPaymentDetails.sendingWalletDescriptor).toEqual(sendingWalletDescriptor)
   })
 })

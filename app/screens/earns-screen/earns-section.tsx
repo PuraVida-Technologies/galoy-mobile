@@ -1,28 +1,29 @@
-import { RouteProp, useIsFocused, useNavigation } from "@react-navigation/native"
-import { StackNavigationProp } from "@react-navigation/stack"
-import { Button } from "@rneui/base"
 import * as React from "react"
 import { useState } from "react"
-import { Dimensions, StyleSheet, Text, View } from "react-native"
+import { Dimensions, Text, View, Alert } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
+import { useSharedValue } from "react-native-reanimated"
 import Carousel from "react-native-reanimated-carousel"
 import Icon from "react-native-vector-icons/Ionicons"
 
 import { PaginationItem } from "@app/components/pagination"
+import { useLevel } from "@app/graphql/level-context"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { useSharedValue } from "react-native-reanimated"
+import { RouteProp, useIsFocused, useNavigation } from "@react-navigation/native"
+import { StackNavigationProp } from "@react-navigation/stack"
+import { Button } from "@rneui/base"
+import { makeStyles, useTheme } from "@rneui/themed"
+
 import { Screen } from "../../components/screen"
 import type { RootStackParamList } from "../../navigation/stack-param-lists"
-import { color } from "../../theme"
-import { palette } from "../../theme/palette"
+import { useQuizServer } from "../earns-map-screen/use-quiz-server"
+import { PhoneLoginInitiateType } from "../phone-auth-screen"
 import { SVGs } from "./earn-svg-factory"
 import {
   augmentCardWithGqlData,
   getCardsFromSection,
   getQuizQuestionsContent,
 } from "./earns-utils"
-import { useIsAuthed } from "@app/graphql/is-authed-context"
-import { useQuizServer } from "../earns-map-screen/use-quiz-server"
 
 const { width: screenWidth } = Dimensions.get("window")
 
@@ -35,9 +36,10 @@ export type QuizQuestion = {
   feedback: string[]
   amount: number
   completed: boolean
+  notBefore: Date | undefined
 }
 
-export type QuizQuestionContent = Omit<QuizQuestion, "amount" | "completed">
+export type QuizQuestionContent = Omit<QuizQuestion, "amount" | "completed" | "notBefore">
 
 export type QuizQuestionForSectionScreen = QuizQuestion & {
   enabled: boolean
@@ -54,12 +56,12 @@ export type QuizSectionContent = {
 
 const svgWidth = screenWidth
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors }) => ({
   container: {
     alignItems: "center",
   },
   buttonStyleDisabled: {
-    backgroundColor: palette.white,
+    backgroundColor: colors._white,
     borderRadius: 24,
     marginHorizontal: 60,
     marginVertical: 32,
@@ -67,7 +69,7 @@ const styles = StyleSheet.create({
   },
 
   buttonStyleFulfilled: {
-    backgroundColor: color.transparent,
+    backgroundColor: colors.transparent,
     borderRadius: 24,
     marginHorizontal: 60,
     marginVertical: 32,
@@ -76,13 +78,13 @@ const styles = StyleSheet.create({
   icon: { paddingRight: 12, paddingTop: 3 },
 
   item: {
-    backgroundColor: palette.lightBlue,
+    backgroundColor: colors._lightBlue,
     borderRadius: 16,
     width: svgWidth,
   },
 
   itemTitle: {
-    color: palette.white,
+    color: colors._white,
     fontSize: 20,
     fontWeight: "bold",
     height: 72,
@@ -93,28 +95,28 @@ const styles = StyleSheet.create({
   svgContainer: { paddingVertical: 12 },
 
   textButton: {
-    backgroundColor: palette.white,
+    backgroundColor: colors._white,
     borderRadius: 24,
     marginHorizontal: 60,
     marginVertical: 32,
   },
 
   titleStyle: {
-    color: palette.lightBlue,
+    color: colors._lightBlue,
     fontWeight: "bold",
   },
 
   titleStyleDisabled: {
-    color: palette.lightBlue,
+    color: colors._lightBlue,
   },
 
   titleStyleFulfilled: {
-    color: palette.white,
+    color: colors._white,
   },
 
   unlock: {
     alignSelf: "center",
-    color: palette.white,
+    color: colors._white,
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
@@ -122,7 +124,7 @@ const styles = StyleSheet.create({
 
   unlockQuestion: {
     alignSelf: "center",
-    color: palette.white,
+    color: colors._white,
     fontSize: 16,
     paddingTop: 18,
   },
@@ -134,7 +136,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 40,
   },
-})
+}))
 
 const convertToQuizQuestionForSectionScreen = (
   cards: QuizQuestion[],
@@ -159,10 +161,15 @@ type Props = {
 }
 
 export const EarnSection = ({ route }: Props) => {
+  const {
+    theme: { colors },
+  } = useTheme()
+  const styles = useStyles()
+
   const navigation =
     useNavigation<StackNavigationProp<RootStackParamList, "earnsSection">>()
 
-  const isAuthed = useIsAuthed()
+  const { isAtLeastLevelOne } = useLevel()
 
   const { LL } = useI18nContext()
   const quizQuestionsContent = getQuizQuestionsContent({ LL })
@@ -202,9 +209,22 @@ export const EarnSection = ({ route }: Props) => {
   }, [navigation, sectionTitle])
 
   const open = async (id: string) => {
-    // FIXME quick fix for apollo client refactoring
-    if (!isAuthed) {
-      navigation.navigate("phoneFlow")
+    if (!isAtLeastLevelOne) {
+      Alert.alert(LL.EarnScreen.registerTitle(), LL.EarnScreen.registerContent(), [
+        {
+          text: LL.common.cancel(),
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () =>
+            navigation.navigate("phoneFlow", {
+              screen: "phoneLoginInitiate",
+              params: { type: PhoneLoginInitiateType.CreateAccount },
+            }),
+        },
+      ])
       return
     }
 
@@ -245,9 +265,9 @@ export const EarnSection = ({ route }: Props) => {
               icon={
                 item.completed ? (
                   <Icon
-                    name="ios-checkmark-circle-outline"
+                    name="checkmark-circle-outline"
                     size={36}
-                    color={palette.white}
+                    color={colors._white}
                     style={styles.icon}
                   />
                 ) : undefined
@@ -266,7 +286,7 @@ export const EarnSection = ({ route }: Props) => {
   }
 
   return (
-    <Screen backgroundColor={palette.blue} statusBar="light-content">
+    <Screen backgroundColor={colors._blue} statusBar="light-content">
       <View style={styles.container}>
         <Carousel
           data={cards}

@@ -15,17 +15,17 @@ export const FILTER_MARKET_PLACE_POST = gql`
   query filterMarketplacePosts(
     $latitude: Float
     $latitudeDelta: Float
-    $longitude: Float 
-    $longitudeDelta: Float 
+    $longitude: Float
+    $longitudeDelta: Float
     $tagsSlugs: [String!]
-    $text: String=""
-    $sortBy: String="distance"
+    $text: String = ""
+    $sortBy: String = "distance"
   ) {
     filterMarketplacePosts(
       filterPostsInput: {
         latitude: $latitude
         latitudeDelta: $latitudeDelta
-        longitude: $longitude 
+        longitude: $longitude
         longitudeDelta: $longitudeDelta
         tagsSlugs: $tagsSlugs
         text: $text
@@ -51,13 +51,13 @@ export const AUTO_COMPLETE_TAGS = gql`
 `
 export const GET_TAGS = gql`
   query {
-    getMarketplaceTags(getMarketPlaceTagsInput: {limit:30}) {
+    getMarketplaceTags(getMarketPlaceTagsInput: { limit: 30 }) {
       data {
-      _id
-      name
-      createdAt
-      updatedAt
-      slug
+        _id
+        name
+        createdAt
+        updatedAt
+        slug
       }
     }
   }
@@ -91,8 +91,8 @@ export const UPLOAD_IMAGE = gql`
 export const MY_POST = gql`
   ${MARKETPLACE_POST}
 
-  query myPosts($page: Float = 1,$limit: Float = 10) {
-    myPosts(myPostsInput:{page:$page,limit:$limit}) {
+  query myPosts($page: Float = 1, $limit: Float = 10) {
+    myPosts(myPostsInput: { page: $page, limit: $limit }) {
       data {
         ...MarketplacePost
       }
@@ -103,7 +103,7 @@ export const MY_POST = gql`
 export const GET_POST_DETAIL = gql`
   ${MARKETPLACE_POST}
   query getMarketplacePost($id: String!) {
-    getMarketPlacePost(id:$id) {
+    getMarketPlacePost(id: $id) {
       ...MarketplacePost
     }
   }

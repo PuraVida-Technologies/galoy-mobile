@@ -1,41 +1,54 @@
 import * as React from "react"
-import { RefreshControl, ScrollView, View } from "react-native"
-import { TouchableWithoutFeedback } from "react-native-gesture-handler"
+import { useMemo } from "react"
+import { RefreshControl, View, Alert } from "react-native"
+import {
+  ScrollView,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native-gesture-handler"
 import Modal from "react-native-modal"
 import Icon from "react-native-vector-icons/Ionicons"
 import { LocalizedString } from "typesafe-i18n"
 
 import { gql } from "@apollo/client"
-import PriceIcon from "@app/assets/icons/price.svg"
-import SettingsIcon from "@app/assets/icons/settings.svg"
 import { AppUpdate } from "@app/components/app-update/app-update"
+import { GaloyErrorBox } from "@app/components/atomic/galoy-error-box"
 import { icons } from "@app/components/atomic/galoy-icon"
 import { GaloyIconButton } from "@app/components/atomic/galoy-icon-button"
-import { NewNameBlinkModal } from "@app/components/new-name-blink-modal/new-name-blink-modal"
+import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
+import { NotificationCard } from "@app/components/notifications"
+import { SetDefaultAccountModal } from "@app/components/set-default-account-modal"
 import { StableSatsModal } from "@app/components/stablesats-modal"
 import WalletOverview from "@app/components/wallet-overview/wallet-overview"
 import {
-  useHideBalanceQuery,
+  AccountLevel,
+  TransactionFragment,
+  TxDirection,
+  TxStatus,
+  useHasPromptedSetDefaultAccountQuery,
   useHomeAuthedQuery,
   useHomeUnauthedQuery,
   useRealtimePriceQuery,
+  useSettingsScreenQuery,
 } from "@app/graphql/generated"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { getErrorMessages } from "@app/graphql/utils"
+import { useAppConfig } from "@app/hooks"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { requestNotificationPermission } from "@app/utils/notifications"
-import { useIsFocused, useNavigation } from "@react-navigation/native"
+import { isIos } from "@app/utils/helper"
+import { useNavigation, useIsFocused } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { Button } from "@rneui/base"
-import { makeStyles, Text } from "@rneui/themed"
+import { Text, makeStyles, useTheme } from "@rneui/themed"
 
 import { BalanceHeader } from "../../components/balance-header"
 import { Screen } from "../../components/screen"
-import { TransactionItem } from "../../components/transaction-item"
+import { MemoizedTransactionItem } from "../../components/transaction-item"
 import { RootStackParamList } from "../../navigation/stack-param-lists"
-import { palette } from "../../theme/palette"
-import { testProps } from "../../utils/testProps" 
+import { testProps } from "../../utils/testProps"
+import { PhoneLoginInitiateType } from "../phone-auth-screen"
+import { requestNotificationPermission } from "@app/utils/notifications"
 
+const TransactionCountToTriggerSetDefaultAccountModal = 1
 
 gql`
   query homeAuthed {
@@ -44,11 +57,18 @@ gql`
       language
       username
       phone
+      email {
+        address
+        verified
+      }
 
       defaultAccount {
         id
+        level
         defaultWalletId
-
+        pendingIncomingTransactions {
+          ...Transaction
+        }
         transactions(first: 20) {
           ...TransactionList
         }
@@ -78,12 +98,28 @@ gql`
 
 export const HomeScreen: React.FC = () => {
   const styles = useStyles()
+  const {
+    theme: { colors },
+  } = useTheme()
+
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
-  const { data: { hideBalance } = {} } = useHideBalanceQuery()
-  const isBalanceVisible = hideBalance ?? false
+
+  const { data: { hasPromptedSetDefaultAccount } = {} } =
+    useHasPromptedSetDefaultAccountQuery()
+  const [setDefaultAccountModalVisible, setSetDefaultAccountModalVisible] =
+    React.useState(false)
+  const toggleSetDefaultAccountModal = () =>
+    setSetDefaultAccountModalVisible(!setDefaultAccountModalVisible)
 
   const isAuthed = useIsAuthed()
   const { LL } = useI18nContext()
+  const {
+    appConfig: {
+      galoyInstance: { id: galoyInstanceId },
+    },
+  } = useAppConfig()
+
+  const isFocused = useIsFocused()
 
   const {
     data: dataAuthed,
@@ -107,9 +143,27 @@ export const HomeScreen: React.FC = () => {
     nextFetchPolicy: "cache-and-network",
   })
 
-  const { refetch: refetchUnauthed, loading: loadingUnauthed } = useHomeUnauthedQuery()
+  const {
+    refetch: refetchUnauthed,
+    loading: loadingUnauthed,
+    data: dataUnauthed,
+  } = useHomeUnauthedQuery({
+    skip: !isAuthed,
+    fetchPolicy: "network-only",
 
-  const loading = loadingAuthed || loadingPrice || loadingUnauthed
+    // this enables offline mode use-case
+    nextFetchPolicy: "cache-and-network",
+  })
+
+  // keep settings info cached and ignore network call if it's already cached
+  const { loading: loadingSettings } = useSettingsScreenQuery({
+    skip: !isAuthed,
+    fetchPolicy: "cache-first",
+    // this enables offline mode use-case
+    nextFetchPolicy: "cache-and-network",
+  })
+
+  const loading = loadingAuthed || loadingPrice || loadingUnauthed || loadingSettings
 
   const refetch = React.useCallback(() => {
     if (isAuthed) {
@@ -119,19 +173,42 @@ export const HomeScreen: React.FC = () => {
     }
   }, [isAuthed, refetchAuthed, refetchRealtimePrice, refetchUnauthed])
 
-  const transactionsEdges =
-    dataAuthed?.me?.defaultAccount?.transactions?.edges ?? undefined
+  const pendingIncomingTransactions =
+    dataAuthed?.me?.defaultAccount?.pendingIncomingTransactions
+  const transactionsEdges = dataAuthed?.me?.defaultAccount?.transactions?.edges
+
+  const transactions = useMemo(() => {
+    const transactions: TransactionFragment[] = []
+    if (pendingIncomingTransactions) {
+      transactions.push(...pendingIncomingTransactions)
+    }
+    const settledTransactions =
+      transactionsEdges
+        ?.map((edge) => edge.node)
+        .filter(
+          (tx) => tx.status !== TxStatus.Pending || tx.direction === TxDirection.Send,
+        ) ?? []
+    transactions.push(...settledTransactions)
+    return transactions
+  }, [pendingIncomingTransactions, transactionsEdges])
 
   const [modalVisible, setModalVisible] = React.useState(false)
   const [isStablesatModalVisible, setIsStablesatModalVisible] = React.useState(false)
-  const [isContentVisible, setIsContentVisible] = React.useState(false)
 
-  React.useEffect(() => {
-    setIsContentVisible(isBalanceVisible)
-  }, [isBalanceVisible])
+  const numberOfTxs = transactions.length
 
   const onMenuClick = (target: Target) => {
     if (isAuthed) {
+      if (
+        target === "receiveBitcoin" &&
+        !hasPromptedSetDefaultAccount &&
+        numberOfTxs >= TransactionCountToTriggerSetDefaultAccountModal &&
+        galoyInstanceId === "Main"
+      ) {
+        toggleSetDefaultAccountModal()
+        return
+      }
+
       // we are using any because Typescript complain on the fact we are not passing any params
       // but there is no need for a params and the types should not necessitate it
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -143,8 +220,24 @@ export const HomeScreen: React.FC = () => {
 
   const activateWallet = () => {
     setModalVisible(false)
-    navigation.navigate("phoneFlow")
+    navigation.navigate("phoneFlow", {
+      screen: "phoneLoginInitiate",
+      params: {
+        type: PhoneLoginInitiateType.CreateAccount,
+      },
+    })
   }
+
+  // debug code. verify that we have 2 wallets. mobile doesn't work well with only one wallet
+  // TODO: add this code in a better place
+  React.useEffect(() => {
+    if (
+      dataAuthed?.me?.defaultAccount?.wallets?.length !== undefined &&
+      dataAuthed?.me?.defaultAccount?.wallets?.length !== 2
+    ) {
+      Alert.alert(LL.HomeScreen.walletCountNotTwo())
+    }
+  }, [dataAuthed, LL])
 
   let recentTransactionsData:
     | {
@@ -155,21 +248,23 @@ export const HomeScreen: React.FC = () => {
 
   const TRANSACTIONS_TO_SHOW = 2
 
-  if (isAuthed && transactionsEdges?.length) {
+  if (isAuthed && transactions.length > 0) {
     recentTransactionsData = {
       title: LL.TransactionScreen.title(),
       details: (
         <>
-          {transactionsEdges
+          {transactions
             .slice(0, TRANSACTIONS_TO_SHOW)
             .map(
-              ({ node }, index, array) =>
-                node && (
-                  <TransactionItem
-                    key={`transaction-${node.id}`}
-                    txid={node.id}
+              (tx, index, array) =>
+                tx && (
+                  <MemoizedTransactionItem
+                    key={`transaction-${tx.id}`}
+                    txid={tx.id}
                     subtitle
+                    isOnHomeScreen={true}
                     isLast={index === array.length - 1}
+                    testId={`transaction-by-index-${index}`}
                   />
                 ),
             )}
@@ -187,11 +282,6 @@ export const HomeScreen: React.FC = () => {
 
   const buttons = [
     {
-      title: LL.ConversionDetailsScreen.title(),
-      target: "conversionDetails" as Target,
-      icon: "transfer" as IconNamesType,
-    },
-    {
       title: LL.HomeScreen.receive(),
       target: "receiveBitcoin" as Target,
       icon: "receive" as IconNamesType,
@@ -202,12 +292,12 @@ export const HomeScreen: React.FC = () => {
       icon: "send" as IconNamesType,
     },
     {
-      title: LL.ScanningQRCodeScreen.title(),
+      title: LL.HomeScreen.scan(),
       target: "scanningQRCode" as Target,
       icon: "qr-code" as IconNamesType,
     },
   ]
-  const isFocused = useIsFocused()
+
   React.useEffect(() => {
     let timeout: NodeJS.Timeout
     if (isAuthed && isFocused) {
@@ -219,12 +309,25 @@ export const HomeScreen: React.FC = () => {
     }
   }, [])
 
+  if (
+    !isIos ||
+    dataUnauthed?.globals?.network !== "mainnet" ||
+    dataAuthed?.me?.defaultAccount.level === AccountLevel.Two
+  ) {
+    buttons.unshift({
+      title: LL.ConversionDetailsScreen.title(),
+      target: "conversionDetails" as Target,
+      icon: "transfer" as IconNamesType,
+    })
+  }
+
   const AccountCreationNeededModal = (
     <Modal
       style={styles.modal}
       isVisible={modalVisible}
       swipeDirection={modalVisible ? ["down"] : ["up"]}
       onSwipeComplete={() => setModalVisible(false)}
+      animationOutTiming={1}
       swipeThreshold={50}
     >
       <View style={styles.flex}>
@@ -233,164 +336,125 @@ export const HomeScreen: React.FC = () => {
         </TouchableWithoutFeedback>
       </View>
       <View style={styles.viewModal}>
-        <Icon name="ios-remove" size={64} color={palette.lightGrey} style={styles.icon} />
-        <Text style={styles.text}>{LL.common.needWallet()}</Text>
-        <Button
-          title={LL.common.openWallet()}
-          onPress={activateWallet}
-          type="outline"
-          buttonStyle={styles.buttonStyle}
-          titleStyle={styles.titleStyle}
-          containerStyle={styles.buttonContainerStyle}
-        />
+        <Icon name="remove" size={64} color={colors.grey3} style={styles.icon} />
+        <Text type="h1">{LL.common.needWallet()}</Text>
+        <View style={styles.openWalletContainer}>
+          <GaloyPrimaryButton
+            title={LL.GetStartedScreen.logInCreateAccount()}
+            onPress={activateWallet}
+          />
+        </View>
         <View style={styles.flex} />
       </View>
     </Modal>
   )
 
   return (
-    <Screen backgroundColor={styles.background.color} style={styles.flex}>
+    <Screen>
       {AccountCreationNeededModal}
-      {/* <NewNameBlinkModal /> */}
-      {/* <StableSatsModal
+      <StableSatsModal
         isVisible={isStablesatModalVisible}
         setIsVisible={setIsStablesatModalVisible}
-      /> */}
-      <View style={styles.header}>
-        <Button
-          {...testProps("price button")}
-          buttonStyle={styles.topButton}
+      />
+      <View style={[styles.header, styles.container]}>
+        <GaloyIconButton
           onPress={() => navigation.navigate("priceHistory")}
-          icon={<PriceIcon />}
+          size={"medium"}
+          name="graph"
+          iconOnly={true}
         />
-
-        <View style={styles.balanceHeaderContainer}>
-          <BalanceHeader
-            isContentVisible={isContentVisible}
-            setIsContentVisible={setIsContentVisible}
-            loading={loading}
-          />
-        </View>
-
-        <Button
-          {...testProps("Settings Button")}
-          buttonStyle={styles.topButton}
+        <BalanceHeader loading={loading} />
+        <GaloyIconButton
           onPress={() => navigation.navigate("settings")}
-          icon={<SettingsIcon />}
+          size={"medium"}
+          name="menu"
+          iconOnly={true}
         />
       </View>
       <ScrollView
-        contentContainerStyle={styles.scrollView}
+        {...testProps("home-screen")}
+        contentContainerStyle={styles.scrollViewContainer}
         refreshControl={
           <RefreshControl
-            refreshing={loading}
+            refreshing={loading && isFocused}
             onRefresh={refetch}
-            colors={[styles.tintColor.color]} // Android refresh indicator colors
-            tintColor={styles.tintColor.color} // iOS refresh indicator color
+            colors={[colors.primary]} // Android refresh indicator colors
+            tintColor={colors.primary} // iOS refresh indicator color
           />
         }
       >
         <WalletOverview
-          isContentVisible={isContentVisible}
-          setIsContentVisible={setIsContentVisible}
           loading={loading}
           setIsStablesatModalVisible={setIsStablesatModalVisible}
         />
-        {error && (
-          <Text style={styles.error} selectable>
-            {getErrorMessages(error)}
-          </Text>
-        )}
+        {error && <GaloyErrorBox errorMessage={getErrorMessages(error)} />}
         <View style={styles.listItemsContainer}>
-          <View style={styles.listItems}>
-            {buttons.map((item) => (
-              <View key={item.icon} style={styles.largeButton}>
-                <GaloyIconButton
-                  {...testProps(item.title)}
-                  name={item.icon}
-                  size="large"
-                  text={item.title}
-                  onPress={() => onMenuClick(item.target)}
-                />
-              </View>
-            ))}
-          </View>
+          {buttons.map((item) => (
+            <View key={item.icon} style={styles.button}>
+              <GaloyIconButton
+                name={item.icon}
+                size="large"
+                text={item.title}
+                onPress={() => onMenuClick(item.target)}
+              />
+            </View>
+          ))}
+        </View>
+        <NotificationCard />
+        <View>
+          {recentTransactionsData && (
+            <>
+              <TouchableOpacity
+                style={styles.recentTransaction}
+                onPress={() => onMenuClick("transactionHistory")}
+                activeOpacity={0.6}
+              >
+                <Text
+                  type="p1"
+                  style={{ color: colors.primary }}
+                  bold
+                  {...testProps(recentTransactionsData.title)}
+                >
+                  {recentTransactionsData?.title}
+                </Text>
+              </TouchableOpacity>
+              {recentTransactionsData?.details}
+            </>
+          )}
         </View>
 
-        {recentTransactionsData ? (
-          <View style={styles.transactionContainer}>
-            <TouchableWithoutFeedback
-              style={styles.recentTransaction}
-              onPress={() => onMenuClick("transactionHistory")}
-            >
-              <Text type="p1" bold {...testProps(recentTransactionsData.title)}>
-                {recentTransactionsData?.title}
-              </Text>
-            </TouchableWithoutFeedback>
-            {recentTransactionsData?.details}
-          </View>
-        ) : (
-          <View style={styles.noTransaction}>
-            <Text type="p1" bold>
-              {LL.TransactionScreen.noTransaction()}
-            </Text>
-          </View>
-        )}
         <AppUpdate />
+        <SetDefaultAccountModal
+          isVisible={setDefaultAccountModalVisible}
+          toggleModal={toggleSetDefaultAccountModal}
+        />
       </ScrollView>
     </Screen>
   )
 }
 
 const useStyles = makeStyles(({ colors }) => ({
-  scrollView: {
-    flexGrow: 1,
-    paddingBottom: 30,
-  },
-  tintColor: {
-    color: colors.primary,
+  scrollViewContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    rowGap: 20,
   },
   listItemsContainer: {
     paddingHorizontal: 15,
     paddingVertical: 15,
-    marginBottom: 20,
-    marginHorizontal: 30,
     borderRadius: 12,
-    backgroundColor: colors.whiteOrDarkGrey,
-  },
-  listItems: {
+    backgroundColor: colors.grey5,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
   },
-  background: {
-    color: colors.lighterGreyOrBlack,
-  },
-  buttonContainerStyle: {
-    marginTop: 16,
-    width: "80%",
-  },
   noTransaction: {
     alignItems: "center",
-  },
-  text: {
-    color: colors.grey5,
-    fontSize: 20,
-  },
-  titleStyle: {
-    color: colors.primary,
-    fontSize: 18,
-    fontWeight: "bold",
   },
   icon: {
     height: 34,
     top: -22,
-  },
-  buttonStyle: {
-    borderColor: colors.primary,
-    borderRadius: 32,
-    borderWidth: 2,
   },
   modal: {
     marginBottom: 0,
@@ -406,9 +470,13 @@ const useStyles = makeStyles(({ colors }) => ({
   viewModal: {
     alignItems: "center",
     backgroundColor: colors.white,
-    height: "25%",
+    height: "30%",
     justifyContent: "flex-end",
     paddingHorizontal: 20,
+  },
+  openWalletContainer: {
+    alignSelf: "stretch",
+    marginTop: 20,
   },
   recentTransaction: {
     display: "flex",
@@ -416,43 +484,29 @@ const useStyles = makeStyles(({ colors }) => ({
     justifyContent: "center",
     alignItems: "center",
     columnGap: 10,
-    backgroundColor: colors.whiteOrDarkGrey,
+    backgroundColor: colors.grey5,
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
-    borderColor: colors.lighterGreyOrBlack,
+    borderColor: colors.grey5,
     borderBottomWidth: 2,
     paddingVertical: 14,
   },
-  transactionContainer: {
-    marginHorizontal: 30,
-  },
-  largeButton: {
+  button: {
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
-    maxWidth: 60,
+    maxWidth: 74,
   },
   header: {
-    display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    marginHorizontal: 30,
     height: 120,
-  },
-  topButton: {
-    backgroundColor: colors.whiteOrDarkGrey,
-    borderRadius: 38,
-    width: 45,
-    height: 45,
-  },
-  balanceHeaderContainer: {
-    flex: 1,
-    flexDirection: "column",
-    alignItems: "center",
   },
   error: {
     alignSelf: "center",
     color: colors.error,
+  },
+  container: {
+    marginHorizontal: 20,
   },
 }))

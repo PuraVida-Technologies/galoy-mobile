@@ -1,34 +1,17 @@
 import React, { useEffect } from "react"
-import { Text, View } from "react-native"
+import { View } from "react-native"
 
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 import { Screen } from "@app/components/screen"
 import {
   SuccessIconAnimation,
-  SuccessTextAnimation,
+  CompletedTextAnimation,
 } from "@app/components/success-animation"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { makeStyles } from "@rneui/themed"
-
-const useStyles = makeStyles((theme) => ({
-  successText: {
-    color: theme.colors.grey1,
-    fontSize: 18,
-    textAlign: "center",
-    marginTop: 20,
-  },
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  screen: {
-    flexGrow: 1,
-  },
-}))
+import { Text, makeStyles } from "@rneui/themed"
 
 export const ConversionSuccessScreen = () => {
   const styles = useStyles()
@@ -49,10 +32,26 @@ export const ConversionSuccessScreen = () => {
         <SuccessIconAnimation>
           <GaloyIcon name={"payment-success"} size={128} />
         </SuccessIconAnimation>
-        <SuccessTextAnimation>
-          <Text style={styles.successText}>{LL.ConversionSuccessScreen.message()}</Text>
-        </SuccessTextAnimation>
+        <CompletedTextAnimation>
+          <Text type="h2" style={styles.successText}>
+            {LL.ConversionSuccessScreen.message()}
+          </Text>
+        </CompletedTextAnimation>
       </View>
     </Screen>
   )
 }
+
+const useStyles = makeStyles(() => ({
+  successText: {
+    marginTop: 20,
+  },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  screen: {
+    flexGrow: 1,
+  },
+}))

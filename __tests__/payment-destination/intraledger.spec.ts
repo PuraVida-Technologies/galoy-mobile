@@ -1,3 +1,5 @@
+// sort-imports-ignore
+
 import { WalletCurrency } from "@app/graphql/generated"
 import {
   PaymentDetail,
@@ -27,6 +29,7 @@ describe("resolve intraledger", () => {
     parsedIntraledgerDestination: {
       paymentType: "intraledger",
       handle: "testhandle",
+      valid: true,
     } as const,
     accountDefaultWalletQuery: jest.fn(),
     myWalletIds: ["testwalletid"],
@@ -78,6 +81,7 @@ describe("create intraledger destination", () => {
     parsedIntraledgerDestination: {
       paymentType: "intraledger",
       handle: "testhandle",
+      valid: true,
     },
     walletId: "testwalletid",
   } as const

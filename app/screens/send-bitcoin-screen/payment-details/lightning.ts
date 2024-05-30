@@ -1,3 +1,5 @@
+import { LnUrlPayServiceResponse } from "lnurl-pay/dist/types/types"
+
 import { WalletCurrency } from "@app/graphql/generated"
 import {
   BtcMoneyAmount,
@@ -7,14 +9,14 @@ import {
   WalletAmount,
   WalletOrDisplayCurrency,
 } from "@app/types/amounts"
-import { PaymentType } from "@galoymoney/client/dist/parsing-v2"
-import { LnUrlPayServiceResponse } from "lnurl-pay/dist/types/types"
+import { PaymentType } from "@galoymoney/client"
+
 import {
   ConvertMoneyAmount,
   SetInvoice,
   GetFee,
   PaymentDetail,
-  SendPayment,
+  SendPaymentMutation,
   SetAmount,
   SetSendingWalletDescriptor,
   BaseCreatePaymentDetailsParams,
@@ -88,8 +90,8 @@ export const createNoAmountLightningPaymentDetails = <T extends WalletCurrency>(
       }
     }
 
-    const sendPayment: SendPayment = async (sendPaymentFns) => {
-      const { data } = await sendPaymentFns.lnNoAmountInvoicePaymentSend({
+    const sendPaymentMutation: SendPaymentMutation = async (paymentMutations) => {
+      const { data } = await paymentMutations.lnNoAmountInvoicePaymentSend({
         variables: {
           input: {
             walletId: sendingWalletDescriptor.id,
@@ -110,7 +112,7 @@ export const createNoAmountLightningPaymentDetails = <T extends WalletCurrency>(
       canSendPayment: true,
       canGetFee: true,
       getFee,
-      sendPayment,
+      sendPaymentMutation,
     }
   } else if (
     settlementAmount?.amount &&
@@ -142,8 +144,8 @@ export const createNoAmountLightningPaymentDetails = <T extends WalletCurrency>(
       }
     }
 
-    const sendPayment: SendPayment = async (sendPaymentFns) => {
-      const { data } = await sendPaymentFns.lnNoAmountUsdInvoicePaymentSend({
+    const sendPaymentMutation: SendPaymentMutation = async (paymentMutations) => {
+      const { data } = await paymentMutations.lnNoAmountUsdInvoicePaymentSend({
         variables: {
           input: {
             walletId: sendingWalletDescriptor.id,
@@ -164,7 +166,7 @@ export const createNoAmountLightningPaymentDetails = <T extends WalletCurrency>(
       canSendPayment: true,
       canGetFee: true,
       getFee,
-      sendPayment,
+      sendPaymentMutation,
     }
   }
 
@@ -238,8 +240,8 @@ export const createAmountLightningPaymentDetails = <T extends WalletCurrency>(
   )
   const unitOfAccountAmount = paymentRequestAmount
 
-  const sendPayment: SendPayment = async (sendPaymentFns) => {
-    const { data } = await sendPaymentFns.lnInvoicePaymentSend({
+  const sendPaymentMutation: SendPaymentMutation = async (paymentMutations) => {
+    const { data } = await paymentMutations.lnInvoicePaymentSend({
       variables: {
         input: {
           walletId: sendingWalletDescriptor.id,
@@ -353,7 +355,7 @@ export const createAmountLightningPaymentDetails = <T extends WalletCurrency>(
     canSetAmount: false,
     setSendingWalletDescriptor,
     setConvertMoneyAmount,
-    sendPayment,
+    sendPaymentMutation,
     canSendPayment: true,
     getFee,
     canGetFee: true,
@@ -408,10 +410,10 @@ export const createLnurlPaymentDetails = <T extends WalletCurrency>(
     settlementAmount = amountLightningPaymentDetails.settlementAmount
     if (amountLightningPaymentDetails.canSendPayment) {
       sendPaymentAndGetFee = {
-        canGetFee: true,
         canSendPayment: true,
+        sendPaymentMutation: amountLightningPaymentDetails.sendPaymentMutation,
+        canGetFee: true,
         getFee: amountLightningPaymentDetails.getFee,
-        sendPayment: amountLightningPaymentDetails.sendPayment,
       }
     }
   } else {
@@ -438,16 +440,15 @@ export const createLnurlPaymentDetails = <T extends WalletCurrency>(
         },
       }
 
-  const setMemo: PaymentDetailSetMemo<T> = destinationSpecifiedMemo
-    ? { canSetMemo: false }
-    : {
-        setMemo: (newMemo) =>
-          createLnurlPaymentDetails({
-            ...params,
-            senderSpecifiedMemo: newMemo,
-          }),
-        canSetMemo: true,
-      }
+  const setMemo: PaymentDetailSetMemo<T> = {
+    setMemo: (newMemo) =>
+      createLnurlPaymentDetails({
+        ...params,
+        senderSpecifiedMemo: newMemo,
+        destinationSpecifiedMemo: newMemo,
+      }),
+    canSetMemo: true,
+  }
 
   const setConvertMoneyAmount = (newConvertMoneyAmount: ConvertMoneyAmount) => {
     return createLnurlPaymentDetails({

@@ -1,7 +1,6 @@
 import { Linking, Pressable, Share, View } from "react-native"
 
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
-import { useAppConfig } from "@app/hooks"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { toastShow } from "@app/utils/toast"
 import Clipboard from "@react-native-clipboard/clipboard"
@@ -29,10 +28,10 @@ const AddressComponent: React.FC<AddressComponentprops> = ({
   useGlobeIcon,
 }) => {
   const { LL } = useI18nContext()
-  const theme = useTheme()
-  const styles = useStyles(theme)
-  const { appConfig } = useAppConfig()
-  const { name: bankName } = appConfig.galoyInstance
+  const {
+    theme: { colors },
+  } = useTheme()
+  const styles = useStyles()
   const trimmedUrl =
     address.includes("https://") || address.includes("http://")
       ? address.replace("https://", "")
@@ -44,9 +43,7 @@ const AddressComponent: React.FC<AddressComponentprops> = ({
       message: (translations) => {
         switch (addressType) {
           case addressTypes.lightning:
-            return translations.GaloyAddressScreen.copiedAddressToClipboard({
-              bankName,
-            })
+            return translations.GaloyAddressScreen.copiedLightningAddressToClipboard()
           case addressTypes.pos:
             return translations.GaloyAddressScreen.copiedCashRegisterLinkToClipboard()
           case addressTypes.paycode:
@@ -54,7 +51,7 @@ const AddressComponent: React.FC<AddressComponentprops> = ({
         }
       },
       type: "success",
-      currentTranslation: LL,
+      LL,
     })
   }
 
@@ -76,11 +73,11 @@ const AddressComponent: React.FC<AddressComponentprops> = ({
         <View style={styles.iconsContainer}>
           {useGlobeIcon && (
             <Pressable onPress={() => Linking.openURL(address)}>
-              <GaloyIcon name="globe" size={20} color={styles.icons.color} />
+              <GaloyIcon name="globe" size={20} color={colors.black} />
             </Pressable>
           )}
           <Pressable onPress={copyToClipboard}>
-            <GaloyIcon name="copy-paste" size={20} color={styles.icons.color} />
+            <GaloyIcon name="copy-paste" size={20} color={colors.black} />
           </Pressable>
           <Pressable
             onPress={() => {
@@ -90,7 +87,7 @@ const AddressComponent: React.FC<AddressComponentprops> = ({
               })
             }}
           >
-            <GaloyIcon name="share" size={20} color={styles.icons.color} />
+            <GaloyIcon name="share" size={20} color={colors.black} />
           </Pressable>
         </View>
       </View>
@@ -115,9 +112,9 @@ const useStyles = makeStyles(({ colors }) => ({
     width: "100%",
   },
   addressTitle: {
-    color: colors.grey1,
     fontSize: 16,
     lineHeight: 24,
+    flexShrink: 1,
   },
   infoContainer: {
     display: "flex",
@@ -125,14 +122,14 @@ const useStyles = makeStyles(({ colors }) => ({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    backgroundColor: colors.primary10,
+    backgroundColor: colors.grey5,
     paddingVertical: 16,
     paddingHorizontal: 8,
     borderRadius: 8,
     columnGap: 20,
   },
   address: {
-    color: colors.primary5,
+    color: colors.black,
     fontSize: 14,
     lineHeight: 24,
   },
@@ -144,7 +141,7 @@ const useStyles = makeStyles(({ colors }) => ({
     columnGap: 5,
   },
   descriptionText: {
-    color: colors.primary5,
+    color: colors.primary,
     textDecorationLine: "underline",
     fontSize: 14,
     lineHeight: 18,
@@ -156,8 +153,5 @@ const useStyles = makeStyles(({ colors }) => ({
     justifyContent: "space-between",
     alignItems: "center",
     columnGap: 20,
-  },
-  icons: {
-    color: colors.primary5,
   },
 }))

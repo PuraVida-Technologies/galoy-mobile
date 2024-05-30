@@ -4,13 +4,13 @@ import Modal from "react-native-modal"
 
 import CompleteSvg from "@app/modules/market-place/assets/svgs/complete.svg"
 import XSvg from "@app/modules/market-place/assets/svgs/x.svg"
-import { color } from "@app/theme"
+import { color } from "@app/modules/market-place/theme"
 import { fontSize, typography } from "../../theme/typography"
 import { useI18nContext } from "@app/i18n/i18n-react"
 
 const { width, height } = Dimensions.get("window")
 const styles = StyleSheet.create({
-  xContainer:{
+  xContainer: {
     backgroundColor: "#ECEDFF",
     width: 30,
     height: 30,
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "flex-end",
   },
-  container:{
+  container: {
     width: width - 25 * 2,
     padding: 15,
     borderRadius: 11,
@@ -40,7 +40,6 @@ type Props = {
 }
 
 export const CreatePostSuccessModal = ({ isVisible, onClose }: Props) => {
-
   const { LL: t } = useI18nContext()
 
   return (
@@ -54,13 +53,8 @@ export const CreatePostSuccessModal = ({ isVisible, onClose }: Props) => {
       propagateSwipe
       style={styles.modal}
     >
-      <View
-        style={styles.container}
-      >
-        <TouchableOpacity
-          style={styles.xContainer}
-          onPress={onClose}
-        >
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.xContainer} onPress={onClose}>
           <XSvg />
         </TouchableOpacity>
         <Text

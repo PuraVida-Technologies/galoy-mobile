@@ -3,7 +3,7 @@ export const TemplateMarketPlaceTag = {
   createdAt: "",
   name: "",
   updatedAt: "",
-  slug:"",
+  slug: "",
 }
 export const DefaultFilterPostModel = {
   maxDistance: 20000,
@@ -13,7 +13,7 @@ export interface MarketplaceTag {
   createdAt: string
   name: string
   updatedAt: string
-  slug:string
+  slug: string
 }
 export enum PostStatues {
   APPROVED = "APPROVED",
@@ -38,7 +38,7 @@ export interface MarketplacePost {
   tagsIds: [string]
   updatedAt: string
   userId: string
-  tags:MarketplaceTag[]
+  tags: MarketplaceTag[]
 }
 export interface GoogleMapLocation {
   id: string
@@ -47,4 +47,4 @@ export interface GoogleMapLocation {
 export interface PlaceCoordinates {
   latitude: number
   longitude: number
-} 
+}

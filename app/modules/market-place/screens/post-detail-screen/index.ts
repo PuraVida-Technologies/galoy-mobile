@@ -1,1 +1,1 @@
-export * from './PostDetailScreen'
+export * from "./PostDetailScreen"

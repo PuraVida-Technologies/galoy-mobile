@@ -1,50 +1,51 @@
 /* eslint-disable no-param-reassign */
 
-import moment from "moment"
+export const DEC_1_12_AM_UTC_MINUS_6 = new Date(Date.UTC(2023, 11, 1, 6, 0, 0)).getTime()
 
-// refactor these utils
-export const sameDay = (d1: number, d2: number | Date): boolean => {
-  const parsedD1 = new Date(1000 * d1) // XXX FIXME
+export const JAN_1_2024_12_AM_UTC_MINUS_6 = new Date(
+  Date.UTC(2024, 0, 1, 6, 0, 0),
+).getTime()
 
-  if (typeof d2 === "number") {
-    d2 = new Date(d2)
-  }
+export const FEB_1_2024_12_AM_UTC_MINUS_6 = new Date(
+  Date.UTC(2024, 1, 1, 6, 0, 0),
+).getTime()
 
-  return (
-    parsedD1.getFullYear() === d2.getFullYear() &&
-    parsedD1.getMonth() === d2.getMonth() &&
-    parsedD1.getDate() === d2.getDate()
-  )
+export const MAR_1_2024_12_AM_UTC_MINUS_6 = new Date(
+  Date.UTC(2024, 2, 1, 6, 0, 0),
+).getTime()
+
+export const APR_1_2024_12_AM_UTC_MINUS_6 = new Date(
+  Date.UTC(2024, 3, 1, 6, 0, 0),
+).getTime()
+
+export const MAY_1_2024_12_AM_UTC_MINUS_6 = new Date(
+  Date.UTC(2024, 4, 1, 6, 0, 0),
+).getTime()
+
+export const JUNE_1_2024_12_AM_UTC_MINUS_6 = new Date(
+  Date.UTC(2024, 5, 1, 6, 0, 0),
+).getTime()
+
+const secondsToDDMMSS = (totalSeconds: number) => {
+  if (totalSeconds < 0) return ""
+
+  const days = Math.floor(totalSeconds / 86400) // There are 86400 seconds in a day
+  const hours = Math.floor((totalSeconds - days * 86400) / 3600) // 3600 seconds in an hour
+  const minutes = Math.floor((totalSeconds - days * 86400 - hours * 3600) / 60)
+  const seconds = Math.floor(totalSeconds - days * 86400 - hours * 3600 - minutes * 60)
+
+  const formattedDays = days.toString().padStart(2, "0")
+  const formattedHours = hours.toString().padStart(2, "0")
+  const formattedMinutes = minutes.toString().padStart(2, "0")
+  const formattedSeconds = seconds.toString().padStart(2, "0")
+
+  return `${formattedDays}:${formattedHours}:${formattedMinutes}:${formattedSeconds}`
 }
 
-export const sameMonth = (d1: number, d2: number | Date): boolean => {
-  const parsedD1 = new Date(1000 * d1) // XXX FIXME
+export const getTimeLeft = ({ after, until }: { after: number; until: number }) => {
+  const dateNow = Date.now()
+  if (dateNow > until || dateNow < after) return ""
 
-  if (typeof d2 === "number") {
-    d2 = new Date(d2)
-  }
-
-  return (
-    parsedD1.getFullYear() === d2.getFullYear() && parsedD1.getMonth() === d2.getMonth()
-  )
-}
-
-/**
- * Parse a unix time stamp to a JavaScript date object
- * @param  {number} timeStamp The unix time stamp in seconds
- * @return {Date}             The date object
- */
-export const parseDate = (timeStamp: number): Date => {
-  if (!Number.isInteger(timeStamp)) {
-    throw new Error("Invalid input!")
-  }
-  return new Date(timeStamp * 1000)
-}
-
-export const unixTime = (): number => Math.floor(Date.now() / 1000)
-
-export const toMomentLocale = (locale: string) => {
-  const newLocale = locale.replace("_", "-").toLowerCase()
-  const tryLocales = [newLocale, newLocale.split("-")[0]]
-  return tryLocales.find((element) => moment.locales().includes(element)) || "en"
+  const sLeft = (until - dateNow) / 1000
+  return secondsToDDMMSS(sLeft)
 }

@@ -1,9 +1,10 @@
 import React from "react"
-import { StoryScreen } from "../../../.storybook/views"
-import { ComponentMeta } from "@storybook/react"
+
 import { MockedProvider } from "@apollo/client/testing"
+import { Meta } from "@storybook/react"
+
+import { StoryScreen } from "../../../.storybook/views"
 import { createCache } from "../../graphql/cache"
-import { AmountInput, AmountInputProps } from "./amount-input"
 import { WalletCurrency } from "../../graphql/generated"
 import mocks from "../../graphql/mocks"
 import {
@@ -12,6 +13,7 @@ import {
   WalletOrDisplayCurrency,
   ZeroDisplayAmount,
 } from "../../types/amounts"
+import { AmountInput, AmountInputProps } from "./amount-input"
 
 export default {
   title: "Amount Input",
@@ -31,7 +33,7 @@ export default {
       ],
     },
   },
-} as ComponentMeta<typeof AmountInput>
+} as Meta<typeof AmountInput>
 
 const moneyAmountInputModalDefaultProps: AmountInputProps = {
   unitOfAccountAmount: {

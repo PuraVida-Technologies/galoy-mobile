@@ -1,7 +1,10 @@
 import React, { FunctionComponent, PropsWithChildren } from "react"
-import { Button, ButtonProps, makeStyles, useTheme } from "@rneui/themed"
 import { TouchableHighlight } from "react-native"
+
+import { Button, ButtonProps, makeStyles, useTheme } from "@rneui/themed"
+
 import { GaloyIcon, IconNamesType } from "../galoy-icon"
+import { testProps } from "@app/utils/testProps"
 
 declare module "@rneui/themed" {
   interface ButtonProps {
@@ -18,48 +21,55 @@ export const GaloySecondaryButton: FunctionComponent<GaloySecondaryButtonProps> 
   props,
 ) => {
   const { iconName, grey, ...remainingProps } = props
-  const { theme } = useTheme()
+  const {
+    theme: { colors },
+  } = useTheme()
   const styles = useStyles(props)
 
   const icon = iconName ? (
     <GaloyIcon
       name={iconName}
       size={18}
-      color={grey ? theme.colors.grey5 : theme.colors.primary}
+      color={grey ? colors.grey3 : colors.primary}
       style={styles.iconStyle}
     />
   ) : null
 
   return (
     <Button
+      {...(typeof props.title === "string" ? testProps(props.title) : {})}
       {...remainingProps}
-      underlayColor={theme.colors.primary9}
-      activeOpacity={1}
+      underlayColor={colors.transparent}
+      activeOpacity={0.7}
       {...(icon ? { icon } : {})}
       TouchableComponent={TouchableHighlight}
       buttonStyle={styles.buttonStyle}
       disabledStyle={styles.disabledStyle}
-      titleStyle={styles.buttonTitleStyle}
+      titleStyle={[styles.buttonTitleStyle, props.titleStyle]}
       disabledTitleStyle={styles.disabledTitleStyle}
+      loadingProps={{
+        color: colors.primary,
+      }}
     />
   )
 }
 
-const useStyles = makeStyles((theme, props: GaloySecondaryButtonProps) => ({
+const useStyles = makeStyles(({ colors }, props: GaloySecondaryButtonProps) => ({
   disabledStyle: {
-    opacity: 0.3,
+    opacity: 0.35,
+    backgroundColor: colors.transparent,
   },
   buttonStyle: {
-    backgroundColor: "transparent",
+    backgroundColor: colors.transparent,
   },
   buttonTitleStyle: {
-    color: props.grey ? theme.colors.grey5 : theme.colors.primary,
+    color: props.grey ? colors.grey3 : colors.primary,
     fontSize: 20,
     lineHeight: 24,
     fontWeight: "600",
   },
   disabledTitleStyle: {
-    color: props.grey ? theme.colors.grey5 : theme.colors.primary,
+    color: props.grey ? colors.grey3 : colors.primary,
   },
   iconStyle: {
     marginRight: props.iconPosition === "right" ? 0 : 10,

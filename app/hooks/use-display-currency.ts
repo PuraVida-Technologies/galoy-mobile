@@ -1,6 +1,9 @@
+import { useCallback, useMemo } from "react"
+
 import { gql } from "@apollo/client"
 import { useCurrencyListQuery, WalletCurrency } from "@app/graphql/generated"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
+import { useI18nContext } from "@app/i18n/i18n-react"
 import { ConvertMoneyAmount } from "@app/screens/send-bitcoin-screen/payment-details"
 import {
   DisplayAmount,
@@ -12,9 +15,8 @@ import {
   WalletAmount,
   WalletOrDisplayCurrency,
 } from "@app/types/amounts"
-import { useCallback, useMemo } from "react"
+
 import { usePriceConversion } from "./use-price-conversion"
-import { useI18nContext } from "@app/i18n/i18n-react"
 
 gql`
   query displayCurrency {
@@ -121,10 +123,13 @@ export const useDisplayCurrency = () => {
 
   const displayCurrencyDictionary = useMemo(() => {
     const currencyList = dataCurrencyList?.currencyList || []
-    return currencyList.reduce((acc, currency) => {
-      acc[currency.id] = currency
-      return acc
-    }, {} as Record<string, typeof defaultDisplayCurrency>)
+    return currencyList.reduce(
+      (acc, currency) => {
+        acc[currency.id] = currency
+        return acc
+      },
+      {} as Record<string, typeof defaultDisplayCurrency>,
+    )
   }, [dataCurrencyList?.currencyList])
 
   const displayCurrencyInfo =
@@ -231,6 +236,9 @@ export const useDisplayCurrency = () => {
       isApproximate?: boolean
     }): string => {
       const amount = moneyAmountToMajorUnitOrSats(moneyAmount)
+      if (Number.isNaN(amount)) {
+        return ""
+      }
 
       const { symbol, minorUnitToMajorUnitOffset, showFractionDigits, currencyCode } =
         currencyInfo[moneyAmount.currency]

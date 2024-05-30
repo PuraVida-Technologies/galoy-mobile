@@ -1,15 +1,16 @@
-import { palette } from "@app/theme"
 import * as React from "react"
-import { StyleSheet, View } from "react-native"
+import { View } from "react-native"
 import Animated, {
   Extrapolate,
   interpolate,
   useAnimatedStyle,
 } from "react-native-reanimated"
 
-const styles = StyleSheet.create({
+import { makeStyles } from "@rneui/themed"
+
+const useStyles = makeStyles(({ colors }) => ({
   container: {
-    backgroundColor: palette.white,
+    backgroundColor: colors._white,
     borderRadius: 50,
     overflow: "hidden",
   },
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     flex: 1,
   },
-})
+}))
 
 export const PaginationItem: React.FC<{
   index: number
@@ -26,6 +27,8 @@ export const PaginationItem: React.FC<{
   animValue: Animated.SharedValue<number>
   isRotate?: boolean
 }> = (props) => {
+  const styles = useStyles()
+
   const { animValue, index, length, backgroundColor, isRotate } = props
   const width = 10
   const containerDynamicStyle = {
@@ -38,6 +41,9 @@ export const PaginationItem: React.FC<{
     ],
   }
 
+  // not sure why it's needed. maybe need to look into when upgrading react native reanimated
+  /* eslint @typescript-eslint/ban-ts-comment: "off" */
+  // @ts-ignore-next-line
   const animStyle = useAnimatedStyle(() => {
     let inputRange = [index - 1, index, index + 1]
     let outputRange = [-width, 0, width]

@@ -1,13 +1,14 @@
 import * as React from "react"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { makeStyles, Text } from "@rneui/themed"
 import { View } from "react-native"
+
+import { useI18nContext } from "@app/i18n/i18n-react"
+import { Input, makeStyles, Text, useTheme } from "@rneui/themed"
+
+import { GaloyErrorBox } from "../atomic/galoy-error-box"
 import { GaloyIconButton } from "../atomic/galoy-icon-button"
 import { GaloyPrimaryButton } from "../atomic/galoy-primary-button"
-import { GaloyWarning } from "../atomic/galoy-warning"
 import { CurrencyKeyboard } from "../currency-keyboard"
 import { Key } from "./number-pad-reducer"
-import { testProps } from "@app/utils/testProps"
 
 export type AmountInputScreenUIProps = {
   primaryCurrencySymbol?: string
@@ -19,6 +20,7 @@ export type AmountInputScreenUIProps = {
   errorMessage?: string
   setAmountDisabled?: boolean
   onKeyPress: (key: Key) => void
+  onPaste: (keys: number) => void
   onToggleCurrency?: () => void
   onClearAmount: () => void
   onSetAmountPress?: () => void
@@ -34,6 +36,7 @@ export const AmountInputScreenUI: React.FC<AmountInputScreenUIProps> = ({
   secondaryCurrencyCode,
   errorMessage,
   onKeyPress,
+  onPaste,
   onToggleCurrency,
   onSetAmountPress,
   setAmountDisabled,
@@ -41,6 +44,7 @@ export const AmountInputScreenUI: React.FC<AmountInputScreenUIProps> = ({
 }) => {
   const { LL } = useI18nContext()
   const styles = useStyles()
+  const { theme } = useTheme()
 
   return (
     <View style={styles.amountInputScreenContainer}>
@@ -54,13 +58,27 @@ export const AmountInputScreenUI: React.FC<AmountInputScreenUIProps> = ({
             {primaryCurrencySymbol && (
               <Text style={styles.primaryCurrencySymbol}>{primaryCurrencySymbol}</Text>
             )}
-            {primaryCurrencyFormattedAmount ? (
-              <Text style={styles.primaryNumberText}>
-                {primaryCurrencyFormattedAmount}
-              </Text>
-            ) : (
-              <Text style={styles.faintPrimaryNumberText}>0</Text>
-            )}
+            <Input
+              value={primaryCurrencyFormattedAmount}
+              showSoftInputOnFocus={false}
+              onChangeText={(e) => {
+                // remove commas for ease of calculation later on
+                const val = e.replaceAll(",", "")
+                // TODO adjust for currencies that use commas instead of decimals
+
+                // test for string input that can be either numerical or float
+                if (/^\d*\.?\d*$/.test(val.trim())) {
+                  const num = Number(val)
+                  onPaste(num)
+                }
+              }}
+              containerStyle={styles.primaryNumberContainer}
+              inputStyle={styles.primaryNumberText}
+              placeholder="0"
+              placeholderTextColor={theme.colors.grey3}
+              inputContainerStyle={styles.primaryNumberInputContainer}
+              renderErrorMessage={false}
+            />
             <Text style={styles.primaryCurrencyCodeText}>{primaryCurrencyCode}</Text>
           </View>
           {Boolean(secondaryCurrencyFormattedAmount) && (
@@ -87,7 +105,7 @@ export const AmountInputScreenUI: React.FC<AmountInputScreenUIProps> = ({
           )}
         </View>
         <View style={styles.infoContainer}>
-          {errorMessage && <GaloyWarning errorMessage={errorMessage} highlight />}
+          {errorMessage && <GaloyErrorBox errorMessage={errorMessage} />}
         </View>
         <View style={styles.keyboardContainer}>
           <CurrencyKeyboard onPress={onKeyPress} />
@@ -96,28 +114,29 @@ export const AmountInputScreenUI: React.FC<AmountInputScreenUIProps> = ({
           disabled={!onSetAmountPress || setAmountDisabled}
           onPress={onSetAmountPress}
           title={LL.AmountInputScreen.setAmount()}
-          {...testProps(LL.AmountInputScreen.setAmount())}
         />
       </View>
     </View>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ colors }) => ({
   amountInputScreenContainer: {
     flex: 1,
-    backgroundColor: theme.colors.white,
   },
   headerContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     padding: 16,
-    borderBottomColor: theme.colors.primary9,
+    borderBottomColor: colors.primary4,
     borderBottomWidth: 1,
   },
   amountContainer: {
     marginBottom: 16,
+  },
+  primaryNumberContainer: {
+    flex: 1,
   },
   primaryAmountContainer: {
     flexDirection: "row",
@@ -134,12 +153,8 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     fontWeight: "bold",
   },
-  faintPrimaryNumberText: {
-    fontSize: 28,
-    lineHeight: 32,
-    flex: 1,
-    fontWeight: "bold",
-    color: theme.colors.grey8,
+  primaryNumberInputContainer: {
+    borderBottomWidth: 0,
   },
   primaryCurrencyCodeText: {
     fontSize: 28,
@@ -167,7 +182,7 @@ const useStyles = makeStyles((theme) => ({
     marginVertical: 8,
   },
   horizontalLine: {
-    borderBottomColor: theme.colors.primary9,
+    borderBottomColor: colors.primary4,
     borderBottomWidth: 1,
     flex: 1,
   },

@@ -2,7 +2,8 @@ import {
   parsePaymentDestination,
   PaymentType,
   Network as NetworkGaloyClient,
-} from "@galoymoney/client/dist/parsing-v2"
+} from "@galoymoney/client"
+
 import {
   InvalidDestinationReason,
   ParseDestinationParams,
@@ -32,13 +33,19 @@ export const parseDestination = async ({
   })
 
   switch (parsedDestination.paymentType) {
-    case PaymentType.Intraledger: {
+    case PaymentType.IntraledgerWithFlag:
+      return resolveIntraledgerDestination({
+        parsedIntraledgerDestination: parsedDestination,
+        accountDefaultWalletQuery,
+        myWalletIds,
+        flag: parsedDestination.flag,
+      })
+    case PaymentType.Intraledger:
       return resolveIntraledgerDestination({
         parsedIntraledgerDestination: parsedDestination,
         accountDefaultWalletQuery,
         myWalletIds,
       })
-    }
     case PaymentType.Lnurl: {
       return resolveLnurlDestination({
         parsedLnurlDestination: parsedDestination,

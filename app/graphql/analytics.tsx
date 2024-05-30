@@ -1,8 +1,12 @@
-import analytics from "@react-native-firebase/analytics"
-import { useAnalyticsQuery } from "@app/graphql/generated"
-import { gql } from "@apollo/client"
 import { useEffect } from "react"
+
+import { gql } from "@apollo/client"
+import { useAnalyticsQuery } from "@app/graphql/generated"
+import { useAppConfig } from "@app/hooks"
+import analytics from "@react-native-firebase/analytics"
+
 import { useIsAuthed } from "./is-authed-context"
+import { useLevel } from "./level-context"
 
 gql`
   query analytics {
@@ -18,6 +22,12 @@ gql`
 
 export const AnalyticsContainer = () => {
   const isAuthed = useIsAuthed()
+  const level = useLevel()
+  const {
+    appConfig: {
+      galoyInstance: { name: galoyInstanceName },
+    },
+  } = useAppConfig()
 
   const { data } = useAnalyticsQuery({
     skip: !isAuthed,
@@ -39,6 +49,14 @@ export const AnalyticsContainer = () => {
       // analytics().setUserProperties({ network: data.globals.network })
     }
   }, [data?.globals?.network])
+
+  useEffect(() => {
+    // analytics().setUserProperty("accountLevel", level.currentLevel)
+  }, [level])
+
+  useEffect(() => {
+    // analytics().setUserProperty("galoyInstance", galoyInstanceName)
+  }, [galoyInstanceName])
 
   return null
 }

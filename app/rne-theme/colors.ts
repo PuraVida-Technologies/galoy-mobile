@@ -1,107 +1,97 @@
-import { palette } from "@app/theme"
-
 const light = {
-  primary: "#1627C4",
-  primary3: "#1627C4",
-  primary5: "#4453E2",
-  primary6: "#6775F3",
-  primary7: "#A4ABF2",
-  primary8: "#CACFFD",
-  primary9: "#E6E8FA",
-  primary10: "#F0F0F7",
-  backgroundPrimary10: "rgba(240, 240, 247, 0.8)",
-  secondary: "#FB5607",
-  secondary5: "#FB5607",
-  secondary8: "#FFD0BA",
-  success: "#00A700",
-  success5: "#00A700",
-  success9: "#C6EBC6",
-  error: "#DC2626",
-  error4: "#DC2626",
-  error5: "#EF4444",
-  error8: "#FECACA",
-  error9: "#FEE2E2",
-  warning: "#F59E0B",
-  warning4: "#F59E0B",
-  warning9: "#FEF3C7",
+  transparent: "rgba(0, 0, 0, 0)",
+
+  _white: "#FFFFFF",
+  _black: "#000000",
+  _lightGrey: "#CFD9E2",
+  _lighterGrey: "#E6EBEf",
+  _lightBlue: "#3553FF",
+  _darkGrey: "#1d1d1d",
+  _blue: "#3050C4",
+  _orange: "#FF7e1c",
+  _sky: "#C3CCFF",
+  _green: "#00A700",
+
+  // adjusted
   white: "#FFFFFF",
   black: "#000000",
-  grey5: "#61637A",
-  grey7: "#9292A0",
-  grey8: "#AEAEB8",
-  grey9: "#F8F8FA",
-  grey10: "#F0F0F2",
-  horizonBlue: {
-    colors: ["#4453E2", "#5269FF"],
-    start: { x: 0, y: 0.5 },
-    end: { x: 1, y: 0.5 },
-  },
-  verticalBlue: {
-    colors: ["#5269FF", "#4453E2"],
-    start: { x: 0.5, y: 0 },
-    end: { x: 0.5, y: 1 },
-  },
 
-  // legacy
-  whiteOrDarkGrey: "#FFFFFF",
-  lapisLazuliOrLightGrey: palette.lapisLazuli,
-  darkGreyOrWhite: palette.darkGrey,
-  grey9OrWhite: "#F0F0F2",
-  lighterGreyOrBlack: palette.lighterGrey,
+  primary: "#fc5805",
+  primary3: "#fd800b",
+  primary4: "#fe990d",
+  primary5: "#ffad0d",
+
+  blue5: "#4453E2",
+
+  grey0: "#3A3C51", // grey1
+  grey1: "#61637A", // grey3
+  grey2: "#9292A0", // grey4
+  grey3: "#AEAEB8", // grey5
+  grey4: "#E2E2E4", // grey8-ish
+  grey5: "#F2F2F4", // grey9-ish
+
   loaderForeground: "#ecebeb",
   loaderBackground: "#f3f3f3",
+
+  backdropWhite: "rgba(0, 0, 0, 0.06)",
+  backdropWhiter: "rgba(0, 0, 0, 0.12)",
+
+  // not adjusted
+  error: "#DC2626",
+  error9: "#FEE2E2",
+
+  // same as error
+  red: "#DC2626",
+
+  warning: "#F59E0B",
 }
 
 const dark = {
-  primary: "#8690F3", // intermadiate color between primary6 and 7 from light mode
-  primary3: "#1627C4",
-  primary5: "#4453E2",
-  primary6: "#6775F3",
-  primary7: "#A4ABF2",
-  primary8: "#CACFFD",
-  primary9: "#E6E8FA",
-  primary10: "#F0F0F7",
-  backgroundPrimary10: "rgba(97, 99, 122, 0.8)",
-  secondary: "#FB5607",
-  secondary5: "#FB5607",
-  secondary8: "#FFD0BA",
-  success: "#00A700",
-  success5: "#00A700",
-  success9: "#C6EBC6",
-  error: "#DC2626",
-  error4: "#DC2626",
-  error5: "#EF4444",
-  error8: "#FECACA",
-  error9: "#FEE2E2",
-  warning: "#F59E0B",
-  warning4: "#F59E0B",
-  warning9: "#FEF3C7",
-  white: "#000000", // <-- this is the only change
-  black: "#FFFFFF", // <-- this is the only change
-  grey5: "#61637A",
-  grey7: "#9292A0",
-  grey8: palette.lightGrey, // <-- this is the only change
-  grey9: "#2D2D2D",
-  grey10: "#1F1F1F", // <-- fine tune this change
-  horizonBlue: {
-    colors: ["#4453E2", "#5269FF"],
-    start: { x: 0, y: 0.5 },
-    end: { x: 1, y: 0.5 },
-  },
-  verticalBlue: {
-    colors: ["#5269FF", "#4453E2"],
-    start: { x: 0.5, y: 0 },
-    end: { x: 0.5, y: 1 },
-  },
+  transparent: "rgba(0, 0, 0, 0)",
 
-  // legacy
-  whiteOrDarkGrey: palette.darkGrey, // <-- this is the only change
-  lapisLazuliOrLightGrey: palette.lightGrey, // <-- this is the only change
-  darkGreyOrWhite: palette.white, // <-- should it be white or light grey?
-  grey9OrWhite: palette.white,
-  lighterGreyOrBlack: palette.black,
+  _white: "#FFFFFF",
+  _black: "#000000",
+  _lightGrey: "#CFD9E2",
+  _lighterGrey: "#E6EBEf",
+  _lightBlue: "#3553FF",
+  _darkGrey: "#1d1d1d",
+  _blue: "#3050C4",
+  _orange: "#FF7e1c",
+  _sky: "#C3CCFF",
+  _green: "#00A700",
+
+  // adjusted
+  white: "#000000",
+  black: "#FFFFFF",
+
+  primary: "#ffad0d",
+  primary3: "#fe990d",
+  primary4: "#fd800b",
+  primary5: "#fc5805",
+
+  blue5: "#F0F0F7",
+
+  grey0: "#FAF9F9", // grey1
+  grey1: "#E9E8E8", // grey2
+  grey2: "#CCCCCC", // grey3
+  grey3: "#949494", // grey5
+  grey4: "#393939", // grey8
+  grey5: "#1d1d1d", // after grey9
+
   loaderBackground: "#131313",
   loaderForeground: "#3c3b3b",
+
+  backdropWhite: "rgba(255, 255, 255, 0.06)",
+  backdropWhiter: "rgba(255, 255, 255, 0.12)",
+
+  // not adjusted
+  error: "#DC2626",
+  error9: "#7F1D1D",
+
+  // same as error
+  red: "#DC2626",
+
+  warning: "#F59E0B",
 }
 
 export { light, dark }

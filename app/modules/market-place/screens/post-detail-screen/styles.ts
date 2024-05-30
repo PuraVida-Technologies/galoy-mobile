@@ -1,6 +1,6 @@
-import { StyleSheet, Dimensions } from "react-native";
-import { color, palette } from "@app/theme"
-import { fontSize } from "../../theme/typography";
+import { StyleSheet, Dimensions } from "react-native"
+import { color, palette } from "@app/modules/market-place/theme"
+import { fontSize } from "../../theme/typography"
 
 const { width, height } = Dimensions.get("window")
 

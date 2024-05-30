@@ -1,36 +1,67 @@
 import React from "react"
 import { Text } from "react-native"
-import moment from "moment"
-import { toMomentLocale } from "@app/utils/date"
-import { useI18nContext } from "@app/i18n/i18n-react"
+
 import { TxStatus } from "@app/graphql/generated"
+import { useI18nContext } from "@app/i18n/i18n-react"
 
 type TransactionDateProps = {
   createdAt: number
+  includeTime: boolean
   status: TxStatus
-  friendly?: boolean
-  diffDate?: boolean
+}
+
+export const formatDateForTransaction = ({
+  createdAt,
+  locale,
+  timezone,
+  now = Date.now(),
+  includeTime,
+}: {
+  createdAt: number
+  locale: string
+  timezone?: string
+  now?: number
+  includeTime: boolean
+}) => {
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" })
+
+  const diffInSeconds = Math.max(0, Math.floor((now - createdAt * 1000) / 1000))
+  let output = ""
+
+  // if date is less than 1 day, we calculate relative time
+  // otherwise, we return absolute date and time
+  if (diffInSeconds < 60) {
+    output = rtf.format(-diffInSeconds, "second")
+  } else if (diffInSeconds < 3600) {
+    output = rtf.format(-Math.floor(diffInSeconds / 60), "minute")
+  } else if (diffInSeconds < 86400) {
+    output = rtf.format(-Math.floor(diffInSeconds / 3600), "hour")
+  } else {
+    const options: Intl.DateTimeFormatOptions = {
+      dateStyle: "full",
+    }
+    // forcing a timezone for the tests
+    if (timezone) {
+      options.timeZone = timezone
+    }
+    if (includeTime) {
+      options.timeStyle = "medium"
+    }
+
+    output = new Date(createdAt * 1000).toLocaleString(locale, options)
+  }
+
+  return output
 }
 
 export const TransactionDate = ({
   createdAt,
   status,
-  friendly = false,
-  diffDate = false,
+  includeTime,
 }: TransactionDateProps) => {
   const { LL, locale } = useI18nContext()
-  moment.locale(toMomentLocale(locale))
   if (status === "PENDING") {
-    return <Text>{LL.common.pending()?.toUpperCase()}</Text>
+    return <Text>{LL.common.pending().toUpperCase()}</Text>
   }
-  if (diffDate) {
-    return (
-      <Text>
-        {moment
-          .duration(Math.min(0, moment.unix(createdAt).diff(moment())))
-          .humanize(friendly)}
-      </Text>
-    )
-  }
-  return <Text>{moment.unix(createdAt).format("LLL")}</Text>
+  return <Text>{formatDateForTransaction({ createdAt, locale, includeTime })}</Text>
 }

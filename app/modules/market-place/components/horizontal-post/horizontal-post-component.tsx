@@ -1,4 +1,4 @@
-import { color, palette } from "@app/theme"
+import { color, palette } from "@app/modules/market-place/theme"
 import * as React from "react"
 // eslint-disable-next-line react-native/split-platform-components
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
@@ -16,8 +16,8 @@ type Props = {
   onLocationPress: () => void
   onItemPress: () => void
   onDirectionPress: () => void
-  isFullWidth?:boolean
-  showsStatus?:boolean
+  isFullWidth?: boolean
+  showsStatus?: boolean
 }
 
 export const HorizontalPostComponent: React.FC<Props> = ({
@@ -26,13 +26,15 @@ export const HorizontalPostComponent: React.FC<Props> = ({
   onDirectionPress,
   onItemPress,
   isFullWidth,
-  showsStatus
+  showsStatus,
 }) => {
-
-  const { LL: t } = useI18nContext();
+  const { LL: t } = useI18nContext()
 
   return (
-    <TouchableOpacity style={[styles.container, { width: isFullWidth ? width - 40 : 330 }]} onPress={onItemPress}>
+    <TouchableOpacity
+      style={[styles.container, { width: isFullWidth ? width - 40 : 330 }]}
+      onPress={onItemPress}
+    >
       <Row containerStyle={{ flex: 1 }}>
         <Image
           style={{ width: 89, height: "100%", borderRadius: 4, marginRight: 10 }}
@@ -46,7 +48,10 @@ export const HorizontalPostComponent: React.FC<Props> = ({
           <Text style={styles.bigText}>{product.name}</Text>
           <Row containerStyle={{ alignItems: "center" }}>
             <FilledDirectionSvg />
-            <Text style={styles.smallText}> {showsStatus ? product.status : `${0}m`}</Text>
+            <Text style={styles.smallText}>
+              {" "}
+              {showsStatus ? product.status : `${0}m`}
+            </Text>
           </Row>
           <Text style={[styles.bigText, { fontSize: fontSize.font14 }]} numberOfLines={2}>
             {product.description}
@@ -85,7 +90,7 @@ const styles = StyleSheet.create({
   smallText: {
     fontSize: fontSize.font12,
     color: palette.midGrey,
-    marginVertical:3
+    marginVertical: 3,
   },
   buttonStyle: {
     backgroundColor: "rgba(55, 82, 254, 0.11)",

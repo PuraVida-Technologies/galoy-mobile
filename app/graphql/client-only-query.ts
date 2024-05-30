@@ -1,15 +1,28 @@
+import { CountryCode } from "libphonenumber-js/mobile"
+import { Region } from "react-native-maps"
+
 import { ApolloClient, gql } from "@apollo/client"
+
 import {
   BetaDocument,
   BetaQuery,
   ColorSchemeDocument,
   ColorSchemeQuery,
+  CountryCodeDocument,
+  CountryCodeQuery,
+  FeedbackModalShownDocument,
+  FeedbackModalShownQuery,
+  HasPromptedSetDefaultAccountDocument,
   HiddenBalanceToolTipDocument,
   HiddenBalanceToolTipQuery,
   HideBalanceDocument,
   HideBalanceQuery,
-  NewNameBlinkCounterDocument,
-  NewNameBlinkCounterQuery,
+  InnerCircleValueDocument,
+  InnerCircleValueQuery,
+  IntroducingCirclesModalShownDocument,
+  IntroducingCirclesModalShownQuery,
+  RegionDocument,
+  RegionQuery,
 } from "./generated"
 
 export default gql`
@@ -26,11 +39,36 @@ export default gql`
   }
 
   query colorScheme {
-    colorScheme @client
+    colorScheme @client # "system" | "light" | "dark"
   }
 
-  query newNameBlinkCounter {
-    newNameBlinkCounter @client
+  query countryCode {
+    countryCode @client
+  }
+
+  query region {
+    region @client {
+      latitude
+      longitude
+      latitudeDelta
+      longitudeDelta
+    }
+  }
+
+  query feedbackModalShown {
+    feedbackModalShown @client
+  }
+
+  query hasPromptedSetDefaultAccount {
+    hasPromptedSetDefaultAccount @client
+  }
+
+  query introducingCirclesModalShown {
+    introducingCirclesModalShown @client
+  }
+
+  query innerCircleValue {
+    innerCircleValue @client
   }
 `
 
@@ -94,20 +132,99 @@ export const updateColorScheme = (client: ApolloClient<unknown>, colorScheme: st
       },
     })
   } catch {
-    console.warn("impossible to update beta")
+    console.warn("impossible to update color scheme")
   }
 }
 
-export const updateNewNameBlink = (client: ApolloClient<unknown>, counter: number) => {
+export const updateCountryCode = (
+  client: ApolloClient<unknown>,
+  countryCode: CountryCode,
+) => {
   try {
-    client.writeQuery<NewNameBlinkCounterQuery>({
-      query: NewNameBlinkCounterDocument,
+    client.writeQuery<CountryCodeQuery>({
+      query: CountryCodeDocument,
       data: {
         __typename: "Query",
-        newNameBlinkCounter: counter + 1,
+        countryCode,
       },
     })
   } catch {
-    console.warn("impossible to update beta")
+    console.warn("impossible to update country code")
+  }
+}
+
+export const updateMapLastCoords = (client: ApolloClient<unknown>, region: Region) => {
+  try {
+    client.writeQuery<RegionQuery>({
+      query: RegionDocument,
+      data: {
+        __typename: "Query",
+        region: {
+          __typename: "Region",
+          ...region,
+        },
+      },
+    })
+  } catch {
+    console.warn("impossible to update map last coords")
+  }
+}
+
+export const setFeedbackModalShown = (client: ApolloClient<unknown>, shown: boolean) => {
+  try {
+    client.writeQuery<FeedbackModalShownQuery>({
+      query: FeedbackModalShownDocument,
+      data: {
+        __typename: "Query",
+        feedbackModalShown: shown,
+      },
+    })
+  } catch {
+    console.warn("unable to update feedbackModalShown")
+  }
+}
+
+export const setHasPromptedSetDefaultAccount = (client: ApolloClient<unknown>) => {
+  try {
+    client.writeQuery({
+      query: HasPromptedSetDefaultAccountDocument,
+      data: {
+        __typename: "Query",
+        hasPromptedSetDefaultAccount: true,
+      },
+    })
+  } catch {
+    console.warn("impossible to update hasPromptedSetDefaultAccount")
+  }
+}
+
+export const setIntroducingCirclesModalShown = (client: ApolloClient<unknown>) => {
+  try {
+    client.writeQuery<IntroducingCirclesModalShownQuery>({
+      query: IntroducingCirclesModalShownDocument,
+      data: {
+        __typename: "Query",
+        introducingCirclesModalShown: true,
+      },
+    })
+  } catch {
+    console.warn("unable to update introducingCirclesModalShown")
+  }
+}
+
+export const setInnerCircleCachedValue = (
+  client: ApolloClient<unknown>,
+  innerCircleValue: number,
+) => {
+  try {
+    client.writeQuery<InnerCircleValueQuery>({
+      query: InnerCircleValueDocument,
+      data: {
+        __typename: "Query",
+        innerCircleValue,
+      },
+    })
+  } catch {
+    console.warn("unable to update InnerCircleValueDocument")
   }
 }

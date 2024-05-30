@@ -4,16 +4,17 @@ import { Pressable, View } from "react-native"
 
 import { gql } from "@apollo/client"
 import { useWalletOverviewScreenQuery, WalletCurrency } from "@app/graphql/generated"
+import { useHideAmount } from "@app/graphql/hide-amount-context"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
+import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
+import { useI18nContext } from "@app/i18n/i18n-react"
 import { toBtcMoneyAmount, toUsdMoneyAmount } from "@app/types/amounts"
+import { testProps } from "@app/utils/testProps"
 import { makeStyles, Text, useTheme } from "@rneui/themed"
 
 import { GaloyCurrencyBubble } from "../atomic/galoy-currency-bubble"
-import { GaloyIconButton } from "../atomic/galoy-icon-button"
 import { GaloyIcon } from "../atomic/galoy-icon"
-import HideableArea from "../hideable-area/hideable-area"
-import { useI18nContext } from "@app/i18n/i18n-react"
 
 const Loader = () => {
   const styles = useStyles()
@@ -38,13 +39,10 @@ gql`
       id
       defaultAccount {
         id
-        btcWallet @client {
+        wallets {
           id
           balance
-        }
-        usdWallet @client {
-          id
-          balance
+          walletCurrency
         }
       }
     }
@@ -53,21 +51,18 @@ gql`
 
 type Props = {
   loading: boolean
-  isContentVisible: boolean
-  setIsContentVisible: React.Dispatch<React.SetStateAction<boolean>>
   setIsStablesatModalVisible: (value: boolean) => void
 }
 
-const WalletOverview: React.FC<Props> = ({
-  loading,
-  isContentVisible,
-  setIsContentVisible,
-  setIsStablesatModalVisible,
-}) => {
+const WalletOverview: React.FC<Props> = ({ loading, setIsStablesatModalVisible }) => {
+  const { hideAmount, switchMemoryHideAmount } = useHideAmount()
+
   const { LL } = useI18nContext()
   const isAuthed = useIsAuthed()
-  const { theme } = useTheme()
-  const styles = useStyles(theme)
+  const {
+    theme: { colors },
+  } = useTheme()
+  const styles = useStyles()
   const { data } = useWalletOverviewScreenQuery({ skip: !isAuthed })
 
   const { formatMoneyAmount, displayCurrency, moneyAmountToDisplayCurrencyString } =
@@ -79,13 +74,12 @@ const WalletOverview: React.FC<Props> = ({
   let usdInUnderlyingCurrency: string | undefined = undefined
 
   if (isAuthed) {
-    const btcWalletBalance = toBtcMoneyAmount(
-      data?.me?.defaultAccount?.btcWallet?.balance ?? NaN,
-    )
+    const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
+    const usdWallet = getUsdWallet(data?.me?.defaultAccount?.wallets)
 
-    const usdWalletBalance = toUsdMoneyAmount(
-      data?.me?.defaultAccount?.usdWallet?.balance ?? NaN,
-    )
+    const btcWalletBalance = toBtcMoneyAmount(btcWallet?.balance ?? NaN)
+
+    const usdWalletBalance = toUsdMoneyAmount(usdWallet?.balance ?? NaN)
 
     btcInDisplayCurrencyFormatted = moneyAmountToDisplayCurrencyString({
       moneyAmount: btcWalletBalance,
@@ -104,72 +98,65 @@ const WalletOverview: React.FC<Props> = ({
     }
   }
 
-  const toggleIsContentVisible = () => {
-    setIsContentVisible((prevState) => !prevState)
-  }
-
   return (
     <View style={styles.container}>
-      <View style={styles.displayTextView}>
-        <Text type="p1" bold>
+      <View style={styles.myAccounts}>
+        <Text type="p1" bold {...testProps(LL.HomeScreen.myAccounts())}>
           {LL.HomeScreen.myAccounts()}
         </Text>
-        <GaloyIconButton
-          name={isContentVisible ? "eye" : "eye-slash"}
-          size="medium"
-          onPress={toggleIsContentVisible}
-        />
+        <Pressable onPress={switchMemoryHideAmount}>
+          <GaloyIcon name={hideAmount ? "eye-slash" : "eye"} size={24} />
+        </Pressable>
       </View>
-      <View style={styles.separator}></View>
+      <View style={[styles.separator, styles.titleSeparator]}></View>
       <View style={styles.displayTextView}>
         <View style={styles.currency}>
-          <GaloyCurrencyBubble currency="BTC" size={"medium"} />
+          <GaloyCurrencyBubble currency="BTC" />
           <Text type="p1">Bitcoin</Text>
         </View>
         {loading ? (
           <Loader />
+        ) : hideAmount ? (
+          <Text>****</Text>
         ) : (
           <View style={styles.hideableArea}>
-            <HideableArea isContentVisible={isContentVisible}>
-              <Text type="p1" bold>
-                {btcInUnderlyingCurrency}
-              </Text>
-              <Text type="p3">{btcInDisplayCurrencyFormatted}</Text>
-            </HideableArea>
+            <Text type="p1" bold {...testProps("bitcoin-balance")}>
+              {btcInUnderlyingCurrency}
+            </Text>
+            <Text type="p3">{btcInDisplayCurrencyFormatted}</Text>
           </View>
         )}
       </View>
       <View style={styles.separator}></View>
       <View style={styles.displayTextView}>
         <View style={styles.currency}>
-          <GaloyCurrencyBubble currency="USD" size={"medium"} />
-          <Text type="p1">Stablesats</Text>
+          <GaloyCurrencyBubble currency="USD" />
+          <Text type="p1">Dollar</Text>
           <Pressable onPress={() => setIsStablesatModalVisible(true)}>
-            <GaloyIcon
-              color={theme.colors.primary3}
-              backgroundColor={theme.colors.primary9}
-              name="question"
-              size={15}
-            />
+            <GaloyIcon color={colors.grey1} name="question" size={18} />
           </Pressable>
         </View>
         {loading ? (
           <Loader />
         ) : (
           <View style={styles.hideableArea}>
-            <HideableArea isContentVisible={isContentVisible}>
-              {usdInUnderlyingCurrency ? (
-                <Text type="p1" bold>
-                  {usdInUnderlyingCurrency}
+            {!hideAmount && (
+              <>
+                {usdInUnderlyingCurrency ? (
+                  <Text type="p1" bold>
+                    {usdInUnderlyingCurrency}
+                  </Text>
+                ) : null}
+                <Text
+                  {...testProps("stablesats-balance")}
+                  type={usdInUnderlyingCurrency ? "p3" : "p1"}
+                  bold={!usdInUnderlyingCurrency}
+                >
+                  {usdInDisplayCurrencyFormatted}
                 </Text>
-              ) : null}
-              <Text
-                type={usdInUnderlyingCurrency ? "p3" : "p1"}
-                bold={!usdInUnderlyingCurrency}
-              >
-                {usdInDisplayCurrencyFormatted}
-              </Text>
-            </HideableArea>
+              </>
+            )}
+            {hideAmount && <Text>****</Text>}
           </View>
         )}
       </View>
@@ -181,15 +168,11 @@ export default WalletOverview
 
 const useStyles = makeStyles(({ colors }) => ({
   container: {
-    backgroundColor: colors.whiteOrDarkGrey,
+    backgroundColor: colors.grey5,
     display: "flex",
     flexDirection: "column",
-    marginHorizontal: 30,
-    marginBottom: 20,
     borderRadius: 12,
-    padding: 15,
-    borderWidth: 1,
-    borderColor: colors.grey9,
+    padding: 12,
   },
   loaderBackground: {
     color: colors.loaderBackground,
@@ -197,15 +180,28 @@ const useStyles = makeStyles(({ colors }) => ({
   loaderForefound: {
     color: colors.loaderForeground,
   },
+  myAccounts: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   displayTextView: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
+    height: 45,
+    marginVertical: 4,
+    marginTop: 5,
   },
   separator: {
     height: 1,
-    backgroundColor: colors.lighterGreyOrBlack,
-    marginTop: 10,
+    backgroundColor: colors.grey4,
+    marginVertical: 2,
+  },
+  titleSeparator: {
+    marginTop: 12,
   },
   currency: {
     display: "flex",
@@ -215,12 +211,12 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   hideableArea: {
     alignItems: "flex-end",
-    marginTop: 20,
   },
   loaderContainer: {
     flex: 1,
     justifyContent: "flex-end",
     alignItems: "flex-end",
-    height: 43,
+    height: 45,
+    marginTop: 5,
   },
 }))

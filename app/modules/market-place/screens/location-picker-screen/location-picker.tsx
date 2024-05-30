@@ -2,7 +2,7 @@ import { HeaderComponent } from "../../components/header"
 import { autoComplete, getPlaceCoordinates } from "@app/modules/market-place/graphql"
 import { RootState } from "@app/modules/market-place/redux"
 import { setTempPost } from "@app/modules/market-place/redux/reducers/store-reducer"
-import { color, palette } from "@app/theme"
+import { color, palette } from "@app/modules/market-place/theme"
 import { useNavigation } from "@react-navigation/native"
 import React, { useEffect, useState } from "react"
 import {
@@ -21,7 +21,7 @@ import { GoogleMapLocation } from "../../models"
 import TextInputComponent from "../../components/text-input-component"
 
 export interface LocationPickProps {
-  debounce?: number 
+  debounce?: number
 }
 const { width } = Dimensions.get("window")
 export const LocationPickerScreen = (props: LocationPickProps) => {
@@ -77,8 +77,7 @@ export const LocationPickerScreen = (props: LocationPickProps) => {
       )
       navigation.goBack()
     } catch (error) {
-      console.log(error);
-      
+      console.log(error)
     } finally {
       setIsFetching(false)
     }
@@ -102,7 +101,9 @@ export const LocationPickerScreen = (props: LocationPickProps) => {
         </View>
       </View>
 
-      {isFetching && <Text style={styles.loadingText}>{t.marketPlace.loading_data()}</Text>}
+      {isFetching && (
+        <Text style={styles.loadingText}>{t.marketPlace.loading_data()}</Text>
+      )}
 
       <FlatList
         data={results}

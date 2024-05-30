@@ -1,8 +1,9 @@
-import { useTheme, Text, makeStyles } from "@rneui/themed"
 import React from "react"
 import { Pressable, PressableProps, StyleProp, View, ViewStyle } from "react-native"
+
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 import { testProps } from "@app/utils/testProps"
+import { useTheme, Text, makeStyles } from "@rneui/themed"
 
 export type AmountInputButtonProps = {
   placeholder?: string
@@ -12,6 +13,8 @@ export type AmountInputButtonProps = {
   disabled?: boolean
   secondaryValue?: string
   primaryTextTestProps?: string
+  showValuesIfDisabled?: boolean
+  big?: boolean
 } & PressableProps
 
 export const AmountInputButton: React.FC<AmountInputButtonProps> = ({
@@ -22,9 +25,13 @@ export const AmountInputButton: React.FC<AmountInputButtonProps> = ({
   disabled,
   secondaryValue,
   primaryTextTestProps,
+  showValuesIfDisabled = true,
+  big = true,
   ...props
 }) => {
-  const { theme } = useTheme()
+  const {
+    theme: { colors },
+  } = useTheme()
   const styles = useStyles()
 
   const pressableStyle = ({ pressed }: { pressed: boolean }): StyleProp<ViewStyle> => {
@@ -32,22 +39,24 @@ export const AmountInputButton: React.FC<AmountInputButtonProps> = ({
     switch (true) {
       case error:
         colorStyles = {
-          backgroundColor: theme.colors.error9,
+          backgroundColor: colors.error9,
         }
         break
       case pressed:
         colorStyles = {
-          backgroundColor: theme.colors.primary9,
+          opacity: 0.5,
+          backgroundColor: colors.grey5,
         }
         break
       case disabled:
         colorStyles = {
-          backgroundColor: theme.colors.white,
+          backgroundColor: colors.grey5,
+          opacity: 0.5,
         }
         break
       default:
         colorStyles = {
-          backgroundColor: theme.colors.white,
+          backgroundColor: colors.grey5,
         }
     }
 
@@ -55,11 +64,18 @@ export const AmountInputButton: React.FC<AmountInputButtonProps> = ({
       paddingVertical: 8,
       paddingHorizontal: 12,
       borderRadius: 8,
-      minHeight: 60,
+      minHeight: big ? 60 : 50,
       justifyContent: "center",
     }
 
     return [colorStyles, sizeStyles]
+  }
+
+  /* eslint-disable no-param-reassign */
+  // hide values if disabled
+  if (!showValuesIfDisabled) {
+    value = ""
+    secondaryValue = ""
   }
 
   const primaryText = value || placeholder || ""
@@ -68,9 +84,8 @@ export const AmountInputButton: React.FC<AmountInputButtonProps> = ({
     <Pressable {...props} style={pressableStyle} disabled={disabled}>
       <View style={styles.contentContainerStyle}>
         <Text
-          type="p1"
-          color={error ? theme.colors.error4 : undefined}
-          style={styles.primaryTextStyle}
+          type="p2"
+          color={error ? colors.error : undefined}
           numberOfLines={1}
           ellipsizeMode="middle"
           {...(primaryTextTestProps ? testProps(primaryTextTestProps) : {})}
@@ -79,15 +94,14 @@ export const AmountInputButton: React.FC<AmountInputButtonProps> = ({
         </Text>
         {iconName && (
           <GaloyIcon
-            style={styles.iconStyle}
             name={iconName}
             size={20}
-            color={error ? theme.colors.error4 : theme.colors.primary}
+            color={error ? colors.error : colors.primary}
           />
         )}
       </View>
       {secondaryValue && (
-        <Text type="p4" color={error ? theme.colors.error4 : undefined}>
+        <Text type="p4" color={error ? colors.error : undefined}>
           {secondaryValue}
         </Text>
       )}
@@ -101,6 +115,4 @@ const useStyles = makeStyles(() => ({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  iconStyle: {},
-  primaryTextStyle: {},
 }))

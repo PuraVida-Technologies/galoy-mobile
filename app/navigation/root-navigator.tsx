@@ -1,102 +1,115 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { CardStyleInterpolators, createStackNavigator } from "@react-navigation/stack"
-import * as React from "react"
+import * as React from "react";
 
-import {
-  AuthenticationCheckScreen,
-  AuthenticationScreen,
-} from "../screens/authentication-screen"
-import { PinScreen } from "../screens/authentication-screen/pin-screen"
-import { ContactsDetailScreen, ContactsScreen } from "../screens/contacts-screen"
-import { DebugScreen } from "../screens/debug-screen"
-import { EarnMapScreen } from "../screens/earns-map-screen"
-import { EarnQuiz, EarnSection } from "../screens/earns-screen"
-import { SectionCompleted } from "../screens/earns-screen/section-completed"
-import { GetStartedScreen } from "../screens/get-started-screen"
-import { HomeScreen } from "../screens/home-screen"
-import { MapScreen } from "../screens/map-screen/map-screen"
+// Puravida Screens
+import { MarketPlaceStacks } from "@app/modules/market-place/navigation/marketplace-stack";
+import MarketPlaceSvg from "@app/modules/market-place/assets/svgs/market-place.svg";
+import { PostDetailScreen } from "@app/modules/market-place/screens/post-detail-screen/PostDetailScreen";
+import { LocationPickerScreen } from "@app/modules/market-place/screens/location-picker-screen";
 
-import { PriceHistoryScreen } from "../screens/price/price-history-screen"
-
-import ContactsIcon from "@app/assets/icons/contacts.svg"
-import HomeIcon from "@app/assets/icons/home.svg"
-import LearnIcon from "@app/assets/icons/learn.svg"
-import MapIcon from "@app/assets/icons/map.svg"
-import { useIsAuthed } from "@app/graphql/is-authed-context"
-import { useI18nContext } from "@app/i18n/i18n-react"
+import HomeIcon from "@app/assets/icons/home.svg";
+import LearnIcon from "@app/assets/icons/learn.svg";
+import MapIcon from "@app/assets/icons/map.svg";
+import { useIsAuthed } from "@app/graphql/is-authed-context";
+import { useI18nContext } from "@app/i18n/i18n-react";
+import { ChatBotScreen } from "@app/screens/chatbot-screen/chatbot";
 import {
   ConversionConfirmationScreen,
   ConversionDetailsScreen,
   ConversionSuccessScreen,
-} from "@app/screens/conversion-flow"
-import { GaloyAddressScreen } from "@app/screens/galoy-address-screen"
-import ReceiveWrapperScreen from "@app/screens/receive-bitcoin-screen/receive-wrapper"
-import RedeemBitcoinDetailScreen from "@app/screens/redeem-lnurl-withdrawal-screen/redeem-bitcoin-detail-screen"
-import RedeemBitcoinResultScreen from "@app/screens/redeem-lnurl-withdrawal-screen/redeem-bitcoin-result-screen"
-import SendBitcoinConfirmationScreen from "@app/screens/send-bitcoin-screen/send-bitcoin-confirmation-screen"
-import SendBitcoinDestinationScreen from "@app/screens/send-bitcoin-screen/send-bitcoin-destination-screen"
-import SendBitcoinDetailsScreen from "@app/screens/send-bitcoin-screen/send-bitcoin-details-screen"
-import SendBitcoinSuccessScreen from "@app/screens/send-bitcoin-screen/send-bitcoin-success-screen"
-import { AccountScreen } from "@app/screens/settings-screen/account-screen"
-import { LnurlScreen } from "@app/screens/settings-screen/lnurl-screen"
-import { TransactionLimitsScreen } from "@app/screens/settings-screen/transaction-limits-screen"
-import { ScanningQRCodeScreen } from "../screens/send-bitcoin-screen"
-import { SettingsScreen } from "../screens/settings-screen"
-import { LanguageScreen } from "../screens/settings-screen/language-screen"
-import { SecurityScreen } from "../screens/settings-screen/security-screen"
-import { TransactionDetailScreen } from "../screens/transaction-detail-screen"
-import { TransactionHistoryScreen } from "../screens/transaction-history/transaction-history-screen"
+} from "@app/screens/conversion-flow";
+import {
+  EmailLoginInitiateScreen,
+  EmailLoginValidateScreen,
+} from "@app/screens/email-login-screen";
+import {
+  EmailRegistrationInitiateScreen,
+  EmailRegistrationValidateScreen,
+} from "@app/screens/email-registration-screen";
+import { FullOnboardingFlowScreen } from "@app/screens/full-onboarding-flow";
+import { GaloyAddressScreen } from "@app/screens/galoy-address-screen";
+import { PeopleTabIcon } from "@app/screens/people-screen/tab-icon";
+import {
+  PhoneLoginInitiateScreen,
+  PhoneLoginInitiateType,
+  PhoneLoginValidationScreen,
+} from "@app/screens/phone-auth-screen";
+import { PhoneRegistrationInitiateScreen } from "@app/screens/phone-auth-screen/phone-registration-input";
+import { PhoneRegistrationValidateScreen } from "@app/screens/phone-auth-screen/phone-registration-validation";
+import ReceiveScreen from "@app/screens/receive-bitcoin-screen/receive-screen";
+import RedeemBitcoinDetailScreen from "@app/screens/redeem-lnurl-withdrawal-screen/redeem-bitcoin-detail-screen";
+import RedeemBitcoinResultScreen from "@app/screens/redeem-lnurl-withdrawal-screen/redeem-bitcoin-result-screen";
+import SendBitcoinCompletedScreen from "@app/screens/send-bitcoin-screen/send-bitcoin-completed-screen";
+import SendBitcoinConfirmationScreen from "@app/screens/send-bitcoin-screen/send-bitcoin-confirmation-screen";
+import SendBitcoinDestinationScreen from "@app/screens/send-bitcoin-screen/send-bitcoin-destination-screen";
+import SendBitcoinDetailsScreen from "@app/screens/send-bitcoin-screen/send-bitcoin-details-screen";
+import { AccountScreen } from "@app/screens/settings-screen/account";
+import { DefaultWalletScreen } from "@app/screens/settings-screen/default-wallet";
+import { DisplayCurrencyScreen } from "@app/screens/settings-screen/display-currency-screen";
+import { NotificationSettingsScreen } from "@app/screens/settings-screen/notifications-screen";
+import { ThemeScreen } from "@app/screens/settings-screen/theme-screen";
+import { TransactionLimitsScreen } from "@app/screens/settings-screen/transaction-limits-screen";
+import {
+  TotpLoginValidateScreen,
+  TotpRegistrationInitiateScreen,
+  TotpRegistrationValidateScreen,
+} from "@app/screens/totp-screen";
+import { WebViewScreen } from "@app/screens/webview/webview";
+import { testProps } from "@app/utils/testProps";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from "@react-navigation/stack";
+import { makeStyles, useTheme } from "@rneui/themed";
+
+import {
+  AuthenticationCheckScreen,
+  AuthenticationScreen,
+} from "../screens/authentication-screen";
+import { PinScreen } from "../screens/authentication-screen/pin-screen";
+import { DeveloperScreen } from "../screens/developer-screen";
+import { EarnMapScreen } from "../screens/earns-map-screen";
+import { EarnQuiz, EarnSection } from "../screens/earns-screen";
+import { SectionCompleted } from "../screens/earns-screen/section-completed";
+import { GetStartedScreen } from "../screens/get-started-screen";
+import { HomeScreen } from "../screens/home-screen";
+import { MapScreen } from "../screens/map-screen/map-screen";
+import { PriceHistoryScreen } from "../screens/price/price-history-screen";
+import { ScanningQRCodeScreen } from "../screens/send-bitcoin-screen";
+import { SettingsScreen } from "../screens/settings-screen";
+import { LanguageScreen } from "../screens/settings-screen/language-screen";
+import { SecurityScreen } from "../screens/settings-screen/security-screen";
+import { TransactionDetailScreen } from "../screens/transaction-detail-screen";
+import { TransactionHistoryScreen } from "../screens/transaction-history/transaction-history-screen";
 import {
   ContactStackParamList,
   PhoneValidationStackParamList,
   PrimaryStackParamList,
   RootStackParamList,
-} from "./stack-param-lists"
-import { PhoneInputScreen } from "@app/screens/phone-auth-screen/phone-input"
-import { PhoneValidationScreen } from "@app/screens/phone-auth-screen"
-import { DisplayCurrencyScreen } from "@app/screens/settings-screen/display-currency-screen"
-import { makeStyles, useTheme } from "@rneui/themed"
-import { DefaultWalletScreen } from "@app/screens/settings-screen/default-wallet"
-import { palette } from "@app/theme"
+} from "./stack-param-lists";
+import { ContactsScreen } from "@app/screens/contacts-screen/contacts";
+import { ContactsDetailScreen } from "@app/screens/contacts-screen";
 
-import { MarketPlaceStacks } from "@app/modules/market-place/navigation/marketplace-stack"
-import MarketPlaceSvg from "@app/modules/market-place/assets/svgs/market-place.svg"
-import { PostDetailScreen } from "@app/modules/market-place/screens/post-detail-screen/PostDetailScreen"
-import { LocationPickerScreen } from "@app/modules/market-place/screens/location-picker-screen"
-
-const useStyles = makeStyles((theme) => ({
-  bottomNavigatorStyle: {
-    height: "10%",
-    backgroundColor: theme.colors.white,
-    borderTopColor: theme.colors.grey10,
-  },
-  headerStyle: {
-    backgroundColor: theme.colors.white,
-  },
-  headerTintColor: {
-    color: theme.colors.black,
-  },
-  title: {
-    color: theme.colors.black,
-  },
-}))
-
-const RootNavigator = createStackNavigator<RootStackParamList>()
+const RootNavigator = createStackNavigator<RootStackParamList>();
 
 export const RootStack = () => {
-  const styles = useStyles()
-  const isAuthed = useIsAuthed()
-  const { LL } = useI18nContext()
+  const styles = useStyles();
+  const {
+    theme: { colors },
+  } = useTheme();
+  const isAuthed = useIsAuthed();
+  const { LL } = useI18nContext();
 
   return (
     <RootNavigator.Navigator
       screenOptions={{
-        gestureEnabled: false,
+        gestureEnabled: true,
         headerBackTitle: LL.common.back(),
+        headerBackTestID: LL.common.back(),
         headerStyle: styles.headerStyle,
         headerTitleStyle: styles.title,
         headerBackTitleStyle: styles.title,
-        headerTintColor: styles.headerTintColor.color,
+        headerTintColor: colors.black,
       }}
       initialRouteName={isAuthed ? "authenticationCheck" : "getStarted"}
     >
@@ -154,15 +167,15 @@ export const RootStack = () => {
         options={{ title: LL.SendBitcoinScreen.title() }}
       />
       <RootNavigator.Screen
-        name="sendBitcoinSuccess"
-        component={SendBitcoinSuccessScreen}
+        name="sendBitcoinCompleted"
+        component={SendBitcoinCompletedScreen}
         options={{ title: LL.SendBitcoinScreen.title() }}
       />
       <RootNavigator.Screen
         name="receiveBitcoin"
-        component={ReceiveWrapperScreen}
+        component={ReceiveScreen}
         options={{
-          title: LL.ReceiveWrapperScreen.title(),
+          title: LL.ReceiveScreen.title(),
         }}
       />
       <RootNavigator.Screen
@@ -206,12 +219,13 @@ export const RootStack = () => {
         component={EarnSection}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-          headerStyle: { backgroundColor: palette.blue },
-          headerTintColor: palette.white,
+          headerStyle: { backgroundColor: colors._blue },
+          headerTintColor: colors._white,
           headerTitleStyle: {
             fontWeight: "bold",
             fontSize: 18,
           },
+          headerBackTitleStyle: { color: colors._white },
         }}
       />
       <RootNavigator.Screen
@@ -244,6 +258,13 @@ export const RootStack = () => {
         })}
       />
       <RootNavigator.Screen
+        name="theme"
+        component={ThemeScreen}
+        options={() => ({
+          title: LL.ThemeScreen.title(),
+        })}
+      />
+      <RootNavigator.Screen
         name="language"
         component={LanguageScreen}
         options={{ title: LL.common.languagePreference() }}
@@ -259,11 +280,12 @@ export const RootStack = () => {
         options={{ title: LL.common.security() }}
       />
       <RootNavigator.Screen
-        name="lnurl"
-        component={LnurlScreen}
-        options={{ title: "Lnurl" }}
+        name="developerScreen"
+        component={DeveloperScreen}
+        options={{
+          gestureEnabled: false,
+        }}
       />
-      <RootNavigator.Screen name="Debug" component={DebugScreen} />
       <RootNavigator.Screen
         name="sectionCompleted"
         component={SectionCompleted}
@@ -274,10 +296,21 @@ export const RootStack = () => {
       />
       <RootNavigator.Screen
         name="phoneFlow"
-        component={PhoneValidationNavigator}
+        component={PhoneLoginNavigator}
+        options={{ headerShown: false }}
+      />
+      <RootNavigator.Screen
+        name="phoneRegistrationInitiate"
         options={{
-          headerShown: false,
-          cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+          title: LL.common.phoneNumber(),
+        }}
+        component={PhoneRegistrationInitiateScreen}
+      />
+      <RootNavigator.Screen
+        name="phoneRegistrationValidate"
+        component={PhoneRegistrationValidateScreen}
+        options={{
+          title: LL.common.codeConfirmation(),
         }}
       />
       <RootNavigator.Screen
@@ -309,12 +342,90 @@ export const RootStack = () => {
         }}
       />
       <RootNavigator.Screen
+        name="notificationSettingsScreen"
+        component={NotificationSettingsScreen}
+        options={{
+          title: LL.NotificationSettingsScreen.title(),
+        }}
+      />
+      <RootNavigator.Screen
         name="transactionLimitsScreen"
         component={TransactionLimitsScreen}
         options={{
           title: LL.common.transactionLimits(),
         }}
       />
+      <RootNavigator.Screen
+        name="emailRegistrationInitiate"
+        component={EmailRegistrationInitiateScreen}
+        options={{
+          title: LL.EmailRegistrationInitiateScreen.title(),
+        }}
+      />
+      <RootNavigator.Screen
+        name="emailRegistrationValidate"
+        component={EmailRegistrationValidateScreen}
+        options={{
+          title: LL.common.codeConfirmation(),
+        }}
+      />
+      <RootNavigator.Screen
+        name="emailLoginInitiate"
+        component={EmailLoginInitiateScreen}
+        options={{
+          title: LL.EmailLoginInitiateScreen.title(),
+        }}
+      />
+      <RootNavigator.Screen
+        name="emailLoginValidate"
+        component={EmailLoginValidateScreen}
+        options={{
+          title: LL.common.codeConfirmation(),
+        }}
+      />
+      <RootNavigator.Screen
+        name="totpRegistrationInitiate"
+        component={TotpRegistrationInitiateScreen}
+        options={{
+          title: LL.TotpRegistrationInitiateScreen.title(),
+        }}
+      />
+      <RootNavigator.Screen
+        name="totpRegistrationValidate"
+        component={TotpRegistrationValidateScreen}
+        options={{
+          title: LL.TotpRegistrationValidateScreen.title(),
+        }}
+      />
+      <RootNavigator.Screen
+        name="totpLoginValidate"
+        component={TotpLoginValidateScreen}
+        options={{
+          title: LL.TotpLoginValidateScreen.title(),
+        }}
+      />
+      <RootNavigator.Screen
+        name="webView"
+        component={WebViewScreen}
+        options={{
+          title: "WebView", // should be overridden by the navigate action with an initial title
+        }}
+      />
+      <RootNavigator.Screen
+        name="fullOnboardingFlow"
+        component={FullOnboardingFlowScreen}
+        options={{
+          title: LL.FullOnboarding.title(),
+        }}
+      />
+      <RootNavigator.Screen
+        name="chatbot"
+        component={ChatBotScreen}
+        options={{
+          title: LL.support.chatbot(),
+        }}
+      />
+      {/*  Puravida Screens*/}
 
       <RootNavigator.Screen
         name="PostDetail"
@@ -331,15 +442,31 @@ export const RootStack = () => {
         }}
       />
     </RootNavigator.Navigator>
-  )
-}
+  );
+};
 
-const StackContacts = createStackNavigator<ContactStackParamList>()
+const StackContacts = createStackNavigator<ContactStackParamList>();
 
 export const ContactNavigator = () => {
-  const { LL } = useI18nContext()
+  const { LL } = useI18nContext();
+  const styles = useStyles();
+  const {
+    theme: { colors },
+  } = useTheme();
+
   return (
-    <StackContacts.Navigator>
+    <StackContacts.Navigator
+      screenOptions={{
+        gestureEnabled: true,
+        headerBackTitle: LL.common.back(),
+        headerBackTestID: LL.common.back(),
+        headerStyle: styles.headerStyle,
+        headerTitleStyle: styles.title,
+        headerBackTitleStyle: styles.title,
+        headerTintColor: colors.black,
+      }}
+      initialRouteName="contactList"
+    >
       <StackContacts.Screen
         name="contactList"
         component={ContactsScreen}
@@ -354,44 +481,64 @@ export const ContactNavigator = () => {
         options={{ headerShown: false }}
       />
     </StackContacts.Navigator>
-  )
-}
-const StackPhoneValidation = createStackNavigator<PhoneValidationStackParamList>()
+  );
+};
+const StackPhoneValidation = createStackNavigator<
+  PhoneValidationStackParamList
+>();
 
-export const PhoneValidationNavigator = () => {
-  const { LL } = useI18nContext()
+export const PhoneLoginNavigator = () => {
+  const { LL } = useI18nContext();
+  const styles = useStyles();
+  const {
+    theme: { colors },
+  } = useTheme();
+
+  function getTitle(type: PhoneLoginInitiateType) {
+    return type === PhoneLoginInitiateType.CreateAccount
+      ? LL.PhoneLoginInitiateScreen.title()
+      : LL.common.phoneNumber();
+  }
+
   return (
-    <StackPhoneValidation.Navigator>
+    <StackPhoneValidation.Navigator
+      screenOptions={{
+        gestureEnabled: true,
+        headerBackTitle: LL.common.back(),
+        headerBackTestID: LL.common.back(),
+        headerStyle: styles.headerStyle,
+        headerTitleStyle: styles.title,
+        headerBackTitleStyle: styles.title,
+        headerTintColor: colors.black,
+      }}
+    >
       <StackPhoneValidation.Screen
-        name="phoneInput"
-        options={{
-          headerShown: false,
-          title: LL.common.phoneNumber(),
-        }}
-        component={PhoneInputScreen}
+        name="phoneLoginInitiate"
+        options={(props) => ({
+          title: getTitle(props.route.params.type),
+        })}
+        component={PhoneLoginInitiateScreen}
       />
       <StackPhoneValidation.Screen
-        name="phoneValidation"
-        component={PhoneValidationScreen}
-        options={{
-          headerShown: false,
-        }}
+        name="phoneLoginValidate"
+        component={PhoneLoginValidationScreen}
+        options={(props) => ({
+          title: getTitle(props.route.params.type),
+        })}
       />
     </StackPhoneValidation.Navigator>
-  )
-}
+  );
+};
 
-const Tab = createBottomTabNavigator<PrimaryStackParamList>()
-
-type TabProps = {
-  color: string
-}
+const Tab = createBottomTabNavigator<PrimaryStackParamList>();
 
 export const PrimaryNavigator = () => {
-  const styles = useStyles()
-  const { theme } = useTheme()
+  const styles = useStyles();
+  const {
+    theme: { colors },
+  } = useTheme();
 
-  const { LL } = useI18nContext()
+  const { LL } = useI18nContext();
   // The cacheId is updated after every mutation that affects current user data (balanace, contacts, ...)
   // It's used to re-mount this component and thus reset what's cached in Apollo (and React)
 
@@ -399,10 +546,14 @@ export const PrimaryNavigator = () => {
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={{
-        tabBarActiveTintColor: theme.colors.primary,
-        tabBarInactiveTintColor: theme.colors.grey8,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.grey2,
         tabBarStyle: styles.bottomNavigatorStyle,
-        tabBarLabelStyle: { paddingBottom: 6, fontSize: 12, fontWeight: "bold" },
+        tabBarLabelStyle: {
+          paddingBottom: 6,
+          fontSize: 12,
+          fontWeight: "bold",
+        },
         tabBarHideOnKeyboard: true,
       }}
     >
@@ -411,8 +562,10 @@ export const PrimaryNavigator = () => {
         component={HomeScreen}
         options={{
           title: LL.HomeScreen.title(),
-          tabBarIcon: ({ color }: TabProps) => (
-            <HomeIcon fill="currentColor" color={color} />
+          tabBarAccessibilityLabel: LL.HomeScreen.title(),
+          tabBarTestID: LL.HomeScreen.title(),
+          tabBarIcon: ({ color }) => (
+            <HomeIcon {...testProps("Home")} fill={color} color={color} />
           ),
           headerShown: false,
         }}
@@ -423,19 +576,23 @@ export const PrimaryNavigator = () => {
         options={{
           headerShown: false,
           title: LL.ContactsScreen.title(),
-          tabBarIcon: ({ color }: TabProps) => (
-            <ContactsIcon fill="currentColor" color={color} />
+          tabBarAccessibilityLabel: LL.ContactsScreen.title(),
+          tabBarTestID: LL.ContactsScreen.title(),
+          tabBarIcon: ({ color, focused }) => (
+            <PeopleTabIcon color={color} focused={focused} />
           ),
         }}
       />
-      
+
       <Tab.Screen
         name="MarketPlaceStack"
         component={MarketPlaceStacks}
         options={{
           title: LL.marketPlace.marketPlace(),
           headerShown: false,
-          tabBarIcon: ({ color }: TabProps) => <MarketPlaceSvg stroke={color} />,
+          tabBarAccessibilityLabel: LL.MapScreen.title(),
+          tabBarTestID: LL.MapScreen.title(),
+          tabBarIcon: ({ color }) => <MapIcon color={color} />,
         }}
       />
       <Tab.Screen
@@ -444,11 +601,28 @@ export const PrimaryNavigator = () => {
         options={{
           title: LL.EarnScreen.title(),
           headerShown: false,
-          tabBarIcon: ({ color }: TabProps) => (
-            <LearnIcon fill="currentColor" color={color} />
+          tabBarAccessibilityLabel: LL.EarnScreen.title(),
+          tabBarTestID: LL.EarnScreen.title(),
+          tabBarIcon: ({ color }) => (
+            <LearnIcon {...testProps("Earn")} color={color} />
           ),
         }}
       />
     </Tab.Navigator>
-  )
-}
+  );
+};
+
+const useStyles = makeStyles(({ colors }) => ({
+  bottomNavigatorStyle: {
+    height: "10%",
+    paddingTop: 4,
+    backgroundColor: colors.white,
+    borderTopColor: colors.grey4,
+  },
+  headerStyle: {
+    backgroundColor: colors.white,
+  },
+  title: {
+    color: colors.black,
+  },
+}));

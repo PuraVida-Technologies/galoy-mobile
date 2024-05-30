@@ -1,24 +1,33 @@
 import React from "react"
-import { ActivityIndicator, Button, Pressable, View } from "react-native"
+import { ActivityIndicator, Button, View } from "react-native"
 import { LocalizedString } from "typesafe-i18n"
 
-import { Screen } from "@app/components/screen"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { palette } from "@app/theme"
-import { useAccountLimitsQuery } from "@app/graphql/generated"
 import { gql } from "@apollo/client"
+import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
+import { Screen } from "@app/components/screen"
+import { UpgradeAccountModal } from "@app/components/upgrade-account-modal"
+import { useAccountLimitsQuery } from "@app/graphql/generated"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
-import { useDisplayCurrency } from "@app/hooks/use-display-currency"
+import { AccountLevel, useLevel } from "@app/graphql/level-context"
 import { useAppConfig, usePriceConversion } from "@app/hooks"
+import { useDisplayCurrency } from "@app/hooks/use-display-currency"
+import { useI18nContext } from "@app/i18n/i18n-react"
+import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { DisplayCurrency, toUsdMoneyAmount } from "@app/types/amounts"
-import { makeStyles, Text } from "@rneui/themed"
-import ContactModal from "@app/components/contact-modal/contact-modal"
-import { GaloyIcon } from "@app/components/atomic/galoy-icon"
+import { useNavigation } from "@react-navigation/native"
+import { StackNavigationProp } from "@react-navigation/stack"
+import { makeStyles, Text, useTheme } from "@rneui/themed"
 
-const useStyles = makeStyles((theme) => ({
+import { PhoneLoginInitiateType } from "../phone-auth-screen"
+
+const useStyles = makeStyles(({ colors }) => ({
   limitWrapper: {
     padding: 20,
-    backgroundColor: theme.colors.white,
+    backgroundColor: colors.white,
+  },
+  increaseLimitsButtonContainer: {
+    marginVertical: 20,
+    marginHorizontal: 20,
   },
   contentTextBox: {
     flexDirection: "row",
@@ -29,22 +38,21 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     fontSize: 15,
     paddingBottom: 8,
-    color: theme.colors.darkGreyOrWhite,
   },
   valueRemaining: {
     fontWeight: "bold",
-    color: palette.green,
+    color: colors._green,
     maxWidth: "50%",
   },
   valueTotal: {
     fontWeight: "bold",
-    color: palette.midGrey,
+    color: colors.grey3,
     maxWidth: "50%",
   },
   divider: {
     marginVertical: 0,
     borderWidth: 1,
-    borderColor: theme.colors.grey10,
+    borderColor: colors.grey4,
   },
   errorWrapper: {
     justifyContent: "center",
@@ -53,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "50%",
   },
   errorText: {
-    color: palette.error,
+    color: colors.error,
     fontWeight: "bold",
     fontSize: 18,
     marginBottom: 20,
@@ -71,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 20,
   },
   increaseLimitsText: {
-    color: theme.colors.primary,
+    color: colors.primary,
     fontWeight: "600",
     fontSize: 15,
     textDecorationLine: "underline",
@@ -112,7 +120,12 @@ gql`
 `
 
 export const TransactionLimitsScreen = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
+
   const styles = useStyles()
+  const {
+    theme: { colors },
+  } = useTheme()
 
   const { LL } = useI18nContext()
   const { data, loading, error, refetch } = useAccountLimitsQuery({
@@ -122,17 +135,14 @@ export const TransactionLimitsScreen = () => {
 
   const { appConfig } = useAppConfig()
   const { name: bankName } = appConfig.galoyInstance
+  const { currentLevel } = useLevel()
 
-  const [isContactModalVisible, setIsContactModalVisible] = React.useState(false)
+  const [isUpgradeAccountModalVisible, setIsUpgradeAccountModalVisible] =
+    React.useState(false)
 
-  const toggleIsContactModalVisible = () => {
-    setIsContactModalVisible(!isContactModalVisible)
+  const toggleIsUpgradeAccountModalVisible = () => {
+    setIsUpgradeAccountModalVisible(!isUpgradeAccountModalVisible)
   }
-
-  const messageBody = LL.TransactionLimitsScreen.contactUsMessageBody({
-    bankName,
-  })
-  const messageSubject = LL.TransactionLimitsScreen.contactUsMessageSubject()
 
   if (error) {
     return (
@@ -144,7 +154,7 @@ export const TransactionLimitsScreen = () => {
           <Button
             title="reload"
             disabled={loading}
-            color={palette.error}
+            color={colors.error}
             onPress={() => refetch()}
           />
         </View>
@@ -156,7 +166,7 @@ export const TransactionLimitsScreen = () => {
     return (
       <Screen>
         <View style={styles.loadingWrapper}>
-          <ActivityIndicator animating size="large" color={palette.lightBlue} />
+          <ActivityIndicator animating size="large" color={colors.primary} />
         </View>
       </Screen>
     )
@@ -209,21 +219,31 @@ export const TransactionLimitsScreen = () => {
           <TransactionLimitsPeriod key={index} {...data} />
         ))}
       </View>
-      <Pressable
-        style={styles.increaseLimitsContainer}
-        onPress={toggleIsContactModalVisible}
-      >
-        <Text style={styles.increaseLimitsText}>
-          {LL.TransactionLimitsScreen.howToIncreaseLimits()}
-        </Text>
-        <GaloyIcon name="question" size={20} color={styles.increaseLimitsText.color} />
-      </Pressable>
-      <ContactModal
-        isVisible={isContactModalVisible}
-        toggleModal={toggleIsContactModalVisible}
-        messageBody={messageBody}
-        messageSubject={messageSubject}
-        showStatusPage={false}
+      {currentLevel === AccountLevel.Zero && (
+        <GaloyPrimaryButton
+          title={LL.TransactionLimitsScreen.increaseLimits()}
+          onPress={() =>
+            navigation.navigate("phoneFlow", {
+              screen: "phoneLoginInitiate",
+              params: {
+                type: PhoneLoginInitiateType.CreateAccount,
+              },
+            })
+          }
+          containerStyle={styles.increaseLimitsButtonContainer}
+        />
+      )}
+      {currentLevel === AccountLevel.One && (
+        <GaloyPrimaryButton
+          title={LL.TransactionLimitsScreen.increaseLimits()}
+          onPress={() => navigation.navigate("fullOnboardingFlow")}
+          containerStyle={styles.increaseLimitsButtonContainer}
+        />
+      )}
+
+      <UpgradeAccountModal
+        isVisible={isUpgradeAccountModalVisible}
+        closeModal={toggleIsUpgradeAccountModalVisible}
       />
     </Screen>
   )
@@ -252,17 +272,16 @@ const TransactionLimitsPeriod = ({
     DisplayCurrency,
   )
 
-  const usdRemainingLimitMoneyAmount = convertMoneyAmount(
-    toUsdMoneyAmount(totalLimit),
-    DisplayCurrency,
-  )
-
-  const remainingLimitText =
+  const usdRemainingLimitMoneyAmount =
     typeof remainingLimit === "number"
-      ? `${formatMoneyAmount({
-          moneyAmount: usdRemainingLimitMoneyAmount,
-        })} ${LL.TransactionLimitsScreen.remaining().toLocaleLowerCase()}`
-      : ""
+      ? convertMoneyAmount(toUsdMoneyAmount(remainingLimit), DisplayCurrency)
+      : null
+
+  const remainingLimitText = usdRemainingLimitMoneyAmount
+    ? `${formatMoneyAmount({
+        moneyAmount: usdRemainingLimitMoneyAmount,
+      })} ${LL.TransactionLimitsScreen.remaining().toLocaleLowerCase()}`
+    : ""
 
   const getLimitDuration = (period: number): LocalizedString | null => {
     const interval = (period / (60 * 60)).toString()

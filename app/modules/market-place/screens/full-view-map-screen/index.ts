@@ -1,1 +1,1 @@
-export * from './FullMapViewScreen'
+export * from "./FullMapViewScreen"

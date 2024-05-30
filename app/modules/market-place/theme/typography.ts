@@ -11,7 +11,7 @@ export const fontSize = {
   font20: 20,
   font22: 22,
   font24: 24,
-}/**
+} /**
  * Just the font names.
  *
  * The various styles of fonts are defined in the <Text /> component.

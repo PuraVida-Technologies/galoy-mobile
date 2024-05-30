@@ -1,8 +1,10 @@
-import { MockedProvider } from "@apollo/client/testing"
-import { Button, Text, useThemeMode } from "@rneui/themed"
-import { ComponentMeta } from "@storybook/react-native"
 import React from "react"
 import { View } from "react-native"
+
+import { MockedProvider } from "@apollo/client/testing"
+import { Button, Text, useThemeMode } from "@rneui/themed"
+import { Meta } from "@storybook/react-native"
+
 import { StoryScreen } from "../../.storybook/views"
 
 export default {
@@ -14,7 +16,7 @@ export default {
       </MockedProvider>
     ),
   ],
-} as ComponentMeta<typeof Text>
+} as Meta<typeof Text>
 
 export const Default = () => {
   const { mode, setMode } = useThemeMode()

@@ -40,17 +40,8 @@
 				<string>lightning</string>
 				<string>bitcoin</string>
 				<string>bitcoinbeach</string>
+				<string>blink</string>
 				<string>lapp</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>ln.bitcoinbeach.com</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>ln.bitcoinbeach.com</string>
 			</array>
 		</dict>
 		<dict>
@@ -75,23 +66,21 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>400</string>
 	<key>CodePushDeploymentKey</key>
 	<string>DjhmHxhMEdODpeZ_-R33L3cFMUgX0TCiKGemo</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NFCReaderUsageDescription</key>
+	<string>We need to use NFC to receive payments from the card</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-		<key>NSExceptionDomains</key>
-		<dict>
-			<key>localhost</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-			</dict>
-		</dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Activate your camera to scan QR codes</string>
@@ -134,5 +123,10 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
+	<array>
+		<string>D2760000850100</string>
+		<string>D2760000850101</string>
+	</array>
 </dict>
 </plist>

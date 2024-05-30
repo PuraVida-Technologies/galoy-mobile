@@ -1,11 +1,13 @@
 import * as React from "react"
+
 import { MockedProvider } from "@apollo/client/testing"
+import { Meta } from "@storybook/react"
+
+import { StoryScreen } from "../../../.storybook/views"
 import { createCache } from "../../graphql/cache"
+import { IsAuthedContextProvider } from "../../graphql/is-authed-context"
 import mocks from "../../graphql/mocks"
 import RedeemBitcoinDetailScreen from "./redeem-bitcoin-detail-screen"
-import { ComponentMeta } from "@storybook/react"
-import { StoryScreen } from "../../../.storybook/views"
-import { IsAuthedContextProvider } from "../../graphql/is-authed-context"
 
 export default {
   title: "Redeem bitcoin Detail",
@@ -19,7 +21,7 @@ export default {
       </IsAuthedContextProvider>
     ),
   ],
-} as ComponentMeta<typeof RedeemBitcoinDetailScreen>
+} as Meta<typeof RedeemBitcoinDetailScreen>
 
 const validDestinationTemplate = {
   callback: "http://callback.com",

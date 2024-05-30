@@ -1,6 +1,8 @@
-import { MockedProvider } from "@apollo/client/testing"
-import { ComponentMeta } from "@storybook/react"
 import React from "react"
+
+import { MockedProvider } from "@apollo/client/testing"
+import { Meta } from "@storybook/react"
+
 import { StoryScreen } from "../../../.storybook/views"
 import { createCache } from "../../graphql/cache"
 import { IsAuthedContextProvider } from "../../graphql/is-authed-context"
@@ -17,7 +19,7 @@ export default {
       </MockedProvider>
     ),
   ],
-} as ComponentMeta<typeof WalletOverview>
+} as Meta<typeof WalletOverview>
 
 export const Default = () => (
   <IsAuthedContextProvider value={true}>

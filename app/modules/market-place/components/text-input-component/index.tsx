@@ -1,4 +1,4 @@
-import { palette } from "@app/theme"
+import { palette, marketPlaceColor, fontSize } from "@app/modules/market-place/theme"
 import React, { useLayoutEffect, useRef, useState, useEffect } from "react"
 import {
   TextInput,
@@ -8,8 +8,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native"
-import { marketPlaceColor } from "../../theme/color"
-import { fontSize, typography } from "../../theme/typography"
+import {  } from "../../theme/color"
 import { Props } from "./model"
 const { width } = Dimensions.get("window")
 const measureHeightAsync = async (component: React.RefObject<Text>): Promise<number> => {
