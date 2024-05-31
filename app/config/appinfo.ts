@@ -15,7 +15,7 @@ export const PREFIX_LINKING = [
 // FIXME this should come from globals.lightningAddressDomainAliases
 export const LNURL_DOMAINS = [
   "ln.bitcoinbeach.com",
-  "pay.staging-upgrade.pvbtc.cloud",
+  "pay.staging.pvbtc.cloud",
   "puravidabitcoin.io",
 ]
 

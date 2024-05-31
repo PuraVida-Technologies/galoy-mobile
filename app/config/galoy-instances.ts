@@ -89,7 +89,7 @@ export const GALOY_INSTANCES: readonly GaloyInstance[] = [
     posUrl: PURAVIDA_POS_URL,
     lnAddressHostname: PURAVIDA_LN_ADDRESS,
     kycUrl: "https://kyc.puravidabitcoin.io",
-    authUrl: "https://api.staging.galoy.io",
+    authUrl: "https://api.staging.pvbtc.cloud",
     blockExplorer: "https://mempool.space/signet/tx/",
   },
   {
