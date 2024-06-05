@@ -16,20 +16,22 @@ import {
 import { PaymentRequest } from "./payment-requests/index.types"
 import {
   ErrorType,
-  UsePaymentRequestState,
+  PaymentRequestState,
+  SetAmountParams,
+  SetConvertMoneyAmountParams,
+  SetCreatePaymentRequestDetailsParamsParams,
+  SetMemoParams,
+  SetPaymentRequestTypeParams,
+  SetReceivingWalletDescriptorParams,
   UsePaymentRequestParams,
   UsePaymentRequestResult,
-  PaymentRequestState,
-  SetCreatePaymentRequestDetailsParamsParams,
-  SetAmountParams,
-  SetMemoParams,
-  SetReceivingWalletDescriptorParams,
-  SetPaymentRequestTypeParams,
-  SetConvertMoneyAmountParams,
+  UsePaymentRequestState,
 } from "./use-payment-request.types"
 
 gql`
-  mutation lnNoAmountInvoiceCreate($input: LnNoAmountInvoiceCreateInput!) {
+  mutation lnNoAmountInvoiceCreateForPaymentRequest(
+    $input: LnNoAmountInvoiceCreateInput!
+  ) {
     lnNoAmountInvoiceCreate(input: $input) {
       errors {
         message
@@ -42,7 +44,7 @@ gql`
     }
   }
 
-  mutation lnInvoiceCreate($input: LnInvoiceCreateInput!) {
+  mutation lnInvoiceCreateForPaymentRequest($input: LnInvoiceCreateInput!) {
     lnInvoiceCreate(input: $input) {
       errors {
         message
@@ -65,7 +67,7 @@ gql`
     }
   }
 
-  mutation lnUsdInvoiceCreate($input: LnUsdInvoiceCreateInput!) {
+  mutation lnUsdInvoiceCreateForPaymentRequest($input: LnUsdInvoiceCreateInput!) {
     lnUsdInvoiceCreate(input: $input) {
       errors {
         message

@@ -232,6 +232,17 @@ mutation captchaRequestAuthCode($input: CaptchaRequestAuthCodeInput!) {
   }
 }
 
+mutation captchaRequestAuthCodeForPhoneInput($input: CaptchaRequestAuthCodeInput!) {
+  captchaRequestAuthCode(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    success
+    __typename
+  }
+}
+
 mutation deviceNotificationTokenCreate($input: DeviceNotificationTokenCreateInput!) {
   deviceNotificationTokenCreate(input: $input) {
     errors {
@@ -287,7 +298,23 @@ mutation lnInvoiceCreate($input: LnInvoiceCreateInput!) {
       paymentHash
       paymentRequest
       paymentStatus
-      externalId
+      satoshis
+      __typename
+    }
+    __typename
+  }
+}
+
+mutation lnInvoiceCreateForPaymentRequest($input: LnInvoiceCreateInput!) {
+  lnInvoiceCreate(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    invoice {
+      paymentHash
+      paymentRequest
+      paymentSecret
       satoshis
       __typename
     }
@@ -328,7 +355,22 @@ mutation lnNoAmountInvoiceCreate($input: LnNoAmountInvoiceCreateInput!) {
       paymentHash
       paymentRequest
       paymentStatus
-      externalId
+      __typename
+    }
+    __typename
+  }
+}
+
+mutation lnNoAmountInvoiceCreateForPaymentRequest($input: LnNoAmountInvoiceCreateInput!) {
+  lnNoAmountInvoiceCreate(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    invoice {
+      paymentHash
+      paymentRequest
+      paymentSecret
       __typename
     }
     __typename
@@ -390,7 +432,23 @@ mutation lnUsdInvoiceCreate($input: LnUsdInvoiceCreateInput!) {
       paymentHash
       paymentRequest
       paymentStatus
-      externalId
+      satoshis
+      __typename
+    }
+    __typename
+  }
+}
+
+mutation lnUsdInvoiceCreateForPaymentRequest($input: LnUsdInvoiceCreateInput!) {
+  lnUsdInvoiceCreate(input: $input) {
+    errors {
+      message
+      __typename
+    }
+    invoice {
+      paymentHash
+      paymentRequest
+      paymentSecret
       satoshis
       __typename
     }
@@ -470,14 +528,6 @@ mutation onChainUsdPaymentSendAsBtcDenominated($input: OnChainUsdPaymentSendAsBt
       __typename
     }
     status
-    __typename
-  }
-}
-
-mutation onboardingFlowStart($input: OnboardingFlowStartInput!) {
-  onboardingFlowStart(input: $input) {
-    workflowRunId
-    tokenWeb
     __typename
   }
 }
@@ -595,6 +645,17 @@ mutation userLogin($input: UserLoginInput!) {
   userLogin(input: $input) {
     errors {
       message
+      __typename
+    }
+    authToken
+    __typename
+  }
+}
+
+mutation userLoginForPhoneLoginValidation($input: UserLoginInput!) {
+  userLogin(input: $input) {
+    errors {
+      message
       code
       __typename
     }
@@ -698,6 +759,27 @@ mutation userTotpDelete {
   }
 }
 
+mutation userTotpDeleteForAccountScreen {
+  userTotpDelete {
+    errors {
+      message
+      __typename
+    }
+    me {
+      id
+      phone
+      totpEnabled
+      email {
+        address
+        verified
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
 mutation userTotpRegistrationInitiate {
   userTotpRegistrationInitiate {
     errors {
@@ -755,32 +837,6 @@ mutation userUpdateUsername($input: UserUpdateUsernameInput!) {
     user {
       id
       username
-      __typename
-    }
-    __typename
-  }
-}
-
-query Circles {
-  me {
-    id
-    username
-    defaultAccount {
-      id
-      ... on ConsumerAccount {
-        welcomeProfile {
-          allTimePoints
-          allTimeRank
-          innerCircleAllTimeCount
-          innerCircleThisMonthCount
-          outerCircleAllTimeCount
-          outerCircleThisMonthCount
-          thisMonthPoints
-          thisMonthRank
-          __typename
-        }
-        __typename
-      }
       __typename
     }
     __typename
@@ -871,6 +927,31 @@ query accountLimits {
           interval
           __typename
         }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+query accountScreen {
+  me {
+    id
+    phone
+    totpEnabled
+    email {
+      address
+      verified
+      __typename
+    }
+    defaultAccount {
+      id
+      level
+      wallets {
+        id
+        balance
+        walletCurrency
         __typename
       }
       __typename
@@ -1024,21 +1105,6 @@ query displayCurrency {
 
 query feedbackModalShown {
   feedbackModalShown @client
-}
-
-query fullOnboardingScreen {
-  me {
-    id
-    defaultAccount {
-      ... on ConsumerAccount {
-        id
-        onboardingStatus
-        __typename
-      }
-      __typename
-    }
-    __typename
-  }
 }
 
 query hasPromptedSetDefaultAccount {
@@ -1288,6 +1354,59 @@ query realtimePrice {
           offset
           __typename
         }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+query receiveBtc {
+  globals {
+    network
+    __typename
+  }
+  me {
+    id
+    defaultAccount {
+      id
+      btcWallet @client {
+        id
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+query receiveUsd {
+  globals {
+    network
+    __typename
+  }
+  me {
+    id
+    defaultAccount {
+      id
+      usdWallet @client {
+        id
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+query receiveWrapperScreen {
+  me {
+    id
+    defaultAccount {
+      id
+      defaultWallet @client {
+        walletCurrency
         __typename
       }
       __typename

@@ -5,13 +5,13 @@ import ReactNativeHapticFeedback from "react-native-haptic-feedback"
 
 import { gql } from "@apollo/client"
 import {
-  WalletCurrency,
   useLnInvoiceCreateMutation,
   useLnNoAmountInvoiceCreateMutation,
   useLnUsdInvoiceCreateMutation,
   useOnChainAddressCurrentMutation,
   usePaymentRequestQuery,
   useRealtimePriceQuery,
+  WalletCurrency,
 } from "@app/graphql/generated"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { useLnUpdateHashPaid } from "@app/graphql/ln-update-context"
@@ -32,8 +32,8 @@ import {
   Invoice,
   InvoiceType,
   PaymentRequest,
-  PaymentRequestState,
   PaymentRequestCreationData,
+  PaymentRequestState,
 } from "./payment/index.types"
 import { createPaymentRequest } from "./payment/payment-request"
 import { createPaymentRequestCreationData } from "./payment/payment-request-creation-data"
@@ -74,7 +74,6 @@ gql`
         paymentHash
         paymentRequest
         paymentStatus
-        externalId
       }
     }
   }
@@ -89,7 +88,6 @@ gql`
         paymentHash
         paymentRequest
         paymentStatus
-        externalId
         satoshis
       }
     }
@@ -114,7 +112,6 @@ gql`
         paymentHash
         paymentRequest
         paymentStatus
-        externalId
         satoshis
       }
     }
@@ -250,7 +247,9 @@ export const useReceiveBitcoin = () => {
 
   // Setting it to idle would trigger last useEffect hook to regenerate invoice
   const regenerateInvoice = () => {
-    if (expiresInSeconds === 0) setPR((pq) => pq && pq.setState(PaymentRequestState.Idle))
+    if (expiresInSeconds === 0) {
+      setPR((pq) => pq && pq.setState(PaymentRequestState.Idle))
+    }
   }
 
   // If Username updates
@@ -335,11 +334,13 @@ export const useReceiveBitcoin = () => {
       Clipboard.setString(paymentFullUri)
 
       let msgFn: (translations: TranslationFunctions) => string
-      if (pr.creationData.type === Invoice.OnChain)
+      if (pr.creationData.type === Invoice.OnChain) {
         msgFn = (translations) => translations.ReceiveScreen.copyClipboardBitcoin()
-      else if (pr.creationData.type === Invoice.PayCode)
+      } else if (pr.creationData.type === Invoice.PayCode) {
         msgFn = (translations) => translations.ReceiveScreen.copyClipboardPaycode()
-      else msgFn = (translations) => translations.ReceiveScreen.copyClipboard()
+      } else {
+        msgFn = (translations) => translations.ReceiveScreen.copyClipboard()
+      }
 
       toastShow({
         message: msgFn,
@@ -462,23 +463,23 @@ export const useReceiveBitcoin = () => {
     typeof expiresInSeconds === "number" &&
     pr?.state !== PaymentRequestState.Paid
   ) {
-    if (expiresInSeconds > 60 * 60 * 23)
+    if (expiresInSeconds > 60 * 60 * 23) {
       extraDetails = `${LL.ReceiveScreen.invoiceValidity.validFor1Day()}`
-    else if (expiresInSeconds > 60 * 60 * 6)
+    } else if (expiresInSeconds > 60 * 60 * 6) {
       extraDetails = `${LL.ReceiveScreen.invoiceValidity.validForNext({
         duration: secondsToH(expiresInSeconds),
       })}`
-    else if (expiresInSeconds > 60 * 2)
+    } else if (expiresInSeconds > 60 * 2) {
       extraDetails = `${LL.ReceiveScreen.invoiceValidity.validBefore({
         time: generateFutureLocalTime(expiresInSeconds),
       })}`
-    else if (expiresInSeconds > 0)
+    } else if (expiresInSeconds > 0) {
       extraDetails = `${LL.ReceiveScreen.invoiceValidity.expiresIn({
         duration: secondsToHMS(expiresInSeconds),
       })}`
-    else if (pr?.state === PaymentRequestState.Expired)
+    } else if (pr?.state === PaymentRequestState.Expired) {
       extraDetails = LL.ReceiveScreen.invoiceExpired()
-    else extraDetails = `${LL.ReceiveScreen.invoiceValidity.expiresNow()}`
+    } else extraDetails = `${LL.ReceiveScreen.invoiceValidity.expiresNow()}`
   } else if (prcd.type === "Lightning" && pr?.state === PaymentRequestState.Paid) {
     extraDetails = LL.ReceiveScreen.invoiceHasBeenPaid()
   } else if (prcd.type === "PayCode" && pr?.info?.data?.invoiceType === "PayCode") {

@@ -1,46 +1,22 @@
-import { useEffect, useState } from "react"
-import { View } from "react-native"
+import { useEffect, useState } from "react";
+import { View } from "react-native";
 
-import { useApolloClient } from "@apollo/client"
-import PeopleIcon from "@app/assets/icons/people.svg"
-import { setInnerCircleCachedValue } from "@app/graphql/client-only-query"
-import { useCirclesQuery, useInnerCircleValueQuery } from "@app/graphql/generated"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { testProps } from "@app/utils/testProps"
-import { makeStyles } from "@rneui/themed"
+import { useApolloClient } from "@apollo/client";
+import PeopleIcon from "@app/assets/icons/people.svg";
+import { useI18nContext } from "@app/i18n/i18n-react";
+import { testProps } from "@app/utils/testProps";
+import { makeStyles } from "@rneui/themed";
 
 type TabIconProps = {
-  color: string
-  focused: boolean
-}
+  color: string;
+  focused: boolean;
+};
 
 export const PeopleTabIcon: React.FC<TabIconProps> = ({ color, focused }) => {
-  const { LL } = useI18nContext()
-  const styles = useStyles()
+  const { LL } = useI18nContext();
+  const styles = useStyles();
 
-  const [hidden, setHidden] = useState(true)
-
-  const { data: cachedData } = useInnerCircleValueQuery()
-  const { data: networkData } = useCirclesQuery({
-    fetchPolicy: "cache-first",
-  })
-
-  const client = useApolloClient()
-
-  useEffect(() => {
-    const innerCircleCachedValue = cachedData?.innerCircleValue || -1
-    const innerCircleRealValue =
-      networkData?.me?.defaultAccount?.welcomeProfile?.innerCircleAllTimeCount || -1
-
-    if (innerCircleCachedValue === -1 && innerCircleRealValue === -1) {
-      setHidden(false)
-      setInnerCircleCachedValue(client, 0)
-      return
-    }
-
-    setHidden(innerCircleRealValue === innerCircleCachedValue)
-    setInnerCircleCachedValue(client, innerCircleRealValue)
-  }, [cachedData, networkData, setHidden, client])
+  const [hidden, setHidden] = useState(true);
 
   return (
     <View>
@@ -62,8 +38,8 @@ export const PeopleTabIcon: React.FC<TabIconProps> = ({ color, focused }) => {
       )}
       <PeopleIcon {...testProps(LL.PeopleScreen.title())} color={color} />
     </View>
-  )
-}
+  );
+};
 
 const useStyles = makeStyles(({ colors }) => ({
   notificationDot: {
@@ -93,4 +69,4 @@ const useStyles = makeStyles(({ colors }) => ({
   notificationRingHighlight: {
     borderColor: colors.primary,
   },
-}))
+}));

@@ -1,5 +1,5 @@
-import { gql } from "@apollo/client"
-import { Screen } from "@app/components/screen"
+import { gql } from "@apollo/client";
+import { Screen } from "@app/components/screen";
 import {
   useAccountDeleteMutation,
   useAccountScreenQuery,
@@ -8,28 +8,28 @@ import {
   useUserEmailRegistrationInitiateMutation,
   useUserPhoneDeleteMutation,
   useUserTotpDeleteMutation,
-} from "@app/graphql/generated"
-import { AccountLevel, useLevel } from "@app/graphql/level-context"
-import { useDisplayCurrency } from "@app/hooks/use-display-currency"
-import useLogout from "@app/hooks/use-logout"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import { toBtcMoneyAmount, toUsdMoneyAmount } from "@app/types/amounts"
-import { StackNavigationProp } from "@react-navigation/stack"
-import React from "react"
-import { Alert, TextInput, View } from "react-native"
-import { SettingsRow } from "./settings-row"
-import { Text, makeStyles, useTheme } from "@rneui/themed"
-import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
-import Modal from "react-native-modal"
-import { CONTACT_EMAIL_ADDRESS } from "@app/config"
-import { UpgradeAccountModal } from "@app/components/upgrade-account-modal"
-import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
-import { useShowWarningSecureAccount } from "./show-warning-secure-account"
-import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
-import { useNavigation } from "@react-navigation/native"
-import { useAppConfig } from "@app/hooks"
-import { AccountId } from "./account-id"
+} from "@app/graphql/generated";
+import { AccountLevel, useLevel } from "@app/graphql/level-context";
+import { useDisplayCurrency } from "@app/hooks/use-display-currency";
+import useLogout from "@app/hooks/use-logout";
+import { useI18nContext } from "@app/i18n/i18n-react";
+import { RootStackParamList } from "@app/navigation/stack-param-lists";
+import { toBtcMoneyAmount, toUsdMoneyAmount } from "@app/types/amounts";
+import { StackNavigationProp } from "@react-navigation/stack";
+import React from "react";
+import { Alert, TextInput, View } from "react-native";
+import { SettingsRow } from "./settings-row";
+import { makeStyles, Text, useTheme } from "@rneui/themed";
+import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button";
+import Modal from "react-native-modal";
+import { CONTACT_EMAIL_ADDRESS } from "@app/config";
+import { UpgradeAccountModal } from "@app/components/upgrade-account-modal";
+import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button";
+import { useShowWarningSecureAccount } from "./show-warning-secure-account";
+import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils";
+import { useNavigation } from "@react-navigation/native";
+import { useAppConfig } from "@app/hooks";
+import { AccountId } from "./account-id";
 
 gql`
   query accountScreen {
@@ -96,8 +96,8 @@ gql`
     }
   }
 
-  mutation userTotpDelete($input: UserTotpDeleteInput!) {
-    userTotpDelete(input: $input) {
+  mutation userTotpDeleteForAccountScreen {
+    userTotpDelete {
       errors {
         message
       }
@@ -112,80 +112,81 @@ gql`
       }
     }
   }
-`
+`;
 
 export const AccountScreen = () => {
-  const navigation =
-    useNavigation<StackNavigationProp<RootStackParamList, "accountScreen">>()
+  const navigation = useNavigation<
+    StackNavigationProp<RootStackParamList, "accountScreen">
+  >();
 
-  const { logout } = useLogout()
-  const { LL } = useI18nContext()
-  const styles = useStyles()
-  const { appConfig } = useAppConfig()
-  const authToken = appConfig.token
+  const { logout } = useLogout();
+  const { LL } = useI18nContext();
+  const styles = useStyles();
+  const { appConfig } = useAppConfig();
+  const authToken = appConfig.token;
 
   const {
     theme: { colors },
-  } = useTheme()
+  } = useTheme();
 
-  const { isAtLeastLevelZero, currentLevel, isAtLeastLevelOne } = useLevel()
+  const { isAtLeastLevelZero, currentLevel, isAtLeastLevelOne } = useLevel();
 
-  const [deleteAccount] = useAccountDeleteMutation()
-  const [emailDeleteMutation] = useUserEmailDeleteMutation()
-  const [phoneDeleteMutation] = useUserPhoneDeleteMutation()
-  const [totpDeleteMutation] = useUserTotpDeleteMutation()
+  const [deleteAccount] = useAccountDeleteMutation();
+  const [emailDeleteMutation] = useUserEmailDeleteMutation();
+  const [phoneDeleteMutation] = useUserPhoneDeleteMutation();
+  const [totpDeleteMutation] = useUserTotpDeleteMutation();
 
-  const [text, setText] = React.useState("")
-  const [modalVisible, setModalVisible] = React.useState(false)
-  const [upgradeAccountModalVisible, setUpgradeAccountModalVisible] =
-    React.useState(false)
-  const closeUpgradeAccountModal = () => setUpgradeAccountModalVisible(false)
-  const openUpgradeAccountModal = () => setUpgradeAccountModalVisible(true)
+  const [text, setText] = React.useState("");
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [upgradeAccountModalVisible, setUpgradeAccountModalVisible] = React
+    .useState(false);
+  const closeUpgradeAccountModal = () => setUpgradeAccountModalVisible(false);
+  const openUpgradeAccountModal = () => setUpgradeAccountModalVisible(true);
 
   const { data } = useAccountScreenQuery({
     fetchPolicy: "cache-and-network",
     skip: !isAtLeastLevelZero,
-  })
+  });
 
-  const email = data?.me?.email?.address
-  const emailVerified = Boolean(email) && Boolean(data?.me?.email?.verified)
-  const emailUnverified = Boolean(email) && !data?.me?.email?.verified
-  const phoneVerified = Boolean(data?.me?.phone)
-  const phoneAndEmailVerified = phoneVerified && emailVerified
-  const emailString = String(email)
-  const totpEnabled = Boolean(data?.me?.totpEnabled)
+  const email = data?.me?.email?.address;
+  const emailVerified = Boolean(email) && Boolean(data?.me?.email?.verified);
+  const emailUnverified = Boolean(email) && !data?.me?.email?.verified;
+  const phoneVerified = Boolean(data?.me?.phone);
+  const phoneAndEmailVerified = phoneVerified && emailVerified;
+  const emailString = String(email);
+  const totpEnabled = Boolean(data?.me?.totpEnabled);
 
-  const showWarningSecureAccount = useShowWarningSecureAccount()
+  const showWarningSecureAccount = useShowWarningSecureAccount();
 
-  const [setEmailMutation] = useUserEmailRegistrationInitiateMutation()
+  const [setEmailMutation] = useUserEmailRegistrationInitiateMutation();
 
-  const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
-  const usdWallet = getUsdWallet(data?.me?.defaultAccount?.wallets)
+  const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets);
+  const usdWallet = getUsdWallet(data?.me?.defaultAccount?.wallets);
 
-  const usdWalletBalance = toUsdMoneyAmount(usdWallet?.balance)
-  const btcWalletBalance = toBtcMoneyAmount(btcWallet?.balance)
+  const usdWalletBalance = toUsdMoneyAmount(usdWallet?.balance);
+  const btcWalletBalance = toBtcMoneyAmount(btcWallet?.balance);
 
-  const { formatMoneyAmount } = useDisplayCurrency()
+  const { formatMoneyAmount } = useDisplayCurrency();
 
-  let usdBalanceWarning = ""
-  let btcBalanceWarning = ""
-  let balancePositive = false
+  let usdBalanceWarning = "";
+  let btcBalanceWarning = "";
+  let balancePositive = false;
   if (usdWalletBalance.amount > 0) {
-    const balance =
-      formatMoneyAmount && formatMoneyAmount({ moneyAmount: usdWalletBalance })
-    usdBalanceWarning = LL.AccountScreen.usdBalanceWarning({ balance })
-    balancePositive = true
+    const balance = formatMoneyAmount &&
+      formatMoneyAmount({ moneyAmount: usdWalletBalance });
+    usdBalanceWarning = LL.AccountScreen.usdBalanceWarning({ balance });
+    balancePositive = true;
   }
 
   if (btcWalletBalance.amount > 0) {
-    const balance =
-      formatMoneyAmount && formatMoneyAmount({ moneyAmount: btcWalletBalance })
-    btcBalanceWarning = LL.AccountScreen.btcBalanceWarning({ balance })
-    balancePositive = true
+    const balance = formatMoneyAmount &&
+      formatMoneyAmount({ moneyAmount: btcWalletBalance });
+    btcBalanceWarning = LL.AccountScreen.btcBalanceWarning({ balance });
+    balancePositive = true;
   }
 
-  const dataBeta = useBetaQuery()
-  const beta = dataBeta.data?.beta ?? false
+  const dataBeta = useBetaQuery();
+  const beta = dataBeta.data?.beta ?? false;
 
   const deletePhonePrompt = async () => {
     Alert.alert(
@@ -196,12 +197,12 @@ export const AccountScreen = () => {
         {
           text: LL.common.yes(),
           onPress: async () => {
-            deletePhone()
+            deletePhone();
           },
         },
       ],
-    )
-  }
+    );
+  };
 
   const deleteEmailPrompt = async () => {
     Alert.alert(
@@ -212,51 +213,51 @@ export const AccountScreen = () => {
         {
           text: LL.common.yes(),
           onPress: async () => {
-            deleteEmail()
+            deleteEmail();
           },
         },
       ],
-    )
-  }
+    );
+  };
 
   const deletePhone = async () => {
     try {
-      await phoneDeleteMutation()
+      await phoneDeleteMutation();
     } catch (err) {
-      let message = ""
+      let message = "";
       if (err instanceof Error) {
-        message = err?.message
+        message = err?.message;
       }
-      Alert.alert(LL.common.error(), message)
+      Alert.alert(LL.common.error(), message);
     }
-  }
+  };
 
   const deleteEmail = async () => {
     try {
-      await emailDeleteMutation()
+      await emailDeleteMutation();
     } catch (err) {
-      let message = ""
+      let message = "";
       if (err instanceof Error) {
-        message = err?.message
+        message = err?.message;
       }
-      Alert.alert(LL.common.error(), message)
+      Alert.alert(LL.common.error(), message);
     }
-  }
+  };
 
   const logoutAlert = () => {
     const logAlertContent = () => {
-      const phoneNumber = String(data?.me?.phone)
+      const phoneNumber = String(data?.me?.phone);
       if (phoneAndEmailVerified) {
         return LL.AccountScreen.logoutAlertContentPhoneEmail({
           phoneNumber,
           email: emailString,
-        })
+        });
       } else if (emailVerified) {
-        return LL.AccountScreen.logoutAlertContentEmail({ email: emailString })
+        return LL.AccountScreen.logoutAlertContentEmail({ email: emailString });
       }
       // phone verified
-      return LL.AccountScreen.logoutAlertContentPhone({ phoneNumber })
-    }
+      return LL.AccountScreen.logoutAlertContentPhone({ phoneNumber });
+    };
 
     Alert.alert(LL.AccountScreen.logoutAlertTitle(), logAlertContent(), [
       {
@@ -268,12 +269,12 @@ export const AccountScreen = () => {
         text: LL.AccountScreen.IUnderstand(),
         onPress: logoutAction,
       },
-    ])
-  }
+    ]);
+  };
 
   const logoutAction = async () => {
     try {
-      await logout()
+      await logout();
       Alert.alert(LL.common.loggedOut(), "", [
         {
           text: LL.common.ok(),
@@ -283,21 +284,20 @@ export const AccountScreen = () => {
               routes: [{ name: "getStarted" }],
             }),
         },
-      ])
+      ]);
     } catch (err) {
       // TODO: figure out why ListItem onPress is swallowing errors
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
 
   const deleteAccountAction = async () => {
     if (balancePositive) {
-      const fullMessage =
-        usdBalanceWarning +
+      const fullMessage = usdBalanceWarning +
         "\n" +
         btcBalanceWarning +
         "\n" +
-        LL.support.deleteAccountBalanceWarning()
+        LL.support.deleteAccountBalanceWarning();
 
       Alert.alert(LL.common.warning(), fullMessage, [
         { text: LL.common.cancel(), onPress: () => {} },
@@ -305,18 +305,18 @@ export const AccountScreen = () => {
           text: LL.common.yes(),
           onPress: async () => setModalVisible(true),
         },
-      ])
+      ]);
     } else {
-      setModalVisible(true)
+      setModalVisible(true);
     }
-  }
+  };
 
   const deleteUserAccount = async () => {
     try {
-      const res = await deleteAccount()
+      const res = await deleteAccount();
 
       if (res.data?.accountDelete?.success) {
-        await logout()
+        await logout();
         Alert.alert(LL.support.bye(), LL.support.deleteAccountConfirmation(), [
           {
             text: LL.common.ok(),
@@ -326,23 +326,23 @@ export const AccountScreen = () => {
                 routes: [{ name: "getStarted" }],
               }),
           },
-        ])
+        ]);
       } else {
         Alert.alert(
           LL.common.error(),
           LL.support.deleteAccountError({ email: CONTACT_EMAIL_ADDRESS }) +
             "\n\n" +
             res.data?.accountDelete?.errors[0].message,
-        )
+        );
       }
     } catch (err) {
-      console.error(err)
+      console.error(err);
       Alert.alert(
         LL.common.error(),
         LL.support.deleteAccountError({ email: CONTACT_EMAIL_ADDRESS }),
-      )
+      );
     }
-  }
+  };
 
   const tryConfirmEmailAgain = async (email: string) => {
     try {
@@ -350,33 +350,34 @@ export const AccountScreen = () => {
         // to avoid flacky behavior
         // this could lead to inconsistent state if delete works but set fails
         fetchPolicy: "no-cache",
-      })
+      });
 
       const { data } = await setEmailMutation({
         variables: { input: { email } },
-      })
+      });
 
-      const errors = data?.userEmailRegistrationInitiate.errors
+      const errors = data?.userEmailRegistrationInitiate.errors;
       if (errors && errors.length > 0) {
-        Alert.alert(errors[0].message)
+        Alert.alert(errors[0].message);
       }
 
-      const emailRegistrationId = data?.userEmailRegistrationInitiate.emailRegistrationId
+      const emailRegistrationId = data?.userEmailRegistrationInitiate
+        .emailRegistrationId;
 
       if (emailRegistrationId) {
         navigation.navigate("emailRegistrationValidate", {
           emailRegistrationId,
           email,
-        })
+        });
       } else {
-        console.warn("no flow returned")
+        console.warn("no flow returned");
       }
     } catch (err) {
-      console.error(err, "error in setEmailMutation")
+      console.error(err, "error in setEmailMutation");
     } finally {
       // setLoading(false)
     }
-  }
+  };
 
   const confirmEmailAgain = async () => {
     if (email) {
@@ -390,11 +391,11 @@ export const AccountScreen = () => {
             onPress: () => tryConfirmEmailAgain(email),
           },
         ],
-      )
+      );
     } else {
-      console.error("email not set, wrong flow")
+      console.error("email not set, wrong flow");
     }
-  }
+  };
 
   const totpDelete = async () => {
     Alert.alert(
@@ -405,18 +406,21 @@ export const AccountScreen = () => {
         {
           text: LL.common.ok(),
           onPress: async () => {
-            const res = await totpDeleteMutation({ variables: { input: { authToken } } })
+            const res = await totpDeleteMutation();
             if (res.data?.userTotpDelete?.me?.totpEnabled === false) {
-              Alert.alert(LL.AccountScreen.totpDeactivated())
+              Alert.alert(LL.AccountScreen.totpDeactivated());
             } else {
-              console.log(res.data?.userTotpDelete.errors)
-              Alert.alert(LL.common.error(), res.data?.userTotpDelete?.errors[0]?.message)
+              console.log(res.data?.userTotpDelete.errors);
+              Alert.alert(
+                LL.common.error(),
+                res.data?.userTotpDelete?.errors[0]?.message,
+              );
             }
           },
         },
       ],
-    )
-  }
+    );
+  };
 
   const accountSettingsList: SettingRow[] = [
     {
@@ -441,8 +445,12 @@ export const AccountScreen = () => {
       category: LL.common.backupAccount(),
       id: "upgrade-to-level-one",
       icon: "person-outline",
-      subTitleText: showWarningSecureAccount ? LL.AccountScreen.secureYourAccount() : "",
-      chevronLogo: showWarningSecureAccount ? "alert-circle-outline" : undefined,
+      subTitleText: showWarningSecureAccount
+        ? LL.AccountScreen.secureYourAccount()
+        : "",
+      chevronLogo: showWarningSecureAccount
+        ? "alert-circle-outline"
+        : undefined,
       chevronColor: showWarningSecureAccount ? colors.primary : undefined,
       chevronSize: showWarningSecureAccount ? 24 : undefined,
       action: openUpgradeAccountModal,
@@ -516,7 +524,7 @@ export const AccountScreen = () => {
       styleDivider: true,
       hidden: !beta,
     },
-  ]
+  ];
 
   if (isAtLeastLevelOne) {
     accountSettingsList.push({
@@ -528,7 +536,7 @@ export const AccountScreen = () => {
       greyed: false,
       chevron: false,
       styleDivider: true,
-    })
+    });
   }
 
   if (currentLevel !== AccountLevel.NonAuth) {
@@ -542,7 +550,7 @@ export const AccountScreen = () => {
       enabled: true,
       greyed: false,
       styleDivider: true,
-    })
+    });
   }
 
   const AccountDeletionModal = (
@@ -554,13 +562,19 @@ export const AccountScreen = () => {
       avoidKeyboard={true}
     >
       <View style={styles.view}>
-        <Text type="h1">{LL.support.typeDelete({ delete: LL.support.delete() })}</Text>
-        <TextInput style={styles.textInput} onChangeText={setText} value={text} />
+        <Text type="h1">
+          {LL.support.typeDelete({ delete: LL.support.delete() })}
+        </Text>
+        <TextInput
+          style={styles.textInput}
+          onChangeText={setText}
+          value={text}
+        />
         <GaloyPrimaryButton
           title="Confirm"
           disabled={text.toLowerCase().trim() !== LL.support.delete()}
           onPress={() => {
-            setModalVisible(false)
+            setModalVisible(false);
             Alert.alert(
               LL.support.finalConfirmationAccountDeletionTitle(),
               LL.support.finalConfirmationAccountDeletionMessage(),
@@ -568,14 +582,17 @@ export const AccountScreen = () => {
                 { text: LL.common.cancel(), onPress: () => {} },
                 { text: LL.common.ok(), onPress: () => deleteUserAccount() },
               ],
-            )
+            );
           }}
           containerStyle={styles.mainButton}
         />
-        <GaloySecondaryButton title="Cancel" onPress={() => setModalVisible(false)} />
+        <GaloySecondaryButton
+          title="Cancel"
+          onPress={() => setModalVisible(false)}
+        />
       </View>
     </Modal>
-  )
+  );
 
   return (
     <Screen
@@ -593,8 +610,8 @@ export const AccountScreen = () => {
         closeModal={closeUpgradeAccountModal}
       />
     </Screen>
-  )
-}
+  );
+};
 
 const useStyles = makeStyles(({ colors }) => ({
   view: {
@@ -613,4 +630,4 @@ const useStyles = makeStyles(({ colors }) => ({
   },
 
   mainButton: { marginVertical: 20 },
-}))
+}));

@@ -25,7 +25,6 @@ import {
   EmailRegistrationInitiateScreen,
   EmailRegistrationValidateScreen,
 } from "@app/screens/email-registration-screen";
-import { FullOnboardingFlowScreen } from "@app/screens/full-onboarding-flow";
 import { GaloyAddressScreen } from "@app/screens/galoy-address-screen";
 import { PeopleTabIcon } from "@app/screens/people-screen/tab-icon";
 import {
@@ -409,13 +408,6 @@ export const RootStack = () => {
         component={WebViewScreen}
         options={{
           title: "WebView", // should be overridden by the navigate action with an initial title
-        }}
-      />
-      <RootNavigator.Screen
-        name="fullOnboardingFlow"
-        component={FullOnboardingFlowScreen}
-        options={{
-          title: LL.FullOnboarding.title(),
         }}
       />
       <RootNavigator.Screen

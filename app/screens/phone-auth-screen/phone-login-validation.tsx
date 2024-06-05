@@ -1,39 +1,39 @@
-import * as React from "react"
-import { useCallback, useEffect, useState } from "react"
-import { ActivityIndicator, View } from "react-native"
+import * as React from "react";
+import { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
 
-import { gql } from "@apollo/client"
-import { GaloyErrorBox } from "@app/components/atomic/galoy-error-box"
-import { GaloyInfo } from "@app/components/atomic/galoy-info"
-import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
+import { gql } from "@apollo/client";
+import { GaloyErrorBox } from "@app/components/atomic/galoy-error-box";
+import { GaloyInfo } from "@app/components/atomic/galoy-info";
+import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button";
 import {
   PhoneCodeChannelType,
   useUserLoginMutation,
   useUserLoginUpgradeMutation,
-} from "@app/graphql/generated"
-import { AccountLevel, useLevel } from "@app/graphql/level-context"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { TranslationFunctions } from "@app/i18n/i18n-types"
+} from "@app/graphql/generated";
+import { AccountLevel, useLevel } from "@app/graphql/level-context";
+import { useI18nContext } from "@app/i18n/i18n-react";
+import { TranslationFunctions } from "@app/i18n/i18n-types";
 import {
   logUpgradeLoginAttempt,
   logUpgradeLoginSuccess,
   logValidateAuthCodeFailure,
-} from "@app/utils/analytics"
-import { testProps } from "@app/utils/testProps"
-import analytics from "@react-native-firebase/analytics"
-import crashlytics from "@react-native-firebase/crashlytics"
-import { RouteProp, useNavigation } from "@react-navigation/native"
-import { StackNavigationProp } from "@react-navigation/stack"
-import { Text, makeStyles, useTheme, Input } from "@rneui/themed"
+} from "@app/utils/analytics";
+import { testProps } from "@app/utils/testProps";
+import analytics from "@react-native-firebase/analytics";
+import crashlytics from "@react-native-firebase/crashlytics";
+import { RouteProp, useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { Input, makeStyles, Text, useTheme } from "@rneui/themed";
 
-import { Screen } from "../../components/screen"
-import { useAppConfig } from "../../hooks"
-import type { PhoneValidationStackParamList } from "../../navigation/stack-param-lists"
-import { parseTimer } from "../../utils/timer"
-import { PhoneCodeChannelToFriendlyName } from "./request-phone-code-login"
+import { Screen } from "../../components/screen";
+import { useAppConfig } from "../../hooks";
+import type { PhoneValidationStackParamList } from "../../navigation/stack-param-lists";
+import { parseTimer } from "../../utils/timer";
+import { PhoneCodeChannelToFriendlyName } from "./request-phone-code-login";
 
 gql`
-  mutation userLogin($input: UserLoginInput!) {
+  mutation userLoginForPhoneLoginValidation($input: UserLoginInput!) {
     userLogin(input: $input) {
       errors {
         message
@@ -54,20 +54,20 @@ gql`
       authToken
     }
   }
-`
+`;
 
 type PhoneLoginValidationScreenProps = {
-  route: RouteProp<PhoneValidationStackParamList, "phoneLoginValidate">
-}
+  route: RouteProp<PhoneValidationStackParamList, "phoneLoginValidate">;
+};
 
 const ValidatePhoneCodeStatus = {
   WaitingForCode: "WaitingForCode",
   LoadingAuthResult: "LoadingAuthResult",
   ReadyToRegenerate: "ReadyToRegenerate",
-}
+};
 
 type ValidatePhoneCodeStatusType =
-  (typeof ValidatePhoneCodeStatus)[keyof typeof ValidatePhoneCodeStatus]
+  (typeof ValidatePhoneCodeStatus)[keyof typeof ValidatePhoneCodeStatus];
 
 const ValidatePhoneCodeErrors = {
   InvalidCode: "InvalidCode",
@@ -76,41 +76,45 @@ const ValidatePhoneCodeErrors = {
   IpNotAllowed: "IpNotAllowed",
   PhoneNotAllowed: "PhoneNotAllowed",
   UnknownError: "UnknownError",
-} as const
+} as const;
 
 const mapGqlErrorsToValidatePhoneCodeErrors = (
   errors: readonly {
-    code?: string | null | undefined
-    message: string
+    code?: string | null | undefined;
+    message: string;
   }[],
 ):
   | {
-      type: ValidatePhoneCodeErrorsType
-      msg?: string
-    }
+    type: ValidatePhoneCodeErrorsType;
+    msg?: string;
+  }
   | undefined => {
   if (errors.some((error) => error.code === "PHONE_CODE_ERROR")) {
     return {
       type: ValidatePhoneCodeErrors.InvalidCode,
-    }
+    };
   }
 
   if (errors.some((error) => error.code === "TOO_MANY_REQUEST")) {
     return {
       type: ValidatePhoneCodeErrors.TooManyAttempts,
-    }
+    };
   }
 
-  if (errors.some((error) => error.code === "PHONE_NOT_ALLOWED_TO_ONBOARD_ERROR")) {
+  if (
+    errors.some((error) => error.code === "PHONE_NOT_ALLOWED_TO_ONBOARD_ERROR")
+  ) {
     return {
       type: ValidatePhoneCodeErrors.PhoneNotAllowed,
-    }
+    };
   }
 
-  if (errors.some((error) => error.code === "IP_NOT_ALLOWED_TO_ONBOARD_ERROR")) {
+  if (
+    errors.some((error) => error.code === "IP_NOT_ALLOWED_TO_ONBOARD_ERROR")
+  ) {
     return {
       type: ValidatePhoneCodeErrors.IpNotAllowed,
-    }
+    };
   }
 
   if (
@@ -122,166 +126,169 @@ const mapGqlErrorsToValidatePhoneCodeErrors = (
   ) {
     return {
       type: ValidatePhoneCodeErrors.CannotUpgradeToExistingAccount,
-    }
+    };
   }
 
   if (errors.length > 0) {
     return {
       type: ValidatePhoneCodeErrors.UnknownError,
       msg: errors[0].message,
-    }
+    };
   }
 
-  return undefined
-}
+  return undefined;
+};
 
 const mapValidatePhoneCodeErrorsToMessage = (
   error: {
-    type: ValidatePhoneCodeErrorsType
-    msg?: string
+    type: ValidatePhoneCodeErrorsType;
+    msg?: string;
   },
   LL: TranslationFunctions,
 ): string => {
   switch (error.type) {
     case ValidatePhoneCodeErrors.InvalidCode:
-      return LL.PhoneLoginValidationScreen.errorLoggingIn()
+      return LL.PhoneLoginValidationScreen.errorLoggingIn();
     case ValidatePhoneCodeErrors.TooManyAttempts:
-      return LL.PhoneLoginValidationScreen.errorTooManyAttempts()
+      return LL.PhoneLoginValidationScreen.errorTooManyAttempts();
     case ValidatePhoneCodeErrors.CannotUpgradeToExistingAccount:
-      return LL.PhoneLoginValidationScreen.errorCannotUpgradeToExistingAccount()
+      return LL.PhoneLoginValidationScreen
+        .errorCannotUpgradeToExistingAccount();
     case ValidatePhoneCodeErrors.IpNotAllowed:
-      return LL.PhoneLoginValidationScreen.errorIpNotAllowed()
+      return LL.PhoneLoginValidationScreen.errorIpNotAllowed();
     case ValidatePhoneCodeErrors.PhoneNotAllowed:
-      return LL.PhoneLoginValidationScreen.errorPhoneNotAllowed()
+      return LL.PhoneLoginValidationScreen.errorPhoneNotAllowed();
     case ValidatePhoneCodeErrors.UnknownError:
     default:
-      return LL.errors.generic() + (error.msg ? ` Error Message: ${error.msg}` : "")
+      return LL.errors.generic() +
+        (error.msg ? ` Error Message: ${error.msg}` : "");
   }
-}
+};
 
 export type ValidatePhoneCodeErrorsType =
-  (typeof ValidatePhoneCodeErrors)[keyof typeof ValidatePhoneCodeErrors]
+  (typeof ValidatePhoneCodeErrors)[keyof typeof ValidatePhoneCodeErrors];
 
-export const PhoneLoginValidationScreen: React.FC<PhoneLoginValidationScreenProps> = ({
+export const PhoneLoginValidationScreen: React.FC<
+  PhoneLoginValidationScreenProps
+> = ({
   route,
 }) => {
-  const styles = useStyles()
-  const navigation =
-    useNavigation<
-      StackNavigationProp<PhoneValidationStackParamList, "phoneLoginValidate">
-    >()
+  const styles = useStyles();
+  const navigation = useNavigation<
+    StackNavigationProp<PhoneValidationStackParamList, "phoneLoginValidate">
+  >();
 
   const [status, setStatus] = useState<ValidatePhoneCodeStatusType>(
     ValidatePhoneCodeStatus.WaitingForCode,
-  )
+  );
   const [error, setError] = useState<
     | {
-        type: ValidatePhoneCodeErrorsType
-        msg?: string
-      }
+      type: ValidatePhoneCodeErrorsType;
+      msg?: string;
+    }
     | undefined
-  >()
+  >();
 
-  const { saveToken, appConfig } = useAppConfig()
+  const { saveToken, appConfig } = useAppConfig();
 
-  const { LL } = useI18nContext()
+  const { LL } = useI18nContext();
 
   const [userLoginMutation] = useUserLoginMutation({
     fetchPolicy: "no-cache",
-  })
+  });
 
   const [userLoginUpgradeMutation] = useUserLoginUpgradeMutation({
     fetchPolicy: "no-cache",
-  })
+  });
 
-  const { currentLevel } = useLevel()
+  const { currentLevel } = useLevel();
 
-  const isUpgradeFlow = currentLevel === AccountLevel.Zero
+  const isUpgradeFlow = currentLevel === AccountLevel.Zero;
 
-  const [code, _setCode] = useState("")
-  const [secondsRemaining, setSecondsRemaining] = useState<number>(30)
-  const { phone, channel } = route.params
+  const [code, _setCode] = useState("");
+  const [secondsRemaining, setSecondsRemaining] = useState<number>(30);
+  const { phone, channel } = route.params;
   const {
     theme: { colors },
-  } = useTheme()
+  } = useTheme();
 
   const send = useCallback(
     async (code: string) => {
       if (status === ValidatePhoneCodeStatus.LoadingAuthResult) {
-        return
+        return;
       }
 
       try {
         let errors:
           | readonly { code?: string | null | undefined; message: string }[]
-          | undefined
+          | undefined;
 
-        setStatus(ValidatePhoneCodeStatus.LoadingAuthResult)
+        setStatus(ValidatePhoneCodeStatus.LoadingAuthResult);
         if (isUpgradeFlow) {
-          logUpgradeLoginAttempt()
+          logUpgradeLoginAttempt();
           const { data } = await userLoginUpgradeMutation({
             variables: { input: { phone, code } },
-          })
+          });
 
-          const success = data?.userLoginUpgrade?.success
-          const authToken = data?.userLoginUpgrade?.authToken
+          const success = data?.userLoginUpgrade?.success;
+          const authToken = data?.userLoginUpgrade?.authToken;
           if (success) {
-            logUpgradeLoginSuccess()
+            logUpgradeLoginSuccess();
 
             if (authToken) {
-              saveToken(authToken)
+              saveToken(authToken);
             }
 
-            navigation.replace("Primary")
-            return
+            navigation.replace("Primary");
+            return;
           }
 
-          errors = data?.userLoginUpgrade?.errors
+          errors = data?.userLoginUpgrade?.errors;
         } else {
           const { data } = await userLoginMutation({
             variables: { input: { phone, code } },
-          })
+          });
 
-          const authToken = data?.userLogin?.authToken
-          const totpRequired = data?.userLogin?.totpRequired
+          const authToken = data?.userLogin?.authToken;
+          const totpRequired = data?.userLogin?.totpRequired;
 
           if (authToken) {
             if (totpRequired) {
               navigation.navigate("totpLoginValidate", {
                 authToken,
-              })
-              return
+              });
+              return;
             }
-            analytics().logLogin({ method: "phone" })
-            saveToken(authToken)
-            navigation.replace("Primary")
-            return
+            analytics().logLogin({ method: "phone" });
+            saveToken(authToken);
+            navigation.replace("Primary");
+            return;
           }
 
-          errors = data?.userLogin?.errors
+          errors = data?.userLogin?.errors;
         }
 
         const error = mapGqlErrorsToValidatePhoneCodeErrors(errors || []) || {
           type: ValidatePhoneCodeErrors.UnknownError,
-        }
+        };
 
         logValidateAuthCodeFailure({
           error: error.type,
-        })
+        });
 
-        setError(error)
-        _setCode("")
-        setStatus(ValidatePhoneCodeStatus.ReadyToRegenerate)
+        setError(error);
+        _setCode("");
+        setStatus(ValidatePhoneCodeStatus.ReadyToRegenerate);
       } catch (err) {
         if (err instanceof Error) {
-          crashlytics().recordError(err)
-          console.debug({ err })
+          crashlytics().recordError(err);
+          console.debug({ err });
         }
         setError({
           type: ValidatePhoneCodeErrors.UnknownError,
-        })
-        _setCode("")
-        setStatus(ValidatePhoneCodeStatus.ReadyToRegenerate)
+        });
+        _setCode("");
+        setStatus(ValidatePhoneCodeStatus.ReadyToRegenerate);
       }
     },
     [
@@ -294,44 +301,44 @@ export const PhoneLoginValidationScreen: React.FC<PhoneLoginValidationScreenProp
       navigation,
       isUpgradeFlow,
     ],
-  )
+  );
 
   const setCode = useCallback(
     (code: string) => {
       if (code.length > 6) {
-        return
+        return;
       }
 
-      setError(undefined)
-      _setCode(code)
+      setError(undefined);
+      _setCode(code);
       if (code.length === 6) {
-        send(code)
+        send(code);
       }
     },
     [send],
-  )
+  );
 
   useEffect(() => {
     const timerId = setTimeout(() => {
       if (secondsRemaining > 0) {
-        setSecondsRemaining(secondsRemaining - 1)
+        setSecondsRemaining(secondsRemaining - 1);
       } else if (status === ValidatePhoneCodeStatus.WaitingForCode) {
-        setStatus(ValidatePhoneCodeStatus.ReadyToRegenerate)
+        setStatus(ValidatePhoneCodeStatus.ReadyToRegenerate);
       }
-    }, 1000)
-    return () => clearTimeout(timerId)
-  }, [secondsRemaining, status])
+    }, 1000);
+    return () => clearTimeout(timerId);
+  }, [secondsRemaining, status]);
 
   useEffect(() => {
     if (!appConfig) {
-      return
+      return;
     }
 
-    appConfig.galoyInstance.id === "Local" && setCode("000000")
-  }, [appConfig, setCode])
+    appConfig.galoyInstance.id === "Local" && setCode("000000");
+  }, [appConfig, setCode]);
 
-  const errorMessage = error && mapValidatePhoneCodeErrorsToMessage(error, LL)
-  let extraInfoContent = undefined
+  const errorMessage = error && mapValidatePhoneCodeErrorsToMessage(error, LL);
+  let extraInfoContent = undefined;
   switch (status) {
     case ValidatePhoneCodeStatus.ReadyToRegenerate:
       extraInfoContent = (
@@ -342,28 +349,29 @@ export const PhoneLoginValidationScreen: React.FC<PhoneLoginValidationScreenProp
             </View>
           )}
           {error?.type ===
-          ValidatePhoneCodeErrors.CannotUpgradeToExistingAccount ? null : (
-            <View style={styles.marginBottom}>
-              <GaloyInfo>
-                {LL.PhoneLoginValidationScreen.sendViaOtherChannel({
-                  channel: PhoneCodeChannelToFriendlyName[channel],
-                  other:
-                    PhoneCodeChannelToFriendlyName[
+              ValidatePhoneCodeErrors.CannotUpgradeToExistingAccount
+            ? null
+            : (
+              <View style={styles.marginBottom}>
+                <GaloyInfo>
+                  {LL.PhoneLoginValidationScreen.sendViaOtherChannel({
+                    channel: PhoneCodeChannelToFriendlyName[channel],
+                    other: PhoneCodeChannelToFriendlyName[
                       channel === PhoneCodeChannelType.Sms
                         ? PhoneCodeChannelType.Whatsapp
                         : PhoneCodeChannelType.Sms
                     ],
-                })}
-              </GaloyInfo>
-            </View>
-          )}
+                  })}
+                </GaloyInfo>
+              </View>
+            )}
           <GaloySecondaryButton
             title={LL.PhoneLoginValidationScreen.sendAgain()}
             onPress={() => navigation.goBack()}
           />
         </>
-      )
-      break
+      );
+      break;
     case ValidatePhoneCodeStatus.LoadingAuthResult:
       extraInfoContent = (
         <ActivityIndicator
@@ -371,17 +379,18 @@ export const PhoneLoginValidationScreen: React.FC<PhoneLoginValidationScreenProp
           size="large"
           color={colors.primary}
         />
-      )
-      break
+      );
+      break;
     case ValidatePhoneCodeStatus.WaitingForCode:
       extraInfoContent = (
         <View style={styles.timerRow}>
           <Text type="p3" color={colors.grey3}>
-            {LL.PhoneLoginValidationScreen.sendAgain()} {parseTimer(secondsRemaining)}
+            {LL.PhoneLoginValidationScreen.sendAgain()}{" "}
+            {parseTimer(secondsRemaining)}
           </Text>
         </View>
-      )
-      break
+      );
+      break;
   }
 
   return (
@@ -418,8 +427,8 @@ export const PhoneLoginValidationScreen: React.FC<PhoneLoginValidationScreenProp
         <View style={styles.extraInfoContainer}>{extraInfoContent}</View>
       </View>
     </Screen>
-  )
-}
+  );
+};
 
 const useStyles = makeStyles(({ colors }) => ({
   screenStyle: {
@@ -473,4 +482,4 @@ const useStyles = makeStyles(({ colors }) => ({
     fontSize: 24,
     textAlign: "center",
   },
-}))
+}));

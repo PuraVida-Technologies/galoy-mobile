@@ -210,24 +210,24 @@ type RootTranslation = {
 		 */
 		frequentContacts: string
 	}
-  ContactsScreen: {
-    /**
-     * N​o​ ​C​o​n​t​a​c​t​s​ ​F​o​u​n​d
-     */
-    noContactsTitle: string;
-    /**
-     * S​e​n​d​ ​o​r​ ​r​e​c​e​i​v​e​ ​a​ ​p​a​y​m​e​n​t​ ​u​s​i​n​g​ ​a​ ​u​s​e​r​n​a​m​e​ ​a​n​d​ ​c​o​n​t​a​c​t​s​ ​w​i​l​l​ ​a​u​t​o​m​a​t​i​c​a​l​l​y​ ​b​e​ ​a​d​d​e​d​ ​h​e​r​e
-     */
-    noContactsYet: string;
-    /**
-     * N​o​ ​c​o​n​t​a​c​t​s​ ​m​a​t​c​h​i​n​g​ ​y​o​u​r​ ​s​e​a​r​c​h​ ​w​e​r​e​ ​f​o​u​n​d​.
-     */
-    noMatchingContacts: string;
-    /**
-     * C​o​n​t​a​c​t​s
-     */
-    title: string;
-  };
+	ContactsScreen: {
+		/**
+		 * N​o​ ​C​o​n​t​a​c​t​s​ ​F​o​u​n​d
+		 */
+		noContactsTitle: string
+		/**
+		 * S​e​n​d​ ​o​r​ ​r​e​c​e​i​v​e​ ​a​ ​p​a​y​m​e​n​t​ ​u​s​i​n​g​ ​a​ ​u​s​e​r​n​a​m​e​ ​a​n​d​ ​c​o​n​t​a​c​t​s​ ​w​i​l​l​ ​a​u​t​o​m​a​t​i​c​a​l​l​y​ ​b​e​ ​a​d​d​e​d​ ​h​e​r​e
+		 */
+		noContactsYet: string
+		/**
+		 * N​o​ ​c​o​n​t​a​c​t​s​ ​m​a​t​c​h​i​n​g​ ​y​o​u​r​ ​s​e​a​r​c​h​ ​w​e​r​e​ ​f​o​u​n​d​.
+		 */
+		noMatchingContacts: string
+		/**
+		 * C​o​n​t​a​c​t​s
+		 */
+		title: string
+	}
 	ContactDetailsScreen: {
 		/**
 		 * T​r​a​n​s​a​c​t​i​o​n​s​ ​w​i​t​h​ ​{​u​s​e​r​n​a​m​e​}
@@ -9117,6 +9117,176 @@ type RootTranslation = {
 		 */
 		REVIEW: string
 	}
+	marketPlace: {
+		/**
+		 * N​a​m​e
+		 */
+		name: string
+		/**
+		 * M​a​r​k​e​t​p​l​a​c​e
+		 */
+		marketPlace: string
+		/**
+		 * S​e​a​r​c​h
+		 */
+		search: string
+		/**
+		 * P​o​s​t​ ​w​h​a​t​ ​w​o​u​l​d​ ​y​o​u​ ​l​i​k​e​ ​t​o​o​ ​o​f​f​e​r​ ​f​o​r​ ​b​i​t​c​o​i​n
+		 */
+		post_what_would_you_like_too_offer_for_bitcoin: string
+		/**
+		 * C​r​e​a​t​e​ ​P​o​s​t
+		 */
+		create_post: string
+		/**
+		 * M​y​ ​P​o​s​t​s
+		 */
+		my_post: string
+		/**
+		 * R​e​g​i​s​t​e​r​ ​S​t​o​r​e
+		 */
+		register_store: string
+		/**
+		 * N​e​x​t
+		 */
+		next: string
+		/**
+		 * S​k​i​p
+		 */
+		skip: string
+		/**
+		 * S​h​a​r​e​ ​l​o​c​a​t​i​o​n
+		 */
+		share_location: string
+		/**
+		 * U​s​e​ ​M​y​ ​C​u​r​r​e​n​t​ ​L​o​c​a​t​i​o​n
+		 */
+		use_my_current_position: string
+		/**
+		 * O​p​e​n​ ​H​o​u​r
+		 */
+		open_hour: string
+		/**
+		 * C​u​i​s​i​n​e​s
+		 */
+		cuisines: string
+		/**
+		 * D​e​s​c​r​i​p​t​i​o​n
+		 */
+		description: string
+		/**
+		 * D​i​s​t​a​n​c​e
+		 */
+		distance: string
+		/**
+		 * R​e​l​e​v​a​n​c​e
+		 */
+		relevance: string
+		/**
+		 * U​p​d​a​t​e​ ​c​o​v​e​r​ ​I​m​a​g​e
+		 */
+		update_cover_image: string
+		/**
+		 * L​o​c​a​t​i​o​n
+		 */
+		location: string
+		/**
+		 * S​u​b​m​i​t
+		 */
+		submit: string
+		/**
+		 * U​p​l​o​a​d​ ​I​m​a​g​e
+		 */
+		upload_image: string
+		/**
+		 * I​m​a​g​e​ ​u​p​l​o​a​d​e​d
+		 */
+		image_uploaded: string
+		/**
+		 * A​c​c​o​u​n​t​ ​c​o​n​t​a​c​t​ ​w​i​l​l​ ​b​e​ ​f​i​l​l​e​d
+		 */
+		account_contact_will_be_filled: string
+		/**
+		 * U​s​e​ ​E​x​i​s​t​i​n​g​ ​I​n​f​o​r​m​a​t​i​o​n
+		 */
+		use_existing_information: string
+		/**
+		 * P​h​o​n​e
+		 */
+		phone: string
+		/**
+		 * P​h​o​n​e​ ​n​u​m​b​e​r
+		 */
+		phone_number: string
+		/**
+		 * E​m​a​i​l
+		 */
+		email: string
+		/**
+		 * E​m​a​i​l​ ​i​s​ ​r​e​q​u​i​r​e​d
+		 */
+		email_is_required: string
+		/**
+		 * E​m​a​i​l​ ​i​s​ ​i​n​v​a​l​i​d
+		 */
+		email_is_invalid: string
+		/**
+		 * P​r​i​c​e
+		 */
+		price: string
+		/**
+		 * N​a​m​e​ ​i​s​ ​r​e​q​u​i​r​e​d
+		 */
+		name_is_required: string
+		/**
+		 * N​a​m​e​ ​m​u​s​t​ ​b​e​ ​m​o​r​e​ ​t​h​a​n​ ​2​ ​c​h​a​r​a​c​t​e​r​s
+		 */
+		name_must_be_more_than_2_characters: string
+		/**
+		 * D​e​s​c​r​i​p​t​i​o​n​ ​i​s​ ​r​e​q​u​i​r​e​d
+		 */
+		description_is_required: string
+		/**
+		 * D​e​s​c​r​i​p​t​i​o​n​ ​m​u​s​t​ ​b​e​ ​m​o​r​e​ ​t​h​a​n​ ​2​ ​c​h​a​r​a​c​t​e​r​s
+		 */
+		description_must_be_more_than_2_characters: string
+		/**
+		 * Y​o​u​ ​m​u​s​t​ ​a​d​d​ ​a​t​ ​l​e​a​s​t​ ​o​n​e​ ​i​m​a​g​e
+		 */
+		you_must_add_at_least_one_image: string
+		/**
+		 * E​n​t​e​r​ ​y​o​u​r​ ​o​w​n​ ​t​a​g​s
+		 */
+		enter_your_own_tags: string
+		/**
+		 * T​a​g​s
+		 */
+		tags: string
+		/**
+		 * Y​o​u​r​ ​s​e​l​e​c​t​e​d​ ​t​a​g
+		 */
+		your_selected_tag: string
+		/**
+		 * S​e​l​e​c​t​ ​y​o​u​r​ ​a​d​d​r​e​s​s
+		 */
+		select_your_address: string
+		/**
+		 * E​n​t​e​r​ ​y​o​u​r​ ​l​o​c​a​t​i​o​n
+		 */
+		enter_your_location: string
+		/**
+		 * S​e​a​r​c​h​ ​y​o​u​r​ ​l​o​c​a​t​i​o​n
+		 */
+		search_your_location: string
+		/**
+		 * O​r​ ​S​e​l​e​c​t​ ​Y​o​u​r​ ​A​d​d​r​e​s​s
+		 */
+		or_select_your_address: string
+		/**
+		 * T​h​e​r​e​ ​a​r​e​ ​n​o​ ​p​o​s​t​s​ ​a​r​o​u​n​d​ ​y​o​u
+		 */
+		there_are_no_posts: string
+	}
 }
 
 export type TranslationFunctions = {
@@ -9290,24 +9460,24 @@ export type TranslationFunctions = {
 		 */
 		frequentContacts: () => LocalizedString
 	}
-  ContactsScreen: {
-    /**
-     * No Contacts Found
-     */
-    noContactsTitle: () => LocalizedString;
-    /**
-     * Send or receive a payment using a username and contacts will automatically be added here
-     */
-    noContactsYet: () => LocalizedString;
-    /**
-     * No contacts matching your search were found.
-     */
-    noMatchingContacts: () => LocalizedString;
-    /**
-     * Contacts
-     */
-    title: () => LocalizedString;
-  }
+	ContactsScreen: {
+		/**
+		 * No Contacts Found
+		 */
+		noContactsTitle: () => LocalizedString
+		/**
+		 * Send or receive a payment using a username and contacts will automatically be added here
+		 */
+		noContactsYet: () => LocalizedString
+		/**
+		 * No contacts matching your search were found.
+		 */
+		noMatchingContacts: () => LocalizedString
+		/**
+		 * Contacts
+		 */
+		title: () => LocalizedString
+	}
 	ContactDetailsScreen: {
 		/**
 		 * Transactions with {username}
@@ -18117,72 +18287,176 @@ export type TranslationFunctions = {
 		 */
 		REVIEW: () => LocalizedString
 	}
-
 	marketPlace: {
-		add: () => LocalizedString;
-		name: () => LocalizedString;
-		direction: () => LocalizedString;
-		marketPlace: () => LocalizedString;
-		report: () => LocalizedString;
-		search: () => LocalizedString;
-		post_what_would_you_like_too_offer_for_bitcoin: () => LocalizedString;
-		create_post: () => LocalizedString;
-		distance: () => LocalizedString;
-		relevance: () => LocalizedString;
-		my_post: () => LocalizedString;
-		register_store: () => LocalizedString;
-		next: () => LocalizedString;
-		skip: () => LocalizedString;
-		share_location: () => LocalizedString;
-		use_my_current_position: () => LocalizedString;
-		open_hour: () => LocalizedString;
-		cuisines: () => LocalizedString;
-		description: () => LocalizedString;
-		update_cover_image: () => LocalizedString;
-		location: () => LocalizedString;
-		submit: () => LocalizedString;
-		upload_image: () => LocalizedString;
-		image_uploaded: () => LocalizedString;
-		account_contact_will_be_filled: () => LocalizedString;
-		use_existing_information: () => LocalizedString;
-		phone: () => LocalizedString;
-		phone_number: () => LocalizedString;
-		email: () => LocalizedString;
-		email_is_required: () => LocalizedString;
-		email_is_invalid: () => LocalizedString;
-		price: () => LocalizedString;
-		name_is_required: () => LocalizedString;
-		name_length_validation: () => LocalizedString;
-		description_is_required: () => LocalizedString;
-		description_must_be_more_than_2_characters: () => LocalizedString;
-		you_must_add_at_least_one_image: () => LocalizedString;
-		enter_your_own_tags: () => LocalizedString;
-		tags: () => LocalizedString;
-		your_selected_tag: () => LocalizedString;
-	
-		select_your_address: () => LocalizedString;
-		enter_your_location: () => LocalizedString;
-		search_your_location: () => LocalizedString;
-		or_select_your_address: () => LocalizedString;
-		there_are_no_posts: () => LocalizedString;
-		cant_find_tag_Add_your_own: () => LocalizedString;
-		you_can_select_up_to_5_tags: () => LocalizedString;
-		something_wrong_when_upload_image: () => LocalizedString;
-		tap_to_find_your_place: () => LocalizedString;
-		you_are_here: () => LocalizedString;
-		something_wrong_when_find_location: () => LocalizedString;
-		loading_data: () => LocalizedString;
-		my_posts: () => LocalizedString;
-		you_dont_have_any_post: () => LocalizedString;
-		you_need_to_enable_location_to_see_posts_around_you: () => LocalizedString;
-		list_view: () => LocalizedString;
-		your_post_is_submitted_to_review: () => LocalizedString;
-		this_post_has_been_reported: () => LocalizedString;
-		thank_you_for_submitting_this_post: () => LocalizedString;
-		we_will_review_it_shortly: () => LocalizedString;
-		tell_us_what_is_wrong_with_this_post: () => LocalizedString;
-		whats_going_on: () => LocalizedString;
-	  };
+		/**
+		 * Name
+		 */
+		name: () => LocalizedString
+		/**
+		 * Marketplace
+		 */
+		marketPlace: () => LocalizedString
+		/**
+		 * Search
+		 */
+		search: () => LocalizedString
+		/**
+		 * Post what would you like too offer for bitcoin
+		 */
+		post_what_would_you_like_too_offer_for_bitcoin: () => LocalizedString
+		/**
+		 * Create Post
+		 */
+		create_post: () => LocalizedString
+		/**
+		 * My Posts
+		 */
+		my_post: () => LocalizedString
+		/**
+		 * Register Store
+		 */
+		register_store: () => LocalizedString
+		/**
+		 * Next
+		 */
+		next: () => LocalizedString
+		/**
+		 * Skip
+		 */
+		skip: () => LocalizedString
+		/**
+		 * Share location
+		 */
+		share_location: () => LocalizedString
+		/**
+		 * Use My Current Location
+		 */
+		use_my_current_position: () => LocalizedString
+		/**
+		 * Open Hour
+		 */
+		open_hour: () => LocalizedString
+		/**
+		 * Cuisines
+		 */
+		cuisines: () => LocalizedString
+		/**
+		 * Description
+		 */
+		description: () => LocalizedString
+		/**
+		 * Distance
+		 */
+		distance: () => LocalizedString
+		/**
+		 * Relevance
+		 */
+		relevance: () => LocalizedString
+		/**
+		 * Update cover Image
+		 */
+		update_cover_image: () => LocalizedString
+		/**
+		 * Location
+		 */
+		location: () => LocalizedString
+		/**
+		 * Submit
+		 */
+		submit: () => LocalizedString
+		/**
+		 * Upload Image
+		 */
+		upload_image: () => LocalizedString
+		/**
+		 * Image uploaded
+		 */
+		image_uploaded: () => LocalizedString
+		/**
+		 * Account contact will be filled
+		 */
+		account_contact_will_be_filled: () => LocalizedString
+		/**
+		 * Use Existing Information
+		 */
+		use_existing_information: () => LocalizedString
+		/**
+		 * Phone
+		 */
+		phone: () => LocalizedString
+		/**
+		 * Phone number
+		 */
+		phone_number: () => LocalizedString
+		/**
+		 * Email
+		 */
+		email: () => LocalizedString
+		/**
+		 * Email is required
+		 */
+		email_is_required: () => LocalizedString
+		/**
+		 * Email is invalid
+		 */
+		email_is_invalid: () => LocalizedString
+		/**
+		 * Price
+		 */
+		price: () => LocalizedString
+		/**
+		 * Name is required
+		 */
+		name_is_required: () => LocalizedString
+		/**
+		 * Name must be more than 2 characters
+		 */
+		name_must_be_more_than_2_characters: () => LocalizedString
+		/**
+		 * Description is required
+		 */
+		description_is_required: () => LocalizedString
+		/**
+		 * Description must be more than 2 characters
+		 */
+		description_must_be_more_than_2_characters: () => LocalizedString
+		/**
+		 * You must add at least one image
+		 */
+		you_must_add_at_least_one_image: () => LocalizedString
+		/**
+		 * Enter your own tags
+		 */
+		enter_your_own_tags: () => LocalizedString
+		/**
+		 * Tags
+		 */
+		tags: () => LocalizedString
+		/**
+		 * Your selected tag
+		 */
+		your_selected_tag: () => LocalizedString
+		/**
+		 * Select your address
+		 */
+		select_your_address: () => LocalizedString
+		/**
+		 * Enter your location
+		 */
+		enter_your_location: () => LocalizedString
+		/**
+		 * Search your location
+		 */
+		search_your_location: () => LocalizedString
+		/**
+		 * Or Select Your Address
+		 */
+		or_select_your_address: () => LocalizedString
+		/**
+		 * There are no posts around you
+		 */
+		there_are_no_posts: () => LocalizedString
+	}
 }
 
 export type Formatters = {
