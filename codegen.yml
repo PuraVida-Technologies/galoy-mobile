@@ -1,10 +1,11 @@
 overwrite: true
-schema: "https://api.staging.galoy.io/graphql"
+schema: "https://api.staging.pvbtc.cloud/graphql"
 # schema: "./supergraph.graphql"
 documents:
   - "app/**/*.ts"
   - "app/**/*.tsx"
   - "e2e/**/*.ts"
+  - "!app/modules/market-place/**/*.ts"
 generates:
   app/graphql/generated.ts:
     schema: "app/graphql/local-schema.gql"

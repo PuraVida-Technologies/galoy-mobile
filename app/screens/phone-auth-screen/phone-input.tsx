@@ -1,7 +1,7 @@
-import { useNavigation } from "@react-navigation/native"
-import { StackNavigationProp } from "@react-navigation/stack"
-import * as React from "react"
-import { useEffect, useRef, useState } from "react"
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   ActivityIndicatorProps,
@@ -10,31 +10,31 @@ import {
   KeyboardAvoidingView,
   Text,
   View,
-} from "react-native"
-import PhoneInput from "react-native-phone-number-input"
+} from "react-native";
+import PhoneInput from "react-native-phone-number-input";
 
-import { gql } from "@apollo/client"
-import DownArrow from "@app/assets/icons/downarrow.svg"
-import { GaloyTertiaryButton } from "@app/components/atomic/galoy-tertiary-button"
-import { ContactSupportButton } from "@app/components/contact-support-button/contact-support-button"
+import { gql } from "@apollo/client";
+import DownArrow from "@app/assets/icons/downarrow.svg";
+import { GaloyTertiaryButton } from "@app/components/atomic/galoy-tertiary-button";
+import { ContactSupportButton } from "@app/components/contact-support-button/contact-support-button";
 import {
   PhoneCodeChannelType,
   useCaptchaRequestAuthCodeMutation,
-} from "@app/graphql/generated"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { logRequestAuthCode } from "@app/utils/analytics"
-import crashlytics from "@react-native-firebase/crashlytics"
-import { Button, makeStyles } from "@rneui/themed"
-import { CloseCross } from "../../components/close-cross"
-import { Screen } from "../../components/screen"
-import { useAppConfig, useGeetestCaptcha } from "../../hooks"
-import type { PhoneValidationStackParamList } from "../../navigation/stack-param-lists"
-import { color, palette } from "../../theme"
-import { toastShow } from "../../utils/toast"
-import BadgerPhone from "./badger-phone-01.svg"
-import Icon from "react-native-vector-icons/Ionicons"
+} from "@app/graphql/generated";
+import { useI18nContext } from "@app/i18n/i18n-react";
+import { logRequestAuthCode } from "@app/utils/analytics";
+import crashlytics from "@react-native-firebase/crashlytics";
+import { Button, makeStyles } from "@rneui/themed";
+import { CloseCross } from "../../components/close-cross";
+import { Screen } from "../../components/screen";
+import { useAppConfig, useGeetestCaptcha } from "../../hooks";
+import type { PhoneValidationStackParamList } from "../../navigation/stack-param-lists";
+import { color, palette } from "../../theme";
+import { toastShow } from "../../utils/toast";
+import BadgerPhone from "./badger-phone-01.svg";
+import Icon from "react-native-vector-icons/Ionicons";
 
-const phoneRegex = new RegExp("^\\+[0-9]+$")
+const phoneRegex = new RegExp("^\\+[0-9]+$");
 
 const useStyles = makeStyles((theme) => ({
   buttonsContainer: {
@@ -105,10 +105,10 @@ const useStyles = makeStyles((theme) => ({
   buttonTitle: {
     fontWeight: "600",
   },
-}))
+}));
 
 gql`
-  mutation captchaRequestAuthCode($input: CaptchaRequestAuthCodeInput!) {
+  mutation captchaRequestAuthCodeForPhoneInput($input: CaptchaRequestAuthCodeInput!) {
     captchaRequestAuthCode(input: $input) {
       errors {
         message
@@ -116,12 +116,12 @@ gql`
       success
     }
   }
-`
+`;
 
 export const PhoneInputScreen: React.FC = () => {
-  const [defaultCode, setDefaultCode] = useState<CountryCode | undefined>()
+  const [defaultCode, setDefaultCode] = useState<CountryCode | undefined>();
 
-  const styles = useStyles()
+  const styles = useStyles();
 
   const {
     geetestError,
@@ -130,45 +130,47 @@ export const PhoneInputScreen: React.FC = () => {
     registerCaptcha,
     resetError,
     resetValidationData,
-  } = useGeetestCaptcha()
+  } = useGeetestCaptcha();
 
-  const navigation =
-    useNavigation<StackNavigationProp<PhoneValidationStackParamList, "phoneInput">>()
+  const navigation = useNavigation<
+    StackNavigationProp<PhoneValidationStackParamList, "phoneInput">
+  >();
 
-  const { LL } = useI18nContext()
+  const { LL } = useI18nContext();
 
-  const [phoneNumber, setPhoneNumber] = useState("")
-  const [channel, setChannel] = useState<PhoneCodeChannelType>("SMS")
-  const { appConfig } = useAppConfig()
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [channel, setChannel] = useState<PhoneCodeChannelType>("SMS");
+  const { appConfig } = useAppConfig();
 
-  const phoneInputRef = useRef<PhoneInput | null>(null)
+  const phoneInputRef = useRef<PhoneInput | null>(null);
 
   const [captchaRequestAuthCode, { loading: loadingRequestPhoneCode }] =
     useCaptchaRequestAuthCodeMutation({
       fetchPolicy: "no-cache",
-    })
+    });
 
   useEffect(() => {
     const getCountryCodeFromIP = async () => {
       try {
-        const response = (await fetchWithTimeout("https://ipapi.co/json/")) as Response
-        const data = await response.json()
+        const response =
+          (await fetchWithTimeout("https://ipapi.co/json/")) as Response;
+        const data = await response.json();
 
         if (data && data.country_code) {
-          const countryCode = data.country_code
-          setDefaultCode(countryCode)
+          const countryCode = data.country_code;
+          setDefaultCode(countryCode);
         } else {
-          console.warn("no data or country_code in response")
-          setDefaultCode("SV")
+          console.warn("no data or country_code in response");
+          setDefaultCode("SV");
         }
       } catch (error) {
-        console.error(error)
-        setDefaultCode("SV")
+        console.error(error);
+        setDefaultCode("SV");
       }
-    }
+    };
 
-    getCountryCodeFromIP()
-  }, [])
+    getCountryCodeFromIP();
+  }, []);
 
   useEffect(() => {
     if (phoneNumber) {
@@ -176,12 +178,18 @@ export const PhoneInputScreen: React.FC = () => {
         navigation.navigate("phoneValidation", {
           phone: phoneNumber,
           channel,
-        })
-        return
+        });
+        return;
       }
-      registerCaptcha()
+      registerCaptcha();
     }
-  }, [registerCaptcha, phoneNumber, navigation, channel, appConfig.galoyInstance.name])
+  }, [
+    registerCaptcha,
+    phoneNumber,
+    navigation,
+    channel,
+    appConfig.galoyInstance.name,
+  ]);
 
   useEffect(() => {
     if (geetestValidationData) {
@@ -193,53 +201,56 @@ export const PhoneInputScreen: React.FC = () => {
             validationCode: geetestValidationData?.geetestValidate,
             secCode: geetestValidationData?.geetestSecCode,
             channel,
-          } as const
-          resetValidationData()
-          logRequestAuthCode(appConfig.galoyInstance.id)
+          } as const;
+          resetValidationData();
+          logRequestAuthCode(appConfig.galoyInstance.id);
 
-          const { data } = await captchaRequestAuthCode({ variables: { input } })
+          const { data } = await captchaRequestAuthCode({
+            variables: { input },
+          });
 
           if (!data) {
             toastShow({
               message: (translations) => translations.errors.generic(),
               currentTranslation: LL,
-            })
-            return
+            });
+            return;
           }
 
           if (data.captchaRequestAuthCode.success) {
             navigation.replace("phoneValidation", {
               phone: phoneNumber,
               channel,
-            })
+            });
           } else if ((data?.captchaRequestAuthCode?.errors?.length || 0) > 0) {
-            const errorMessage = data.captchaRequestAuthCode.errors[0].message
+            const errorMessage = data.captchaRequestAuthCode.errors[0].message;
             if (errorMessage === "Too many requests") {
               toastShow({
-                message: (translations) => translations.errors.tooManyRequestsPhoneCode(),
+                message: (translations) =>
+                  translations.errors.tooManyRequestsPhoneCode(),
                 currentTranslation: LL,
-              })
+              });
             } else {
-              toastShow({ message: errorMessage })
+              toastShow({ message: errorMessage });
             }
           } else {
             toastShow({
               message: (translations) => translations.errors.generic(),
               currentTranslation: LL,
-            })
+            });
           }
         } catch (err: unknown) {
           if (err instanceof Error) {
-            crashlytics().recordError(err)
-            console.debug({ err })
+            crashlytics().recordError(err);
+            console.debug({ err });
             toastShow({
               message: (translations) => translations.errors.generic(),
               currentTranslation: LL,
-            })
+            });
           }
         }
-      }
-      sendRequestAuthCode()
+      };
+      sendRequestAuthCode();
     }
   }, [
     geetestValidationData,
@@ -251,48 +262,52 @@ export const PhoneInputScreen: React.FC = () => {
     appConfig.galoyInstance.id,
     LL,
     channel,
-  ])
+  ]);
 
   useEffect(() => {
     if (geetestError) {
-      crashlytics().recordError(new Error(geetestError))
-      toastShow({ message: LL.PhoneInputScreen.errorRequestingCaptcha() })
-      resetError()
+      crashlytics().recordError(new Error(geetestError));
+      toastShow({ message: LL.PhoneInputScreen.errorRequestingCaptcha() });
+      resetError();
     }
-  }, [geetestError, resetError, LL])
+  }, [geetestError, resetError, LL]);
 
   const submitPhoneNumber = () => {
     if (!phoneInputRef.current) {
-      return
+      return;
     }
 
-    const phone = phoneInputRef.current.state.number
-    const formattedNumber = phoneInputRef.current.getNumberAfterPossiblyEliminatingZero()
-    const cleanFormattedNumber = formattedNumber.formattedNumber.replace(/[^\d+]/g, "")
+    const phone = phoneInputRef.current.state.number;
+    const formattedNumber = phoneInputRef.current
+      .getNumberAfterPossiblyEliminatingZero();
+    const cleanFormattedNumber = formattedNumber.formattedNumber.replace(
+      /[^\d+]/g,
+      "",
+    );
 
     if (
       (phone !== "" && !phoneInputRef.current.isValidNumber(phone)) ||
       !phoneRegex.test(cleanFormattedNumber)
     ) {
-      Alert.alert(`${phone} ${LL.errors.invalidPhoneNumber()}`)
-      return
+      Alert.alert(`${phone} ${LL.errors.invalidPhoneNumber()}`);
+      return;
     }
     if (phone === "") {
-      return
+      return;
     }
 
-    setPhoneNumber(cleanFormattedNumber)
-  }
+    setPhoneNumber(cleanFormattedNumber);
+  };
 
   const submitViaWhatsapp = () => {
-    setChannel("WHATSAPP")
-    submitPhoneNumber()
-  }
+    setChannel("WHATSAPP");
+    submitPhoneNumber();
+  };
 
   const submitViaSms = () => {
-    setChannel("SMS")
-    submitPhoneNumber()
-  }
+    setChannel("SMS");
+    submitPhoneNumber();
+  };
 
   if (!defaultCode) {
     // TODO: refactor this with a loading screen
@@ -302,17 +317,17 @@ export const PhoneInputScreen: React.FC = () => {
           <ActivityIndicator size="large" color={palette.blue} />
         </View>
       </Screen>
-    )
+    );
   }
 
-  const showCaptcha = phoneNumber.length > 0
+  const showCaptcha = phoneNumber.length > 0;
 
-  let CaptchaContent: ReturnType<React.FC<ActivityIndicatorProps>> | null
+  let CaptchaContent: ReturnType<React.FC<ActivityIndicatorProps>> | null;
 
   if (loadingRegisterCaptcha || loadingRequestPhoneCode) {
-    CaptchaContent = <ActivityIndicator size="large" color={color.primary} />
+    CaptchaContent = <ActivityIndicator size="large" color={color.primary} />;
   } else {
-    CaptchaContent = null
+    CaptchaContent = null;
   }
 
   return (
@@ -324,9 +339,7 @@ export const PhoneInputScreen: React.FC = () => {
             ? LL.PhoneInputScreen.headerVerify()
             : LL.PhoneInputScreen.header()}
         </Text>
-        {showCaptcha ? (
-          CaptchaContent
-        ) : (
+        {showCaptcha ? CaptchaContent : (
           <KeyboardAvoidingView>
             <PhoneInput
               ref={phoneInputRef}
@@ -374,7 +387,9 @@ export const PhoneInputScreen: React.FC = () => {
                 containerStyle={styles.button}
                 title={LL.PhoneInputScreen.whatsapp() + "  "}
                 onPress={submitViaWhatsapp}
-                icon={<Icon name="logo-whatsapp" size={14} color={color.primary} />}
+                icon={
+                  <Icon name="logo-whatsapp" size={14} color={color.primary} />
+                }
               />
               <ContactSupportButton containerStyle={styles.button} />
             </View>
@@ -383,14 +398,14 @@ export const PhoneInputScreen: React.FC = () => {
       </View>
       <CloseCross color={styles.closecross.color} onPress={navigation.goBack} />
     </Screen>
-  )
-}
+  );
+};
 
 const fetchWithTimeout = (url: string, timeout = 5000) => {
   return Promise.race([
     fetch(url),
     new Promise((_, reject) => {
-      setTimeout(() => reject(new Error("request timed out")), timeout)
+      setTimeout(() => reject(new Error("request timed out")), timeout);
     }),
-  ])
-}
+  ]);
+};

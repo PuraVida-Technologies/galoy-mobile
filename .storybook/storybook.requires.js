@@ -6,11 +6,11 @@ import "@storybook/addon-ondevice-controls/register"
 import "@storybook/addon-ondevice-knobs/register"
 import "@storybook/addon-ondevice-notes/register"
 import {
-  configure,
+  addArgsEnhancer,
   addDecorator,
   addParameters,
-  addArgsEnhancer,
   clearDecorators,
+  configure,
 } from "@storybook/react-native"
 
 global.STORIES = [
@@ -75,7 +75,6 @@ const getStories = () => {
     "./app/screens/email-registration-screen/email-registration-initiate.stories.tsx": require("../app/screens/email-registration-screen/email-registration-initiate.stories.tsx"),
     "./app/screens/email-registration-screen/email-registration-validate.stories.tsx": require("../app/screens/email-registration-screen/email-registration-validate.stories.tsx"),
     "./app/screens/error-screen/error-screen.stories.tsx": require("../app/screens/error-screen/error-screen.stories.tsx"),
-    "./app/screens/full-onboarding-flow/full-onboarding-flow.stories.tsx": require("../app/screens/full-onboarding-flow/full-onboarding-flow.stories.tsx"),
     "./app/screens/galoy-address-screen/address-screen.stories.tsx": require("../app/screens/galoy-address-screen/address-screen.stories.tsx"),
     "./app/screens/get-started-screen/device-account-fail-modal.stories.tsx": require("../app/screens/get-started-screen/device-account-fail-modal.stories.tsx"),
     "./app/screens/get-started-screen/get-started-screen.stories.tsx": require("../app/screens/get-started-screen/get-started-screen.stories.tsx"),
