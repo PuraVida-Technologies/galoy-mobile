@@ -292,7 +292,10 @@ const mocks = [
     request: {
       query: LnNoAmountInvoiceCreateDocument,
       variables: {
-        input: { walletId: "84b26b88-89b0-5c6f-9d3d-fbead08f79d8", memo: undefined },
+        input: {
+          walletId: "84b26b88-89b0-5c6f-9d3d-fbead08f79d8",
+          memo: undefined,
+        },
       },
     },
     result: {
@@ -394,7 +397,7 @@ const mocks = [
       variables: {
         input: {
           walletId: "f091c102-6277-4cc6-8d81-87ebf6aaad1b",
-          memo: "Pay to Blink Wallet User",
+          memo: "Pay to Pura Vida Wallet User",
         },
       },
     },
@@ -418,7 +421,7 @@ const mocks = [
       variables: {
         input: {
           walletId: "f79792e3-282b-45d4-85d5-7486d020def5",
-          memo: "Pay to Blink Wallet User",
+          memo: "Pay to Pura Vida Wallet User",
         },
       },
     },
