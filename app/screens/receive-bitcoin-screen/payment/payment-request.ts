@@ -6,13 +6,13 @@ import { BtcMoneyAmount } from "@app/types/amounts"
 import { getPaymentRequestFullUri, prToDateString } from "./helpers"
 import {
   CreatePaymentRequestParams,
+  GetCopyableInvoiceFn,
   GetFullUriFn,
   Invoice,
   PaymentRequest,
+  PaymentRequestInformation,
   PaymentRequestState,
   PaymentRequestStateType,
-  PaymentRequestInformation,
-  GetCopyableInvoiceFn,
 } from "./index.types"
 
 export const createPaymentRequest = (
@@ -22,8 +22,9 @@ export const createPaymentRequest = (
   if (!state) state = PaymentRequestState.Idle
 
   const setState = (state: PaymentRequestStateType) => {
-    if (state === PaymentRequestState.Loading)
+    if (state === PaymentRequestState.Loading) {
       return createPaymentRequest({ ...params, state, info: undefined })
+    }
     return createPaymentRequest({ ...params, state })
   }
 
@@ -35,7 +36,7 @@ export const createPaymentRequest = (
     let info: PaymentRequestInformation | undefined
 
     // Default memo
-    if (!pr.memo) pr.memo = "Pay to Blink Wallet User"
+    if (!pr.memo) pr.memo = "Pay to Pura Vida Wallet User"
 
     // On Chain BTC
     if (pr.type === Invoice.OnChain) {
@@ -43,8 +44,9 @@ export const createPaymentRequest = (
         variables: { input: { walletId: pr.receivingWalletDescriptor.id } },
       })
 
-      if (pr.settlementAmount && pr.settlementAmount.currency !== WalletCurrency.Btc)
+      if (pr.settlementAmount && pr.settlementAmount.currency !== WalletCurrency.Btc) {
         throw new Error("Onchain invoices only support BTC")
+      }
 
       const address = data?.onChainAddressCurrent?.address || undefined
 

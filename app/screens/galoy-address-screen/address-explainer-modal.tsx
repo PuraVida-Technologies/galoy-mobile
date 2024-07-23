@@ -1,19 +1,20 @@
-import React from "react"
-import { View, TouchableOpacity } from "react-native"
-import Modal from "react-native-modal"
+import React from "react";
+import { TouchableOpacity, View } from "react-native";
+import Modal from "react-native-modal";
 
-import { GaloyIcon } from "@app/components/atomic/galoy-icon"
-import { useI18nContext } from "@app/i18n/i18n-react"
-import { makeStyles, Text, useTheme } from "@rneui/themed"
+import { GaloyIcon } from "@app/components/atomic/galoy-icon";
+import { useI18nContext } from "@app/i18n/i18n-react";
+import { makeStyles, Text, useTheme } from "@rneui/themed";
 
 const wallets = [
+  "Pura Vida Wallet",
   "Blink Wallet",
   "Blue Wallet",
   "Breez",
   "Phoenix",
   "Simple Bitcoin Wallet (SBW)",
   "Wallet of Satoshi",
-]
+];
 
 const useStyles = makeStyles(({ colors }) => ({
   modalView: {
@@ -36,12 +37,12 @@ const useStyles = makeStyles(({ colors }) => ({
     fontSize: 18,
     fontWeight: "400",
   },
-}))
+}));
 
 type SetAddressModalProps = {
-  modalVisible: boolean
-  toggleModal?: () => void
-}
+  modalVisible: boolean;
+  toggleModal?: () => void;
+};
 
 export const AddressExplainerModal = ({
   modalVisible,
@@ -49,10 +50,10 @@ export const AddressExplainerModal = ({
 }: SetAddressModalProps) => {
   const {
     theme: { colors },
-  } = useTheme()
-  const styles = useStyles()
+  } = useTheme();
+  const styles = useStyles();
 
-  const { LL } = useI18nContext()
+  const { LL } = useI18nContext();
 
   return (
     <Modal
@@ -85,5 +86,5 @@ export const AddressExplainerModal = ({
         </Text>
       </View>
     </Modal>
-  )
-}
+  );
+};
