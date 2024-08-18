@@ -9,6 +9,14 @@
 
 # Add any project specific keep options here:
 
+-dontwarn io.sentry.compose.viewhierarchy.ComposeViewHierarchyExporter
+-dontwarn com.samsung.android.fingerprint.FingerprintEvent
+-dontwarn com.samsung.android.fingerprint.FingerprintIdentifyDialog$FingerprintListener
+-dontwarn com.samsung.android.fingerprint.FingerprintManager$EnrollFinishListener
+-dontwarn com.samsung.android.fingerprint.FingerprintManager
+-dontwarn com.samsung.android.fingerprint.IFingerprintClient$Stub
+-dontwarn com.samsung.android.fingerprint.IFingerprintClient
+
 -keep class com.facebook.hermes.unicode.** { *; }
 -keep class com.facebook.jni.** { *; }
 -keep public class com.horcrux.svg.** {*;}

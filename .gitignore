@@ -2,6 +2,8 @@
 #
 .DS_Store
 
+/android/app/fastlane-supply-service-account-key.json
+
 # Xcode
 #
 build/

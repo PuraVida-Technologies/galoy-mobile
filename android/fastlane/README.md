@@ -31,13 +31,21 @@ Build Releasable APK
 
 Deploy a new version to the Google Play
 
+### android build_bundle
+
+```sh
+[bundle exec] fastlane android build_bundle
+```
+
+Build releasable bundle
+
 ### android huawei_store_upload
 
 ```sh
 [bundle exec] fastlane android huawei_store_upload
 ```
 
-Deploy the new version to Huawei App Gallery
+Deploy a new version to Huawei App Gallery
 
 ### android promote_to_beta
 
@@ -78,6 +86,22 @@ Build for end to end testing
 ```
 
 End to end testing on browserstack
+
+### android release_dg
+
+```sh
+[bundle exec] fastlane android release_dg
+```
+
+Submit a new build Deploy gate
+
+### android build_apk
+
+```sh
+[bundle exec] fastlane android build_apk
+```
+
+Create Release APK
 
 ----
 
