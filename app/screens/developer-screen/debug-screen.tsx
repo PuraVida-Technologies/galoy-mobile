@@ -1,19 +1,23 @@
-import { gql, useApolloClient } from "@apollo/client"
-import { GaloyInput } from "@app/components/atomic/galoy-input"
-import { GALOY_INSTANCES, possibleGaloyInstanceNames } from "@app/config"
-import { activateBeta } from "@app/graphql/client-only-query"
-import { useBetaQuery, useDebugScreenQuery, useLevelQuery } from "@app/graphql/generated"
-import { useAppConfig } from "@app/hooks/use-app-config"
-import Clipboard from "@react-native-clipboard/clipboard"
-import crashlytics from "@react-native-firebase/crashlytics"
-import { Button, Text, makeStyles } from "@rneui/themed"
-import * as React from "react"
-import { Alert, DevSettings, View } from "react-native"
-import { Screen } from "../../components/screen"
-import { usePriceConversion } from "../../hooks"
-import useLogout from "../../hooks/use-logout"
-import { addDeviceToken } from "../../utils/notifications"
-import { testProps } from "../../utils/testProps"
+import { gql, useApolloClient } from "@apollo/client";
+import { GaloyInput } from "@app/components/atomic/galoy-input";
+import { GALOY_INSTANCES, possibleGaloyInstanceNames } from "@app/config";
+import { activateBeta } from "@app/graphql/client-only-query";
+import {
+  useBetaQuery,
+  useDebugScreenQuery,
+  useLevelQuery,
+} from "@app/graphql/generated";
+import { useAppConfig } from "@app/hooks/use-app-config";
+import Clipboard from "@react-native-clipboard/clipboard";
+import crashlytics from "@react-native-firebase/crashlytics";
+import { Button, makeStyles, Text } from "@rneui/themed";
+import * as React from "react";
+import { Alert, DevSettings, View } from "react-native";
+import { Screen } from "../../components/screen";
+import { usePriceConversion } from "../../hooks";
+import useLogout from "../../hooks/use-logout";
+import { addDeviceToken } from "../../utils/notifications";
+import { testProps } from "../../utils/testProps";
 
 gql`
   query debugScreen {
@@ -24,54 +28,61 @@ gql`
       }
     }
   }
-`
+`;
 
-const usingHermes = typeof HermesInternal === "object" && HermesInternal !== null
+const usingHermes = typeof HermesInternal === "object" &&
+  HermesInternal !== null;
 
 export const DeveloperScreen: React.FC = () => {
-  const styles = useStyles()
-  const client = useApolloClient()
-  const { usdPerSat } = usePriceConversion()
-  const { logout } = useLogout()
+  const styles = useStyles();
+  const client = useApolloClient();
+  const { usdPerSat } = usePriceConversion();
+  const { logout } = useLogout();
 
-  const { appConfig, saveToken, saveTokenAndInstance } = useAppConfig()
-  const token = appConfig.token
+  const { appConfig, saveToken, saveTokenAndInstance } = useAppConfig();
+  const token = appConfig.token;
 
-  const { data: dataLevel } = useLevelQuery({ fetchPolicy: "cache-only" })
-  const level = String(dataLevel?.me?.defaultAccount?.level)
+  const { data: dataLevel } = useLevelQuery({ fetchPolicy: "cache-only" });
+  const level = String(dataLevel?.me?.defaultAccount?.level);
 
-  const { data: dataDebug } = useDebugScreenQuery()
-  const accountId = dataDebug?.me?.defaultAccount?.id
+  const { data: dataDebug } = useDebugScreenQuery();
+  const accountId = dataDebug?.me?.defaultAccount?.id;
 
-  const [newToken, setNewToken] = React.useState(token)
-  const currentGaloyInstance = appConfig.galoyInstance
+  const [newToken, setNewToken] = React.useState(token);
+  const currentGaloyInstance = appConfig.galoyInstance;
 
   const [newGraphqlUri, setNewGraphqlUri] = React.useState(
     currentGaloyInstance.id === "Custom" ? currentGaloyInstance.graphqlUri : "",
-  )
+  );
   const [newGraphqlWslUri, setNewGraphqlWslUri] = React.useState(
-    currentGaloyInstance.id === "Custom" ? currentGaloyInstance.graphqlWsUri : "",
-  )
+    currentGaloyInstance.id === "Custom"
+      ? currentGaloyInstance.graphqlWsUri
+      : "",
+  );
   const [newPosUrl, setNewPosUrl] = React.useState(
     currentGaloyInstance.id === "Custom" ? currentGaloyInstance.posUrl : "",
-  )
+  );
 
   const [newRestUrl, setNewRestUrl] = React.useState(
     currentGaloyInstance.id === "Custom" ? currentGaloyInstance.authUrl : "",
-  )
+  );
 
   const [newLnAddressHostname, setNewLnAddressHostname] = React.useState(
-    currentGaloyInstance.id === "Custom" ? currentGaloyInstance.lnAddressHostname : "",
-  )
+    currentGaloyInstance.id === "Custom"
+      ? currentGaloyInstance.lnAddressHostname
+      : "",
+  );
 
-  const [newGaloyInstance, setNewGaloyInstance] = React.useState(currentGaloyInstance.id)
+  const [newGaloyInstance, setNewGaloyInstance] = React.useState(
+    currentGaloyInstance.id,
+  );
 
-  const dataBeta = useBetaQuery()
-  const beta = dataBeta.data?.beta ?? false
+  const dataBeta = useBetaQuery();
+  const beta = dataBeta.data?.beta ?? false;
 
-  const changesHaveBeenMade =
-    newToken !== token ||
-    (newGaloyInstance !== currentGaloyInstance.id && newGaloyInstance !== "Custom") ||
+  const changesHaveBeenMade = newToken !== token ||
+    (newGaloyInstance !== currentGaloyInstance.id &&
+      newGaloyInstance !== "Custom") ||
     (newGaloyInstance === "Custom" &&
       Boolean(newGraphqlUri) &&
       Boolean(newGraphqlWslUri) &&
@@ -81,18 +92,18 @@ export const DeveloperScreen: React.FC = () => {
         newGraphqlWslUri !== currentGaloyInstance.graphqlWsUri ||
         newPosUrl !== currentGaloyInstance.posUrl ||
         newRestUrl !== currentGaloyInstance.authUrl ||
-        newLnAddressHostname !== currentGaloyInstance.lnAddressHostname))
+        newLnAddressHostname !== currentGaloyInstance.lnAddressHostname));
 
   React.useEffect(() => {
     if (newGaloyInstance === currentGaloyInstance.id) {
-      setNewToken(token)
+      setNewToken(token);
     } else {
-      setNewToken("")
+      setNewToken("");
     }
-  }, [newGaloyInstance, currentGaloyInstance, token])
+  }, [newGaloyInstance, currentGaloyInstance, token]);
 
   const handleSave = async () => {
-    await logout(false)
+    await logout(false);
 
     if (newGaloyInstance === "Custom") {
       saveTokenAndInstance({
@@ -102,25 +113,29 @@ export const DeveloperScreen: React.FC = () => {
           graphqlWsUri: newGraphqlWslUri,
           authUrl: newRestUrl,
           posUrl: newPosUrl,
+          kycUrl: "",
           lnAddressHostname: newLnAddressHostname,
           name: "Custom", // TODO: make configurable
           blockExplorer: "https://mempool.space/tx/", // TODO make configurable
         },
         token: newToken || "",
-      })
+      });
     }
 
     const newGaloyInstanceObject = GALOY_INSTANCES.find(
       (instance) => instance.id === newGaloyInstance,
-    )
+    );
 
     if (newGaloyInstanceObject) {
-      saveTokenAndInstance({ instance: newGaloyInstanceObject, token: newToken || "" })
-      return
+      saveTokenAndInstance({
+        instance: newGaloyInstanceObject,
+        token: newToken || "",
+      });
+      return;
     }
 
-    saveToken(newToken || "")
-  }
+    saveToken(newToken || "");
+  };
 
   return (
     <Screen preset="scroll">
@@ -129,8 +144,8 @@ export const DeveloperScreen: React.FC = () => {
           title="Log out"
           containerStyle={styles.button}
           onPress={async () => {
-            await logout()
-            Alert.alert("state successfully deleted. Restart your app")
+            await logout();
+            Alert.alert("state successfully deleted. Restart your app");
           }}
           {...testProps("logout button")}
         />
@@ -139,7 +154,7 @@ export const DeveloperScreen: React.FC = () => {
           containerStyle={styles.button}
           onPress={async () => {
             if (token && client) {
-              addDeviceToken(client)
+              await addDeviceToken(client);
             }
           }}
         />
@@ -159,22 +174,24 @@ export const DeveloperScreen: React.FC = () => {
               title="Crash test"
               containerStyle={styles.button}
               onPress={() => {
-                crashlytics().log("Testing crash")
-                crashlytics().crash()
+                crashlytics().log("Testing crash");
+                crashlytics().crash();
               }}
             />
           </>
         )}
         <View>
           <Text style={styles.textHeader}>Account info</Text>
-          <Text>AccountId: </Text>
+          <Text>AccountId:</Text>
           <Text selectable>{accountId}</Text>
           <Text>Level: {level}</Text>
           <Text>Token Present: {String(Boolean(token))}</Text>
           <Text style={styles.textHeader}>Environment Information</Text>
           <Text selectable>Galoy Instance: {appConfig.galoyInstance.id}</Text>
           <Text selectable>GQL_URL: {appConfig.galoyInstance.graphqlUri}</Text>
-          <Text selectable>GQL_WS_URL: {appConfig.galoyInstance.graphqlWsUri}</Text>
+          <Text selectable>
+            GQL_WS_URL: {appConfig.galoyInstance.graphqlWsUri}
+          </Text>
           <Text selectable>POS URL: {appConfig.galoyInstance.posUrl}</Text>
           <Text selectable>
             LN Address Hostname: {appConfig.galoyInstance.lnAddressHostname}
@@ -196,24 +213,18 @@ export const DeveloperScreen: React.FC = () => {
               key={instanceName}
               title={instanceName}
               onPress={() => {
-                setNewGaloyInstance(instanceName)
+                setNewGaloyInstance(instanceName);
               }}
               {...testProps(`${instanceName} button`)}
-              buttonStyle={
-                instanceName === newGaloyInstance
-                  ? styles.selectedInstanceButton
-                  : styles.notSelectedInstanceButton
-              }
-              titleStyle={
-                instanceName === newGaloyInstance
-                  ? styles.selectedInstanceButton
-                  : styles.notSelectedInstanceButton
-              }
-              containerStyle={
-                instanceName === newGaloyInstance
-                  ? styles.selectedInstanceButton
-                  : styles.notSelectedInstanceButton
-              }
+              buttonStyle={instanceName === newGaloyInstance
+                ? styles.selectedInstanceButton
+                : styles.notSelectedInstanceButton}
+              titleStyle={instanceName === newGaloyInstance
+                ? styles.selectedInstanceButton
+                : styles.notSelectedInstanceButton}
+              containerStyle={instanceName === newGaloyInstance
+                ? styles.selectedInstanceButton
+                : styles.notSelectedInstanceButton}
               {...testProps(`${instanceName} Button`)}
             />
           ))}
@@ -231,8 +242,8 @@ export const DeveloperScreen: React.FC = () => {
             title="Copy access token"
             containerStyle={styles.button}
             onPress={async () => {
-              Clipboard.setString(newToken || "")
-              Alert.alert("Token copied in clipboard.")
+              Clipboard.setString(newToken || "");
+              Alert.alert("Token copied in clipboard.");
             }}
             disabled={!newToken}
           />
@@ -288,8 +299,8 @@ export const DeveloperScreen: React.FC = () => {
         </View>
       </View>
     </Screen>
-  )
-}
+  );
+};
 
 const useStyles = makeStyles(({ colors }) => ({
   button: {
@@ -311,4 +322,4 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.white,
     color: colors.grey3,
   },
-}))
+}));

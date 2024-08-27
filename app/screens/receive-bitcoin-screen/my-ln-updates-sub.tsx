@@ -1,8 +1,11 @@
-import React, { PropsWithChildren, useState } from "react"
+import React, { PropsWithChildren, useState } from "react";
 
-import { gql, useApolloClient } from "@apollo/client"
-import { HomeAuthedDocument, useMyLnUpdatesSubscription } from "@app/graphql/generated"
-import { LnUpdateHashPaidProvider } from "@app/graphql/ln-update-context"
+import { gql, useApolloClient } from "@apollo/client";
+import {
+  HomeAuthedDocument,
+  useMyLnUpdatesSubscription,
+} from "@app/graphql/generated";
+import { LnUpdateHashPaidProvider } from "@app/graphql/ln-update-context";
 
 gql`
   subscription myLnUpdates {
@@ -18,27 +21,35 @@ gql`
       }
     }
   }
-`
+`;
 
 export const MyLnUpdateSub = ({ children }: PropsWithChildren) => {
-  const client = useApolloClient()
+  const client = useApolloClient();
 
-  const { data: dataSub } = useMyLnUpdatesSubscription()
-  const [lastHash, setLastHash] = useState<string>("")
+  const { data: dataSub } = useMyLnUpdatesSubscription({
+    onError: (error) => {
+      console.error("myLnUpdates error", error);
+    },
+  });
+  const [lastHash, setLastHash] = useState<string>("");
 
   React.useEffect(() => {
     if (dataSub?.myUpdates?.update?.__typename === "LnUpdate") {
-      const update = dataSub.myUpdates.update
+      const update = dataSub.myUpdates.update;
 
       if (update.status === "PAID") {
-        client.refetchQueries({ include: [HomeAuthedDocument] })
-        setLastHash(update.paymentHash)
+        client.refetchQueries({ include: [HomeAuthedDocument] });
+        setLastHash(update.paymentHash);
       }
     }
-  }, [dataSub, client])
+  }, [dataSub, client]);
 
-  return <LnUpdateHashPaidProvider value={lastHash}>{children}</LnUpdateHashPaidProvider>
-}
+  return (
+    <LnUpdateHashPaidProvider value={lastHash}>
+      {children}
+    </LnUpdateHashPaidProvider>
+  );
+};
 
 export const withMyLnUpdateSub = <P extends object>(
   Component: React.ComponentType<P>,
@@ -48,6 +59,6 @@ export const withMyLnUpdateSub = <P extends object>(
       <MyLnUpdateSub>
         <Component {...props} />
       </MyLnUpdateSub>
-    )
-  }
-}
+    );
+  };
+};
