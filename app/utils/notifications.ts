@@ -1,11 +1,12 @@
 // eslint-disable-next-line react-native/split-platform-components
-import { Platform, PermissionsAndroid } from "react-native"
+import { PermissionsAndroid, Platform } from "react-native"
 
 import { ApolloClient, gql } from "@apollo/client"
 import { DeviceNotificationTokenCreateDocument } from "@app/graphql/generated"
 import crashlytics from "@react-native-firebase/crashlytics"
 import messaging from "@react-native-firebase/messaging"
 import { uploadDeviceToken } from "@app/modules/market-place/graphql"
+import { marketplaceClient } from "@app/graphql/client"
 
 // No op if the permission has already been requested
 export const requestNotificationPermission = () => messaging().requestPermission()
@@ -28,10 +29,17 @@ export const addDeviceToken = async (client: ApolloClient<unknown>): Promise<voi
     return
   }
   addingDeviceToken = true
+
   try {
     const deviceToken = await messaging().getToken()
 
-    await uploadDeviceToken(deviceToken)
+    console.log("Device token uploaded", deviceToken)
+
+    // TODO: find out why marketplaceClient is undefined here
+    // i do not have bandwidth to further look into this as i'm not familiar w/ marketplace
+    if (marketplaceClient) {
+      await uploadDeviceToken(deviceToken)
+    }
 
     await client.mutate({
       mutation: DeviceNotificationTokenCreateDocument,
