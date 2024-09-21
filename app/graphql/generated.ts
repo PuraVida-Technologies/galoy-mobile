@@ -2593,7 +2593,7 @@ export type UserLoginMutationVariables = Exact<{
 }>;
 
 
-export type UserLoginMutation = { readonly __typename: 'Mutation', readonly userLogin: { readonly __typename: 'AuthTokenPayload', readonly authToken?: string | null, readonly errors: ReadonlyArray<{ readonly __typename: 'GraphQLApplicationError', readonly message: string }> } };
+export type UserLoginMutation = { readonly __typename: 'Mutation', readonly userLogin: { readonly __typename: 'AuthTokenPayload', readonly authToken?: string | null, readonly totpRequired?: boolean | null, readonly errors: ReadonlyArray<{ readonly __typename: 'GraphQLApplicationError', readonly message: string }> } };
 
 export type CaptchaRequestAuthCodeMutationVariables = Exact<{
   input: CaptchaRequestAuthCodeInput;
@@ -5024,6 +5024,7 @@ export const UserLoginDocument = gql`
       message
     }
     authToken
+    totpRequired
   }
 }
     `;

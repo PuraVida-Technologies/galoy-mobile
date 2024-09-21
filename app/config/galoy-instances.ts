@@ -77,7 +77,7 @@ export const GALOY_INSTANCES: readonly GaloyInstance[] = [
     graphqlWsUri: PURAVIDA_GRAPHQL_MAINNET_WS_URI,
     posUrl: PURAVIDA_POS_MAINNET_URL,
     lnAddressHostname: PURAVIDA_LN_MAINNET_ADDRESS,
-    authUrl: "https://api.blink.sv",
+    authUrl: "https://api.puravidabitcoin.io",
     kycUrl: "https://kyc.puravidabitcoin.io",
     blockExplorer: "https://mempool.space/tx/",
   },
