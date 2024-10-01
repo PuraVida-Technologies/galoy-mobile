@@ -45,21 +45,29 @@ export const PriceHistoryScreen: React.FC = () => {
   }, [accountId])
 
   const styles = useStyles()
+
   return (
     <Screen preset="scroll" style={styles.screen}>
       <PriceHistory />
-      {(isAtLeastLevelTwo || !isIos) && (
-        <GaloyPrimaryButton
-          title={LL.PriceHistoryScreen.buyAndSell()}
-          onPress={() =>
-            navigate("webView", {
-              url: urlWebView,
-              initialTitle: LL.PriceHistoryScreen.buyAndSell(),
-            })
-          }
-          containerStyle={styles.button}
-        />
-      )}
     </Screen>
   )
+
+  // todo: uncomment this when we have kyc/aml and exchange
+  //return (
+  //  <Screen preset="scroll" style={styles.screen}>
+  //    <PriceHistory />
+  //    {(isAtLeastLevelTwo || !isIos) && (
+  //      <GaloyPrimaryButton
+  //        title={LL.PriceHistoryScreen.buyAndSell()}
+  //        onPress={() =>
+  //          navigate("webView", {
+  //            url: urlWebView,
+  //            initialTitle: LL.PriceHistoryScreen.buyAndSell(),
+  //          })
+  //        }
+  //        containerStyle={styles.button}
+  //      />
+  //    )}
+  //  </Screen>
+  //)
 }
