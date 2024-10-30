@@ -8154,6 +8154,10 @@ type RootTranslation = {
 		 */
 		transactionLimits: string
 		/**
+		 * K​Y​C
+		 */
+		KYC: string
+		/**
 		 * A​c​t​i​v​a​t​e​ ​W​a​l​l​e​t
 		 */
 		activateWallet: string
@@ -8340,6 +8344,14 @@ type RootTranslation = {
 		 */
 		next: string
 		/**
+		 * P​e​r​v​i​o​u​s
+		 */
+		pervious: string
+		/**
+		 * G​e​n​d​e​r
+		 */
+		gender: string
+		/**
 		 * N​o
 		 */
 		No: string
@@ -8519,6 +8531,24 @@ type RootTranslation = {
 		 * W​a​r​n​i​n​g
 		 */
 		warning: string
+		confirmationDialog: {
+			/**
+			 * C​a​m​e​r​a​ ​p​e​r​m​i​s​s​i​o​n​ ​r​e​q​u​i​r​e​d​.
+			 */
+			cameraPermissionTitle: string
+			/**
+			 * P​u​r​a​v​i​d​a​ ​r​e​q​u​i​r​e​s​ ​a​c​c​e​s​s​ ​t​o​ ​c​a​m​e​r​a​ ​t​o​ ​s​c​a​n​ ​Q​R​ ​c​o​d​e​s​ ​a​n​d​ ​t​o​ ​a​d​d​ ​i​m​a​g​e​s​.
+			 */
+			cameraPermission: string
+			/**
+			 * M​e​d​i​a​ ​l​i​b​r​a​r​y​ ​p​e​r​m​i​s​s​i​o​n​ ​r​e​q​u​i​r​e​d​.
+			 */
+			mediaPermissionTitle: string
+			/**
+			 * P​u​r​a​v​i​d​a​ ​r​e​q​u​i​r​e​s​ ​a​c​c​e​s​s​ ​t​o​ ​m​e​d​i​a​ ​l​i​b​r​a​r​y​ ​t​o​ ​u​p​l​o​a​d​ ​i​m​a​g​e​s​.
+			 */
+			mediaPermission: string
+		}
 	}
 	errors: {
 		/**
@@ -9286,6 +9316,50 @@ type RootTranslation = {
 		 * T​h​e​r​e​ ​a​r​e​ ​n​o​ ​p​o​s​t​s​ ​a​r​o​u​n​d​ ​y​o​u
 		 */
 		there_are_no_posts: string
+	}
+	KYCScreen: {
+		/**
+		 * I​D​ ​T​y​p​e
+		 */
+		idType: string
+		/**
+		 * D​o​c​u​m​e​n​t​ ​T​y​p​e
+		 */
+		documentType: string
+		/**
+		 * D​o​c​u​m​e​n​t​ ​V​e​r​i​f​i​c​a​t​i​o​n
+		 */
+		documentVerification: string
+		/**
+		 * U​p​l​o​a​d​ ​I​D
+		 */
+		uploadID: string
+		/**
+		 * I​D​ ​F​r​o​n​t
+		 */
+		uploadIDFront: string
+		/**
+		 * I​D​ ​B​a​c​k
+		 */
+		uploadIDBack: string
+		/**
+		 * U​s​e​r​ ​D​e​t​a​i​l​s
+		 */
+		userDetails: string
+		/**
+		 * C​o​n​f​i​r​m​ ​D​i​s​c​l​o​s​u​r​e​s
+		 */
+		confirmDisclosures: string
+		labels: {
+			/**
+			 * H​a​v​e​ ​y​o​u​ ​o​r​ ​y​o​u​r​ ​s​p​o​u​s​e​ ​h​e​l​d​ ​a​ ​g​o​v​e​r​n​m​e​n​t​ ​p​o​s​i​t​i​o​n​,​ ​o​r​ ​a​r​e​ ​c​o​n​s​i​d​e​r​e​d​ ​a​ ​P​o​l​i​t​i​c​a​l​l​y​ ​E​x​p​o​s​e​d​ ​P​e​r​s​o​n​ ​(​"​P​E​P​"​)​?
+			 */
+			PEP: string
+			/**
+			 * D​o​ ​y​o​u​ ​p​e​r​f​o​r​m​ ​a​n​y​ ​o​f​ ​t​h​e​ ​a​c​t​i​v​i​t​i​e​s​ ​d​e​s​c​r​i​b​e​d​ ​i​n​ ​A​r​t​i​c​l​e​ ​1​5​ ​o​f​ ​L​a​w​ ​8​2​0​4​?​ ​T​h​i​s​ ​i​n​c​l​u​d​e​s​ ​s​y​s​t​e​m​a​t​i​c​ ​o​p​e​r​a​t​i​o​n​s​ ​i​n​v​o​l​v​i​n​g​ ​m​o​n​e​y​ ​e​x​c​h​a​n​g​e​ ​o​r​ ​w​i​r​e​ ​t​r​a​n​s​f​e​r​s​ ​i​n​ ​l​a​r​g​e​ ​a​m​o​u​n​t​s​.
+			 */
+			MoneyTransfers: string
+		}
 	}
 }
 
@@ -17346,6 +17420,10 @@ export type TranslationFunctions = {
 		 */
 		transactionLimits: () => LocalizedString
 		/**
+		 * KYC
+		 */
+		KYC: () => LocalizedString
+		/**
 		 * Activate Wallet
 		 */
 		activateWallet: () => LocalizedString
@@ -17530,6 +17608,14 @@ export type TranslationFunctions = {
 		 */
 		next: () => LocalizedString
 		/**
+		 * Pervious
+		 */
+		pervious: () => LocalizedString
+		/**
+		 * Gender
+		 */
+		gender: () => LocalizedString
+		/**
 		 * No
 		 */
 		No: () => LocalizedString
@@ -17709,6 +17795,24 @@ export type TranslationFunctions = {
 		 * Warning
 		 */
 		warning: () => LocalizedString
+		confirmationDialog: {
+			/**
+			 * Camera permission required.
+			 */
+			cameraPermissionTitle: () => LocalizedString
+			/**
+			 * Puravida requires access to camera to scan QR codes and to add images.
+			 */
+			cameraPermission: () => LocalizedString
+			/**
+			 * Media library permission required.
+			 */
+			mediaPermissionTitle: () => LocalizedString
+			/**
+			 * Puravida requires access to media library to upload images.
+			 */
+			mediaPermission: () => LocalizedString
+		}
 	}
 	errors: {
 		/**
@@ -18456,6 +18560,50 @@ export type TranslationFunctions = {
 		 * There are no posts around you
 		 */
 		there_are_no_posts: () => LocalizedString
+	}
+	KYCScreen: {
+		/**
+		 * ID Type
+		 */
+		idType: () => LocalizedString
+		/**
+		 * Document Type
+		 */
+		documentType: () => LocalizedString
+		/**
+		 * Document Verification
+		 */
+		documentVerification: () => LocalizedString
+		/**
+		 * Upload ID
+		 */
+		uploadID: () => LocalizedString
+		/**
+		 * ID Front
+		 */
+		uploadIDFront: () => LocalizedString
+		/**
+		 * ID Back
+		 */
+		uploadIDBack: () => LocalizedString
+		/**
+		 * User Details
+		 */
+		userDetails: () => LocalizedString
+		/**
+		 * Confirm Disclosures
+		 */
+		confirmDisclosures: () => LocalizedString
+		labels: {
+			/**
+			 * Have you or your spouse held a government position, or are considered a Politically Exposed Person ("PEP")?
+			 */
+			PEP: () => LocalizedString
+			/**
+			 * Do you perform any of the activities described in Article 15 of Law 8204? This includes systematic operations involving money exchange or wire transfers in large amounts.
+			 */
+			MoneyTransfers: () => LocalizedString
+		}
 	}
 }
 

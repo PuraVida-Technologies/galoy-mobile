@@ -27,6 +27,7 @@ import { ThemeSetting } from "./settings/preferences-theme"
 import { NotificationSetting } from "./settings/sp-notifications"
 import { OnDeviceSecuritySetting } from "./settings/sp-security"
 import { TotpSetting } from "./totp"
+import { KYC } from "./settings/account-kyc"
 
 // All queries in settings have to be set here so that the server is not hit with
 // multiple requests for each query
@@ -64,7 +65,7 @@ export const SettingsScreen: React.FC = () => {
   const { currentLevel, isAtLeastLevelOne } = useLevel()
 
   const items = {
-    account: [AccountLevelSetting, TxLimits],
+    account: [AccountLevelSetting, TxLimits, KYC],
     loginMethods: [EmailSetting, PhoneSetting],
     waysToGetPaid: [AccountLNAddress, AccountPOS, AccountStaticQR],
     preferences: [

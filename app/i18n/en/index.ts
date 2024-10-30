@@ -2794,6 +2794,7 @@ const en: BaseTranslation = {
     trialAccount: "Trial Account",
     blinkUser: "Blink User",
     transactionLimits: "Transaction Limits",
+    KYC: "KYC",
     activateWallet: "Activate Wallet",
     amountRequired: "Amount is required",
     back: "Back",
@@ -2840,6 +2841,8 @@ const en: BaseTranslation = {
     errorAuthToken: "Missing auth token",
     needWallet: "Log in or create an account to access your wallet",
     next: "Next",
+    pervious: "Pervious",
+    gender: "Gender",
     No: "No",
     note: "Note",
     notification: "Notification",
@@ -2886,6 +2889,12 @@ const en: BaseTranslation = {
     problemMaybeReauth:
       "There was a problem with your request. Please retry in one minute. If the problem persist, we recommend that you log out and log back in. You can log out by going into Settings > Account > Log out",
     warning: "Warning",
+    confirmationDialog: {
+      cameraPermissionTitle: 'Camera permission required.',
+      cameraPermission: `Puravida requires access to camera to scan QR codes and to add images.`,
+      mediaPermissionTitle: 'Media library permission required.',
+      mediaPermission: 'Puravida requires access to media library to upload images.'
+    }
   },
   errors: {
     generic: "There was an error.\nPlease try again later.",
@@ -3128,6 +3137,20 @@ const en: BaseTranslation = {
     "or_select_your_address": "Or Select Your Address",
     "there_are_no_posts": "There are no posts around you",
   },
+  KYCScreen: {
+    idType: "ID Type",
+		documentType: "Document Type",
+		documentVerification: "Document Verification",
+		uploadID: "Upload ID",
+		uploadIDFront: "ID Front",
+		uploadIDBack: "ID Back",
+		userDetails: "User Details",
+		confirmDisclosures: "Confirm Disclosures",
+    labels: {
+      PEP: `Have you or your spouse held a government position, or are considered a Politically Exposed Person ("PEP")?`,
+      MoneyTransfers: `Do you perform any of the activities described in Article 15 of Law 8204? This includes systematic operations involving money exchange or wire transfers in large amounts.`
+    }
+  }
 };
 
 export default en;

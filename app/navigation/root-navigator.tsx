@@ -88,6 +88,7 @@ import {
 } from "./stack-param-lists";
 import { ContactsScreen } from "@app/screens/contacts-screen/contacts";
 import { ContactsDetailScreen } from "@app/screens/contacts-screen";
+import KYCScreen from "@app/screens/settings-screen/kyc-screen";
 
 const RootNavigator = createStackNavigator<RootStackParamList>();
 
@@ -352,6 +353,13 @@ export const RootStack = () => {
         component={TransactionLimitsScreen}
         options={{
           title: LL.common.transactionLimits(),
+        }}
+      />
+      <RootNavigator.Screen
+        name="KYCScreen"
+        component={KYCScreen}
+        options={{
+          title: LL.common.KYC(),
         }}
       />
       <RootNavigator.Screen

@@ -3,11 +3,13 @@ import { ActivityIndicator, Pressable, View } from "react-native"
 
 import { testProps } from "@app/utils/testProps"
 import { makeStyles, Icon, Text, Skeleton } from "@rneui/themed"
+import { IconType } from "@rneui/base"
 
 type Props = {
   title: string
   subtitle?: string
   subtitleShorter?: boolean
+  iconType?: IconType
   leftIcon: string
   rightIcon?: string | null | React.ReactElement
   extraComponentBesideTitle?: React.ReactElement
@@ -30,6 +32,7 @@ export const SettingsRow: React.FC<Props> = ({
   loading,
   spinner,
   shorter,
+  iconType = "ionicon",
 }) => {
   const [hovering, setHovering] = useState(false)
   const styles = useStyles({ hovering, shorter })
@@ -59,7 +62,7 @@ export const SettingsRow: React.FC<Props> = ({
     >
       <View style={[styles.container, styles.spacing]}>
         <View style={[styles.container, styles.spacing, styles.internalContainer]}>
-          <Icon name={leftIcon} type="ionicon" />
+          <Icon name={leftIcon} type={iconType} />
           <View>
             <View style={styles.sidetoside}>
               <Text type="p2">{title}</Text>
