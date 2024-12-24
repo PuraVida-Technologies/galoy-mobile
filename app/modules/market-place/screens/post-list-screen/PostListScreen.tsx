@@ -135,11 +135,13 @@ export const PostListScreen = ({ navigation }: Props) => {
     if (!position) return
 
     try {
+      const filters = { ...position, sortBy }
+      if (searchText) {
+        filters.text = searchText
+      }
       setIsLoading(true)
       const res = await filterPosts({
-        ...position,
-        text: searchText,
-        sortBy,
+        ...filters,
       })
       setPostList(res)
     } catch (error) {
