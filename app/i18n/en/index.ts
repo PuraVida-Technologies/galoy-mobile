@@ -2918,6 +2918,7 @@ const en: BaseTranslation = {
     whatsapp: "WhatsApp",
     email: "Email",
     faq: "FAQ",
+    support: "Support",
     enjoyingApp: "Enjoying the app?",
     statusPage: "Status Page",
     chatbot: "Chatbot",

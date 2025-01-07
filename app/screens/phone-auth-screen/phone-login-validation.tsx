@@ -31,6 +31,8 @@ import { useAppConfig } from "../../hooks";
 import type { PhoneValidationStackParamList } from "../../navigation/stack-param-lists";
 import { parseTimer } from "../../utils/timer";
 import { PhoneCodeChannelToFriendlyName } from "./request-phone-code-login";
+import { saveStorage } from "@app/modules/market-place/utils/helper";
+import { ACCESS_TOKEN } from "@app/modules/market-place/config/constant";
 
 gql`
   mutation userLoginForPhoneLoginValidation($input: UserLoginInput!) {
@@ -253,6 +255,7 @@ export const PhoneLoginValidationScreen: React.FC<
           const totpRequired = data?.userLogin?.totpRequired;
 
           if (authToken) {
+            await saveStorage(ACCESS_TOKEN, authToken)
             if (totpRequired) {
               navigation.navigate("totpLoginValidate", {
                 authToken,
@@ -483,3 +486,4 @@ const useStyles = makeStyles(({ colors }) => ({
     textAlign: "center",
   },
 }));
+

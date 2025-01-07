@@ -8614,6 +8614,10 @@ type RootTranslation = {
 		 */
 		faq: string
 		/**
+		 * S​u​p​p​o​r​t
+		 */
+		support: string
+		/**
 		 * E​n​j​o​y​i​n​g​ ​t​h​e​ ​a​p​p​?
 		 */
 		enjoyingApp: string
@@ -17802,6 +17806,10 @@ export type TranslationFunctions = {
 		 * FAQ
 		 */
 		faq: () => LocalizedString
+		/**
+		 * Support
+		 */
+		support: () => LocalizedString
 		/**
 		 * Enjoying the app?
 		 */
