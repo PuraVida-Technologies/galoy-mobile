@@ -1,5 +1,5 @@
 export enum IDType {
-  DriverLicense = "drivers-license",
-  Passport = "passport",
-  Other = "Other",
+  DriverLicense = "DRIVING_LICENSE",
+  Passport = "PASSPORT",
+  Other = "OTHER",
 }

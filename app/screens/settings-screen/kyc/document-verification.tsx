@@ -1,6 +1,6 @@
 import useStyles from "./styles"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { TouchableOpacity, View } from "react-native"
+import { Image, TouchableOpacity, View } from "react-native"
 import Stepper from "./stepper"
 import { Text, Divider } from "@rneui/themed"
 import Icon from "react-native-vector-icons/AntDesign"
@@ -13,7 +13,10 @@ import useDocumentVerification from "./hooks/useDocumentVerification"
 const DocumentVerification = ({ jumpTo, route }: Route) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
-  const { state, actions } = useDocumentVerification()
+  const { state, actions } = useDocumentVerification({
+    state: route.state,
+    setState: route.setState,
+  })
 
   return (
     <>
@@ -24,18 +27,42 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
         </View>
         <TouchableOpacity
           style={styles.pickerContainer}
-          onPress={actions?.handlePreviewPress}
+          onPress={() => {
+            actions?.setUploadingFront(true)
+            actions?.handlePreviewPress()
+          }}
         >
-          <Icon name="idcard" size={50} />
-          <Text type={"p1"}>{LL.KYCScreen.uploadIDFront()}</Text>
+          {Boolean(state.idFront) ? (
+            <>
+              <Icon name="idcard" size={50} />
+              <Text type={"p1"}>{LL.KYCScreen.uploadIDFront()}</Text>
+            </>
+          ) : (
+            <Image
+              source={{ uri: state.idFront }}
+              style={{ width: "100%", height: 200 }}
+            />
+          )}
         </TouchableOpacity>
         {route?.state?.IDType === IDType.DriverLicense ? (
           <TouchableOpacity
             style={styles.pickerContainer}
-            onPress={actions?.handlePreviewPress}
+            onPress={() => {
+              actions?.setUploadingBack(true)
+              actions?.handlePreviewPress()
+            }}
           >
-            <MaterialIcon name="card-bulleted-outline" size={50} />
-            <Text type={"p1"}>{LL.KYCScreen.uploadIDBack()}</Text>
+            {Boolean(state.idBack) ? (
+              <>
+                <MaterialIcon name="card-bulleted-outline" size={50} />
+                <Text type={"p1"}>{LL.KYCScreen.uploadIDBack()}</Text>
+              </>
+            ) : (
+              <Image
+                source={{ uri: state.idBack }}
+                style={{ width: "100%", height: 200 }}
+              />
+            )}
           </TouchableOpacity>
         ) : (
           <></>

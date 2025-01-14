@@ -10,7 +10,7 @@ const KYCScreen = () => {
   const { state: formState, index, routes, layout } = state
   const { renderScene, setIndex } = actions
   const styles = useStyles()
-console.log(formState);
+
   const renderTabBar = useCallback((props) => {
     return (
       <TabBar {...props} style={{ display: "none" }} tabStyle={{ display: "none" }} />

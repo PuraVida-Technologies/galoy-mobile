@@ -2,10 +2,28 @@ import { openCamera, openPicker } from "react-native-image-crop-picker"
 import usePermission from "./usePermission"
 import { Platform } from "react-native"
 import { RESULTS, PERMISSIONS } from "react-native-permissions"
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
+import { getStorage } from "@app/modules/market-place/utils/helper"
+import { ACCESS_TOKEN } from "@app/modules/market-place/config/constant"
+import axios from "@app/services/axios"
 
-const useDocumentVerification = () => {
+const useDocumentVerification = ({ state, setState }) => {
+  const [uploadingFront, setUploadingFront] = useState(false)
+  const [uploadingBack, setUploadingBack] = useState(false)
+  const [idFront, setIdFront] = useState(null)
+  const [idBack, setIdBack] = useState(null)
   const actionSheetRef = useRef()
+
+  const uploadingFrontRef = useRef(uploadingFront)
+  const uploadingBackRef = useRef(uploadingBack)
+  const kycId = useRef(null);
+
+  useEffect(() => {
+    uploadingFrontRef.current = uploadingFront
+  }, [uploadingFront])
+  useEffect(() => {
+    uploadingBackRef.current = uploadingBack
+  }, [uploadingBack])
 
   const { checkPermission } = usePermission({
     shouldRequestPermissionOnLoad: false,
@@ -18,8 +36,58 @@ const useDocumentVerification = () => {
     compressImageQuality: 0.7,
   }
 
-  const handleCropImageResponse = (response) => {
-    console.log("response", response)
+  const handleCropImageResponse = async (response) => {
+    try {
+      if (uploadingFrontRef.current) {
+        setIdFront(response.path)
+        if (response.path) {
+          const fdata = new FormData()
+          fdata.append("file", {
+            name: response.filename,
+            type: response.type,
+            uri: response.sourceURL,
+          })
+          const authToken = await getStorage(ACCESS_TOKEN)
+          const res = await axios.post(
+            `identification/upload?documentType=${state.IDType}`,
+            fdata,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                "Authorization": `Bearer ${authToken}`,
+              },
+            },
+          )
+          setUploadingFront(false);
+          kycId.current = res.data.id
+          setState({ front: { ...res.data }, kycId: res.data.id })
+        }
+      } else if (uploadingBackRef.current) {
+        setIdBack(response.path)
+        if (response.path) {
+          const fdata = new FormData()
+          fdata.append("file", {
+            name: response.filename,
+            type: response.type,
+            uri: response.sourceURL,
+          })
+          const authToken = await getStorage(ACCESS_TOKEN)
+          const res = await axios.post(
+            `identification/upload?documentType=${state.IDType}&kycId=${kycId.current}`,
+            fdata,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                "Authorization": `Bearer ${authToken}`,
+              },
+            },
+          )
+          setUploadingBack(false)
+        }
+      }
+    } catch (error) {
+      console.log("error", error)
+    }
   }
 
   const selectImage = async () => {
@@ -46,6 +114,7 @@ const useDocumentVerification = () => {
   }
 
   const handlePress = (type) => {
+    console.log("type ===>", type)
     if (type === "capture") {
       checkPermission().then((res) => {
         if (res === RESULTS.GRANTED) {
@@ -58,9 +127,9 @@ const useDocumentVerification = () => {
       const permission = PERMISSIONS.IOS.PHOTO_LIBRARY
       checkPermission(permission).then((res) => {
         console.log("res ===>", res)
-        if ([RESULTS.LIMITED, RESULTS.GRANTED].includes(res)) {
-          selectImage()
-        }
+        // if ([RESULTS.LIMITED, RESULTS.GRANTED].includes(res)) {
+        selectImage()
+        // }
       })
     }
   }
@@ -68,11 +137,18 @@ const useDocumentVerification = () => {
   const options = [
     { label: "Camera", onPress: () => handlePress("capture") },
     { label: "Gallery", onPress: () => handlePress("library") },
-    { label: "Cancel", onPress: () => {}, type: "cancel" },
+    {
+      label: "Cancel",
+      onPress: () => {
+        setUploadingFront(false)
+        setUploadingBack(false)
+      },
+      type: "cancel",
+    },
   ]
   const onMenuPress = (index) => {
     const currentOption = options.find((o, i) => i === index)
-    console.log("currentOption")
+    console.log("currentOption", currentOption)
     currentOption?.onPress?.()
   }
 
@@ -83,10 +159,16 @@ const useDocumentVerification = () => {
   return {
     state: {
       actionSheetRef,
+      idFront,
+      idBack,
+      uploadingFront,
+      uploadingBack,
     },
     actions: {
       onMenuPress,
       handlePreviewPress,
+      setUploadingFront,
+      setUploadingBack,
     },
   }
 }
