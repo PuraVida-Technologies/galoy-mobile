@@ -9,6 +9,8 @@ import axios from "@app/services/axios"
 
 const useDocumentVerification = ({ state, setState }) => {
   const [uploadingFront, setUploadingFront] = useState(false)
+  const [uploadingFrontDoc, setUploadingFrontDoc] = useState(false)
+  const [uploadingBackDoc, setUploadingBackDoc] = useState(false)
   const [uploadingBack, setUploadingBack] = useState(false)
   const [idFront, setIdFront] = useState(null)
   const [idBack, setIdBack] = useState(null)
@@ -16,7 +18,7 @@ const useDocumentVerification = ({ state, setState }) => {
 
   const uploadingFrontRef = useRef(uploadingFront)
   const uploadingBackRef = useRef(uploadingBack)
-  const kycId = useRef(null);
+  const kycId = useRef(null)
 
   useEffect(() => {
     uploadingFrontRef.current = uploadingFront
@@ -24,6 +26,15 @@ const useDocumentVerification = ({ state, setState }) => {
   useEffect(() => {
     uploadingBackRef.current = uploadingBack
   }, [uploadingBack])
+
+  useEffect(() => {
+    if (state?.idDetails?.front) {
+      setIdFront(state.idDetails.front)
+    }
+    if (state?.idDetails?.back) {
+      setIdBack(state.idDetails.back)
+    }
+  }, [state])
 
   const { checkPermission } = usePermission({
     shouldRequestPermissionOnLoad: false,
@@ -40,6 +51,7 @@ const useDocumentVerification = ({ state, setState }) => {
     try {
       if (uploadingFrontRef.current) {
         setIdFront(response.path)
+        setUploadingFrontDoc(true)
         if (response.path) {
           const fdata = new FormData()
           fdata.append("file", {
@@ -58,12 +70,17 @@ const useDocumentVerification = ({ state, setState }) => {
               },
             },
           )
-          setUploadingFront(false);
+          setUploadingFront(false)
+          setUploadingFrontDoc(false)
           kycId.current = res.data.id
-          setState({ front: { ...res.data }, kycId: res.data.id })
+          setState({
+            idDetails: { ...res.data, front: response.path },
+            kycId: res.data.id,
+          })
         }
       } else if (uploadingBackRef.current) {
         setIdBack(response.path)
+        setUploadingBackDoc(true)
         if (response.path) {
           const fdata = new FormData()
           fdata.append("file", {
@@ -82,6 +99,8 @@ const useDocumentVerification = ({ state, setState }) => {
               },
             },
           )
+          setState({ idDetails: { ...state.idDetails, back: response.path } })
+          setUploadingBackDoc(false)
           setUploadingBack(false)
         }
       }
@@ -114,7 +133,6 @@ const useDocumentVerification = ({ state, setState }) => {
   }
 
   const handlePress = (type) => {
-    console.log("type ===>", type)
     if (type === "capture") {
       checkPermission().then((res) => {
         if (res === RESULTS.GRANTED) {
@@ -148,7 +166,6 @@ const useDocumentVerification = ({ state, setState }) => {
   ]
   const onMenuPress = (index) => {
     const currentOption = options.find((o, i) => i === index)
-    console.log("currentOption", currentOption)
     currentOption?.onPress?.()
   }
 
@@ -163,6 +180,8 @@ const useDocumentVerification = ({ state, setState }) => {
       idBack,
       uploadingFront,
       uploadingBack,
+      uploadingFrontDoc,
+      uploadingBackDoc,
     },
     actions: {
       onMenuPress,

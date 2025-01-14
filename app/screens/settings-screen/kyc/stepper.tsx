@@ -14,6 +14,7 @@ interface Props {
   pervious?: boolean
   next?: boolean
   allowNext?: boolean
+  disableNext?: boolean
   onNext?: () => void
   onPervious?: () => void
 }
@@ -27,6 +28,7 @@ const Stepper = ({
   perviousPage,
   pervious,
   next = true,
+  disableNext,
   onNext,
   onPervious,
 }: Props) => {
@@ -69,6 +71,7 @@ const Stepper = ({
           buttonStyle={styles.buttonStyle}
           titleProps={{ style: styles.buttonText }}
           onPress={onNextPage}
+          disabled={disableNext}
         />
       ) : (
         <></>

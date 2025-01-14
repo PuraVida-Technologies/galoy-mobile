@@ -9,6 +9,7 @@ import ActionSheet from "@alessiocancian/react-native-actionsheet"
 import { IDType } from "./types"
 import { Route } from "./hooks/useKYCState"
 import useDocumentVerification from "./hooks/useDocumentVerification"
+import { LoadingComponent } from "@app/modules/market-place/components/loading-component"
 
 const DocumentVerification = ({ jumpTo, route }: Route) => {
   const styles = useStyles()
@@ -33,15 +34,20 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
           }}
         >
           {Boolean(state.idFront) ? (
-            <>
-              <Icon name="idcard" size={50} />
-              <Text type={"p1"}>{LL.KYCScreen.uploadIDFront()}</Text>
-            </>
-          ) : (
             <Image
               source={{ uri: state.idFront }}
               style={{ width: "100%", height: 200 }}
             />
+          ) : (
+            <>
+              <Icon name="idcard" size={50} />
+              <Text type={"p1"}>{LL.KYCScreen.uploadIDFront()}</Text>
+            </>
+          )}
+          {state.uploadingFrontDoc ? (
+            <LoadingComponent isLoading={state.uploadingFrontDoc} />
+          ) : (
+            <></>
           )}
         </TouchableOpacity>
         {route?.state?.IDType === IDType.DriverLicense ? (
@@ -53,15 +59,20 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
             }}
           >
             {Boolean(state.idBack) ? (
-              <>
-                <MaterialIcon name="card-bulleted-outline" size={50} />
-                <Text type={"p1"}>{LL.KYCScreen.uploadIDBack()}</Text>
-              </>
-            ) : (
               <Image
                 source={{ uri: state.idBack }}
                 style={{ width: "100%", height: 200 }}
               />
+            ) : (
+              <>
+                <MaterialIcon name="card-bulleted-outline" size={50} />
+                <Text type={"p1"}>{LL.KYCScreen.uploadIDBack()}</Text>
+              </>
+            )}
+            {state.uploadingBackDoc ? (
+              <LoadingComponent isLoading={state.uploadingBackDoc} />
+            ) : (
+              <></>
             )}
           </TouchableOpacity>
         ) : (
@@ -70,9 +81,10 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
       </View>
       <Stepper
         jumpTo={jumpTo}
-        allowNext
+        allowNext={Boolean(state.idFront)}
         pervious
         nextPage={"user"}
+        disableNext={state.uploadingFrontDoc || state.uploadingBackDoc}
         perviousPage={"docType"}
       />
       <ActionSheet

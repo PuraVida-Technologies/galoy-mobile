@@ -1,3 +1,4 @@
+import React from "react"
 import useStyles from "./styles"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { testProps } from "@app/utils/testProps"
@@ -23,8 +24,13 @@ const UserDetails = ({ jumpTo, route }: Route) => {
           {...testProps(LL.EmailRegistrationInitiateScreen.placeholder())}
           placeholder={LL.EmailRegistrationInitiateScreen.placeholder()}
           autoCapitalize="none"
-          value={route?.state?.email}
-          onChangeText={(text) => route?.setState({ email: text })}
+          value={route?.state?.idDetails?.email || route?.state?.email}
+          onChangeText={(text) =>
+            route?.setState({
+              email: text,
+              idDetails: { ...route?.state?.idDetails, email: text },
+            })
+          }
         />
 
         <Input
@@ -32,8 +38,14 @@ const UserDetails = ({ jumpTo, route }: Route) => {
           label={LL.common.phoneNumber()}
           placeholder={LL.common.phoneNumber()}
           autoCapitalize="none"
-          value={route?.state?.phoneNumber}
-          onChangeText={(text) => route?.setState({ phoneNumber: text })}
+          keyboardType="numeric"
+          value={route?.state?.idDetails?.phoneNumber || route?.state?.phoneNumber}
+          onChangeText={(text) =>
+            route?.setState({
+              phoneNumber: text,
+              idDetails: { ...route?.state?.idDetails, phoneNumber: text },
+            })
+          }
         />
 
         <Input
@@ -42,14 +54,22 @@ const UserDetails = ({ jumpTo, route }: Route) => {
           placeholder={LL.common.gender()}
           autoCapitalize="none"
           renderErrorMessage={false}
-          value={route?.state?.gender}
-          onChangeText={(text) => route?.setState({ gender: text })}
+          value={route?.state?.idDetails?.gender || route?.state?.gender}
+          onChangeText={(text) =>
+            route?.setState({
+              gender: text,
+              idDetails: { ...route?.state?.idDetails, gender: text },
+            })
+          }
         />
       </View>
       <Stepper
         jumpTo={jumpTo}
         allowNext={Boolean(
-          route?.state?.email && route?.state?.phoneNumber && route?.state?.gender,
+          (route?.state?.email && route?.state?.phoneNumber && route?.state?.gender) ||
+            (route?.state?.idDetails?.email &&
+              route?.state?.idDetails?.phoneNumber &&
+              route?.state?.idDetails?.gender),
         )}
         pervious
         perviousPage={"docProof"}

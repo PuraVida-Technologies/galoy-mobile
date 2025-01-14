@@ -21,10 +21,15 @@ const useKYCState = () => {
   const [state, _setState] = useState({ pep: "yes", moneyTransfers: "yes" })
   const [index, setIndex] = useState(0)
   const layout = useWindowDimensions()
+  // const { data } = useKYCDetails()
 
   const setState = useCallback((next) => {
     _setState((perv) => ({ ...perv, ...next }))
   }, [])
+
+  // useEffect(() => {
+  //   setState({ idDetails: data })
+  // }, [data, setState])
 
   const routes = [
     { key: "docType", title: "Document Type", setState, state },

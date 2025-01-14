@@ -1,3 +1,4 @@
+import React from "react"
 import { Text, Divider } from "@rneui/themed"
 import useStyles from "./styles"
 import { useI18nContext } from "@app/i18n/i18n-react"
@@ -5,6 +6,7 @@ import { View } from "react-native"
 import Stepper from "./stepper"
 import RadioGroup from "@app/components/radio-input/radio-input-group"
 import { Route } from "./hooks/useKYCState"
+import useConfirmKYC from "./hooks/useConfirmKYC"
 
 const radioGroup = [
   { label: "Yes", value: "yes" },
@@ -14,6 +16,10 @@ const radioGroup = [
 const ConfirmDisclosures = ({ jumpTo, route }: Route) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
+  const { state, actions } = useConfirmKYC({
+    state: route.state,
+    setState: route.setState,
+  })
 
   return (
     <>
@@ -26,16 +32,20 @@ const ConfirmDisclosures = ({ jumpTo, route }: Route) => {
           <Text type="p2">{LL.KYCScreen.labels.PEP()}</Text>
           <RadioGroup
             group={radioGroup}
-            value={route?.state?.pep}
-            onChange={(value) => route?.setState({ pep: value })}
+            value={
+              Boolean(route?.state?.idDetails?.isPoliticallyExposed) || route?.state?.pep
+            }
+            onChange={actions?.onPepChange}
           />
         </View>
         <View>
           <Text type="p2">{LL.KYCScreen.labels.MoneyTransfers()}</Text>
           <RadioGroup
             group={radioGroup}
-            value={route?.state?.moneyTransfers}
-            onChange={(value) => route?.setState({ moneyTransfers: value })}
+            value={
+              Boolean(route?.state?.idDetails?.isHighRisk) || route?.state?.moneyTransfers
+            }
+            onChange={actions?.onHighRiskChange}
           />
         </View>
       </View>
@@ -44,7 +54,7 @@ const ConfirmDisclosures = ({ jumpTo, route }: Route) => {
         pervious
         nextTitle={LL.common.confirm()}
         perviousPage={"user"}
-        onNext={() => {}}
+        onNext={() => actions?.onConfirm()}
       />
     </>
   )

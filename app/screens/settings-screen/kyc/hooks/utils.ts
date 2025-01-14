@@ -26,3 +26,19 @@ export const getPermissionMessage = (
       }
   }
 }
+
+export const prepareKYCDetails = (state: any) => {
+  return {
+    email: state?.idDetails?.email || state?.email,
+    phoneNumber: state?.idDetails?.phoneNumber || state?.phoneNumber,
+    id: state?.idDetails?.id,
+    citizenships: state?.idDetails?.citizenships,
+    fullName: state?.idDetails?.fullName,
+    gender: state?.idDetails?.gender,
+    isHighRisk: state?.idDetails?.isHighRisk === "yes",
+    isPoliticallyExposed: state?.idDetails?.isPoliticallyExposed === "yes",
+    martialStatus: state?.idDetails?.martialStatus,
+    placeOfBirth: state?.idDetails?.placeOfBirth,
+    status: state?.idDetails?.status,
+  }
+}
