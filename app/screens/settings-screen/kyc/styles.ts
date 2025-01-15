@@ -48,6 +48,10 @@ const useStyles = makeStyles(({ colors }) => ({
     paddingRight: 0,
     paddingLeft: 0,
   },
+  disabled: {
+    backgroundColor: colors.grey4,
+    color: colors.grey1,
+  },
   buttonInActiveText: {
     color: colors.grey1,
   },

@@ -1,6 +1,6 @@
 import Axios from "axios"
 import { ACCESS_TOKEN } from "@app/modules/market-place/config/constant"
-import { getStorage } from "@app/modules/market-place/utils/helper"
+import { storage } from "./storage"
 
 const axios = Axios.create({
   baseURL: "https://api.kopis.puravidabitcoin.io/",
@@ -8,14 +8,9 @@ const axios = Axios.create({
 
 axios.interceptors.request.use(
   (config) => {
-    getStorage(ACCESS_TOKEN)
-      .then((res) => {
-        axios.defaults.headers.Authorization = `Bearer ${res}`
-      })
-      .catch((error) => {
-        console.log("error", error)
-      })
-
+    const token = storage.getString("ACCESS_TOKEN")
+    console.log("token", storage.getAllKeys())
+    axios.defaults.headers.Authorization = `Bearer ${token}`
     return config
   },
   (error) => {

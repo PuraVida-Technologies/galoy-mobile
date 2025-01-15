@@ -68,8 +68,8 @@ const Stepper = ({
           {...testProps(LL.common.next())}
           title={nextTitle || LL.common.next()}
           containerStyle={styles.buttonContainerStyle}
-          buttonStyle={styles.buttonStyle}
-          titleProps={{ style: styles.buttonText }}
+          buttonStyle={[styles.buttonStyle, disableNext ? styles.disabled : {}]}
+          titleProps={{ style: [styles.buttonText, disableNext ? styles.disabled : {}] }}
           onPress={onNextPage}
           disabled={disableNext}
         />

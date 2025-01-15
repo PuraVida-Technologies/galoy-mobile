@@ -4,7 +4,28 @@ import DocumentProof from "../document-verification"
 import UserDetails from "../user-details"
 import ConfirmDisclosures from "../confirm-disclosures"
 import { useWindowDimensions } from "react-native"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
+import { gql } from "@apollo/client"
+import { useKycDetailsQuery } from "@app/graphql/generated"
+
+gql`
+  query KycDetails {
+    me {
+      username
+      kyc {
+        fullName
+        citizenships
+        email
+        phoneNumber
+        primaryIdentification {
+          expiration
+          files
+          type
+        }
+      }
+    }
+  }
+`
 
 export interface Route extends Omit<SceneRendererProps, "layout"> {
   route: any
@@ -21,15 +42,17 @@ const useKYCState = () => {
   const [state, _setState] = useState({ pep: "yes", moneyTransfers: "yes" })
   const [index, setIndex] = useState(0)
   const layout = useWindowDimensions()
-  // const { data } = useKYCDetails()
-
+  const { data, loading } = useKycDetailsQuery()
   const setState = useCallback((next) => {
     _setState((perv) => ({ ...perv, ...next }))
   }, [])
 
-  // useEffect(() => {
-  //   setState({ idDetails: data })
-  // }, [data, setState])
+  useEffect(() => {
+    if (!loading) {
+      setState({ idDetails: data })
+      console.log("useKYCState", data?.me)
+    }
+  }, [loading, data, setState])
 
   const routes = [
     { key: "docType", title: "Document Type", setState, state },

@@ -46,6 +46,9 @@ gql`
           walletCurrency
         }
       }
+      kyc {
+        status
+      }
 
       # Authentication Stuff needed for account screen
       totpEnabled
@@ -76,7 +79,8 @@ export const SettingsScreen: React.FC = () => {
       ThemeSetting,
     ],
     securityAndPrivacy: [TotpSetting, OnDeviceSecuritySetting],
-    advanced: [ExportCsvSetting
+    advanced: [
+      ExportCsvSetting,
       // , ApiAccessSetting
     ],
     community: [NeedHelpSetting, JoinCommunitySetting],

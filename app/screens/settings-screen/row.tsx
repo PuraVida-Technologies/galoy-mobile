@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { ActivityIndicator, Pressable, View } from "react-native"
+import { ActivityIndicator, Pressable, TextProps, View } from "react-native"
 
 import { testProps } from "@app/utils/testProps"
 import { makeStyles, Icon, Text, Skeleton } from "@rneui/themed"
@@ -18,6 +18,8 @@ type Props = {
   loading?: boolean
   spinner?: boolean
   shorter?: boolean
+  disabled?: boolean
+  subtitleStyles?: TextProps["style"]
 }
 
 export const SettingsRow: React.FC<Props> = ({
@@ -33,6 +35,8 @@ export const SettingsRow: React.FC<Props> = ({
   spinner,
   shorter,
   iconType = "ionicon",
+  subtitleStyles,
+  disabled,
 }) => {
   const [hovering, setHovering] = useState(false)
   const styles = useStyles({ hovering, shorter })
@@ -59,6 +63,7 @@ export const SettingsRow: React.FC<Props> = ({
       onPressOut={action ? () => setHovering(false) : () => {}}
       onPress={action ? action : undefined}
       {...testProps(title)}
+      disabled={disabled}
     >
       <View style={[styles.container, styles.spacing]}>
         <View style={[styles.container, styles.spacing, styles.internalContainer]}>
@@ -73,6 +78,7 @@ export const SettingsRow: React.FC<Props> = ({
                 type={subtitleShorter ? "p4" : "p3"}
                 ellipsizeMode="tail"
                 numberOfLines={1}
+                style={subtitleStyles}
               >
                 {subtitle}
               </Text>

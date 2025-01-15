@@ -11,6 +11,22 @@ import { Route } from "./hooks/useKYCState"
 import useDocumentVerification from "./hooks/useDocumentVerification"
 import { LoadingComponent } from "@app/modules/market-place/components/loading-component"
 
+const DocumentUpload = ({ LL, styles, onPress, file, icon, loading }) => {
+  return (
+    <TouchableOpacity style={styles.pickerContainer} onPress={onPress}>
+      {Boolean(file) ? (
+        <Image source={{ uri: file }} style={{ width: "100%", height: 200 }} />
+      ) : (
+        <>
+          <MaterialIcon name={icon} size={50} />
+          <Text type={"p1"}>{LL.KYCScreen.uploadIDFront()}</Text>
+        </>
+      )}
+      {loading ? <LoadingComponent isLoading={loading} /> : <></>}
+    </TouchableOpacity>
+  )
+}
+
 const DocumentVerification = ({ jumpTo, route }: Route) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
@@ -26,55 +42,29 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
           <Text type={"h2"}>{LL.KYCScreen.documentVerification()}</Text>
           <Divider style={styles.titleContainer} />
         </View>
-        <TouchableOpacity
-          style={styles.pickerContainer}
+        <DocumentUpload
+          LL={LL}
+          loading={state.uploadingFrontDoc}
+          file={state.idFront}
+          icon="card-account-details-outline"
           onPress={() => {
             actions?.setUploadingFront(true)
             actions?.handlePreviewPress()
           }}
-        >
-          {Boolean(state.idFront) ? (
-            <Image
-              source={{ uri: state.idFront }}
-              style={{ width: "100%", height: 200 }}
-            />
-          ) : (
-            <>
-              <Icon name="idcard" size={50} />
-              <Text type={"p1"}>{LL.KYCScreen.uploadIDFront()}</Text>
-            </>
-          )}
-          {state.uploadingFrontDoc ? (
-            <LoadingComponent isLoading={state.uploadingFrontDoc} />
-          ) : (
-            <></>
-          )}
-        </TouchableOpacity>
+          styles={styles}
+        />
         {route?.state?.IDType === IDType.DriverLicense ? (
-          <TouchableOpacity
-            style={styles.pickerContainer}
+          <DocumentUpload
+            LL={LL}
+            loading={state.uploadingBackDoc}
+            file={state.idBack}
+            icon="card-bulleted-outline"
             onPress={() => {
               actions?.setUploadingBack(true)
               actions?.handlePreviewPress()
             }}
-          >
-            {Boolean(state.idBack) ? (
-              <Image
-                source={{ uri: state.idBack }}
-                style={{ width: "100%", height: 200 }}
-              />
-            ) : (
-              <>
-                <MaterialIcon name="card-bulleted-outline" size={50} />
-                <Text type={"p1"}>{LL.KYCScreen.uploadIDBack()}</Text>
-              </>
-            )}
-            {state.uploadingBackDoc ? (
-              <LoadingComponent isLoading={state.uploadingBackDoc} />
-            ) : (
-              <></>
-            )}
-          </TouchableOpacity>
+            styles={styles}
+          />
         ) : (
           <></>
         )}
@@ -84,7 +74,9 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
         allowNext={Boolean(state.idFront)}
         pervious
         nextPage={"user"}
-        disableNext={state.uploadingFrontDoc || state.uploadingBackDoc}
+        disableNext={
+          Boolean(!state.idFront) || state.uploadingFrontDoc || state.uploadingBackDoc
+        }
         perviousPage={"docType"}
       />
       <ActionSheet

@@ -3,29 +3,19 @@ import usePermission from "./usePermission"
 import { Platform } from "react-native"
 import { RESULTS, PERMISSIONS } from "react-native-permissions"
 import { useEffect, useRef, useState } from "react"
-import { getStorage } from "@app/modules/market-place/utils/helper"
-import { ACCESS_TOKEN } from "@app/modules/market-place/config/constant"
 import axios from "@app/services/axios"
+import { IDType } from "../types"
 
 const useDocumentVerification = ({ state, setState }) => {
   const [uploadingFront, setUploadingFront] = useState(false)
-  const [uploadingFrontDoc, setUploadingFrontDoc] = useState(false)
-  const [uploadingBackDoc, setUploadingBackDoc] = useState(false)
   const [uploadingBack, setUploadingBack] = useState(false)
   const [idFront, setIdFront] = useState(null)
   const [idBack, setIdBack] = useState(null)
   const actionSheetRef = useRef()
 
-  const uploadingFrontRef = useRef(uploadingFront)
-  const uploadingBackRef = useRef(uploadingBack)
+  const uploadingFrontRef = useRef(false)
+  const uploadingBackRef = useRef(false)
   const kycId = useRef(null)
-
-  useEffect(() => {
-    uploadingFrontRef.current = uploadingFront
-  }, [uploadingFront])
-  useEffect(() => {
-    uploadingBackRef.current = uploadingBack
-  }, [uploadingBack])
 
   useEffect(() => {
     if (state?.idDetails?.front) {
@@ -47,61 +37,53 @@ const useDocumentVerification = ({ state, setState }) => {
     compressImageQuality: 0.7,
   }
 
+  const uploadDocument = async (image, url) => {
+    try {
+      const formData = new FormData()
+      formData.append("file", {
+        name: image.filename,
+        type: image.type,
+        uri: image.sourceURL,
+      })
+      const res = await axios.post(url, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      return res
+    } catch (error) {
+      console.log("error", error)
+    }
+  }
+
   const handleCropImageResponse = async (response) => {
     try {
       if (uploadingFrontRef.current) {
         setIdFront(response.path)
-        setUploadingFrontDoc(true)
+        setUploadingFront(true)
         if (response.path) {
-          const fdata = new FormData()
-          fdata.append("file", {
-            name: response.filename,
-            type: response.type,
-            uri: response.sourceURL,
-          })
-          const authToken = await getStorage(ACCESS_TOKEN)
-          const res = await axios.post(
+          const res = await uploadDocument(
+            response,
             `identification/upload?documentType=${state.IDType}`,
-            fdata,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-                "Authorization": `Bearer ${authToken}`,
-              },
-            },
           )
           setUploadingFront(false)
-          setUploadingFrontDoc(false)
+          uploadingFrontRef.current = false
           kycId.current = res.data.id
           setState({
             idDetails: { ...res.data, front: response.path },
-            kycId: res.data.id,
           })
         }
-      } else if (uploadingBackRef.current) {
+      } else if (uploadingBackRef.current && state.IDType === IDType.DriverLicense) {
         setIdBack(response.path)
-        setUploadingBackDoc(true)
+        setUploadingBack(true)
         if (response.path) {
-          const fdata = new FormData()
-          fdata.append("file", {
-            name: response.filename,
-            type: response.type,
-            uri: response.sourceURL,
-          })
-          const authToken = await getStorage(ACCESS_TOKEN)
-          const res = await axios.post(
+          await uploadDocument(
+            response,
             `identification/upload?documentType=${state.IDType}&kycId=${kycId.current}`,
-            fdata,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-                "Authorization": `Bearer ${authToken}`,
-              },
-            },
           )
           setState({ idDetails: { ...state.idDetails, back: response.path } })
-          setUploadingBackDoc(false)
           setUploadingBack(false)
+          uploadingBackRef.current = false
         }
       }
     } catch (error) {
@@ -164,7 +146,7 @@ const useDocumentVerification = ({ state, setState }) => {
       type: "cancel",
     },
   ]
-  const onMenuPress = (index) => {
+  const onMenuPress = (index: number) => {
     const currentOption = options.find((o, i) => i === index)
     currentOption?.onPress?.()
   }
@@ -178,16 +160,16 @@ const useDocumentVerification = ({ state, setState }) => {
       actionSheetRef,
       idFront,
       idBack,
-      uploadingFront,
-      uploadingBack,
-      uploadingFrontDoc,
-      uploadingBackDoc,
+      uploadingFront: uploadingFrontRef.current,
+      uploadingBack: uploadingBackRef.current,
+      uploadingFrontDoc: uploadingFront,
+      uploadingBackDoc: uploadingBack,
     },
     actions: {
       onMenuPress,
       handlePreviewPress,
-      setUploadingFront,
-      setUploadingBack,
+      setUploadingFront: (value: boolean) => (uploadingFrontRef.current = value),
+      setUploadingBack: (value: boolean) => (uploadingBackRef.current = value),
     },
   }
 }

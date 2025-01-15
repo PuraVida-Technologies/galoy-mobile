@@ -28,6 +28,7 @@ import { parseTimer } from "../../utils/timer"
 import { toastShow } from "../../utils/toast"
 import { saveStorage } from "@app/modules/market-place/utils/helper"
 import { ACCESS_TOKEN } from "@app/modules/market-place/config/constant"
+import { storage } from "@app/services/storage"
 
 const useStyles = makeStyles((theme) => ({
   flex: { flex: 1 },
@@ -159,6 +160,7 @@ export const PhoneValidationScreen: React.FC<PhoneValidationScreenProps> = ({
           saveToken(token)
 
           saveStorage(ACCESS_TOKEN, token)
+          storage.set("ACCESS_TOKEN", token)
           if (await BiometricWrapper.isSensorAvailable()) {
             navigation.replace("authentication", {
               screenPurpose: AuthenticationScreenPurpose.TurnOnAuthentication,
