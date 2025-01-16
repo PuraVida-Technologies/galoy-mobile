@@ -81,6 +81,9 @@ const useStyles = makeStyles(({ colors }) => ({
     alignItems: "center",
     marginBottom: 20,
   },
+  disclosuresText: {
+    marginBottom: 10,
+  },
 }))
 
 export default useStyles

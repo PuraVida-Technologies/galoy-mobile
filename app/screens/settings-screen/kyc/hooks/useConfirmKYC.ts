@@ -14,30 +14,30 @@ gql`
 `
 
 const useConfirmKYC = ({ state, setState }) => {
-  const [isPoliticallyExposed, setPoliticallyExposed] = useState(true)
-  const [isHighRisk, setIsHighRisk] = useState(true)
+  const [isPoliticallyExposed, setPoliticallyExposed] = useState("yes")
+  const [isHighRisk, setIsHighRisk] = useState("yes")
   const [loading, setLoading] = useState(false)
   const [updateKYCDetails] = useUpdateKycMutation()
   const navigation = useNavigation()
   const stateRef = useRef(state)
 
   useEffect(() => {
-    setPoliticallyExposed(state?.idDetails?.isPoliticallyExposed)
-    setIsHighRisk(state?.idDetails?.isHighRisk)
+    setPoliticallyExposed(state?.idDetails?.isPoliticallyExposed ? "yes" : "no")
+    setIsHighRisk(state?.idDetails?.isHighRisk ? "yes" : "no")
     stateRef.current = state
   }, [state])
 
-  const onPepChange = (value) => {
+  const onPepChange = (value: string) => {
     setPoliticallyExposed(value)
     setState({
-      idDetails: { ...state?.idDetails, isPoliticallyExposed: value },
+      idDetails: { ...state?.idDetails, isPoliticallyExposed: value === "yes" },
     })
   }
 
-  const onHighRiskChange = (value) => {
+  const onHighRiskChange = (value: string) => {
     setIsHighRisk(value)
     setState({
-      idDetails: { ...state?.idDetails, isHighRisk: value },
+      idDetails: { ...state?.idDetails, isHighRisk: value === "yes" },
     })
   }
 
@@ -61,7 +61,7 @@ const useConfirmKYC = ({ state, setState }) => {
   }, [state, updateKYCDetails])
 
   return {
-    state: { isPoliticallyExposed, isHighRisk },
+    state: { isPoliticallyExposed, isHighRisk, loading },
     actions: {
       setPoliticallyExposed,
       setIsHighRisk,

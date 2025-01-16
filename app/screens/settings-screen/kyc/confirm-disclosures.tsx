@@ -7,6 +7,7 @@ import Stepper from "./stepper"
 import RadioGroup from "@app/components/radio-input/radio-input-group"
 import { Route } from "./hooks/useKYCState"
 import useConfirmKYC from "./hooks/useConfirmKYC"
+import { LoadingComponent } from "@app/modules/market-place/components/loading-component"
 
 const radioGroup = [
   { label: "Yes", value: "yes" },
@@ -24,27 +25,28 @@ const ConfirmDisclosures = ({ jumpTo, route }: Route) => {
   return (
     <>
       <View style={styles.container}>
+        {state.loading ? <LoadingComponent isLoading={state.loading} /> : <></>}
         <View>
           <Text type={"h2"}>{LL.KYCScreen.confirmDisclosures()}</Text>
           <Divider style={styles.titleContainer} />
         </View>
         <View>
-          <Text type="p2">{LL.KYCScreen.labels.PEP()}</Text>
+          <Text type="p2" style={styles.disclosuresText}>
+            {LL.KYCScreen.labels.PEP()}
+          </Text>
           <RadioGroup
             group={radioGroup}
-            value={
-              Boolean(route?.state?.idDetails?.isPoliticallyExposed) || route?.state?.pep
-            }
+            value={state.isPoliticallyExposed}
             onChange={actions?.onPepChange}
           />
         </View>
         <View>
-          <Text type="p2">{LL.KYCScreen.labels.MoneyTransfers()}</Text>
+          <Text type="p2" style={styles.disclosuresText}>
+            {LL.KYCScreen.labels.MoneyTransfers()}
+          </Text>
           <RadioGroup
             group={radioGroup}
-            value={
-              Boolean(route?.state?.idDetails?.isHighRisk) || route?.state?.moneyTransfers
-            }
+            value={state.isHighRisk}
             onChange={actions?.onHighRiskChange}
           />
         </View>
@@ -54,6 +56,7 @@ const ConfirmDisclosures = ({ jumpTo, route }: Route) => {
         pervious
         nextTitle={LL.common.confirm()}
         perviousPage={"user"}
+        disableNext={state.loading}
         onNext={() => actions?.onConfirm()}
       />
     </>
