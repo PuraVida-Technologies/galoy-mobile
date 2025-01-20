@@ -35,7 +35,7 @@ export const KYC: React.FC = () => {
       subtitleStyles={{ textTransform: "capitalize", color: subtitleColor }}
       iconType="material"
       action={() => navigate("KYCScreen")}
-      disabled={data?.me?.kyc?.status === "APPROVED"}
+      disabled={["APPROVED", "PENDING"].includes(data?.me?.kyc?.status || "")}
     />
   )
 }

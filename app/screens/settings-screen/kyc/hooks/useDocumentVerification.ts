@@ -64,7 +64,7 @@ const useDocumentVerification = ({ state, setState }) => {
         if (response.path) {
           const res = await uploadDocument(
             response,
-            `identification/upload?documentType=${state.IDType}`,
+            `identification/upload?documentType=${state.idDetails.type}`,
           )
           setUploadingFront(false)
           uploadingFrontRef.current = false
@@ -73,13 +73,16 @@ const useDocumentVerification = ({ state, setState }) => {
             idDetails: { ...res.data, front: response.path },
           })
         }
-      } else if (uploadingBackRef.current && state.IDType === IDType.DriverLicense) {
+      } else if (
+        uploadingBackRef.current &&
+        state.idDetails.type === IDType.DriverLicense
+      ) {
         setIdBack(response.path)
         setUploadingBack(true)
         if (response.path) {
           await uploadDocument(
             response,
-            `identification/upload?documentType=${state.IDType}&kycId=${kycId.current}`,
+            `identification/upload?documentType=${state.idDetails.type}&kycId=${kycId.current}`,
           )
           setState({ idDetails: { ...state.idDetails, back: response.path } })
           setUploadingBack(false)

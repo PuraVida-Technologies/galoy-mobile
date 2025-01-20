@@ -53,7 +53,7 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
           }}
           styles={styles}
         />
-        {route?.state?.IDType === IDType.DriverLicense ? (
+        {route?.state?.idDetails.type === IDType.DriverLicense ? (
           <DocumentUpload
             LL={LL}
             loading={state.uploadingBackDoc}

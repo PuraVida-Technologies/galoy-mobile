@@ -17,6 +17,9 @@ gql`
         citizenships
         email
         phoneNumber
+        gender
+        isPoliticallyExposed
+        isHighRisk
         primaryIdentification {
           expiration
           files
@@ -49,8 +52,19 @@ const useKYCState = () => {
 
   useEffect(() => {
     if (!loading) {
-      setState({ idDetails: data })
-      console.log("useKYCState", data?.me)
+      const kyc = data?.me?.kyc
+      setState({
+        idDetails: {
+          type: kyc?.primaryIdentification?.type,
+          front: kyc?.primaryIdentification?.files?.[0],
+          back: kyc?.primaryIdentification?.files?.[1],
+          email: kyc?.email,
+          phoneNumber: kyc?.phoneNumber,
+          gender: kyc?.gender,
+          isPoliticallyExposed: kyc?.isPoliticallyExposed,
+          isHighRisk: kyc?.isHighRisk,
+        },
+      })
     }
   }, [loading, data, setState])
 

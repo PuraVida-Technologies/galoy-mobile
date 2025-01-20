@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Dropdown } from "@app/components/dropdown"
 import useStyles from "./styles"
 import { useI18nContext } from "@app/i18n/i18n-react"
@@ -23,6 +23,10 @@ const DocumentType = ({ jumpTo, route }: Route) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
 
+  useEffect(() => {
+    setDoc(route?.state?.idDetails?.type)
+  }, [route?.state?.idDetails?.type])
+
   return (
     <>
       <View style={styles.container}>
@@ -36,7 +40,9 @@ const DocumentType = ({ jumpTo, route }: Route) => {
             value={doc}
             onChange={(item) => {
               setDoc(item?.value)
-              route?.setState?.({ IDType: item?.value })
+              route?.setState?.({
+                idDetails: { ...route?.state?.idDetails, type: item?.value },
+              })
             }}
           />
         </FormContainer>
@@ -58,7 +64,7 @@ const DocumentType = ({ jumpTo, route }: Route) => {
       </View>
       <Stepper
         jumpTo={jumpTo}
-        allowNext={Boolean(route?.state?.IDType)}
+        allowNext={Boolean(route?.state?.idDetails?.type)}
         nextPage={"docProof"}
       />
     </>

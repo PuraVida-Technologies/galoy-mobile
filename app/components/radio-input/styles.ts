@@ -11,7 +11,7 @@ const useStyles = makeStyles((colors) => ({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 10,
+    marginBottom: 10,
   },
 }))
 
