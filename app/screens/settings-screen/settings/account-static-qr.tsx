@@ -6,6 +6,7 @@ import { useAppConfig } from "@app/hooks"
 import { useI18nContext } from "@app/i18n/i18n-react"
 
 import { SettingsRow } from "../row"
+import { goToURL } from "@app/utils/openUrl"
 
 export const AccountStaticQR: React.FC = () => {
   const { appConfig } = useAppConfig()
@@ -27,7 +28,7 @@ export const AccountStaticQR: React.FC = () => {
       leftIcon="qr-code-outline"
       rightIcon={<GaloyIcon name="link" size={24} />}
       action={() => {
-        Linking.openURL(qrUrl)
+        goToURL(qrUrl)
       }}
     />
   )

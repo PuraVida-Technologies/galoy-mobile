@@ -251,27 +251,26 @@ export const EarnQuiz = ({ route }: Props) => {
 
   const answersShuffled: Array<React.ReactNode> = []
 
-  useEffect(() => {
-    ;(async () => {
-      if (recordedAnswer.indexOf(0) !== -1 && !completed && !quizClaimLoading) {
-        const { data } = await quizClaim({
-          variables: { input: { id } },
-        })
+  const claimQuiz = React.useCallback(async () => {
+    if (recordedAnswer.indexOf(0) !== -1 && !completed && !quizClaimLoading) {
+      const { data } = await quizClaim({
+        variables: { input: { id } },
+      })
 
-        if (data?.quizClaim?.errors?.length) {
-          // FIXME: message is hidden by the modal
-          toastShow({
-            message: getErrorMessages(data.quizClaim.errors),
-            LL,
-          })
-        }
+      if (data?.quizClaim?.errors?.length) {
+        // FIXME: message is hidden by the modal
+        toastShow({
+          message: getErrorMessages(data.quizClaim.errors),
+          LL,
+        })
       }
-    })()
+    }
   }, [recordedAnswer, id, quizClaim, LL, completed, quizClaimLoading])
 
   const close = async () => {
     if (quizVisible) {
       setQuizVisible(false)
+      await claimQuiz()
       await sleep(100)
     }
     navigation.goBack()

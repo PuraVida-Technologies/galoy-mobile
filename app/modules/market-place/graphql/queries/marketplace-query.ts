@@ -18,7 +18,7 @@ export const FILTER_MARKET_PLACE_POST = gql`
     $longitude: Float
     $longitudeDelta: Float
     $tagsSlugs: [String!]
-    $text: String = ""
+    $text: String
     $sortBy: String = "distance"
   ) {
     filterMarketplacePosts(

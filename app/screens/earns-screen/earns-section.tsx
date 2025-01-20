@@ -59,6 +59,7 @@ const svgWidth = screenWidth
 const useStyles = makeStyles(({ colors }) => ({
   container: {
     alignItems: "center",
+    flex: 1,
   },
   buttonStyleDisabled: {
     backgroundColor: colors._white,
