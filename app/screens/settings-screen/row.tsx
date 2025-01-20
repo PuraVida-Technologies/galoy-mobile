@@ -65,7 +65,7 @@ export const SettingsRow: React.FC<Props> = ({
       {...testProps(title)}
       disabled={disabled}
     >
-      <View style={[styles.container, styles.spacing]}>
+      <View style={[styles.container, styles.spacing, disabled && styles.disabled]}>
         <View style={[styles.container, styles.spacing, styles.internalContainer]}>
           <Icon name={leftIcon} type={iconType} />
           <View>
@@ -86,6 +86,7 @@ export const SettingsRow: React.FC<Props> = ({
           </View>
         </View>
         <Pressable
+          disabled={disabled}
           onPress={rightIconAction ? rightIconAction : undefined}
           {...testProps(title + "-right")}
         >
@@ -106,6 +107,10 @@ const useStyles = makeStyles(
       columnGap: 16,
       backgroundColor: hovering ? colors.grey4 : undefined,
       minHeight: shorter ? 56 : 64,
+    },
+    disabled: {
+      opacity: 0.5,
+      backgroundColor: colors.grey4,
     },
     spacing: {
       paddingHorizontal: 8,
