@@ -34,8 +34,6 @@ export const PushNotificationComponent = (): JSX.Element => {
   const linkTo = useLinkTo();
   const isAppLocked = useAuthenticationContext().isAppLocked;
 
-  console.log('linkTo', linkTo);
-
   useEffect(() => {
     if (isAppLocked) {
       return;
@@ -45,7 +43,6 @@ export const PushNotificationComponent = (): JSX.Element => {
       remoteMessage: FirebaseMessagingTypes.RemoteMessage,
     ) => {
       try {
-        console.log('remoteMessage', remoteMessage);
         if (remoteMessage.notification?.body) {
           // TODO: add notifee library to show local notifications
           console.log(
@@ -94,7 +91,6 @@ export const PushNotificationComponent = (): JSX.Element => {
         text: remoteMessage.notification?.body ?? "",
         title: remoteMessage.notification?.title ?? "",
         action: async () => {
-          console.log('remoteMessageeee', remoteMessage);
           showNotification(remoteMessage);
         },
         icon: "bell",
