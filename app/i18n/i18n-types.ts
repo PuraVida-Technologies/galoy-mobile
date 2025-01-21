@@ -7305,6 +7305,36 @@ type RootTranslation = {
 		 */
 		logInOrCreateAccount: string
 	}
+	BankAccountScreen: {
+		/**
+		 * A​c​c​o​u​n​t​ ​H​o​l​d​e​r​ ​N​a​m​e
+		 */
+		accountHolderName: string
+		/**
+		 * C​u​r​r​e​n​c​y
+		 */
+		currency: string
+		/**
+		 * I​B​A​N
+		 */
+		iban: string
+		/**
+		 * B​a​n​k​ ​N​a​m​e
+		 */
+		bankName: string
+		/**
+		 * S​W​I​F​T​ ​C​o​d​e
+		 */
+		swiftCode: string
+		/**
+		 * S​N​I​P​ ​C​o​d​e
+		 */
+		snipeCode: string
+		/**
+		 * N​a​t​i​o​n​a​l​ ​I​D
+		 */
+		nationalId: string
+	}
 	NotificationSettingsScreen: {
 		/**
 		 * N​o​t​i​f​i​c​a​t​i​o​n​ ​S​e​t​t​i​n​g​s
@@ -8178,7 +8208,7 @@ type RootTranslation = {
 		 */
 		bank: string
 		/**
-		 * C​a​s​h​ ​A​c​c​o​u​n​t
+		 * B​a​n​k​ ​A​c​c​o​u​n​t
 		 */
 		bankAccount: string
 		/**
@@ -16591,6 +16621,36 @@ export type TranslationFunctions = {
 		 */
 		logInOrCreateAccount: () => LocalizedString
 	}
+	BankAccountScreen: {
+		/**
+		 * Account Holder Name
+		 */
+		accountHolderName: () => LocalizedString
+		/**
+		 * Currency
+		 */
+		currency: () => LocalizedString
+		/**
+		 * IBAN
+		 */
+		iban: () => LocalizedString
+		/**
+		 * Bank Name
+		 */
+		bankName: () => LocalizedString
+		/**
+		 * SWIFT Code
+		 */
+		swiftCode: () => LocalizedString
+		/**
+		 * SNIP Code
+		 */
+		snipeCode: () => LocalizedString
+		/**
+		 * National ID
+		 */
+		nationalId: () => LocalizedString
+	}
 	NotificationSettingsScreen: {
 		/**
 		 * Notification Settings
@@ -17444,7 +17504,7 @@ export type TranslationFunctions = {
 		 */
 		bank: () => LocalizedString
 		/**
-		 * Cash Account
+		 * Bank Account
 		 */
 		bankAccount: () => LocalizedString
 		/**
