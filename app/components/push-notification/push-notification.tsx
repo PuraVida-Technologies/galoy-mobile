@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 
+import { Linking } from "react-native";
 import { useApolloClient } from "@apollo/client";
 import { useIsAuthed } from "@app/graphql/is-authed-context";
 import { useAuthenticationContext } from "@app/navigation/navigation-container-wrapper";
@@ -67,6 +68,12 @@ export const PushNotificationComponent = (): JSX.Element => {
           linkTo(linkToScreen);
         }
         // linkTo throws an error if the link is invalid
+        
+        const linkToExternalUrl = remoteMessage.data?.action === "open_external_url";
+        const externalUrl = remoteMessage.data?.url;
+        if (linkToExternalUrl && externalUrl) {
+          Linking.openURL(remoteMessage.data?.url)
+        }
       } catch (error) {
         console.error("Error in showNotification", error);
       }
