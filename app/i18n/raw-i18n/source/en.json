@@ -2518,6 +2518,7 @@
         "trialAccount": "Trial Account",
         "blinkUser": "Blink User",
         "transactionLimits": "Transaction Limits",
+        "KYC": "KYC",
         "activateWallet": "Activate Wallet",
         "amountRequired": "Amount is required",
         "back": "Back",
@@ -2817,5 +2818,8 @@
         "search_your_location": "Search your location",
         "or_select_your_address": "Or Select Your Address",
         "there_are_no_posts": "There are no posts around you"
+    },
+    "KYCScreen": {
+        "documentType": "Document Type"
     }
 }

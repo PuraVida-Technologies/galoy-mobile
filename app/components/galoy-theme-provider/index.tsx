@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Appearance } from "react-native"
 
-import { useColorSchemeQuery } from "@app/graphql/generated"
+import { useColorSchemeQuery } from "../../graphql/generated"
 import theme from "@app/rne-theme/theme"
 import { ThemeMode, ThemeProvider } from "@rneui/themed"
 

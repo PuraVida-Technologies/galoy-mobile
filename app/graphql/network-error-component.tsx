@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Alert } from "react-native"
 
-import useLogout from "@app/hooks/use-logout"
+import useLogout from "../hooks/use-logout"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { toastShow } from "@app/utils/toast"
 import { CommonActions, useNavigation } from "@react-navigation/native"

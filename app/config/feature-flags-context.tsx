@@ -1,6 +1,6 @@
 import React, { useState, createContext, useContext, useEffect } from "react"
 
-import { useLevel } from "@app/graphql/level-context"
+import { useLevel } from "../graphql/level-context"
 import { useAppConfig } from "@app/hooks"
 import remoteConfigInstance from "@react-native-firebase/remote-config"
 
