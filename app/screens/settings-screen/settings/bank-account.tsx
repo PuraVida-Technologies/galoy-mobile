@@ -17,6 +17,7 @@ export const BankAccount: React.FC = () => {
       leftIcon="bank-outline"
       iconType="material-community"
       action={() => navigate("bankAccount")}
+      disabled={data?.me?.kyc?.status !== "APPROVED"}
     />
   )
 }

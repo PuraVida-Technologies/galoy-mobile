@@ -2508,7 +2508,7 @@ const en: BaseTranslation = {
     iban: "IBAN",
     bankName: "Bank Name",
     swiftCode: "SWIFT Code",
-    snipeCode: "SNIP Code",
+    sinpeCode: "SINP Code",
     nationalId: "National ID",
   },
   NotificationSettingsScreen: {

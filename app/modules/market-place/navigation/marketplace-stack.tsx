@@ -30,6 +30,8 @@ import {
 } from "../config"
 import { PostListScreen } from "../screens/post-list-screen"
 import { StoreListViewScreen } from "../screens/post-list-screen/list-view-screen"
+import { toastShow } from "@app/utils/toast"
+import { onError } from "@apollo/client/link/error"
 
 export const cache = new InMemoryCache({ addTypename: false })
 
@@ -48,6 +50,7 @@ export let client: any = undefined
 
 export const MarketPlaceStacks = () => {
   const { appConfig } = useAppConfig()
+  const { LL } = useI18nContext()
   const uri =
     appConfig.galoyInstance.name === "Staging"
       ? GRAPHQL_MARKET_PLACE_STAGING_URI
@@ -63,8 +66,26 @@ export const MarketPlaceStacks = () => {
     }
   })
 
+  const errorLink = onError(({ graphQLErrors, networkError }) => {
+    // graphqlErrors should be managed locally
+    if (graphQLErrors) {
+      graphQLErrors.forEach(({ message, locations, path }) => {
+        toastShow({ message, type: "error", LL })
+        if (message === "PersistedQueryNotFound") {
+          console.log(`[GraphQL info]: Message: ${message}, Path: ${path}}`, {
+            locations,
+          })
+        } else {
+          console.warn(`[GraphQL error]: Message: ${message}, Path: ${path}}`, {
+            locations,
+          })
+        }
+      })
+    }
+  })
+
   client = new ApolloClient({
-    link: from([authLink, httpLink]),
+    link: from([authLink, errorLink, httpLink]),
     cache,
     defaultOptions,
   })

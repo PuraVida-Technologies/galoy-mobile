@@ -7327,9 +7327,9 @@ type RootTranslation = {
 		 */
 		swiftCode: string
 		/**
-		 * S​N​I​P​ ​C​o​d​e
+		 * S​I​N​P​ ​C​o​d​e
 		 */
-		snipeCode: string
+		sinpeCode: string
 		/**
 		 * N​a​t​i​o​n​a​l​ ​I​D
 		 */
@@ -16643,9 +16643,9 @@ export type TranslationFunctions = {
 		 */
 		swiftCode: () => LocalizedString
 		/**
-		 * SNIP Code
+		 * SINP Code
 		 */
-		snipeCode: () => LocalizedString
+		sinpeCode: () => LocalizedString
 		/**
 		 * National ID
 		 */
