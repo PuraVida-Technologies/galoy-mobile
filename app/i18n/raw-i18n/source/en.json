@@ -2534,6 +2534,7 @@
         "backHome": "Back home",
         "bank": "Bank",
         "bankAccount": "Bank Account",
+        "bankAccounts": "Bank Accounts",
         "bankAdvice": "{bankName: string} Advice",
         "bankInfo": "{bankName: string} Info",
         "beta": "beta",

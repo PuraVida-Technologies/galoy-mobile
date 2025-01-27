@@ -3,12 +3,13 @@ import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { SettingsRow } from "../row"
-import { useSettingsScreenQuery } from "@app/graphql/generated"
+import { useBankAccountsQuery, useSettingsScreenQuery } from "@app/graphql/generated"
 
 export const BankAccount: React.FC = () => {
   const { LL } = useI18nContext()
   const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>()
   const { data, loading } = useSettingsScreenQuery()
+  const { data: bankAccounts, loading: checkingBankAccounts } = useBankAccountsQuery()
 
   return (
     <SettingsRow
@@ -16,7 +17,14 @@ export const BankAccount: React.FC = () => {
       title={LL.common.bankAccount()}
       leftIcon="bank-outline"
       iconType="material-community"
-      action={() => navigate("bankAccount")}
+      loading={loading || checkingBankAccounts}
+      action={() =>
+        navigate(
+          bankAccounts && bankAccounts?.getMyBankAccounts?.length > 0
+            ? "bankAccounts"
+            : "bankAccount",
+        )
+      }
       disabled={data?.me?.kyc?.status !== "APPROVED"}
     />
   )

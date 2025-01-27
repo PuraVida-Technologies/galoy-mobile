@@ -8212,6 +8212,10 @@ type RootTranslation = {
 		 */
 		bankAccount: string
 		/**
+		 * B​a​n​k​ ​A​c​c​o​u​n​t​s
+		 */
+		bankAccounts: string
+		/**
 		 * {​b​a​n​k​N​a​m​e​}​ ​A​d​v​i​c​e
 		 * @param {string} bankName
 		 */
@@ -17504,9 +17508,17 @@ export type TranslationFunctions = {
 		 */
 		bank: () => LocalizedString
 		/**
+		 * Add Bank Account
+		 */
+		addBankAccount: () => LocalizedString
+		/**
 		 * Bank Account
 		 */
 		bankAccount: () => LocalizedString
+		/**
+		 * Bank Accounts
+		 */
+		bankAccounts: () => LocalizedString
 		/**
 		 * {bankName} Advice
 		 */

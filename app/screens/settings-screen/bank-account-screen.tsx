@@ -7,11 +7,13 @@ import { Button } from "@rneui/themed"
 import Input from "@app/components/form-input/form-input"
 import { Controller } from "react-hook-form"
 import useBankAccount from "./bank-account/hooks/useBankAccount"
+import { useRoute } from "@react-navigation/native"
 
 const BankAccountScreen = () => {
   const styles = useStyles()
   const { LL } = useI18nContext()
-  const { state, actions } = useBankAccount()
+  const { params } = useRoute()
+  const { state, actions } = useBankAccount({ account: params?.account })
   const { control, loading } = state
 
   return (
@@ -142,9 +144,9 @@ const BankAccountScreen = () => {
             }}
             render={({ field, fieldState }) => (
               <Input
-                {...testProps(LL.BankAccountScreen.snipeCode())}
-                label={LL.BankAccountScreen.snipeCode()}
-                placeholder={LL.BankAccountScreen.snipeCode()}
+                {...testProps(LL.BankAccountScreen.sinpeCode())}
+                label={LL.BankAccountScreen.sinpeCode()}
+                placeholder={LL.BankAccountScreen.sinpeCode()}
                 autoCapitalize="none"
                 maxLength={20}
                 errorMessage={fieldState.error?.message}

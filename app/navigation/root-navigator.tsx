@@ -90,6 +90,7 @@ import { ContactsScreen } from "@app/screens/contacts-screen/contacts";
 import { ContactsDetailScreen } from "@app/screens/contacts-screen";
 import KYCScreen from "@app/screens/settings-screen/kyc-screen";
 import BankAccountScreen from "@app/screens/settings-screen/bank-account-screen";
+import BankAccountsScreen from "@app/screens/settings-screen/bank-accounts-screen";
 
 const RootNavigator = createStackNavigator<RootStackParamList>();
 
@@ -368,6 +369,13 @@ export const RootStack = () => {
         component={BankAccountScreen}
         options={{
           title: LL.common.bankAccount(),
+        }}
+      />
+      <RootNavigator.Screen
+        name="bankAccounts"
+        component={BankAccountsScreen}
+        options={{
+          title: LL.common.bankAccounts(),
         }}
       />
       <RootNavigator.Screen

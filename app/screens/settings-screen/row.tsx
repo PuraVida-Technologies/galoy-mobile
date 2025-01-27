@@ -10,7 +10,7 @@ type Props = {
   subtitle?: string
   subtitleShorter?: boolean
   iconType?: IconType
-  leftIcon: string
+  leftIcon?: string
   rightIcon?: string | null | React.ReactElement
   extraComponentBesideTitle?: React.ReactElement
   action: (() => void | Promise<void>) | null
@@ -56,6 +56,13 @@ export const SettingsRow: React.FC<Props> = ({
     ) : (
       rightIcon
     ))
+  const LeftIcon =
+    leftIcon !== null &&
+    (typeof leftIcon === "string" ? (
+      <Icon name={leftIcon ? leftIcon : "home-outline"} type={iconType || "ionicon"} />
+    ) : (
+      leftIcon
+    ))
 
   return (
     <Pressable
@@ -67,7 +74,7 @@ export const SettingsRow: React.FC<Props> = ({
     >
       <View style={[styles.container, styles.spacing, disabled && styles.disabled]}>
         <View style={[styles.container, styles.spacing, styles.internalContainer]}>
-          <Icon name={leftIcon} type={iconType} />
+          <>{LeftIcon}</>
           <View>
             <View style={styles.sidetoside}>
               <Text type="p2">{title}</Text>

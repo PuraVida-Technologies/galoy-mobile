@@ -1,6 +1,9 @@
 import { gql } from "@apollo/client"
-import { useAddBankAccountCrMutation } from "@app/graphql/generated"
-import { useCallback } from "react"
+import {
+  useAddBankAccountCrMutation,
+  useUpdateBankAccountCrMutation,
+} from "@app/graphql/generated"
+import { useCallback, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { useNavigation } from "@react-navigation/native"
@@ -8,6 +11,17 @@ import { useNavigation } from "@react-navigation/native"
 gql`
   mutation addBankAccountCR($input: AddBankAccountCRDTO!) {
     addBankAccountCR(input: $input) {
+      id
+    }
+  }
+`
+
+gql`
+  mutation UpdateBankAccountCR(
+    $updateBankAccountCrId: String!
+    $input: UpdateBankAccountCRDTO!
+  ) {
+    updateBankAccountCR(id: $updateBankAccountCrId, input: $input) {
       id
     }
   }
@@ -23,12 +37,29 @@ const defaultValues = {
   nationalId: "",
 }
 
-const useBankAccount = () => {
+const useBankAccount = ({ account }) => {
   const navigation = useNavigation()
-  const [addBankAccountCr, { loading }] = useAddBankAccountCrMutation()
-  const { handleSubmit, control } = useForm({
+  const [addBankAccountCr, { loading: addingAccount }] = useAddBankAccountCrMutation()
+  const [updateBankAccountCr, { loading: updatingAccount }] =
+    useUpdateBankAccountCrMutation()
+  const { reset, getValues, handleSubmit, control } = useForm({
     defaultValues: { ...defaultValues },
   })
+
+  useEffect(() => {
+    if (account?.id) {
+      const _defaultValues = {
+        accountHolderName: account.data.accountHolderName,
+        bankName: account.data.bankName,
+        currency: account.data.currency,
+        swiftCode: account.data.swiftCode,
+        iban: account.data.iban,
+        sinpeCode: account.data.sinpeCode,
+        nationalId: account.data.nationalId,
+      }
+      reset({ ...getValues(), ..._defaultValues })
+    }
+  }, [account, getValues, reset])
 
   const onSubmit = useCallback(async (data) => {
     console.log(data)
@@ -49,7 +80,7 @@ const useBankAccount = () => {
   return {
     state: {
       control,
-      loading,
+      loading: addingAccount || updatingAccount,
     },
     actions: {
       handleSubmit,
