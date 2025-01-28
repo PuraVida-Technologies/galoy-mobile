@@ -45,7 +45,7 @@ const BackAccountsScreen = () => {
   ) => (
     <RightAction
       progress={translation}
-      onPress={() => confirmRemoveBankAccount(account)}
+      onPress={() => confirmRemoveBankAccount(account, swipeableMethods.reset)}
       LL={LL}
     />
   )
@@ -87,7 +87,7 @@ const BackAccountsScreen = () => {
                 <Pressable
                   key={index}
                   onPress={() => {
-                    navigate("bankAccount", { account })
+                    navigate("addBankAccount", { account })
                   }}
                   // {...testProps(title)}
                 >
@@ -116,7 +116,7 @@ const BackAccountsScreen = () => {
           <SettingsRow
             title={LL.common.addBankAccount()}
             rightIcon="add"
-            action={() => navigate("bankAccount")}
+            action={() => navigate("addBankAccount")}
             // disabled={data?.me?.kyc?.status !== "APPROVED"}
           />
         </View>

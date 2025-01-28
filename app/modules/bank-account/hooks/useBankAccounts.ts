@@ -55,7 +55,7 @@ const useBankAccounts = ({ LL }) => {
     }
   }, [loading, data])
 
-  const confirmRemoveBankAccount = useCallback((account) => {
+  const confirmRemoveBankAccount = useCallback((account, cb) => {
     Alert.alert(
       LL.BankAccountScreen.confirmRemoveBankAccountTitle(),
       LL.BankAccountScreen.confirmRemoveBankAccountContent(),
@@ -66,19 +66,20 @@ const useBankAccounts = ({ LL }) => {
         {
           text: LL.common.remove(),
           style: "destructive",
-          onPress: () => onRemove(account),
+          onPress: () => onRemove(account, cb),
         },
       ],
     )
   }, [])
 
-  const onRemove = useCallback(async (account) => {
+  const onRemove = useCallback(async (account, cb) => {
     try {
       await removeBankAccountCr({
         variables: {
           bankAccountId: account.id,
         },
       })
+      cb()
     } catch (err) {
       if (err instanceof Error) {
         crashlytics().recordError(err)
