@@ -7334,6 +7334,18 @@ type RootTranslation = {
 		 * N​a​t​i​o​n​a​l​ ​I​D
 		 */
 		nationalId: string
+		/**
+		 * R​e​m​o​v​e​ ​B​a​n​k​ ​A​c​c​o​u​n​t
+		 */
+		removeBankAccount: string
+		/**
+		 * A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​r​e​m​o​v​e​ ​t​h​i​s​ ​b​a​n​k​ ​a​c​c​o​u​n​t​?
+		 */
+		confirmRemoveBankAccountTitle: string
+		/**
+		 * T​h​i​s​ ​a​c​t​i​o​n​ ​c​a​n​n​o​t​ ​b​e​ ​u​n​d​o​n​e​.
+		 */
+		confirmRemoveBankAccountContent: string
 	}
 	NotificationSettingsScreen: {
 		/**
@@ -8208,6 +8220,10 @@ type RootTranslation = {
 		 */
 		bank: string
 		/**
+		 * A​d​d​ ​B​a​n​k​ ​A​c​c​o​u​n​t
+		 */
+		addBankAccount: string
+		/**
 		 * B​a​n​k​ ​A​c​c​o​u​n​t
 		 */
 		bankAccount: string
@@ -8553,6 +8569,10 @@ type RootTranslation = {
 		 * T​h​i​s​ ​m​o​n​t​h
 		 */
 		thisMonth: string
+		/**
+		 * R​e​m​o​v​e
+		 */
+		remove: string
 		/**
 		 * P​r​e​v​i​o​u​s​ ​m​o​n​t​h​s
 		 */
@@ -16654,6 +16674,18 @@ export type TranslationFunctions = {
 		 * National ID
 		 */
 		nationalId: () => LocalizedString
+		/**
+		 * Remove Bank Account
+		 */
+		removeBankAccount: () => LocalizedString
+		/**
+		 * Are you sure you want to remove this bank account?
+		 */
+		confirmRemoveBankAccountTitle: () => LocalizedString
+		/**
+		 * This action cannot be undone.
+		 */
+		confirmRemoveBankAccountContent: () => LocalizedString
 	}
 	NotificationSettingsScreen: {
 		/**
@@ -17855,6 +17887,10 @@ export type TranslationFunctions = {
 		 * This month
 		 */
 		thisMonth: () => LocalizedString
+		/**
+		 * Remove
+		 */
+		remove: () => LocalizedString
 		/**
 		 * Previous months
 		 */

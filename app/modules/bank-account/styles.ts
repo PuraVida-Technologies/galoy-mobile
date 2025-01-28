@@ -16,6 +16,10 @@ const useStyles = makeStyles(({ colors }) => ({
     paddingBottom: 0,
     flex: 1,
   },
+  removeButtonContainerStyle: {
+    marginTop: 16,
+    flex: 1,
+  },
   buttonStyle: {
     flexGrow: 1,
     paddingTop: 16,

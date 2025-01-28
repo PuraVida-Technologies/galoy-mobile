@@ -1,19 +1,20 @@
 import { SafeAreaView, View } from "react-native"
-import useStyles from "./bank-account/styles"
+import useStyles from "@app/modules/bank-account/styles"
 import { Screen } from "@app/components/screen"
 import { testProps } from "@app/utils/testProps"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { Button } from "@rneui/themed"
 import Input from "@app/components/form-input/form-input"
 import { Controller } from "react-hook-form"
-import useBankAccount from "./bank-account/hooks/useBankAccount"
+import useBankAccount from "@app/modules/bank-account/hooks/useAddBankAccount"
 import { useRoute } from "@react-navigation/native"
+import { GaloyButtonField } from "@app/components/atomic/galoy-button-field"
 
-const BankAccountScreen = () => {
+const AddBankAccountScreen = () => {
   const styles = useStyles()
   const { LL } = useI18nContext()
   const { params } = useRoute()
-  const { state, actions } = useBankAccount({ account: params?.account })
+  const { state, actions } = useBankAccount({ account: params?.account, LL })
   const { control, loading } = state
 
   return (
@@ -187,6 +188,7 @@ const BankAccountScreen = () => {
             titleProps={{
               style: [styles.buttonText],
             }}
+            color={"primary"}
             onPress={actions.handleSubmit(actions.onSubmit)}
             disabled={loading}
             loading={loading}
@@ -197,4 +199,4 @@ const BankAccountScreen = () => {
   )
 }
 
-export default BankAccountScreen
+export default AddBankAccountScreen

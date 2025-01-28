@@ -46,6 +46,7 @@ import { LevelContainer } from "./level-component";
 import { MessagingContainer } from "./messaging";
 import { NetworkErrorContextProvider } from "./network-error-context";
 import { initPuravidaMarketPlaceClient } from "@app/modules/market-place/graphql/puravida-market-client";
+import { toastShow } from "@app/utils/toast";
 let marketplaceClient: ReturnType<typeof initPuravidaMarketPlaceClient>;
 const noRetryOperations = [
   "intraLedgerPaymentSend",
@@ -79,6 +80,7 @@ const getAuthorizationHeader = (token: string): string => {
 const GaloyClient: React.FC<PropsWithChildren> = ({ children }) => {
   marketplaceClient = initPuravidaMarketPlaceClient();
   const { appConfig } = useAppConfig();
+  const { LL } = useI18nContext();
 
   const [networkError, setNetworkError] = useState<NetworkError | undefined>(
     undefined,
@@ -164,6 +166,7 @@ const GaloyClient: React.FC<PropsWithChildren> = ({ children }) => {
         // graphqlErrors should be managed locally
         if (graphQLErrors) {
           graphQLErrors.forEach(({ message, locations, path }) => {
+            toastShow({ message, type: "error", LL })
             if (message === "PersistedQueryNotFound") {
               console.log(
                 `[GraphQL info]: Message: ${message}, Path: ${path}}`,

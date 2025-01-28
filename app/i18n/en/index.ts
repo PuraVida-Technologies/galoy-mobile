@@ -2510,6 +2510,9 @@ const en: BaseTranslation = {
     swiftCode: "SWIFT Code",
     sinpeCode: "SINP Code",
     nationalId: "National ID",
+    removeBankAccount: "Remove Bank Account",
+    confirmRemoveBankAccountTitle: "Are you sure you want to remove this bank account?",
+    confirmRemoveBankAccountContent: "This action cannot be undone.",
   },
   NotificationSettingsScreen: {
     title: "Notification Settings",
@@ -2896,6 +2899,7 @@ const en: BaseTranslation = {
     today: "Today",
     yesterday: "Yesterday",
     thisMonth: "This month",
+    remove: "Remove",
     prevMonths: "Previous months",
     problemMaybeReauth:
       "There was a problem with your request. Please retry in one minute. If the problem persist, we recommend that you log out and log back in. You can log out by going into Settings > Account > Log out",

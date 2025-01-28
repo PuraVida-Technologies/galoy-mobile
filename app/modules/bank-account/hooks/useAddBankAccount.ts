@@ -1,12 +1,14 @@
 import { gql } from "@apollo/client"
 import {
   useAddBankAccountCrMutation,
+  useRemoveMyBankAccountMutation,
   useUpdateBankAccountCrMutation,
 } from "@app/graphql/generated"
 import { useCallback, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { useNavigation } from "@react-navigation/native"
+import { Alert } from "react-native"
 
 gql`
   mutation addBankAccountCR($input: AddBankAccountCRDTO!) {
@@ -37,11 +39,14 @@ const defaultValues = {
   nationalId: "",
 }
 
-const useBankAccount = ({ account }) => {
+const useAddBankAccount = ({ account, LL }) => {
   const navigation = useNavigation()
-  const [addBankAccountCr, { loading: addingAccount }] = useAddBankAccountCrMutation()
+  const [addBankAccountCr, { loading: addingAccount }] = useAddBankAccountCrMutation({
+    refetchQueries: ["bankAccounts"],
+  })
   const [updateBankAccountCr, { loading: updatingAccount }] =
-    useUpdateBankAccountCrMutation()
+    useUpdateBankAccountCrMutation({ refetchQueries: ["bankAccounts"] })
+
   const { reset, getValues, handleSubmit, control } = useForm({
     defaultValues: { ...defaultValues },
   })
@@ -53,23 +58,35 @@ const useBankAccount = ({ account }) => {
         bankName: account.data.bankName,
         currency: account.data.currency,
         swiftCode: account.data.swiftCode,
-        iban: account.data.iban,
+        iban: "",
         sinpeCode: account.data.sinpeCode,
-        nationalId: account.data.nationalId,
+        nationalId: "",
+        id: account.id,
       }
       reset({ ...getValues(), ..._defaultValues })
     }
   }, [account, getValues, reset])
 
   const onSubmit = useCallback(async (data) => {
-    console.log(data)
     try {
-      await addBankAccountCr({
-        variables: {
-          input: { ...data },
-        },
-      })
+      if (data.id) {
+        const _data = { ...data }
+        delete _data.id
+        await updateBankAccountCr({
+          variables: {
+            updateBankAccountCrId: data.id,
+            input: { ..._data },
+          },
+        })
+      } else {
+        await addBankAccountCr({
+          variables: {
+            input: { ...data },
+          },
+        })
+      }
       navigation.goBack()
+      reset({ ...defaultValues })
     } catch (err) {
       if (err instanceof Error) {
         crashlytics().recordError(err)
@@ -89,4 +106,4 @@ const useBankAccount = ({ account }) => {
   }
 }
 
-export default useBankAccount
+export default useAddBankAccount

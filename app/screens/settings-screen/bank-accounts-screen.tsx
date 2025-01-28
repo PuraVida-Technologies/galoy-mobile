@@ -1,8 +1,14 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Icon, makeStyles, Text } from "@rneui/themed"
-import useBankAccounts from "./bank-account/hooks/useBankAccounts"
+import useBankAccounts from "@app/modules/bank-account/hooks/useBankAccounts"
 import { testProps } from "@app/utils/testProps"
-import { Pressable, View } from "react-native"
+import {
+  Animated,
+  Pressable,
+  TouchableOpacity,
+  useAnimatedValue,
+  View,
+} from "react-native"
 import { LoadingComponent } from "@app/modules/market-place/components/loading-component"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Screen } from "@app/components/screen"
@@ -12,68 +18,110 @@ import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useSettingsScreenQuery } from "@app/graphql/generated"
+import { palette } from "@app/theme/palette"
+import Swipeable, {
+  SwipeableMethods,
+} from "react-native-gesture-handler/ReanimatedSwipeable"
+import { SharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated"
+import RightAction from "@app/modules/bank-account/components/right-action"
 
 const BackAccountsScreen = () => {
+  const fadeAnim = useAnimatedValue(0)
   const [hovering, setHovering] = useState(false)
   const styles = useStyles({ hovering })
   const { LL } = useI18nContext()
   const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>()
-  // const { data, loading } = useSettingsScreenQuery()
+
   const {
     state: { data, loading },
-  } = useBankAccounts()
+    actions: { confirmRemoveBankAccount },
+  } = useBankAccounts({ LL })
 
-  if (loading) {
-    return <LoadingComponent isLoading={loading} />
-  }
+  const renderRightActions = (
+    progress: SharedValue<number>,
+    translation: SharedValue<number>,
+    swipeableMethods: SwipeableMethods,
+    account: any,
+  ) => (
+    <RightAction
+      progress={translation}
+      onPress={() => confirmRemoveBankAccount(account)}
+      LL={LL}
+    />
+  )
 
   return (
-    <Screen
-      preset="scroll"
-      style={styles.screenStyle}
-      keyboardOffset="navigationHeader"
-      keyboardShouldPersistTaps="handled"
-    >
-      <View style={styles.container}>
-        {data?.getMyBankAccounts?.map((account, index) => (
-          <Pressable
-            key={index}
-            onPress={() => {
-              navigate("bankAccount", { account })
-            }}
-            // {...testProps(title)}
-          >
-            <View
-              style={[
-                styles.spacing,
-                styles.internalContainer,
-                index !== data?.getMyBankAccounts?.length - 1 && styles.borderBottom,
-              ]}
-            >
-              <View>
-                <View style={styles.sidetoside}>
-                  <Text type="p2">{account.data.accountHolderName}</Text>
-                </View>
-                <Text>{account.data.iban}</Text>
-
-                <Text type={"p4"} ellipsizeMode="tail" numberOfLines={1}>
-                  {account.data.currency}
-                </Text>
-              </View>
-              <Icon name={"chevron-forward"} type="ionicon" />
-            </View>
-          </Pressable>
-        ))}
-      </View>
-      <View style={styles.container}>
-        <SettingsRow
-          title={LL.common.addBankAccount()}
-          rightIcon="add"
-          action={() => navigate("bankAccount")}
-          // disabled={data?.me?.kyc?.status !== "APPROVED"}
+    <>
+      {loading && (
+        <LoadingComponent
+          isLoading={loading}
+          color={palette.orange}
+          styles={styles.loadingContainer}
         />
-      </View>
-    </Screen>
+      )}
+      <Screen
+        preset="scroll"
+        style={styles.screenStyle}
+        keyboardOffset="navigationHeader"
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.container}>
+          {data?.getMyBankAccounts?.map((account, index) => (
+            <>
+              <Swipeable
+                key={index}
+                friction={2}
+                rightThreshold={40}
+                onSwipeableOpen={() => {
+                  setHovering(true)
+                }}
+                onSwipeableClose={() => {
+                  setHovering(false)
+                }}
+                renderRightActions={(
+                  progress: SharedValue<number>,
+                  translation: SharedValue<number>,
+                  swipeableMethods: SwipeableMethods,
+                ) => renderRightActions(progress, translation, swipeableMethods, account)}
+              >
+                <Pressable
+                  key={index}
+                  onPress={() => {
+                    navigate("bankAccount", { account })
+                  }}
+                  // {...testProps(title)}
+                >
+                  <View style={[styles.spacing, styles.internalContainer]}>
+                    <View>
+                      <View style={styles.sidetoside}>
+                        <Text type="p2">{account.data.accountHolderName}</Text>
+                      </View>
+                      <Text>{account.data.iban}</Text>
+
+                      <Text type={"p4"} ellipsizeMode="tail" numberOfLines={1}>
+                        {account.data.currency}
+                      </Text>
+                    </View>
+                    <Icon name={"chevron-forward"} type="ionicon" />
+                  </View>
+                </Pressable>
+              </Swipeable>
+              {index !== data?.getMyBankAccounts?.length - 1 && (
+                <View style={styles.borderBottom}></View>
+              )}
+            </>
+          ))}
+        </View>
+        <View style={styles.container}>
+          <SettingsRow
+            title={LL.common.addBankAccount()}
+            rightIcon="add"
+            action={() => navigate("bankAccount")}
+            // disabled={data?.me?.kyc?.status !== "APPROVED"}
+          />
+        </View>
+      </Screen>
+    </>
   )
 }
 
@@ -82,9 +130,14 @@ const useStyles = makeStyles(
     screenStyle: {
       padding: 20,
     },
+    loadingContainer: {
+      zIndex: 10,
+      backgroundColor: "rgba(255,255,255, 0.5)",
+    },
     container: {
       backgroundColor: colors.grey5,
       borderRadius: 12,
+      overflow: "hidden",
       marginVertical: 8,
     },
     disabled: {
@@ -101,8 +154,14 @@ const useStyles = makeStyles(
     },
     rightActionTouchArea: {
       padding: 12,
-      marginRight: -12,
+      backgroundColor: colors.red,
       position: "relative",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    rightActionText: {
+      color: colors.white,
+      fontWeight: "bold",
     },
     sidetoside: {
       display: "flex",
