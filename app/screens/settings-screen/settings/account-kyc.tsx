@@ -3,7 +3,7 @@ import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { SettingsRow } from "../row"
-import { useSettingsScreenQuery } from "@app/graphql/generated"
+import { useSettingsScreenQuery, Status } from "@app/graphql/generated"
 import { useMemo } from "react"
 import { color } from "@app/modules/market-place/theme"
 
@@ -14,11 +14,11 @@ export const KYC: React.FC = () => {
 
   const subtitleColor = useMemo(() => {
     switch (data?.me?.kyc?.status) {
-      case "PENDING":
+      case Status.Pending:
         return color.palette.orange
-      case "APPROVED":
+      case Status.Approved:
         return color.palette.green
-      case "REJECTED":
+      case Status.Rejected:
         return color.palette.red
 
       default:

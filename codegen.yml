@@ -1,5 +1,5 @@
 overwrite: true
-schema: "https://api.staging.pvbtc.cloud/graphql"
+schema: "https://api.puravidabitcoin.io/graphql"
 # schema: "./supergraph.graphql"
 documents:
   - "app/**/*.ts"
@@ -28,6 +28,7 @@ generates:
       scalars:
         AccountApiKeyLabel: "string"
         AuthToken: "string"
+        BigDecimal: "number"
         CentAmount: "number"
         ContactAlias: "string"
         Hex32Bytes: "string"
@@ -57,6 +58,7 @@ generates:
         EmailAddress: "string"
         TotpSecret: "string"
         TotpCode: "string"
+        UUID: "string"
         Feedback: "string"
         Minutes: "string"
         LeaderboardName: "string"
