@@ -1,4 +1,5 @@
 import { ScrollView } from "react-native-gesture-handler"
+import { useMemo } from "react";
 
 import { gql } from "@apollo/client"
 import { Screen } from "@app/components/screen"
@@ -65,10 +66,10 @@ export const SettingsScreen: React.FC = () => {
   const styles = useStyles()
   const { LL } = useI18nContext()
 
-  const { currentLevel, isAtLeastLevelOne } = useLevel()
+  const { currentLevel, isAtLeastLevelOne, isAtLeastLevelTwo } = useLevel()
 
-  const items = {
-    account: [AccountLevelSetting, TxLimits, KYC],
+  const items = useMemo(() => ({
+    account: isAtLeastLevelTwo ? [AccountLevelSetting, TxLimits, KYC] : [AccountLevelSetting, TxLimits],
     loginMethods: [EmailSetting, PhoneSetting],
     waysToGetPaid: [AccountLNAddress, AccountPOS, AccountStaticQR],
     preferences: [
@@ -84,7 +85,7 @@ export const SettingsScreen: React.FC = () => {
       // , ApiAccessSetting
     ],
     community: [NeedHelpSetting, JoinCommunitySetting],
-  }
+  }), [isAtLeastLevelTwo]);
 
   return (
     <Screen keyboardShouldPersistTaps="handled">

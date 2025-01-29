@@ -91,8 +91,8 @@ const UserDetails = ({ jumpTo, route }: Route) => {
         jumpTo={jumpTo}
         allowNext={allowed}
         disableNext={!allowed}
-        pervious
-        perviousPage={"docProof"}
+        previous
+        previousPage={"docProof"}
         nextPage={"confirm"}
       />
     </>

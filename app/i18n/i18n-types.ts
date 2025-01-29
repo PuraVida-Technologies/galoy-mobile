@@ -8346,7 +8346,7 @@ type RootTranslation = {
 		/**
 		 * P​e​r​v​i​o​u​s
 		 */
-		pervious: string
+		previous: string
 		/**
 		 * G​e​n​d​e​r
 		 */
@@ -17612,9 +17612,9 @@ export type TranslationFunctions = {
 		 */
 		next: () => LocalizedString
 		/**
-		 * Pervious
+		 * previous
 		 */
-		pervious: () => LocalizedString
+		previous: () => LocalizedString
 		/**
 		 * Gender
 		 */

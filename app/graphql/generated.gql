@@ -566,6 +566,13 @@ mutation supportChatMessageAdd($input: SupportChatMessageAddInput!) {
   }
 }
 
+mutation updateKYC($input: InputKyc!) {
+  updateKyc(input: $input) {
+    id
+    __typename
+  }
+}
+
 mutation userContactUpdateAlias($input: UserContactUpdateAliasInput!) {
   userContactUpdateAlias(input: $input) {
     errors {
@@ -869,6 +876,29 @@ query ExportCsvSetting($walletIds: [WalletId!]!) {
   }
 }
 
+query KycDetails {
+  me {
+    username
+    kyc {
+      fullName
+      citizenships
+      email
+      phoneNumber
+      gender
+      isPoliticallyExposed
+      isHighRisk
+      primaryIdentification {
+        expiration
+        files
+        type
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
 query SettingsScreen {
   me {
     id
@@ -883,6 +913,10 @@ query SettingsScreen {
         walletCurrency
         __typename
       }
+      __typename
+    }
+    kyc {
+      status
       __typename
     }
     totpEnabled
