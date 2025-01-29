@@ -2841,7 +2841,7 @@ const en: BaseTranslation = {
     errorAuthToken: "Missing auth token",
     needWallet: "Log in or create an account to access your wallet",
     next: "Next",
-    pervious: "Pervious",
+    previous: "Previous",
     gender: "Gender",
     No: "No",
     note: "Note",

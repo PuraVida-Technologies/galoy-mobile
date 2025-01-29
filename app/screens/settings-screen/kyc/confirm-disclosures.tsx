@@ -53,9 +53,9 @@ const ConfirmDisclosures = ({ jumpTo, route }: Route) => {
       </View>
       <Stepper
         jumpTo={jumpTo}
-        pervious
+        previous
         nextTitle={LL.common.confirm()}
-        perviousPage={"user"}
+        previousPage={"user"}
         disableNext={state.loading}
         onNext={() => actions?.onConfirm()}
       />

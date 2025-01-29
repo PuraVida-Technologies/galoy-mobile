@@ -9,38 +9,38 @@ interface Props {
   jumpTo: (x: string) => void
   nextPage?: string
   nextTitle?: string
-  perviousTitle?: string
-  perviousPage?: string
-  pervious?: boolean
+  previousTitle?: string
+  previousPage?: string
+  previous?: boolean
   next?: boolean
   allowNext?: boolean
   disableNext?: boolean
   onNext?: () => void
-  onPervious?: () => void
+  onprevious?: () => void
 }
 
 const Stepper = ({
   allowNext,
   jumpTo,
   nextTitle,
-  perviousTitle,
+  previousTitle,
   nextPage,
-  perviousPage,
-  pervious,
+  previousPage,
+  previous,
   next = true,
   disableNext,
   onNext,
-  onPervious,
+  onprevious,
 }: Props) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
 
-  const onPerviousPage = useCallback(() => {
-    if (perviousPage) {
-      jumpTo(perviousPage as string)
+  const onpreviousPage = useCallback(() => {
+    if (previousPage) {
+      jumpTo(previousPage as string)
     }
-    onPervious?.()
-  }, [perviousPage])
+    onprevious?.()
+  }, [previousPage])
 
   const onNextPage = useCallback(() => {
     if (nextPage && allowNext) {
@@ -51,14 +51,14 @@ const Stepper = ({
 
   return (
     <View style={styles.flexContainer}>
-      {pervious ? (
+      {previous ? (
         <Button
-          {...testProps(LL.common.pervious())}
-          title={perviousTitle || LL.common.pervious()}
-          buttonStyle={[styles.buttonStyle, styles.perviousStyle]}
+          {...testProps(LL.common.previous())}
+          title={previousTitle || LL.common.previous()}
+          buttonStyle={[styles.buttonStyle, styles.previousStyle]}
           containerStyle={styles.buttonContainerStyle}
           titleProps={{ style: [styles.buttonText, styles.buttonInActiveText] }}
-          onPress={onPerviousPage}
+          onPress={onpreviousPage}
         />
       ) : (
         <></>

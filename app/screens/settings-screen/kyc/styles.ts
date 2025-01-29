@@ -36,7 +36,7 @@ const useStyles = makeStyles(({ colors }) => ({
     paddingRight: 16,
     paddingLeft: 16,
   },
-  perviousStyle: {
+  previousStyle: {
     backgroundColor: colors.grey4,
     marginRight: 10,
   },
