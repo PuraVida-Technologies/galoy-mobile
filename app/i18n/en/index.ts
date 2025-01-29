@@ -69,6 +69,17 @@ const en: BaseTranslation = {
   ContactDetailsScreen: {
     title: "Transactions with {username: string}",
   },
+  TransferActions: {
+    stableSats: "Stable Sats",
+    sinpeIBAN: "Sinpe IBAN",
+    sinpeIBANSubtitle: "(only available in Costa Rica)",
+    sinpeMovil: "Sinpe móvil (coming soon)",
+    sinpeIBANTransfers: "Sinpe IBAN transfers",
+    sinpeMovilTransfers: "Sinpe móvil transfers",
+    sinpeIBANTransfersKYCDescription: "To initiate transfers to Sinpe IBAN you need to complete the KYC details required by our banking partners. Click the button below to start this process.",
+    sinpeIBANTransfersBankDescription: "To initiate transfers to Sinpe IBAN you need to have one bank account linked. Click the button below to start this process.",
+    sinpeIBANTransfersKYCPendingDescription: "Your KYC is still pending, As soon as it's approved you can do Sinpe IBAN transfers.",
+  },
   ConversionDetailsScreen: {
     title: "Convert",
     percentageToConvert: "% to convert",
@@ -2811,6 +2822,7 @@ const en: BaseTranslation = {
     close: "Close",
     confirm: "Confirm",
     convert: "Convert",
+    transfer: "Transfer",
     codeConfirmation: "Code Confirmation",
     currency: "Currency",
     currencySyncIssue: "Currency issue. Refresh needed",
@@ -2870,6 +2882,7 @@ const en: BaseTranslation = {
     success: "Success!",
     stablesatsUsd: "Stablesats USD",
     to: "To",
+    comingSoon: "coming soon",
     total: "Total",
     transactions: "Transactions",
     transactionsError: "Error loading transactions",

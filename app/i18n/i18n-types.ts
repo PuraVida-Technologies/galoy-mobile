@@ -235,6 +235,44 @@ type RootTranslation = {
 		 */
 		title: RequiredParams<'username'>
 	}
+	TransferActions: {
+		/**
+		 * S​t​a​b​l​e​ ​S​a​t​s
+		 */
+		stableSats: string
+		/**
+		 * S​i​n​p​e​ ​I​B​A​N
+		 */
+		sinpeIBAN: string
+		/**
+		 * (​o​n​l​y​ ​a​v​a​i​l​a​b​l​e​ ​i​n​ ​C​o​s​t​a​ ​R​i​c​a​)
+		 */
+		sinpeIBANSubtitle: string
+		/**
+		 * S​i​n​p​e​ ​m​ó​v​i​l​ ​(​c​o​m​i​n​g​ ​s​o​o​n​)
+		 */
+		sinpeMovil: string
+		/**
+		 * S​i​n​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r​s
+		 */
+		sinpeIBANTransfers: string
+		/**
+		 * S​i​n​p​e​ ​m​ó​v​i​l​ ​t​r​a​n​s​f​e​r​s
+		 */
+		sinpeMovilTransfers: string
+		/**
+		 * T​o​ ​i​n​i​t​i​a​t​e​ ​t​r​a​n​s​f​e​r​s​ ​t​o​ ​S​i​n​p​e​ ​I​B​A​N​ ​y​o​u​ ​n​e​e​d​ ​t​o​ ​c​o​m​p​l​e​t​e​ ​t​h​e​ ​K​Y​C​ ​d​e​t​a​i​l​s​ ​r​e​q​u​i​r​e​d​ ​b​y​ ​o​u​r​ ​b​a​n​k​i​n​g​ ​p​a​r​t​n​e​r​s​.​ ​C​l​i​c​k​ ​t​h​e​ ​b​u​t​t​o​n​ ​b​e​l​o​w​ ​t​o​ ​s​t​a​r​t​ ​t​h​i​s​ ​p​r​o​c​e​s​s​.
+		 */
+		sinpeIBANTransfersKYCDescription: string
+		/**
+		 * T​o​ ​i​n​i​t​i​a​t​e​ ​t​r​a​n​s​f​e​r​s​ ​t​o​ ​S​i​n​p​e​ ​I​B​A​N​ ​y​o​u​ ​n​e​e​d​ ​t​o​ ​h​a​v​e​ ​o​n​e​ ​b​a​n​k​ ​a​c​c​o​u​n​t​ ​l​i​n​k​e​d​.​ ​C​l​i​c​k​ ​t​h​e​ ​b​u​t​t​o​n​ ​b​e​l​o​w​ ​t​o​ ​s​t​a​r​t​ ​t​h​i​s​ ​p​r​o​c​e​s​s​.
+		 */
+		sinpeIBANTransfersBankDescription: string
+		/**
+		 * Y​o​u​r​ ​K​Y​C​ ​i​s​ ​s​t​i​l​l​ ​p​e​n​d​i​n​g​,​ ​A​s​ ​s​o​o​n​ ​a​s​ ​i​t​'​s​ ​a​p​p​r​o​v​e​d​ ​y​o​u​ ​c​a​n​ ​d​o​ ​S​i​n​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r​s​.
+		 */
+		sinpeIBANTransfersKYCPendingDescription: string
+	}
 	ConversionDetailsScreen: {
 		/**
 		 * C​o​n​v​e​r​t
@@ -8224,6 +8262,10 @@ type RootTranslation = {
 		 */
 		convert: string
 		/**
+		 * T​r​a​n​s​f​e​r
+		 */
+		transfer: string
+		/**
 		 * C​o​d​e​ ​C​o​n​f​i​r​m​a​t​i​o​n
 		 */
 		codeConfirmation: string
@@ -8344,7 +8386,7 @@ type RootTranslation = {
 		 */
 		next: string
 		/**
-		 * P​e​r​v​i​o​u​s
+		 * P​r​e​v​i​o​u​s
 		 */
 		previous: string
 		/**
@@ -8459,6 +8501,10 @@ type RootTranslation = {
 		 * T​o
 		 */
 		to: string
+		/**
+		 * c​o​m​i​n​g​ ​s​o​o​n
+		 */
+		comingSoon: string
 		/**
 		 * T​o​t​a​l
 		 */
@@ -9561,6 +9607,44 @@ export type TranslationFunctions = {
 		 * Transactions with {username}
 		 */
 		title: (arg: { username: string }) => LocalizedString
+	}
+	TransferActions: {
+		/**
+		 * Stable Sats
+		 */
+		stableSats: () => LocalizedString
+		/**
+		 * Sinpe IBAN
+		 */
+		sinpeIBAN: () => LocalizedString
+		/**
+		 * (only available in Costa Rica)
+		 */
+		sinpeIBANSubtitle: () => LocalizedString
+		/**
+		 * Sinpe móvil (coming soon)
+		 */
+		sinpeMovil: () => LocalizedString
+		/**
+		 * Sinpe IBAN transfers
+		 */
+		sinpeIBANTransfers: () => LocalizedString
+		/**
+		 * Sinpe móvil transfers
+		 */
+		sinpeMovilTransfers: () => LocalizedString
+		/**
+		 * To initiate transfers to Sinpe IBAN you need to complete the KYC details required by our banking partners. Click the button below to start this process.
+		 */
+		sinpeIBANTransfersKYCDescription: () => LocalizedString
+		/**
+		 * To initiate transfers to Sinpe IBAN you need to have one bank account linked. Click the button below to start this process.
+		 */
+		sinpeIBANTransfersBankDescription: () => LocalizedString
+		/**
+		 * Your KYC is still pending, As soon as it's approved you can do Sinpe IBAN transfers.
+		 */
+		sinpeIBANTransfersKYCPendingDescription: () => LocalizedString
 	}
 	ConversionDetailsScreen: {
 		/**
@@ -17492,6 +17576,10 @@ export type TranslationFunctions = {
 		 */
 		convert: () => LocalizedString
 		/**
+		 * Transfer
+		 */
+		transfer: () => LocalizedString
+		/**
 		 * Code Confirmation
 		 */
 		codeConfirmation: () => LocalizedString
@@ -17612,7 +17700,7 @@ export type TranslationFunctions = {
 		 */
 		next: () => LocalizedString
 		/**
-		 * previous
+		 * Previous
 		 */
 		previous: () => LocalizedString
 		/**
@@ -17727,6 +17815,10 @@ export type TranslationFunctions = {
 		 * To
 		 */
 		to: () => LocalizedString
+		/**
+		 * coming soon
+		 */
+		comingSoon: () => LocalizedString
 		/**
 		 * Total
 		 */
