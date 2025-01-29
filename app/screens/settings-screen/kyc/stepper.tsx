@@ -16,7 +16,7 @@ interface Props {
   allowNext?: boolean
   disableNext?: boolean
   onNext?: () => void
-  onprevious?: () => void
+  onPrevious?: () => void
 }
 
 const Stepper = ({
@@ -30,16 +30,16 @@ const Stepper = ({
   next = true,
   disableNext,
   onNext,
-  onprevious,
+  onPrevious,
 }: Props) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
 
-  const onpreviousPage = useCallback(() => {
+  const onPreviousPage = useCallback(() => {
     if (previousPage) {
       jumpTo(previousPage as string)
     }
-    onprevious?.()
+    onPrevious?.()
   }, [previousPage])
 
   const onNextPage = useCallback(() => {
@@ -58,7 +58,7 @@ const Stepper = ({
           buttonStyle={[styles.buttonStyle, styles.previousStyle]}
           containerStyle={styles.buttonContainerStyle}
           titleProps={{ style: [styles.buttonText, styles.buttonInActiveText] }}
-          onPress={onpreviousPage}
+          onPress={onPreviousPage}
         />
       ) : (
         <></>
