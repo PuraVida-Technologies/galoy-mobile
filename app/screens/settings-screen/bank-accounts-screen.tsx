@@ -1,32 +1,22 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { Icon, makeStyles, Text } from "@rneui/themed"
 import useBankAccounts from "@app/modules/bank-account/hooks/useBankAccounts"
-import { testProps } from "@app/utils/testProps"
-import {
-  Animated,
-  Pressable,
-  TouchableOpacity,
-  useAnimatedValue,
-  View,
-} from "react-native"
+import { Pressable, View } from "react-native"
 import { LoadingComponent } from "@app/modules/market-place/components/loading-component"
-import { SafeAreaView } from "react-native-safe-area-context"
 import { Screen } from "@app/components/screen"
 import { SettingsRow } from "./row"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import { useSettingsScreenQuery } from "@app/graphql/generated"
 import { palette } from "@app/theme/palette"
 import Swipeable, {
   SwipeableMethods,
 } from "react-native-gesture-handler/ReanimatedSwipeable"
-import { SharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated"
+import { SharedValue } from "react-native-reanimated"
 import RightAction from "@app/modules/bank-account/components/right-action"
 
 const BackAccountsScreen = () => {
-  const fadeAnim = useAnimatedValue(0)
   const [hovering, setHovering] = useState(false)
   const styles = useStyles({ hovering })
   const { LL } = useI18nContext()
@@ -43,11 +33,13 @@ const BackAccountsScreen = () => {
     swipeableMethods: SwipeableMethods,
     account: any,
   ) => (
-    <RightAction
-      progress={translation}
-      onPress={() => confirmRemoveBankAccount(account, swipeableMethods.reset)}
-      LL={LL}
-    />
+    <>
+      <RightAction
+        progress={translation}
+        onPress={() => confirmRemoveBankAccount(account, swipeableMethods.reset)}
+        LL={LL}
+      />
+    </>
   )
 
   return (
@@ -72,6 +64,8 @@ const BackAccountsScreen = () => {
                 key={index}
                 friction={2}
                 rightThreshold={40}
+                overshootRight={false}
+                dragOffsetFromRightEdge={50}
                 onSwipeableOpen={() => {
                   setHovering(true)
                 }}

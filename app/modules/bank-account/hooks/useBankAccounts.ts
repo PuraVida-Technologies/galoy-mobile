@@ -43,7 +43,6 @@ gql`
 `
 
 const useBankAccounts = ({ LL }) => {
-  const navigation = useNavigation()
   const { data, loading, error } = useBankAccountsQuery({ fetchPolicy: "network-only" })
   const [removeBankAccountCr, { loading: removingAccount }] =
     useRemoveMyBankAccountMutation({ refetchQueries: ["bankAccounts"] })
@@ -90,7 +89,7 @@ const useBankAccounts = ({ LL }) => {
   return {
     state: {
       data,
-      loading,
+      loading: loading || removingAccount,
     },
     actions: {
       confirmRemoveBankAccount,

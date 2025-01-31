@@ -6,21 +6,11 @@ const RightAction = ({ progress, LL, onPress }) => {
   const styles = useStyles()
   const styleAnimation = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: progress.value + 80 }],
+      transform: [{ translateX: progress.value + 90 }],
     }
   })
-
   return (
     <>
-      {/* <View
-        style={{
-          backgroundColor: "red",
-          flex: 1,
-          position: "absolute",
-          left: -10,
-          width: "100%",
-        }}
-      /> */}
       <Reanimated.View style={[styleAnimation]}>
         <TouchableOpacity onPress={onPress} style={styles.container}>
           <Text style={styles.removeText}>{LL.common.remove()}</Text>
