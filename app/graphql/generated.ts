@@ -23,7 +23,7 @@ export type Scalars = {
   /** An Opaque Bearer token */
   AuthToken: { input: string; output: string; }
   /** Big js */
-  BigDecimal: { input: string; output: string; }
+  BigDecimal: { input: number; output: number; }
   /** (Positive) Cent amount (1/100 of a dollar) */
   CentAmount: { input: number; output: number; }
   /** An alias name that a user can set for a wallet (with which they have transactions) */

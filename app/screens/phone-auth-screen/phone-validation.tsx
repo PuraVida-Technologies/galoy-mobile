@@ -157,6 +157,7 @@ export const PhoneValidationScreen: React.FC<PhoneValidationScreenProps> = ({
 
         if (token) {
           // analytics().logLogin({ method: "phone" })
+          await saveStorage(ACCESS_TOKEN, token)
           saveToken(token)
 
           saveStorage(ACCESS_TOKEN, token)

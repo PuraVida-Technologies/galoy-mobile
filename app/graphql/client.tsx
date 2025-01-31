@@ -46,8 +46,7 @@ import { LevelContainer } from "./level-component";
 import { MessagingContainer } from "./messaging";
 import { NetworkErrorContextProvider } from "./network-error-context";
 import { initPuravidaMarketPlaceClient } from "@app/modules/market-place/graphql/puravida-market-client";
-import { toastShow } from "@app/utils/toast";
-let marketplaceClient: ReturnType<typeof initPuravidaMarketPlaceClient>;
+export let marketplaceClient: ReturnType<typeof initPuravidaMarketPlaceClient>;
 const noRetryOperations = [
   "intraLedgerPaymentSend",
   "intraLedgerUsdPaymentSend",

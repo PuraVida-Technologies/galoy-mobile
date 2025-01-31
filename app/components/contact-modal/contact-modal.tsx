@@ -21,6 +21,7 @@ export const SupportChannels = {
   Mattermost: "mattermost",
   Faq: "faq",
   Chatbot: "chatbot",
+  Support: "Support",
 } as const;
 
 export type SupportChannels =
@@ -121,6 +122,15 @@ const ContactModal: React.FC<Props> = ({
             )
           }&body=${encodeURIComponent(messageBody)}`,
         );
+        toggleModal();
+      },
+    },
+    {
+      id: SupportChannels.Support,
+      name: LL.support.support(),
+      icon: <Icon name={"mail-outline"} type="ionicon" color={colors.black} />,
+      action: () => {
+        Linking.openURL('https://support.puravidabitcoin.io/support/home');
         toggleModal();
       },
     },

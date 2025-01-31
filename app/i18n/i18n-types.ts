@@ -8200,6 +8200,10 @@ type RootTranslation = {
 		 */
 		KYC: string
 		/**
+		 * K​Y​C
+		 */
+		KYC: string
+		/**
 		 * A​c​t​i​v​a​t​e​ ​W​a​l​l​e​t
 		 */
 		activateWallet: string
@@ -8393,14 +8397,6 @@ type RootTranslation = {
 		 * N​e​x​t
 		 */
 		next: string
-		/**
-		 * P​e​r​v​i​o​u​s
-		 */
-		pervious: string
-		/**
-		 * G​e​n​d​e​r
-		 */
-		gender: string
 		/**
 		 * N​o
 		 */
@@ -8697,6 +8693,10 @@ type RootTranslation = {
 		 * F​A​Q
 		 */
 		faq: string
+		/**
+		 * S​u​p​p​o​r​t
+		 */
+		support: string
 		/**
 		 * E​n​j​o​y​i​n​g​ ​t​h​e​ ​a​p​p​?
 		 */
@@ -17712,14 +17712,6 @@ export type TranslationFunctions = {
 		 */
 		next: () => LocalizedString
 		/**
-		 * Pervious
-		 */
-		pervious: () => LocalizedString
-		/**
-		 * Gender
-		 */
-		gender: () => LocalizedString
-		/**
 		 * No
 		 */
 		No: () => LocalizedString
@@ -18014,6 +18006,10 @@ export type TranslationFunctions = {
 		 * FAQ
 		 */
 		faq: () => LocalizedString
+		/**
+		 * Support
+		 */
+		support: () => LocalizedString
 		/**
 		 * Enjoying the app?
 		 */

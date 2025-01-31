@@ -46,7 +46,7 @@ export const NeedHelpSetting: React.FC = () => {
           SupportChannels.Faq,
           SupportChannels.StatusPage,
           SupportChannels.Chatbot,
-          SupportChannels.Email,
+          SupportChannels.Support,
         ]}
       />
     </>

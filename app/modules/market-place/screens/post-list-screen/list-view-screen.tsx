@@ -50,13 +50,11 @@ export const StoreListViewScreen = ({ navigation }: Props) => {
       debounce(async () => {
         setIsLoading(true)
         const { lat: latitude, long: longitude } = position
-        const res = await filterPosts({
-          latitude,
-          longitude,
-          maxDistance: 20000,
-          minDistance: 0,
-          text: searchText,
-        })
+        const filters = { latitude, longitude, maxDistance: 20000, minDistance: 0 }
+        if (searchText) {
+          filters.text = searchText
+        }
+        const res = await filterPosts({ ...filters })
         dispatch(setPostList(res))
         setIsLoading(false)
       }, 500),

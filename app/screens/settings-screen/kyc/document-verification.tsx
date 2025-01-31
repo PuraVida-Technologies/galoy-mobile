@@ -72,12 +72,12 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
       <Stepper
         jumpTo={jumpTo}
         allowNext={Boolean(state.idFront)}
-        pervious
+        previous
         nextPage={"user"}
         disableNext={
           Boolean(!state.idFront) || state.uploadingFrontDoc || state.uploadingBackDoc
         }
-        perviousPage={"docType"}
+        previousPage={"docType"}
       />
       <ActionSheet
         ref={state?.actionSheetRef}
