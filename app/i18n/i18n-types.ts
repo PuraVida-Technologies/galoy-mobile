@@ -307,6 +307,16 @@ type RootTranslation = {
 		 */
 		message: string
 	}
+	SnipeDetailsScreen: {
+		/**
+		 * S​n​i​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
+		 */
+		title: string
+		/**
+		 * %​ ​t​o​ ​c​o​n​v​e​r​t
+		 */
+		percentageToConvert: string
+	}
 	EarnScreen: {
 		/**
 		 * E​a​r​n​ ​{​f​o​r​m​a​t​t​e​d​N​u​m​b​e​r​|​s​a​t​s​}
@@ -9679,6 +9689,16 @@ export type TranslationFunctions = {
 		 * Conversion successful
 		 */
 		message: () => LocalizedString
+	}
+	SnipeDetailsScreen: {
+		/**
+		 * Snipe IBAN transfer
+		 */
+		title: () => LocalizedString
+		/**
+		 * % to convert
+		 */
+		percentageToConvert: () => LocalizedString
 	}
 	EarnScreen: {
 		/**

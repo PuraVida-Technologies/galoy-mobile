@@ -93,6 +93,10 @@ const en: BaseTranslation = {
     title: "Conversion Success",
     message: "Conversion successful",
   },
+  SnipeDetailsScreen: {
+      title: "Snipe IBAN transfer",
+      percentageToConvert: "% to convert",
+    },
   EarnScreen: {
     earnSats: "Earn {formattedNumber|sats}",
     earnSections: {

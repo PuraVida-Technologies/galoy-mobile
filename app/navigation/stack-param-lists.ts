@@ -53,6 +53,7 @@ export type RootStackParamList = {
     moneyAmount: MoneyAmount<WalletOrDisplayCurrency>
   }
   conversionSuccess: undefined
+  snipeDetails: undefined
   sendBitcoinCompleted: {
     arrivalAtMempoolEstimate?: number
     status: PaymentSendCompletedStatus

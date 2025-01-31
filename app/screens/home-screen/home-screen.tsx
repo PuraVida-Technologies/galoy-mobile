@@ -120,6 +120,8 @@ export const HomeScreen: React.FC = () => {
           style: "cancel",
         },
       ])
+    } else {
+      navigation.navigate("snipeDetails")
     }
   }, [data])
 

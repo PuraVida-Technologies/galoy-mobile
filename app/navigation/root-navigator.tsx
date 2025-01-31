@@ -86,6 +86,7 @@ import {
 import { ContactsScreen } from "@app/screens/contacts-screen/contacts"
 import { ContactsDetailScreen } from "@app/screens/contacts-screen"
 import KYCScreen from "@app/screens/settings-screen/kyc-screen"
+import { SnipeDetailsScreen } from "@app/screens/snipe-flow/snipe-details-screen"
 
 const RootNavigator = createStackNavigator<RootStackParamList>()
 
@@ -209,6 +210,13 @@ export const RootStack = () => {
         options={{
           headerShown: false,
           title: LL.ConversionSuccessScreen.title(),
+        }}
+      />
+      <RootNavigator.Screen
+        name="snipeDetails"
+        component={SnipeDetailsScreen}
+        options={{
+          title: LL.SnipeDetailsScreen.title(),
         }}
       />
       <RootNavigator.Screen
