@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { Platform, TouchableOpacity, View } from "react-native"
+import { Platform, TouchableOpacity, View, TouchableWithoutFeedback } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 
 import { gql } from "@apollo/client"
@@ -28,6 +28,9 @@ import { testProps } from "@app/utils/testProps"
 import { NavigationProp, useNavigation } from "@react-navigation/native"
 import { makeStyles, Text, useTheme } from "@rneui/themed"
 import useSnipeDetails from "./hooks/useSnipeDetails"
+import Icon from "react-native-vector-icons/Ionicons"
+import ReactNativeModal from "react-native-modal"
+import { usePriceConversion } from "@app/hooks"
 
 gql`
   query conversionScreen {
@@ -76,18 +79,20 @@ export const SnipeDetailsScreen = () => {
     setWallets,
     settlementSendAmount,
     setMoneyAmount,
-    convertMoneyAmount,
     isValidAmount,
     moneyAmount,
     canToggleWallet,
     toggleWallet,
+    isModalVisible,
+    setIsModalVisible,
   } = useConvertMoneyDetails(
     btcWallet && usdWallet
       ? { initialFromWallet: btcWallet, initialToWallet: usdWallet }
       : undefined,
   )
 
-  const { state, actions} = useSnipeDetails();
+  const { state, actions } = useSnipeDetails()
+  const { convertMoneyAmount } = usePriceConversion()
 
   useEffect(() => {
     if (!fromWallet && btcWallet && usdWallet) {
@@ -107,16 +112,40 @@ export const SnipeDetailsScreen = () => {
   const usdWalletBalance = toUsdMoneyAmount(usdWallet?.balance ?? NaN)
 
   const fromWalletBalance =
-    fromWallet.walletCurrency === WalletCurrency.Btc ? btcWalletBalance : usdWalletBalance
+    state.from === WalletCurrency.Btc ? btcWalletBalance : usdWalletBalance
   const toWalletBalance =
     toWallet.walletCurrency === WalletCurrency.Btc ? btcWalletBalance : usdWalletBalance
   const fromWalletBalanceFormatted = formatDisplayAndWalletAmount({
-    displayAmount: convertMoneyAmount(fromWalletBalance, DisplayCurrency),
+    displayAmount: convertMoneyAmount?.(fromWalletBalance, DisplayCurrency) || {
+      amount: 0,
+      currency: DisplayCurrency,
+      currencyCode: "BTC",
+    },
     walletAmount: fromWalletBalance,
+  })
+  const btcWalletBalanceFormatted = formatDisplayAndWalletAmount({
+    displayAmount: convertMoneyAmount?.(btcWalletBalance, DisplayCurrency) || {
+      amount: 0,
+      currency: DisplayCurrency,
+      currencyCode: "BTC",
+    },
+    walletAmount: btcWalletBalance,
+  })
+  const usdWalletBalanceFormatted = formatDisplayAndWalletAmount({
+    displayAmount: convertMoneyAmount?.(usdWalletBalance, DisplayCurrency) || {
+      amount: 0,
+      currency: DisplayCurrency,
+      currencyCode: "USD",
+    },
+    walletAmount: usdWalletBalance,
   })
 
   const toWalletBalanceFormatted = formatDisplayAndWalletAmount({
-    displayAmount: convertMoneyAmount(toWalletBalance, DisplayCurrency),
+    displayAmount: convertMoneyAmount?.(toWalletBalance, DisplayCurrency) || {
+      amount: 0,
+      currency: DisplayCurrency,
+      currencyCode: "USD",
+    },
     walletAmount: toWalletBalance,
   })
 
@@ -149,40 +178,143 @@ export const SnipeDetailsScreen = () => {
     })
   }
 
+  const toggleModal = () => {
+    actions.setFromSelection(false)
+  }
+
+  console.log("toWallet", toWallet)
+  console.log("fromWallet", fromWallet)
+  const chooseWallet = (wallet: Pick<Wallet, "id" | "walletCurrency">) => {
+    actions.setFrom(wallet)
+    toggleModal()
+  }
+
+  const ModalWalletCard = ({ wallet, selectedWallet }) => (
+    <View>
+      <TouchableWithoutFeedback
+        key={wallet}
+        {...testProps(wallet)}
+        onPress={() => {
+          chooseWallet(wallet)
+        }}
+      >
+        <View style={styles.walletContainer}>
+          <View style={styles.walletSelectorTypeContainer}>
+            <View
+              style={
+                wallet === WalletCurrency.Btc
+                  ? styles.walletSelectorTypeLabelBitcoin
+                  : styles.walletSelectorTypeLabelUsd
+              }
+            >
+              {wallet === WalletCurrency.Btc ? (
+                <Text style={styles.walletSelectorTypeLabelBtcText}>BTC</Text>
+              ) : (
+                <Text style={styles.walletSelectorTypeLabelUsdText}>USD</Text>
+              )}
+            </View>
+          </View>
+          <View style={styles.walletSelectorInfoContainer}>
+            <View style={styles.walletSelectorTypeTextContainer}>
+              {wallet === WalletCurrency.Btc ? (
+                <Text
+                  style={styles.walletCurrencyText}
+                >{`${LL.common.btcAccount()}`}</Text>
+              ) : (
+                <Text
+                  style={styles.walletCurrencyText}
+                >{`${LL.common.usdAccount()}`}</Text>
+              )}
+            </View>
+            <View style={styles.walletSelectorBalanceContainer}>
+              {wallet === WalletCurrency.Btc ? (
+                <Text>{btcWalletBalanceFormatted}</Text>
+              ) : (
+                <Text>{usdWalletBalanceFormatted}</Text>
+              )}
+            </View>
+            <View />
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </View>
+  )
+
   return (
     <Screen preset="fixed">
       <ScrollView style={styles.scrollViewContainer}>
         <View style={styles.walletSelectorContainer}>
           <View style={styles.walletsContainer}>
-            <TouchableOpacity onPress={() => actions.setFromSelection(true)}>
-              <View style={styles.fromFieldContainer}>
-                <View style={styles.walletSelectorInfoContainer}>
-                  {fromWallet.walletCurrency === WalletCurrency.Btc ? (
-                    <Text
-                      style={styles.walletCurrencyText}
-                    >{`${LL.common.from()} ${LL.common.btcAccount()}`}</Text>
-                  ) : (
-                    <Text
-                      style={styles.walletCurrencyText}
-                    >{`${LL.common.from()} ${LL.common.usdAccount()}`}</Text>
-                  )}
-                  <View style={styles.walletSelectorBalanceContainer}>
-                    <Text>{fromWalletBalanceFormatted}</Text>
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldTitleText}>{LL.common.from()}</Text>
+              <TouchableWithoutFeedback
+                {...testProps("choose-wallet-to-send-from")}
+                onPress={() => actions.setFromSelection(true)}
+                accessible={false}
+              >
+                <View style={styles.fieldBackground}>
+                  <View style={styles.walletSelectorTypeContainer}>
+                    <View
+                      style={
+                        state.from === WalletCurrency.Btc
+                          ? styles.walletSelectorTypeLabelBitcoin
+                          : styles.walletSelectorTypeLabelUsd
+                      }
+                    >
+                      {state.from === WalletCurrency.Btc ? (
+                        <Text style={styles.walletSelectorTypeLabelBtcText}>BTC</Text>
+                      ) : (
+                        <Text style={styles.walletSelectorTypeLabelUsdText}>USD</Text>
+                      )}
+                    </View>
+                    {console.log("from", state.from)}
+                  </View>
+
+                  <View style={styles.walletSelectorInfoContainer}>
+                    <View style={styles.walletSelectorTypeTextContainer}>
+                      {state.from === WalletCurrency.Btc ? (
+                        <>
+                          <Text style={styles.walletCurrencyText}>
+                            {LL.common.btcAccount()}
+                          </Text>
+                        </>
+                      ) : (
+                        <>
+                          <Text style={styles.walletCurrencyText}>
+                            {LL.common.usdAccount()}
+                          </Text>
+                        </>
+                      )}
+                    </View>
+                    <View style={styles.walletSelectorBalanceContainer}>
+                      <Text {...testProps(`${fromWallet.walletCurrency} Wallet Balance`)}>
+                        {fromWalletBalanceFormatted}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.pickWalletIcon}>
+                    <Icon name={"chevron-down"} size={24} color={colors.black} />
                   </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-            <View style={styles.line}></View>
-            {/* <View style={styles.walletSeparator}>
-              <View style={styles.line}></View>
-              <TouchableOpacity
-                style={styles.switchButton}
-                disabled={!canToggleWallet}
-                onPress={toggleWallet}
+              </TouchableWithoutFeedback>
+              <ReactNativeModal
+                style={styles.modal}
+                animationIn="fadeInDown"
+                animationOut="fadeOutUp"
+                isVisible={state.openFromSelection}
+                onBackButtonPress={toggleModal}
+                onBackdropPress={toggleModal}
               >
-                <SwitchButton color={colors.primary} />
-              </TouchableOpacity>
-            </View> */}
+                <View>
+                  {[WalletCurrency.Btc, WalletCurrency.Usd].map((wallet) => {
+                    return <ModalWalletCard wallet={wallet} selectedWallet={state.from} />
+                  })}
+                  {/* {ModalWalletCard(toWallet)} */}
+                </View>
+              </ReactNativeModal>
+            </View>
+            <View style={styles.line}></View>
             <View style={styles.toFieldContainer}>
               <View style={styles.walletSelectorInfoContainer}>
                 {toWallet.walletCurrency === WalletCurrency.Btc ? (
@@ -356,5 +488,67 @@ const useStyles = makeStyles(({ colors }) => ({
   errorContainer: {
     marginTop: 10,
     alignItems: "center",
+  },
+  pickWalletIcon: {},
+  walletSelectorTypeTextContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  walletSelectorTypeLabelUsdText: {
+    fontWeight: "bold",
+    color: colors.black,
+  },
+  walletSelectorTypeLabelBtcText: {
+    fontWeight: "bold",
+    color: colors.white,
+  },
+  walletSelectorTypeLabelUsd: {
+    height: 30,
+    width: 50,
+    backgroundColor: colors._green,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  walletSelectorTypeLabelBitcoin: {
+    height: 30,
+    width: 50,
+    borderRadius: 10,
+    backgroundColor: colors.primary,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  walletSelectorTypeContainer: {
+    justifyContent: "center",
+    alignItems: "flex-start",
+    width: 50,
+    marginRight: 20,
+  },
+  fieldBackground: {
+    flexDirection: "row",
+    borderStyle: "solid",
+    overflow: "hidden",
+    backgroundColor: colors.grey5,
+    borderRadius: 10,
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+  fieldTitleText: {
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  walletContainer: {
+    flexDirection: "row",
+    borderStyle: "solid",
+    overflow: "hidden",
+    backgroundColor: colors.grey5,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    alignItems: "center",
+    marginBottom: 10,
+    minHeight: 60,
+  },
+  modal: {
+    marginBottom: "90%",
   },
 }))
