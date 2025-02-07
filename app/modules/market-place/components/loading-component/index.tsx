@@ -1,7 +1,13 @@
 import React from "react"
-import { StyleSheet, View, ActivityIndicator } from "react-native"
+import { StyleSheet, View, ActivityIndicator, ViewProps } from "react-native"
 
-export const LoadingComponent = ({ isLoading }) => {
+interface Props {
+  isLoading: boolean
+  styles?: ViewProps["style"]
+  color?: string
+}
+
+export const LoadingComponent = ({ isLoading, styles, color }: Props) => {
   return (
     <>
       {isLoading && (
@@ -12,10 +18,11 @@ export const LoadingComponent = ({ isLoading }) => {
               justifyContent: "center",
               alignItems: "center",
             },
+            styles,
             StyleSheet.absoluteFill,
           ]}
         >
-          <ActivityIndicator size={"large"} color={"white"} />
+          <ActivityIndicator size={"large"} color={color || "white"} />
         </View>
       )}
     </>

@@ -3299,6 +3299,33 @@ export type WarningSecureAccountQueryVariables = Exact<{ [key: string]: never; }
 
 export type WarningSecureAccountQuery = { readonly __typename: 'Query', readonly me?: { readonly __typename: 'User', readonly id: string, readonly defaultAccount: { readonly __typename: 'ConsumerAccount', readonly level: AccountLevel, readonly id: string, readonly wallets: ReadonlyArray<{ readonly __typename: 'BTCWallet', readonly id: string, readonly balance: number, readonly walletCurrency: WalletCurrency } | { readonly __typename: 'UsdWallet', readonly id: string, readonly balance: number, readonly walletCurrency: WalletCurrency }> } } | null };
 
+export type AddBankAccountCrMutationVariables = Exact<{
+  input: AddBankAccountCrdto;
+}>;
+
+
+export type AddBankAccountCrMutation = { readonly __typename: 'Mutation', readonly addBankAccountCR: { readonly __typename: 'BankAccountCR', readonly id: string } };
+
+export type UpdateBankAccountCrMutationVariables = Exact<{
+  updateBankAccountCrId: Scalars['String']['input'];
+  input: UpdateBankAccountCrdto;
+}>;
+
+
+export type UpdateBankAccountCrMutation = { readonly __typename: 'Mutation', readonly updateBankAccountCR: { readonly __typename: 'BankAccountCR', readonly id: string } };
+
+export type RemoveMyBankAccountMutationVariables = Exact<{
+  bankAccountId: Scalars['String']['input'];
+}>;
+
+
+export type RemoveMyBankAccountMutation = { readonly __typename: 'Mutation', readonly removeMyBankAccount: { readonly __typename: 'BankAccountCR', readonly id: string } };
+
+export type BankAccountsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type BankAccountsQuery = { readonly __typename: 'Query', readonly getMyBankAccounts: ReadonlyArray<{ readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly accountHolderName: string, readonly nationalId: string, readonly iban: string, readonly sinpeCode: string, readonly swiftCode: string, readonly currency: BankAccountCurrencies } }> };
+
 export type AccountUpdateDefaultWalletIdMutationVariables = Exact<{
   input: AccountUpdateDefaultWalletIdInput;
 }>;
@@ -7406,6 +7433,161 @@ export type WarningSecureAccountQueryHookResult = ReturnType<typeof useWarningSe
 export type WarningSecureAccountLazyQueryHookResult = ReturnType<typeof useWarningSecureAccountLazyQuery>;
 export type WarningSecureAccountSuspenseQueryHookResult = ReturnType<typeof useWarningSecureAccountSuspenseQuery>;
 export type WarningSecureAccountQueryResult = Apollo.QueryResult<WarningSecureAccountQuery, WarningSecureAccountQueryVariables>;
+export const AddBankAccountCrDocument = gql`
+    mutation addBankAccountCR($input: AddBankAccountCRDTO!) {
+  addBankAccountCR(input: $input) {
+    id
+  }
+}
+    `;
+export type AddBankAccountCrMutationFn = Apollo.MutationFunction<AddBankAccountCrMutation, AddBankAccountCrMutationVariables>;
+
+/**
+ * __useAddBankAccountCrMutation__
+ *
+ * To run a mutation, you first call `useAddBankAccountCrMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddBankAccountCrMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addBankAccountCrMutation, { data, loading, error }] = useAddBankAccountCrMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddBankAccountCrMutation(baseOptions?: Apollo.MutationHookOptions<AddBankAccountCrMutation, AddBankAccountCrMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddBankAccountCrMutation, AddBankAccountCrMutationVariables>(AddBankAccountCrDocument, options);
+      }
+export type AddBankAccountCrMutationHookResult = ReturnType<typeof useAddBankAccountCrMutation>;
+export type AddBankAccountCrMutationResult = Apollo.MutationResult<AddBankAccountCrMutation>;
+export type AddBankAccountCrMutationOptions = Apollo.BaseMutationOptions<AddBankAccountCrMutation, AddBankAccountCrMutationVariables>;
+export const UpdateBankAccountCrDocument = gql`
+    mutation UpdateBankAccountCR($updateBankAccountCrId: String!, $input: UpdateBankAccountCRDTO!) {
+  updateBankAccountCR(id: $updateBankAccountCrId, input: $input) {
+    id
+  }
+}
+    `;
+export type UpdateBankAccountCrMutationFn = Apollo.MutationFunction<UpdateBankAccountCrMutation, UpdateBankAccountCrMutationVariables>;
+
+/**
+ * __useUpdateBankAccountCrMutation__
+ *
+ * To run a mutation, you first call `useUpdateBankAccountCrMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateBankAccountCrMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateBankAccountCrMutation, { data, loading, error }] = useUpdateBankAccountCrMutation({
+ *   variables: {
+ *      updateBankAccountCrId: // value for 'updateBankAccountCrId'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateBankAccountCrMutation(baseOptions?: Apollo.MutationHookOptions<UpdateBankAccountCrMutation, UpdateBankAccountCrMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateBankAccountCrMutation, UpdateBankAccountCrMutationVariables>(UpdateBankAccountCrDocument, options);
+      }
+export type UpdateBankAccountCrMutationHookResult = ReturnType<typeof useUpdateBankAccountCrMutation>;
+export type UpdateBankAccountCrMutationResult = Apollo.MutationResult<UpdateBankAccountCrMutation>;
+export type UpdateBankAccountCrMutationOptions = Apollo.BaseMutationOptions<UpdateBankAccountCrMutation, UpdateBankAccountCrMutationVariables>;
+export const RemoveMyBankAccountDocument = gql`
+    mutation RemoveMyBankAccount($bankAccountId: String!) {
+  removeMyBankAccount(bankAccountId: $bankAccountId) {
+    ... on BankAccountCR {
+      id
+    }
+  }
+}
+    `;
+export type RemoveMyBankAccountMutationFn = Apollo.MutationFunction<RemoveMyBankAccountMutation, RemoveMyBankAccountMutationVariables>;
+
+/**
+ * __useRemoveMyBankAccountMutation__
+ *
+ * To run a mutation, you first call `useRemoveMyBankAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveMyBankAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeMyBankAccountMutation, { data, loading, error }] = useRemoveMyBankAccountMutation({
+ *   variables: {
+ *      bankAccountId: // value for 'bankAccountId'
+ *   },
+ * });
+ */
+export function useRemoveMyBankAccountMutation(baseOptions?: Apollo.MutationHookOptions<RemoveMyBankAccountMutation, RemoveMyBankAccountMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveMyBankAccountMutation, RemoveMyBankAccountMutationVariables>(RemoveMyBankAccountDocument, options);
+      }
+export type RemoveMyBankAccountMutationHookResult = ReturnType<typeof useRemoveMyBankAccountMutation>;
+export type RemoveMyBankAccountMutationResult = Apollo.MutationResult<RemoveMyBankAccountMutation>;
+export type RemoveMyBankAccountMutationOptions = Apollo.BaseMutationOptions<RemoveMyBankAccountMutation, RemoveMyBankAccountMutationVariables>;
+export const BankAccountsDocument = gql`
+    query bankAccounts {
+  getMyBankAccounts {
+    ... on BankAccountCR {
+      id
+      galoyUserId
+      type
+      countryCode
+      data {
+        bankName
+        accountHolderName
+        nationalId
+        iban
+        sinpeCode
+        swiftCode
+        currency
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useBankAccountsQuery__
+ *
+ * To run a query within a React component, call `useBankAccountsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBankAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBankAccountsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useBankAccountsQuery(baseOptions?: Apollo.QueryHookOptions<BankAccountsQuery, BankAccountsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<BankAccountsQuery, BankAccountsQueryVariables>(BankAccountsDocument, options);
+      }
+export function useBankAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BankAccountsQuery, BankAccountsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<BankAccountsQuery, BankAccountsQueryVariables>(BankAccountsDocument, options);
+        }
+export function useBankAccountsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<BankAccountsQuery, BankAccountsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<BankAccountsQuery, BankAccountsQueryVariables>(BankAccountsDocument, options);
+        }
+export type BankAccountsQueryHookResult = ReturnType<typeof useBankAccountsQuery>;
+export type BankAccountsLazyQueryHookResult = ReturnType<typeof useBankAccountsLazyQuery>;
+export type BankAccountsSuspenseQueryHookResult = ReturnType<typeof useBankAccountsSuspenseQuery>;
+export type BankAccountsQueryResult = Apollo.QueryResult<BankAccountsQuery, BankAccountsQueryVariables>;
 export const AccountUpdateDefaultWalletIdDocument = gql`
     mutation accountUpdateDefaultWalletId($input: AccountUpdateDefaultWalletIdInput!) {
   accountUpdateDefaultWalletId(input: $input) {

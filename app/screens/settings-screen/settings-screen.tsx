@@ -29,6 +29,7 @@ import { NotificationSetting } from "./settings/sp-notifications"
 import { OnDeviceSecuritySetting } from "./settings/sp-security"
 import { TotpSetting } from "./totp"
 import { KYC } from "./settings/account-kyc"
+import { BankAccount } from "./settings/bank-account"
 
 // All queries in settings have to be set here so that the server is not hit with
 // multiple requests for each query
@@ -69,7 +70,7 @@ export const SettingsScreen: React.FC = () => {
   const { currentLevel, isAtLeastLevelOne, isAtLeastLevelTwo } = useLevel()
 
   const items = useMemo(() => ({
-    account: isAtLeastLevelTwo ? [AccountLevelSetting, TxLimits, KYC] : [AccountLevelSetting, TxLimits],
+    account: isAtLeastLevelTwo ? [AccountLevelSetting, TxLimits, KYC, BankAccount] : [AccountLevelSetting, TxLimits],
     loginMethods: [EmailSetting, PhoneSetting],
     waysToGetPaid: [AccountLNAddress, AccountPOS, AccountStaticQR],
     preferences: [

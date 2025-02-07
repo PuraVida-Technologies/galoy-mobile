@@ -93,6 +93,8 @@ export type RootStackParamList = {
   notificationSettingsScreen: undefined
   transactionLimitsScreen: undefined
   KYCScreen: undefined
+  addBankAccount: undefined
+  bankAccounts: undefined
   emailRegistrationInitiate: undefined
   emailRegistrationValidate: { email: string; emailRegistrationId: string }
   emailLoginInitiate: undefined

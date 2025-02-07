@@ -7353,6 +7353,48 @@ type RootTranslation = {
 		 */
 		logInOrCreateAccount: string
 	}
+	BankAccountScreen: {
+		/**
+		 * A​c​c​o​u​n​t​ ​H​o​l​d​e​r​ ​N​a​m​e
+		 */
+		accountHolderName: string
+		/**
+		 * C​u​r​r​e​n​c​y
+		 */
+		currency: string
+		/**
+		 * I​B​A​N
+		 */
+		iban: string
+		/**
+		 * B​a​n​k​ ​N​a​m​e
+		 */
+		bankName: string
+		/**
+		 * S​W​I​F​T​ ​C​o​d​e
+		 */
+		swiftCode: string
+		/**
+		 * S​I​N​P​ ​C​o​d​e
+		 */
+		sinpeCode: string
+		/**
+		 * N​a​t​i​o​n​a​l​ ​I​D
+		 */
+		nationalId: string
+		/**
+		 * R​e​m​o​v​e​ ​B​a​n​k​ ​A​c​c​o​u​n​t
+		 */
+		removeBankAccount: string
+		/**
+		 * A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​r​e​m​o​v​e​ ​t​h​i​s​ ​b​a​n​k​ ​a​c​c​o​u​n​t​?
+		 */
+		confirmRemoveBankAccountTitle: string
+		/**
+		 * T​h​i​s​ ​a​c​t​i​o​n​ ​c​a​n​n​o​t​ ​b​e​ ​u​n​d​o​n​e​.
+		 */
+		confirmRemoveBankAccountContent: string
+	}
 	NotificationSettingsScreen: {
 		/**
 		 * N​o​t​i​f​i​c​a​t​i​o​n​ ​S​e​t​t​i​n​g​s
@@ -8206,6 +8248,10 @@ type RootTranslation = {
 		 */
 		KYC: string
 		/**
+		 * K​Y​C
+		 */
+		KYC: string
+		/**
 		 * A​c​t​i​v​a​t​e​ ​W​a​l​l​e​t
 		 */
 		activateWallet: string
@@ -8226,9 +8272,17 @@ type RootTranslation = {
 		 */
 		bank: string
 		/**
-		 * C​a​s​h​ ​A​c​c​o​u​n​t
+		 * A​d​d​ ​B​a​n​k​ ​A​c​c​o​u​n​t
+		 */
+		addBankAccount: string
+		/**
+		 * B​a​n​k​ ​A​c​c​o​u​n​t
 		 */
 		bankAccount: string
+		/**
+		 * B​a​n​k​ ​A​c​c​o​u​n​t​s
+		 */
+		bankAccounts: string
 		/**
 		 * {​b​a​n​k​N​a​m​e​}​ ​A​d​v​i​c​e
 		 * @param {string} bankName
@@ -8575,6 +8629,10 @@ type RootTranslation = {
 		 * T​h​i​s​ ​m​o​n​t​h
 		 */
 		thisMonth: string
+		/**
+		 * R​e​m​o​v​e
+		 */
+		remove: string
 		/**
 		 * P​r​e​v​i​o​u​s​ ​m​o​n​t​h​s
 		 */
@@ -16699,6 +16757,48 @@ export type TranslationFunctions = {
 		 */
 		logInOrCreateAccount: () => LocalizedString
 	}
+	BankAccountScreen: {
+		/**
+		 * Account Holder Name
+		 */
+		accountHolderName: () => LocalizedString
+		/**
+		 * Currency
+		 */
+		currency: () => LocalizedString
+		/**
+		 * IBAN
+		 */
+		iban: () => LocalizedString
+		/**
+		 * Bank Name
+		 */
+		bankName: () => LocalizedString
+		/**
+		 * SWIFT Code
+		 */
+		swiftCode: () => LocalizedString
+		/**
+		 * SINP Code
+		 */
+		sinpeCode: () => LocalizedString
+		/**
+		 * National ID
+		 */
+		nationalId: () => LocalizedString
+		/**
+		 * Remove Bank Account
+		 */
+		removeBankAccount: () => LocalizedString
+		/**
+		 * Are you sure you want to remove this bank account?
+		 */
+		confirmRemoveBankAccountTitle: () => LocalizedString
+		/**
+		 * This action cannot be undone.
+		 */
+		confirmRemoveBankAccountContent: () => LocalizedString
+	}
 	NotificationSettingsScreen: {
 		/**
 		 * Notification Settings
@@ -17552,9 +17652,17 @@ export type TranslationFunctions = {
 		 */
 		bank: () => LocalizedString
 		/**
-		 * Cash Account
+		 * Add Bank Account
+		 */
+		addBankAccount: () => LocalizedString
+		/**
+		 * Bank Account
 		 */
 		bankAccount: () => LocalizedString
+		/**
+		 * Bank Accounts
+		 */
+		bankAccounts: () => LocalizedString
 		/**
 		 * {bankName} Advice
 		 */
@@ -17899,6 +18007,10 @@ export type TranslationFunctions = {
 		 * This month
 		 */
 		thisMonth: () => LocalizedString
+		/**
+		 * Remove
+		 */
+		remove: () => LocalizedString
 		/**
 		 * Previous months
 		 */

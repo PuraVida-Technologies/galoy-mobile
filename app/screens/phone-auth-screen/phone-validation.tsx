@@ -162,7 +162,6 @@ export const PhoneValidationScreen: React.FC<PhoneValidationScreenProps> = ({
 
           saveStorage(ACCESS_TOKEN, token)
           storage.set("ACCESS_TOKEN", token)
-
           if (await BiometricWrapper.isSensorAvailable()) {
             navigation.replace("authentication", {
               screenPurpose: AuthenticationScreenPurpose.TurnOnAuthentication,
