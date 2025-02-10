@@ -89,6 +89,7 @@ import KYCScreen from "@app/screens/settings-screen/kyc-screen"
 import { SnipeDetailsScreen } from "@app/screens/snipe-flow/snipe-details-screen"
 import AddBankAccountScreen from "@app/screens/settings-screen/add-bank-account-screen";
 import BankAccountsScreen from "@app/screens/settings-screen/bank-accounts-screen";
+import { SnipeConfirmationScreen } from "@app/screens/snipe-flow/snipe-confirmation-screen"
 
 const RootNavigator = createStackNavigator<RootStackParamList>()
 
@@ -219,6 +220,13 @@ export const RootStack = () => {
         component={SnipeDetailsScreen}
         options={{
           title: LL.SnipeDetailsScreen.title(),
+        }}
+      />
+      <RootNavigator.Screen
+        name="snipeConfirmation"
+        component={SnipeConfirmationScreen}
+        options={{
+          title: LL.SnipeConfirmationScreen.title(),
         }}
       />
       <RootNavigator.Screen

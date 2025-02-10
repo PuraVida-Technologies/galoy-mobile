@@ -316,6 +316,20 @@ type RootTranslation = {
 		 * %​ ​t​o​ ​c​o​n​v​e​r​t
 		 */
 		percentageToConvert: string
+		/**
+		 * A​m​o​u​n​t
+		 */
+		amount: string
+	}
+	SnipeConfirmationScreen: {
+		/**
+		 * R​e​v​i​e​w​ ​S​n​i​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
+		 */
+		title: string
+		/**
+		 * A​m​o​u​n​t
+		 */
+		amount: string
 	}
 	EarnScreen: {
 		/**
@@ -8248,10 +8262,6 @@ type RootTranslation = {
 		 */
 		KYC: string
 		/**
-		 * K​Y​C
-		 */
-		KYC: string
-		/**
 		 * A​c​t​i​v​a​t​e​ ​W​a​l​l​e​t
 		 */
 		activateWallet: string
@@ -9757,6 +9767,20 @@ export type TranslationFunctions = {
 		 * % to convert
 		 */
 		percentageToConvert: () => LocalizedString
+		/**
+		 * Amount
+		 */
+		amount: () => LocalizedString
+	}
+	SnipeConfirmationScreen: {
+		/**
+		 * Review Snipe IBAN transfer
+		 */
+		title: () => LocalizedString
+		/**
+		 * Amount
+		 */
+		amount: () => LocalizedString
 	}
 	EarnScreen: {
 		/**

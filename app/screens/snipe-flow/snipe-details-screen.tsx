@@ -1,13 +1,14 @@
-import React, { useEffect } from "react"
-import { Platform, TouchableOpacity, View, TouchableWithoutFeedback } from "react-native"
+/* eslint-disable react-hooks/rules-of-hooks */
+import React, { useCallback, useEffect, useMemo } from "react"
+import { Platform, View, TouchableWithoutFeedback, Pressable } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 
 import { gql } from "@apollo/client"
-import SwitchButton from "@app/assets/icons-redesign/transfer.svg"
 import { AmountInput } from "@app/components/amount-input"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { Screen } from "@app/components/screen"
 import {
+  useBankAccountsQuery,
   useConversionScreenQuery,
   useRealtimePriceQuery,
   WalletCurrency,
@@ -22,15 +23,15 @@ import {
   lessThan,
   toBtcMoneyAmount,
   toUsdMoneyAmount,
-  toWalletAmount,
 } from "@app/types/amounts"
 import { testProps } from "@app/utils/testProps"
 import { NavigationProp, useNavigation } from "@react-navigation/native"
-import { makeStyles, Text, useTheme } from "@rneui/themed"
+import { Input, makeStyles, Text, useTheme } from "@rneui/themed"
 import useSnipeDetails from "./hooks/useSnipeDetails"
 import Icon from "react-native-vector-icons/Ionicons"
 import ReactNativeModal from "react-native-modal"
 import { usePriceConversion } from "@app/hooks"
+import { SearchBar } from "@rneui/base"
 
 gql`
   query conversionScreen {
@@ -54,8 +55,7 @@ export const SnipeDetailsScreen = () => {
   } = useTheme()
 
   const styles = useStyles()
-  const navigation =
-    useNavigation<NavigationProp<RootStackParamList, "conversionDetails">>()
+  const navigation = useNavigation<NavigationProp<RootStackParamList, "snipeDetails">>()
 
   // forcing price refresh
   useRealtimePriceQuery({
@@ -68,28 +68,19 @@ export const SnipeDetailsScreen = () => {
   })
 
   const { LL } = useI18nContext()
-  const { formatDisplayAndWalletAmount } = useDisplayCurrency()
+  const { formatDisplayAndWalletAmount, formatMoneyAmount } = useDisplayCurrency()
 
   const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
   const usdWallet = getUsdWallet(data?.me?.defaultAccount?.wallets)
 
-  const {
-    fromWallet,
-    toWallet,
-    setWallets,
-    settlementSendAmount,
-    setMoneyAmount,
-    isValidAmount,
-    moneyAmount,
-    canToggleWallet,
-    toggleWallet,
-    isModalVisible,
-    setIsModalVisible,
-  } = useConvertMoneyDetails(
-    btcWallet && usdWallet
-      ? { initialFromWallet: btcWallet, initialToWallet: usdWallet }
-      : undefined,
-  )
+  const { fromWallet, setWallets, settlementSendAmount, moneyAmount } =
+    useConvertMoneyDetails(
+      btcWallet && usdWallet
+        ? { initialFromWallet: btcWallet, initialToWallet: usdWallet }
+        : undefined,
+    )
+
+  const { data: bankAccountData } = useBankAccountsQuery({ fetchPolicy: "network-only" })
 
   const { state, actions } = useSnipeDetails()
   const { convertMoneyAmount } = usePriceConversion()
@@ -113,8 +104,6 @@ export const SnipeDetailsScreen = () => {
 
   const fromWalletBalance =
     state.from === WalletCurrency.Btc ? btcWalletBalance : usdWalletBalance
-  const toWalletBalance =
-    toWallet.walletCurrency === WalletCurrency.Btc ? btcWalletBalance : usdWalletBalance
   const fromWalletBalanceFormatted = formatDisplayAndWalletAmount({
     displayAmount: convertMoneyAmount?.(fromWalletBalance, DisplayCurrency) || {
       amount: 0,
@@ -140,56 +129,85 @@ export const SnipeDetailsScreen = () => {
     walletAmount: usdWalletBalance,
   })
 
-  const toWalletBalanceFormatted = formatDisplayAndWalletAmount({
-    displayAmount: convertMoneyAmount?.(toWalletBalance, DisplayCurrency) || {
-      amount: 0,
-      currency: DisplayCurrency,
-      currencyCode: "USD",
-    },
-    walletAmount: toWalletBalance,
-  })
-
   let amountFieldError: string | undefined = undefined
 
-  if (
-    lessThan({
-      value: fromWalletBalance,
-      lessThan: settlementSendAmount,
-    })
-  ) {
+  const formattedAmount = formatMoneyAmount({
+    moneyAmount: convertMoneyAmount?.(fromWalletBalance, DisplayCurrency) || {
+      amount: 0,
+      currency: DisplayCurrency,
+      currencyCode: "BTC",
+    },
+    noSymbol: true,
+  })
+
+  if (parseFloat(formattedAmount) < parseFloat(state.amount)) {
     amountFieldError = LL.SendBitcoinScreen.amountExceed({
       balance: fromWalletBalanceFormatted,
     })
   }
 
-  const setAmountToBalancePercentage = (percentage: number) => {
-    setMoneyAmount(
-      toWalletAmount({
-        amount: Math.round((fromWallet.balance * percentage) / 100),
-        currency: fromWallet.walletCurrency,
-      }),
-    )
-  }
-
   const moveToNextScreen = () => {
-    navigation.navigate("conversionConfirmation", {
+    navigation.navigate("snipeConfirmation", {
       fromWalletCurrency: fromWallet.walletCurrency,
       moneyAmount,
+      bankAccount: {
+        accountHolderName: state.selectedBank?.data?.accountHolderName || "",
+        iban: state.selectedBank?.data?.iban || "",
+      },
+      fromAccountBalance: fromWalletBalanceFormatted,
     })
   }
 
   const toggleModal = () => {
     actions.setFromSelection(false)
   }
+  const bankAccounts = useMemo(() => {
+    return bankAccountData?.getMyBankAccounts?.slice() ?? []
+  }, [bankAccountData])
 
-  console.log("toWallet", toWallet)
-  console.log("fromWallet", fromWallet)
+  const isValidAmount = useMemo(() => {
+    return (
+      state?.amount?.length &&
+      parseFloat(state?.amount || "") > 0 &&
+      !amountFieldError?.length
+    )
+  }, [state?.amount, amountFieldError])
+
+  useEffect(() => {
+    actions.setMatchingAccounts(bankAccounts)
+    actions.setSelectedBank(bankAccounts?.[0] || null)
+  }, [bankAccountData])
+
+  const toggleBankModal = () => {
+    actions.setOpenBankSelection(false)
+  }
+
+  const updateMatchingAccounts = useCallback(
+    (newSearchText: string) => {
+      actions.setSearchText(newSearchText)
+      if (newSearchText.length > 0) {
+        const matchingAccounts = bankAccounts.filter(
+          (account) =>
+            account?.data?.bankName.toLowerCase().includes(newSearchText.toLowerCase()) ||
+            account?.data?.iban.toLowerCase().includes(newSearchText.toLowerCase()) ||
+            account?.data?.accountHolderName
+              .toLowerCase()
+              .includes(newSearchText.toLowerCase()),
+        )
+        actions.setMatchingAccounts(matchingAccounts)
+      } else {
+        actions.setMatchingAccounts(bankAccounts)
+      }
+    },
+    [bankAccounts, state.searchText],
+  )
+
   const chooseWallet = (wallet: Pick<Wallet, "id" | "walletCurrency">) => {
     actions.setFrom(wallet)
     toggleModal()
   }
 
-  const ModalWalletCard = ({ wallet, selectedWallet }) => (
+  const ModalWalletCard = ({ wallet }) => (
     <View>
       <TouchableWithoutFeedback
         key={wallet}
@@ -240,150 +258,212 @@ export const SnipeDetailsScreen = () => {
     </View>
   )
 
+  const reset = useCallback(() => {
+    actions.setSearchText("")
+    actions.setMatchingAccounts(bankAccounts)
+  }, [bankAccounts])
+
+  const ModalBankAccount = ({ bankAccount }) => (
+    <View style={styles.container}>
+      <Icon
+        name="close"
+        style={styles.closeIcon}
+        onPress={toggleBankModal}
+        color={colors.black}
+      />
+
+      {bankAccount?.length && (
+        <SearchBar
+          {...testProps(LL.common.search())}
+          placeholder={LL.common.search()}
+          value={state.searchText}
+          onChangeText={updateMatchingAccounts}
+          platform="default"
+          round
+          autoFocus
+          showLoading={false}
+          containerStyle={styles.searchBarContainer}
+          inputContainerStyle={styles.searchBarInputContainerStyle}
+          inputStyle={styles.searchBarText}
+          rightIconContainerStyle={styles.searchBarRightIconStyle}
+          searchIcon={<Icon name="search" size={24} color={styles.icon.color} />}
+          clearIcon={
+            <Icon name="close" size={24} onPress={reset} color={styles.icon.color} />
+          }
+        />
+      )}
+      <ScrollView>
+        {state.matchingAccounts?.map((account, index) => (
+          <Pressable
+            key={index}
+            onPress={() => {
+              actions.setSelectedBank(account)
+              actions.setOpenBankSelection(false)
+            }}
+            style={styles.cardContainer}
+            // {...testProps(title)}
+          >
+            <View style={styles.spacing}>
+              <Text type="p2">{account?.data?.accountHolderName}</Text>
+              <Text>{account?.data?.iban}</Text>
+
+              <Text type={"p4"} ellipsizeMode="tail" numberOfLines={1}>
+                {account?.data?.currency}
+              </Text>
+            </View>
+          </Pressable>
+        ))}
+      </ScrollView>
+    </View>
+  )
+
   return (
     <Screen preset="fixed">
       <ScrollView style={styles.scrollViewContainer}>
         <View style={styles.walletSelectorContainer}>
           <View style={styles.walletsContainer}>
-            <View style={styles.fieldContainer}>
-              <Text style={styles.fieldTitleText}>{LL.common.from()}</Text>
-              <TouchableWithoutFeedback
-                {...testProps("choose-wallet-to-send-from")}
-                onPress={() => actions.setFromSelection(true)}
-                accessible={false}
-              >
-                <View style={styles.fieldBackground}>
-                  <View style={styles.walletSelectorTypeContainer}>
-                    <View
-                      style={
-                        state.from === WalletCurrency.Btc
-                          ? styles.walletSelectorTypeLabelBitcoin
-                          : styles.walletSelectorTypeLabelUsd
-                      }
-                    >
-                      {state.from === WalletCurrency.Btc ? (
-                        <Text style={styles.walletSelectorTypeLabelBtcText}>BTC</Text>
-                      ) : (
-                        <Text style={styles.walletSelectorTypeLabelUsdText}>USD</Text>
-                      )}
-                    </View>
-                    {console.log("from", state.from)}
-                  </View>
-
-                  <View style={styles.walletSelectorInfoContainer}>
-                    <View style={styles.walletSelectorTypeTextContainer}>
-                      {state.from === WalletCurrency.Btc ? (
-                        <>
-                          <Text style={styles.walletCurrencyText}>
-                            {LL.common.btcAccount()}
-                          </Text>
-                        </>
-                      ) : (
-                        <>
-                          <Text style={styles.walletCurrencyText}>
-                            {LL.common.usdAccount()}
-                          </Text>
-                        </>
-                      )}
-                    </View>
-                    <View style={styles.walletSelectorBalanceContainer}>
-                      <Text {...testProps(`${fromWallet.walletCurrency} Wallet Balance`)}>
-                        {fromWalletBalanceFormatted}
-                      </Text>
-                    </View>
-                  </View>
-
-                  <View style={styles.pickWalletIcon}>
-                    <Icon name={"chevron-down"} size={24} color={colors.black} />
+            <Text style={styles.fieldTitleText}>{LL.common.from()}</Text>
+            <TouchableWithoutFeedback
+              {...testProps("choose-wallet-to-send-from")}
+              onPress={() => actions.setFromSelection(true)}
+              accessible={false}
+            >
+              <View style={styles.fieldBackground}>
+                <View style={styles.walletSelectorTypeContainer}>
+                  <View
+                    style={
+                      state.from === WalletCurrency.Btc
+                        ? styles.walletSelectorTypeLabelBitcoin
+                        : styles.walletSelectorTypeLabelUsd
+                    }
+                  >
+                    {state.from === WalletCurrency.Btc ? (
+                      <Text style={styles.walletSelectorTypeLabelBtcText}>BTC</Text>
+                    ) : (
+                      <Text style={styles.walletSelectorTypeLabelUsdText}>USD</Text>
+                    )}
                   </View>
                 </View>
-              </TouchableWithoutFeedback>
-              <ReactNativeModal
-                style={styles.modal}
-                animationIn="fadeInDown"
-                animationOut="fadeOutUp"
-                isVisible={state.openFromSelection}
-                onBackButtonPress={toggleModal}
-                onBackdropPress={toggleModal}
-              >
-                <View>
-                  {[WalletCurrency.Btc, WalletCurrency.Usd].map((wallet) => {
-                    return <ModalWalletCard wallet={wallet} selectedWallet={state.from} />
-                  })}
-                  {/* {ModalWalletCard(toWallet)} */}
+
+                <View style={styles.walletSelectorInfoContainer}>
+                  <View style={styles.walletSelectorTypeTextContainer}>
+                    {state.from === WalletCurrency.Btc ? (
+                      <>
+                        <Text style={styles.walletCurrencyText}>
+                          {LL.common.btcAccount()}
+                        </Text>
+                      </>
+                    ) : (
+                      <>
+                        <Text style={styles.walletCurrencyText}>
+                          {LL.common.usdAccount()}
+                        </Text>
+                      </>
+                    )}
+                  </View>
+                  <View style={styles.walletSelectorBalanceContainer}>
+                    <Text {...testProps(`${fromWallet.walletCurrency} Wallet Balance`)}>
+                      {fromWalletBalanceFormatted}
+                    </Text>
+                  </View>
                 </View>
-              </ReactNativeModal>
-            </View>
-            <View style={styles.line}></View>
-            <View style={styles.toFieldContainer}>
-              <View style={styles.walletSelectorInfoContainer}>
-                {toWallet.walletCurrency === WalletCurrency.Btc ? (
-                  <Text
-                    style={styles.walletCurrencyText}
-                  >{`${LL.common.to()} ${LL.common.btcAccount()}`}</Text>
-                ) : (
-                  <Text
-                    style={styles.walletCurrencyText}
-                  >{`${LL.common.to()} ${LL.common.usdAccount()}`}</Text>
-                )}
-                <View style={styles.walletSelectorBalanceContainer}>
-                  <Text>{toWalletBalanceFormatted}</Text>
+
+                <View style={styles.pickWalletIcon}>
+                  <Icon name={"chevron-down"} size={24} color={colors.black} />
                 </View>
               </View>
-            </View>
+            </TouchableWithoutFeedback>
+            <ReactNativeModal
+              style={styles.modal}
+              animationIn="fadeInDown"
+              animationOut="fadeOutUp"
+              isVisible={state.openFromSelection}
+              onBackButtonPress={toggleModal}
+              onBackdropPress={toggleModal}
+            >
+              <View>
+                {[WalletCurrency.Btc, WalletCurrency.Usd].map((wallet) => {
+                  return <ModalWalletCard wallet={wallet} selectedWallet={state.from} />
+                })}
+                {/* {ModalWalletCard(toWallet)} */}
+              </View>
+            </ReactNativeModal>
           </View>
         </View>
-        <View style={styles.fieldContainer}>
-          <AmountInput
-            unitOfAccountAmount={moneyAmount}
-            walletCurrency={fromWallet.walletCurrency}
-            setAmount={setMoneyAmount}
-            convertMoneyAmount={convertMoneyAmount}
-          />
+        <View style={styles.walletSelectorContainer}>
+          <View style={styles.walletsContainer}>
+            <Text style={styles.fieldTitleText}>{LL.common.bankAccount()}</Text>
+            <TouchableWithoutFeedback
+              {...testProps("choose-wallet-to-send-from")}
+              onPress={() => actions.setOpenBankSelection(true)}
+              accessible={false}
+            >
+              <View style={styles.fieldBackground}>
+                <View style={styles.walletSelectorInfoContainer}>
+                  <View style={styles.walletSelectorTypeTextContainer}>
+                    <Text style={styles.walletCurrencyText}>
+                      {state?.selectedBank?.data?.accountHolderName}
+                    </Text>
+                  </View>
+                  <View style={styles.walletSelectorBalanceContainer}>
+                    <Text {...testProps(`${fromWallet.walletCurrency} Wallet Balance`)}>
+                      {state?.selectedBank?.data?.iban}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={styles.pickWalletIcon}>
+                  <Icon name={"chevron-down"} size={24} color={colors.black} />
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+            <ReactNativeModal
+              style={styles.bankModal}
+              animationIn="fadeInDown"
+              animationOut="fadeOutUp"
+              isVisible={state.openBankSelection}
+              onBackButtonPress={toggleBankModal}
+              onBackdropPress={toggleBankModal}
+            >
+              <ModalBankAccount bankAccount={bankAccounts} />
+            </ReactNativeModal>
+          </View>
+        </View>
+
+        <View style={[styles.fieldContainer, styles.amountContainer]}>
+          <Text style={styles.fieldTitleText}>{LL.SnipeDetailsScreen.amount()}</Text>
+          <View style={styles.amountInputContainer}>
+            <Text style={styles.primaryCurrencySymbol}>$</Text>
+
+            <Input
+              value={state.amount}
+              showSoftInputOnFocus={false}
+              onChangeText={(e) => {
+                // remove commas for ease of calculation later on
+                const val = e.replaceAll(",", "")
+                // TODO adjust for currencies that use commas instead of decimals
+
+                // test for string input that can be either numerical or float
+                if (/^\d*\.?\d*$/.test(val.trim())) {
+                  const num = Number(val)
+                  actions.setAmount(num.toString())
+                } else {
+                  actions.setAmount("")
+                }
+              }}
+              containerStyle={styles.numberContainer}
+              inputStyle={styles.numberText}
+              placeholder="0"
+              placeholderTextColor={colors.grey3}
+              inputContainerStyle={styles.numberInputContainer}
+              renderErrorMessage={false}
+            />
+          </View>
           {amountFieldError && (
             <View style={styles.errorContainer}>
               <Text color={colors.error}>{amountFieldError}</Text>
             </View>
           )}
-        </View>
-        <View style={styles.fieldContainer}>
-          <View style={styles.percentageLabelContainer}>
-            <Text style={styles.percentageFieldLabel}>
-              {LL.TransferScreen.percentageToConvert()}
-            </Text>
-          </View>
-          <View style={styles.percentageContainer}>
-            <View style={styles.percentageFieldContainer}>
-              <TouchableOpacity
-                {...testProps("convert-25%")}
-                style={styles.percentageField}
-                onPress={() => setAmountToBalancePercentage(25)}
-              >
-                <Text>25%</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                {...testProps("convert-50%")}
-                style={styles.percentageField}
-                onPress={() => setAmountToBalancePercentage(50)}
-              >
-                <Text>50%</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                {...testProps("convert-75%")}
-                style={styles.percentageField}
-                onPress={() => setAmountToBalancePercentage(75)}
-              >
-                <Text>75%</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                {...testProps("convert-100%")}
-                style={styles.percentageField}
-                onPress={() => setAmountToBalancePercentage(100)}
-              >
-                <Text>100%</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
         </View>
       </ScrollView>
       <GaloyPrimaryButton
@@ -550,5 +630,82 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   modal: {
     marginBottom: "90%",
+  },
+  spacing: {
+    paddingHorizontal: 16,
+    paddingRight: 12,
+    paddingVertical: 12,
+    flex: 1,
+  },
+  container: {
+    height: "100%",
+    marginHorizontal: 20,
+    paddingBottom: 30,
+    paddingTop: 60,
+  },
+  bankModal: {
+    marginHorizontal: 20,
+    marginVertical: 40,
+    borderRadius: 20,
+    backgroundColor: colors.white,
+  },
+  cardContainer: {
+    backgroundColor: colors.grey5,
+    borderRadius: 12,
+    marginBottom: 20,
+    height: 80,
+  },
+  searchBarContainer: {
+    backgroundColor: colors.white,
+    borderBottomColor: colors.white,
+    borderTopColor: colors.white,
+    marginVertical: 8,
+  },
+  searchBarInputContainerStyle: {
+    backgroundColor: colors.grey5,
+  },
+  searchBarRightIconStyle: {
+    padding: 8,
+  },
+  searchBarText: {
+    color: colors.black,
+    textDecorationLine: "none",
+  },
+  icon: {
+    color: colors.black,
+  },
+  closeIcon: {
+    fontSize: 40,
+    alignItems: "flex-end",
+    position: "absolute",
+    right: -10,
+    top: 16,
+  },
+  numberText: {
+    fontSize: 20,
+    flex: 1,
+    fontWeight: "bold",
+  },
+  numberContainer: {
+    flex: 1,
+  },
+  numberInputContainer: {
+    borderBottomWidth: 0,
+  },
+  amountContainer: {
+    flexDirection: "column",
+    backgroundColor: colors.grey5,
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+  },
+  primaryCurrencySymbol: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  amountInputContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
   },
 }))

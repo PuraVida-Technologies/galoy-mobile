@@ -96,7 +96,12 @@ const en: BaseTranslation = {
   SnipeDetailsScreen: {
       title: "Snipe IBAN transfer",
       percentageToConvert: "% to convert",
+      amount: "Amount",
     },
+  SnipeConfirmationScreen: {
+    title: "Review Snipe IBAN transfer",
+    amount: "Amount",
+  },
   EarnScreen: {
     earnSats: "Earn {formattedNumber|sats}",
     earnSections: {
