@@ -1,113 +1,52 @@
-import React, { useState } from "react"
-import { Text, View } from "react-native"
+import React from "react"
+import { Modal, Text, View } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { Screen } from "@app/components/screen"
-import { useConversionScreenQuery, WalletCurrency } from "@app/graphql/generated"
-import { useIsAuthed } from "@app/graphql/is-authed-context"
-import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
-import { usePriceConversion } from "@app/hooks"
-import { useDisplayCurrency } from "@app/hooks/use-display-currency"
-import { useI18nContext } from "@app/i18n/i18n-react"
+import { WalletCurrency } from "@app/graphql/generated"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { DisplayCurrency } from "@app/types/amounts"
-import { WalletDescriptor } from "@app/types/wallets"
-import { NavigationProp, RouteProp, useNavigation } from "@react-navigation/native"
-import { makeStyles } from "@rneui/themed"
-import { gql } from "@apollo/client"
+import { RouteProp, useNavigation } from "@react-navigation/native"
+import useStyles from "./styles/snipe-confirmation"
+import useSnipeConfirmation from "./hooks/useSnipeConfirmation"
+import { AnimatedRollingNumber } from "react-native-animated-rolling-numbers"
+import {
+  CompletedTextAnimation,
+  SuccessIconAnimation,
+} from "@app/components/success-animation"
+import { GaloyIcon } from "@app/components/atomic/galoy-icon"
+import { testProps } from "@app/utils/testProps"
 
 type Props = {
   route: RouteProp<RootStackParamList, "snipeConfirmation">
 }
 
-gql`
-  query getWithdrawalContract(
-    $bankAccountId: String!
-    $sourceWalletId: String!
-    $targetAmount: BigDecimal!
-    $targetCurrency: AnyCurrency
-  ) {
-    getWithdrawalContract(
-      input: {
-        bankAccountId: $bankAccountId
-        sourceWalletId: $sourceWalletId
-        targetAmount: $targetAmount
-        targetCurrency: $targetCurrency
-      }
-    ) {
-      amounts
-      bankAccount
-      exchangeWallet
-      feeExplanation
-      id
-      sourceWallet
-      tokenDetails
-    }
-  }
-`
-
-gql`
-  mutation executeWithdrawalContract($token: String!) {
-    executeWithdrawalContract(input: { token: $token }) {
-      amounts
-      bankAccount
-      bankAccountTransaction
-      exchangeWallet
-      feeExplanation
-      id
-      sourceWallet
-      sourceWalletTransaction
-      tokenDetails
-    }
-  }
-`
-
 export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
   const styles = useStyles()
-  const navigation =
-    useNavigation<NavigationProp<RootStackParamList, "snipeConfirmation">>()
+  const { state, actions } = useSnipeConfirmation({ route })
+  const navigation = useNavigation()
 
-  const { formatMoneyAmount, displayCurrency } = useDisplayCurrency()
-  const { convertMoneyAmount } = usePriceConversion()
-
-  const { fromWalletCurrency, moneyAmount, fromAccountBalance, bankAccount } =
-    route.params
-  const [errorMessage, setErrorMessage] = useState<string | undefined>()
-  const isAuthed = useIsAuthed()
-
-  const isLoading = false
-  const { LL } = useI18nContext()
-
-  let fromWallet: WalletDescriptor<WalletCurrency>
-  let toWallet: WalletDescriptor<WalletCurrency>
-
-  const { data } = useConversionScreenQuery({
-    fetchPolicy: "cache-first",
-    skip: !isAuthed,
-  })
-
-  const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
-  const usdWallet = getUsdWallet(data?.me?.defaultAccount?.wallets)
-
-  if (!data?.me || !usdWallet || !btcWallet || !convertMoneyAmount) {
+  const {
+    LL,
+    fromWalletCurrency,
+    bankAccount,
+    fromAccountBalance,
+    toAmount,
+    fromAmount,
+    isLoading,
+    errorMessage,
+    fromWallet,
+    toWallet,
+  } = state
+  if (
+    !state.data?.me ||
+    !state.usdWallet ||
+    !state.btcWallet ||
+    !actions.convertMoneyAmount
+  ) {
     // TODO: handle errors and or provide some loading state
     return null
-  }
-
-  if (fromWalletCurrency === WalletCurrency.Btc) {
-    fromWallet = { id: btcWallet.id, currency: WalletCurrency.Btc }
-    toWallet = { id: usdWallet.id, currency: WalletCurrency.Usd }
-  } else {
-    fromWallet = { id: usdWallet.id, currency: WalletCurrency.Usd }
-    toWallet = { id: btcWallet.id, currency: WalletCurrency.Btc }
-  }
-
-  const fromAmount = convertMoneyAmount(moneyAmount, fromWallet.currency)
-  const toAmount = convertMoneyAmount(moneyAmount, toWallet.currency)
-
-  const payWallet = async () => {
-    console.log("clicked")
   }
 
   return (
@@ -135,17 +74,32 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
               {LL.SnipeConfirmationScreen.amount()}
             </Text>
             <Text style={styles.snipeInfoFieldValue}>
-              {formatMoneyAmount({ moneyAmount: toAmount })}
+              {actions?.formatMoneyAmount({ moneyAmount: toAmount })} of bitcoin
             </Text>
-            <Text style={styles.snipeInfoSubFieldValue}>
-              {formatMoneyAmount({ moneyAmount: fromAmount })}
-              {displayCurrency !== fromWallet.currency &&
-              displayCurrency !== toWallet.currency
-                ? ` - ${formatMoneyAmount({
-                    moneyAmount: convertMoneyAmount(moneyAmount, DisplayCurrency),
-                  })}`
-                : ""}
-            </Text>
+            {state.fromWalletCurrency === WalletCurrency.Btc && (
+              <View style={{ flexDirection: "row" }}>
+                <Text style={styles.snipeInfoFieldTitle}>At $</Text>
+                <AnimatedRollingNumber
+                  value={Number(state?.btcPriceInUsd)}
+                  useGrouping
+                  compactToFixed={2}
+                  textStyle={styles.snipeInfoFieldTitle}
+                />
+                <Text style={styles.snipeInfoFieldTitle}> / BTC</Text>
+              </View>
+            )}
+            <View style={styles.sellAmountContainer}>
+              <Text style={styles.snipeInfoFieldTitle}>Sell Amount</Text>
+              <View style={styles.sellAmount}>
+                <AnimatedRollingNumber
+                  value={Number(state?.sellAmountInBtc)}
+                  useGrouping
+                  compactToFixed={6}
+                  textStyle={styles.snipeInfoFieldTitle}
+                />
+                <Text style={styles.snipeInfoFieldTitle}> BTC</Text>
+              </View>
+            </View>
           </View>
         </View>
         {errorMessage && (
@@ -154,47 +108,60 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
           </View>
         )}
       </ScrollView>
+      <View style={[styles.snipeInfoCard, styles.totalAmountContainer]}>
+        <View>
+          <Text style={styles.snipeInfoFieldValue}>{LL.common.total()}</Text>
+
+          <View style={styles.sellAmount}>
+            <Text style={styles.snipeInfoFieldTitle}>
+              {LL.common.includes().slice(0, 3)}. $
+            </Text>
+            <AnimatedRollingNumber
+              value={Number(state.feesInUSD)}
+              useGrouping
+              compactToFixed={2}
+              textStyle={styles.snipeInfoFieldTitle}
+            />
+            <Text style={styles.snipeInfoFieldTitle}> {LL.common.fee()}</Text>
+          </View>
+        </View>
+        <View style={styles.sellAmount}>
+          <Text style={styles.snipeInfoFieldValue}> $</Text>
+          <AnimatedRollingNumber
+            value={Number(state.totalInUSD)}
+            useGrouping
+            compactToFixed={2}
+            textStyle={styles.snipeInfoFieldValue}
+          />
+        </View>
+      </View>
       <GaloyPrimaryButton
-        title={LL.common.transfer()}
+        title={LL.common.withdraw()}
         containerStyle={styles.buttonContainer}
         disabled={isLoading}
-        onPress={payWallet}
+        onPress={actions?.onWithdraw}
         loading={isLoading}
       />
+      <Modal visible={state.success}>
+        <View style={styles.container}>
+          <SuccessIconAnimation>
+            <GaloyIcon name={"payment-success"} size={128} />
+          </SuccessIconAnimation>
+
+          <CompletedTextAnimation>
+            <Text {...testProps("Success Text")} style={styles.completedText}>
+              {LL.SendBitcoinScreen.success()}
+            </Text>
+          </CompletedTextAnimation>
+          <GaloyPrimaryButton
+            title={LL.common.backHome()}
+            containerStyle={styles.paymentSuccessBtn}
+            disabled={isLoading}
+            onPress={actions?.navigateToHomeScreen}
+            loading={isLoading}
+          />
+        </View>
+      </Modal>
     </Screen>
   )
 }
-
-const useStyles = makeStyles(({ colors }) => ({
-  scrollViewContainer: {
-    flexDirection: "column",
-  },
-  snipeInfoCard: {
-    margin: 20,
-    backgroundColor: colors.grey5,
-    borderRadius: 10,
-    padding: 20,
-  },
-  snipeInfoField: {
-    marginBottom: 20,
-  },
-  snipeInfoFieldTitle: { color: colors.grey1 },
-  snipeInfoFieldValue: {
-    color: colors.grey0,
-    fontWeight: "bold",
-    fontSize: 18,
-  },
-  snipeInfoSubFieldValue: {
-    color: colors.grey0,
-    fontWeight: "500",
-    fontSize: 14,
-  },
-  buttonContainer: { marginHorizontal: 20, marginBottom: 20 },
-  errorContainer: {
-    marginBottom: 10,
-  },
-  errorText: {
-    color: colors.error,
-    textAlign: "center",
-  },
-}))

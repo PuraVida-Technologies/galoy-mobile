@@ -8242,6 +8242,10 @@ type RootTranslation = {
 		 */
 		community: string
 		/**
+		 * W​i​t​h​d​r​a​w
+		 */
+		withdraw: string
+		/**
 		 * A​c​c​o​u​n​t
 		 */
 		account: string
@@ -8391,6 +8395,10 @@ type RootTranslation = {
 		 * F​e​e​s
 		 */
 		fees: string
+		/**
+		 * I​n​c​l​u​d​e​s
+		 */
+		includes: string
 		/**
 		 * F​i​r​s​t​ ​N​a​m​e
 		 */
@@ -17636,6 +17644,10 @@ export type TranslationFunctions = {
 		 */
 		community: () => LocalizedString
 		/**
+		 * Withdraw
+		 */
+		withdraw: () => LocalizedString
+		/**
 		 * Account
 		 */
 		account: () => LocalizedString
@@ -17783,6 +17795,10 @@ export type TranslationFunctions = {
 		 * Fees
 		 */
 		fees: () => LocalizedString
+		/**
+		 * Includes
+		 */
+		includes: () => LocalizedString
 		/**
 		 * First Name
 		 */

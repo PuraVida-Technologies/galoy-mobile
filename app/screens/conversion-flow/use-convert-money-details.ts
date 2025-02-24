@@ -42,6 +42,8 @@ export const useConvertMoneyDetails = (params?: UseConvertMoneyDetailsParams) =>
   const [moneyAmount, setMoneyAmount] =
     React.useState<MoneyAmount<WalletOrDisplayCurrency>>(zeroDisplayAmount)
 
+  const [isModalVisible, setIsModalVisible] = React.useState<boolean>(false)
+
   const setWallets = (wallets: {
     fromWallet: WalletFragment
     toWallet: WalletFragment
@@ -122,5 +124,7 @@ export const useConvertMoneyDetails = (params?: UseConvertMoneyDetailsParams) =>
       settlementSendAmount.amount <= fromWallet.balance &&
       settlementSendAmount.amount > 0,
     ...toggleWallet,
+    isModalVisible,
+    setIsModalVisible,
   }
 }

@@ -28,11 +28,11 @@ generates:
       scalars:
         AccountApiKeyLabel: "string"
         AuthToken: "string"
-        BigDecimal: "number"
         CentAmount: "number"
         ContactAlias: "string"
         Hex32Bytes: "string"
         Language: "string"
+        BigDecimal: "string"
         LnPaymentPreImage: "string"
         LnPaymentRequest: "string"
         LnPaymentSecret: "string"

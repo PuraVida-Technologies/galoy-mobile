@@ -106,6 +106,7 @@
     "react-hook-form": "^7.54.2",
     "react-native": "0.73.6",
     "react-native-animated-pagination-dots": "^0.1.73",
+    "react-native-animated-rolling-numbers": "^2.0.0",
     "react-native-bootsplash": "^5.5.3",
     "react-native-config": "^1.5.1",
     "react-native-countdown-circle-timer": "^3.2.1",
