@@ -69,7 +69,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
             </Text>
             <Text style={styles.snipeInfoSubFieldValue}>{bankAccount.iban}</Text>
           </View>
-          <View style={styles.snipeInfoField}>
+          <View>
             <Text style={styles.snipeInfoFieldTitle}>
               {LL.SnipeConfirmationScreen.amount()}
             </Text>
