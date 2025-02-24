@@ -205,7 +205,7 @@ export const SnipeDetailsScreen = () => {
       <GaloyPrimaryButton
         title={LL.common.next()}
         containerStyle={styles.buttonContainer}
-        // disabled={!state.isValidAmount}
+        disabled={!state.isValidAmount}
         onPress={actions.moveToNextScreen}
       />
     </Screen>

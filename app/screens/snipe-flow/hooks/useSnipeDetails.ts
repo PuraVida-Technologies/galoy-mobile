@@ -106,7 +106,7 @@ const useSnipeDetails = () => {
     },
     noSymbol: true,
   })
-console.log(formattedAmount, fromWalletBalance, data?.me?.defaultAccount?.wallets, amount)
+
   const amountFieldError = useMemo(() => {
     if (fromWalletBalance.amount < parseFloat(amount)) {
       return LL.SendBitcoinScreen.amountExceed({
