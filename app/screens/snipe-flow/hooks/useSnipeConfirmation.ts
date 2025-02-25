@@ -115,6 +115,7 @@ const useSnipeConfirmation = ({ route }: Props) => {
   const navigation = useNavigation()
   const { formatMoneyAmount, displayCurrency } = useDisplayCurrency()
   const { convertMoneyAmount } = usePriceConversion()
+
   const {
     fromWalletCurrency,
     moneyAmount,
@@ -122,13 +123,13 @@ const useSnipeConfirmation = ({ route }: Props) => {
     btcWallet: wallet,
     bankAccount,
   } = route.params
-  const [accountDefaultWalletQuery, { data: contract, loading }] =
+  const [accountDefaultWalletQuery, { data: contract, loading, error }] =
     useGetWithdrawalContractLazyQuery({
       variables: {
         input: {
-          amount: moneyAmount?.amount,
+          amount: (moneyAmount?.amount * 100).toString(),
           bankAccountId: bankAccount?.id,
-          targetCurrency: moneyAmount?.currency,
+          targetCurrency: WalletCurrency.Usd,
           walletId: wallet.id,
         },
       },
@@ -139,6 +140,12 @@ const useSnipeConfirmation = ({ route }: Props) => {
   useEffect(() => {
     accountDefaultWalletQuery({ fetchPolicy: "network-only" })
   }, [])
+
+  useEffect(() => {
+    if (error) {
+      navigation.goBack()
+    }
+  }, [error])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -185,13 +192,15 @@ const useSnipeConfirmation = ({ route }: Props) => {
   }, [contract?.getWithdrawalContract?.amounts?.target?.btcSatPrice])
 
   const sellAmountInBtc = useMemo(() => {
-    return (moneyAmount.amount / 1000000).toFixed(8)
-  }, [contract?.getWithdrawalContract?.amounts?.target?.btcSatPrice])
+    return ((contract?.getWithdrawalContract.amounts.target.amount || 0) / 100).toFixed(2)
+  }, [contract?.getWithdrawalContract?.amounts?.target?.amount])
   const feesInUSD = useMemo(() => {
     return ((contract?.getWithdrawalContract.amounts.fee.amount || 0) / 100).toFixed(2)
   }, [contract?.getWithdrawalContract.amounts.fee.amount])
   const totalInUSD = useMemo(() => {
-    return ((contract?.getWithdrawalContract.amounts.walletDebit.amount || 0) / 100).toFixed(2)
+    return (
+      (contract?.getWithdrawalContract.amounts.walletDebit.amount || 0) / 100
+    ).toFixed(2)
   }, [contract?.getWithdrawalContract.amounts.walletDebit.amount])
 
   const onWithdraw = useCallback(async () => {

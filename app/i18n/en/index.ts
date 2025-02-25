@@ -2835,6 +2835,7 @@ const en: BaseTranslation = {
     bank: "Bank",
     addBankAccount: "Add Bank Account",
     bankAccount: "Bank Account",
+    toBankAccount: "To Bank Account",
     bankAccounts: "Bank Accounts",
     bankAdvice: "{bankName: string} Advice",
     bankInfo: "{bankName: string} Info",

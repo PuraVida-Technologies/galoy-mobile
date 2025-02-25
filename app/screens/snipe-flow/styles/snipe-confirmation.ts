@@ -7,13 +7,16 @@ const useStyles = makeStyles(({ colors }) => ({
   snipeInfoCard: {
     margin: 20,
     backgroundColor: colors.grey5,
-    borderRadius: 10,
+    borderRadius: 16,
     padding: 20,
   },
   snipeInfoField: {
     marginBottom: 20,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderColor: colors.grey4,
   },
-  snipeInfoFieldTitle: { color: colors.grey1 },
+  snipeInfoFieldTitle: { color: colors.grey1, marginBottom: 4 },
   snipeInfoFieldValue: {
     color: colors.grey0,
     fontWeight: "bold",

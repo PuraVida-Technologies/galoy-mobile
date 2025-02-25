@@ -8294,6 +8294,10 @@ type RootTranslation = {
 		 */
 		bankAccount: string
 		/**
+		 * T​o​ ​B​a​n​k​ ​A​c​c​o​u​n​t
+		 */
+		toBankAccount: string
+		/**
 		 * B​a​n​k​ ​A​c​c​o​u​n​t​s
 		 */
 		bankAccounts: string
@@ -17695,6 +17699,10 @@ export type TranslationFunctions = {
 		 * Bank Account
 		 */
 		bankAccount: () => LocalizedString
+		/**
+		 * To Bank Account
+		 */
+		toBankAccount: () => LocalizedString
 		/**
 		 * Bank Accounts
 		 */

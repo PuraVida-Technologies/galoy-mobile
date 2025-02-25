@@ -113,7 +113,7 @@ export const SnipeDetailsScreen = () => {
         </View>
         <View style={styles.walletSelectorContainer}>
           <View style={styles.walletsContainer}>
-            <Text style={styles.fieldTitleText}>{LL.common.bankAccount()}</Text>
+            <Text style={styles.fieldTitleText}>{LL.common.toBankAccount()}</Text>
             <TouchableWithoutFeedback
               {...testProps("choose-wallet-to-send-from")}
               onPress={() => actions.setOpenBankSelection(true)}
@@ -167,9 +167,7 @@ export const SnipeDetailsScreen = () => {
         <View style={[styles.fieldContainer, styles.amountContainer]}>
           <Text style={styles.fieldTitleText}>{LL.SnipeDetailsScreen.amount()}</Text>
           <View style={styles.amountInputContainer}>
-            <Text style={styles.primaryCurrencySymbol}>
-              {state.from === WalletCurrency.Btc ? "SAT" : "$"}
-            </Text>
+            <Text style={styles.primaryCurrencySymbol}>$</Text>
 
             <Input
               value={state.amount}

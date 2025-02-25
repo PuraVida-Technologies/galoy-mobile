@@ -63,7 +63,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
             <Text style={styles.snipeInfoSubFieldValue}>{fromAccountBalance}</Text>
           </View>
           <View style={styles.snipeInfoField}>
-            <Text style={styles.snipeInfoFieldTitle}>{LL.common.bankAccount()}</Text>
+            <Text style={styles.snipeInfoFieldTitle}>{LL.common.toBankAccount()}</Text>
             <Text style={styles.snipeInfoFieldValue}>
               {bankAccount.accountHolderName}
             </Text>
@@ -73,9 +73,16 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
             <Text style={styles.snipeInfoFieldTitle}>
               {LL.SnipeConfirmationScreen.amount()}
             </Text>
-            <Text style={styles.snipeInfoFieldValue}>
-              {actions?.formatMoneyAmount({ moneyAmount: toAmount })} of bitcoin
-            </Text>
+            <View style={{ flexDirection: "row" }}>
+            <Text style={styles.snipeInfoFieldValue}>$ </Text>
+              <AnimatedRollingNumber
+                value={Number(state?.sellAmountInBtc)}
+                useGrouping
+                compactToFixed={2}
+                textStyle={styles.snipeInfoFieldValue}
+              />
+              <Text style={styles.snipeInfoFieldValue}> of bitcoin</Text>
+            </View>
             {state.fromWalletCurrency === WalletCurrency.Btc && (
               <View style={{ flexDirection: "row" }}>
                 <Text style={styles.snipeInfoFieldTitle}>At $</Text>
@@ -88,18 +95,6 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
                 <Text style={styles.snipeInfoFieldTitle}> / BTC</Text>
               </View>
             )}
-            <View style={styles.sellAmountContainer}>
-              <Text style={styles.snipeInfoFieldTitle}>Sell Amount</Text>
-              <View style={styles.sellAmount}>
-                <AnimatedRollingNumber
-                  value={Number(state?.sellAmountInBtc)}
-                  useGrouping
-                  compactToFixed={6}
-                  textStyle={styles.snipeInfoFieldTitle}
-                />
-                <Text style={styles.snipeInfoFieldTitle}> BTC</Text>
-              </View>
-            </View>
           </View>
         </View>
         {errorMessage && (
