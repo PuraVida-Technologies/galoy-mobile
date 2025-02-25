@@ -81,7 +81,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
                 compactToFixed={2}
                 textStyle={styles.snipeInfoFieldValue}
               />
-              <Text style={styles.snipeInfoFieldValue}> of bitcoin</Text>
+              <Text style={styles.snipeInfoFieldValue}></Text>
             </View>
             {state.fromWalletCurrency === WalletCurrency.Btc && (
               <View style={{ flexDirection: "row" }}>

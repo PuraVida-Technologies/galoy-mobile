@@ -211,6 +211,9 @@ const useSnipeConfirmation = ({ route }: Props) => {
             input: { token: contract?.getWithdrawalContract?.tokenDetails?.body || "" },
           },
         })
+        if (res?.data?.executeWithdrawalContract?.id) {
+          setSuccess(true)
+        }
       }
     } catch (error) {
       console.error(error)
