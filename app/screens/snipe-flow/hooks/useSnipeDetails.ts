@@ -130,7 +130,7 @@ const useSnipeDetails = () => {
         id: selectedBank?.id || "",
       },
       fromAccountBalance: fromWalletBalanceFormatted,
-      btcWallet
+      wallet: from === WalletCurrency.Btc ? btcWallet : usdWallet,
     })
   }
 

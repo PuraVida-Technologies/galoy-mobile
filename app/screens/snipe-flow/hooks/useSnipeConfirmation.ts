@@ -116,13 +116,8 @@ const useSnipeConfirmation = ({ route }: Props) => {
   const { formatMoneyAmount, displayCurrency } = useDisplayCurrency()
   const { convertMoneyAmount } = usePriceConversion()
 
-  const {
-    fromWalletCurrency,
-    moneyAmount,
-    fromAccountBalance,
-    btcWallet: wallet,
-    bankAccount,
-  } = route.params
+  const { fromWalletCurrency, moneyAmount, fromAccountBalance, wallet, bankAccount } =
+    route.params
   const [accountDefaultWalletQuery, { data: contract, loading, error }] =
     useGetWithdrawalContractLazyQuery({
       variables: {
