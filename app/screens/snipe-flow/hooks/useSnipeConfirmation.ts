@@ -1,5 +1,6 @@
 import { gql } from "@apollo/client"
 import {
+  HomeAuthedDocument,
   useConversionScreenQuery,
   useExecuteWithdrawalContractMutation,
   useGetWithdrawalContractLazyQuery,
@@ -11,7 +12,7 @@ import { usePriceConversion } from "@app/hooks"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { useNavigation } from "@react-navigation/native"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 gql`
   mutation ExecuteWithdrawalContract($input: ExecuteWithdrawalContract!) {
@@ -115,6 +116,7 @@ const useSnipeConfirmation = ({ route }: Props) => {
   const navigation = useNavigation()
   const { formatMoneyAmount, displayCurrency } = useDisplayCurrency()
   const { convertMoneyAmount } = usePriceConversion()
+  const interval = useRef<NodeJS.Timeout>()
 
   const { fromWalletCurrency, moneyAmount, fromAccountBalance, wallet, bankAccount } =
     route.params
@@ -130,7 +132,9 @@ const useSnipeConfirmation = ({ route }: Props) => {
       },
     })
   const [executeWithdrawalContract, { data: withdrawal, loading: withdrawing }] =
-    useExecuteWithdrawalContractMutation({})
+    useExecuteWithdrawalContractMutation({
+      refetchQueries: [HomeAuthedDocument],
+    })
 
   useEffect(() => {
     accountDefaultWalletQuery({ fetchPolicy: "network-only" })
@@ -143,11 +147,17 @@ const useSnipeConfirmation = ({ route }: Props) => {
   }, [error])
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    interval.current = setInterval(() => {
       accountDefaultWalletQuery({ fetchPolicy: "network-only" })
     }, 15000)
-    return () => clearInterval(interval)
+    return () => clearInterval(interval.current)
   }, [accountDefaultWalletQuery])
+
+  useEffect(() => {
+    if (success) {
+      clearInterval(interval.current)
+    }
+  }, [success, interval.current])
 
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const isAuthed = useIsAuthed()
