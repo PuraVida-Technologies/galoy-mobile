@@ -16557,6 +16557,10 @@ export type TranslationFunctions = {
 		 */
 		amount: () => LocalizedString
 		/**
+		 * remaining daily limit
+		 */
+		remainingDailyLimit: () => LocalizedString
+		/**
 		 * Amount exceeds your balance of {balance}
 		 */
 		amountExceed: (arg: { balance: string }) => LocalizedString
