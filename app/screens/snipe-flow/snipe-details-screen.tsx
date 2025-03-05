@@ -163,12 +163,6 @@ export const SnipeDetailsScreen = () => {
             </ReactNativeModal>
           </View>
         </View>
-        <View style={styles.amountContainer}>
-          <Text style={styles.fieldTitleText}>
-            {LL.SendBitcoinScreen.remainingDailyLimit()}
-          </Text>
-          <Text style={styles.primaryCurrencySymbol}>{state.remainingLimit}</Text>
-        </View>
         <View style={[styles.fieldContainer, styles.amountContainer]}>
           <Text style={styles.fieldTitleText}>{LL.SnipeDetailsScreen.amount()}</Text>
           <View style={styles.amountInputContainer}>

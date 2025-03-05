@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client"
 import {
   HomeAuthedDocument,
+  useAccountLimitsQuery,
   useConversionScreenQuery,
   useExecuteWithdrawalContractMutation,
   useGetWithdrawalContractLazyQuery,
@@ -11,7 +12,9 @@ import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
 import { usePriceConversion } from "@app/hooks"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { useNavigation } from "@react-navigation/native"
+import { RootStackParamList } from "@app/navigation/stack-param-lists"
+import { DisplayCurrency, toUsdMoneyAmount } from "@app/types/amounts"
+import { RouteProp, useNavigation } from "@react-navigation/native"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 gql`
@@ -165,6 +168,11 @@ const useSnipeConfirmation = ({ route }: Props) => {
   const isLoading = false
   const { LL } = useI18nContext()
 
+  const { data: limitData } = useAccountLimitsQuery({
+    fetchPolicy: "no-cache",
+    skip: !useIsAuthed(),
+  })
+
   const { data } = useConversionScreenQuery({
     fetchPolicy: "cache-first",
     skip: !isAuthed,
@@ -230,6 +238,33 @@ const useSnipeConfirmation = ({ route }: Props) => {
     setSuccess(false)
   }
 
+  const remainingLimit = useMemo(() => {
+    return limitData?.me?.defaultAccount?.limits?.withdrawal?.[0]?.remainingLimit || 0
+  }, [limitData?.me?.defaultAccount?.limits?.withdrawal?.[0]?.remainingLimit])
+
+  const usdRemainingLimitMoneyAmount =
+    typeof remainingLimit === "number"
+      ? convertMoneyAmount?.(toUsdMoneyAmount(remainingLimit), DisplayCurrency)
+      : null
+
+  const remainingLimitText = usdRemainingLimitMoneyAmount
+    ? `${formatMoneyAmount({
+        moneyAmount: usdRemainingLimitMoneyAmount,
+      })}`
+    : ""
+
+  const amountFieldError = useMemo(() => {
+    if (remainingLimit < parseFloat(totalInUSD)) {
+      return LL.SendBitcoinScreen.amountExceedsLimit({
+        limit: usdRemainingLimitMoneyAmount
+          ? formatMoneyAmount({
+              moneyAmount: usdRemainingLimitMoneyAmount,
+            })
+          : "",
+      })
+    }
+    return null
+  }, [remainingLimit, totalInUSD, LL.SendBitcoinScreen, usdRemainingLimitMoneyAmount])
   return {
     state: {
       LL,
@@ -251,6 +286,8 @@ const useSnipeConfirmation = ({ route }: Props) => {
       success,
       feesInUSD,
       totalInUSD,
+      remainingLimit: remainingLimitText,
+      amountFieldError,
     },
     actions: {
       onWithdraw,

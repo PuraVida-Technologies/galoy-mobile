@@ -30,6 +30,7 @@ const useStyles = makeStyles(({ colors }) => ({
   buttonContainer: { marginHorizontal: 20, marginBottom: 20 },
   errorContainer: {
     marginBottom: 10,
+    alignItems: "center",
   },
   errorText: {
     color: colors.error,
@@ -64,6 +65,19 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   paymentSuccessBtn: {
     marginTop: 34,
+  },
+  remainingLimitContainer: {
+    justifyContent: "center",
+    flexDirection: "row",
+    marginBottom: 8,
+  },
+  fieldTitleText: {
+    textTransform: "lowercase",
+    color: colors.grey1,
+    marginLeft: 4,
+  },
+  primaryCurrencySymbol: {
+    color: colors.grey1,
   },
 }))
 export type UseSnipeConfirmationStyles = ReturnType<typeof useStyles>
