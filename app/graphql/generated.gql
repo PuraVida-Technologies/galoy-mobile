@@ -1232,6 +1232,15 @@ query getWithdrawalContract($input: GetWithDrawalContractInput!) {
       }
       __typename
     }
+    limits {
+      totalAmount
+      canExecute
+      currency
+      limitPeriodUnit
+      limitPeriodValue
+      limitValue
+      __typename
+    }
     bankAccount {
       ... on BankAccountCR {
         id

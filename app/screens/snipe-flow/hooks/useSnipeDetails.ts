@@ -1,10 +1,7 @@
-import { gql } from "@apollo/client"
 import {
-  useAccountLimitsQuery,
   useBankAccountsQuery,
   useConversionScreenQuery,
   useRealtimePriceQuery,
-  useSettingsScreenQuery,
   Wallet,
   WalletCurrency,
 } from "@app/graphql/generated"
@@ -46,16 +43,6 @@ const useSnipeDetails = () => {
 
   const navigation = useNavigation<NavigationProp<RootStackParamList, "snipeDetails">>()
   const { LL } = useI18nContext()
-
-  const {
-    data: limitData,
-    loading,
-    error,
-    refetch,
-  } = useAccountLimitsQuery({
-    fetchPolicy: "no-cache",
-    skip: !useIsAuthed(),
-  })
 
   // forcing price refresh
   useRealtimePriceQuery({
@@ -109,10 +96,6 @@ const useSnipeDetails = () => {
     walletAmount: usdWalletBalance,
   })
 
-  const remainingLimit = useMemo(() => {
-    return limitData?.me?.defaultAccount?.limits?.withdrawal?.[0]?.remainingLimit || 0
-  }, [limitData?.me?.defaultAccount?.limits?.withdrawal?.[0]?.remainingLimit])
-
   const formattedAmount = formatMoneyAmount({
     moneyAmount: convertMoneyAmount?.(fromWalletBalance, DisplayCurrency) || {
       amount: 0,
@@ -127,13 +110,9 @@ const useSnipeDetails = () => {
       return LL.SendBitcoinScreen.amountExceed({
         balance: fromWalletBalanceFormatted,
       })
-    } else if (remainingLimit < parseFloat(amount)) {
-      return LL.SendBitcoinScreen.amountExceedsLimit({
-        limit: remainingLimit?.toString(),
-      })
     }
     return null
-  }, [formattedAmount, remainingLimit, amount, fromWalletBalanceFormatted])
+  }, [formattedAmount, amount, fromWalletBalanceFormatted])
 
   const moveToNextScreen = () => {
     navigation.navigate("snipeConfirmation", {
@@ -163,17 +142,6 @@ const useSnipeDetails = () => {
   const isValidAmount = useMemo(() => {
     return amount?.length && parseFloat(amount || "") > 0 && !amountFieldError?.length
   }, [amount, amountFieldError])
-
-  const usdRemainingLimitMoneyAmount =
-    typeof remainingLimit === "number"
-      ? convertMoneyAmount?.(toUsdMoneyAmount(remainingLimit), DisplayCurrency)
-      : null
-
-  const remainingLimitText = usdRemainingLimitMoneyAmount
-    ? `${formatMoneyAmount({
-        moneyAmount: usdRemainingLimitMoneyAmount,
-      })}`
-    : ""
 
   useEffect(() => {
     setMatchingAccounts(bankAccounts)
@@ -233,7 +201,6 @@ const useSnipeDetails = () => {
       data,
       amountFieldError,
       bankAccounts,
-      remainingLimit: remainingLimitText,
     },
     actions: {
       moveToNextScreen,

@@ -1,7 +1,6 @@
 import { gql } from "@apollo/client"
 import {
   HomeAuthedDocument,
-  useAccountLimitsQuery,
   useConversionScreenQuery,
   useExecuteWithdrawalContractMutation,
   useGetWithdrawalContractLazyQuery,
@@ -57,6 +56,14 @@ gql`
           currency
           resolvedAt
         }
+      }
+      limits {
+        totalAmount
+        canExecute
+        currency
+        limitPeriodUnit
+        limitPeriodValue
+        limitValue
       }
       bankAccount {
         ... on BankAccountCR {
@@ -168,11 +175,6 @@ const useSnipeConfirmation = ({ route }: Props) => {
   const isLoading = false
   const { LL } = useI18nContext()
 
-  const { data: limitData } = useAccountLimitsQuery({
-    fetchPolicy: "no-cache",
-    skip: !useIsAuthed(),
-  })
-
   const { data } = useConversionScreenQuery({
     fetchPolicy: "cache-first",
     skip: !isAuthed,
@@ -239,8 +241,8 @@ const useSnipeConfirmation = ({ route }: Props) => {
   }
 
   const remainingLimit = useMemo(() => {
-    return limitData?.me?.defaultAccount?.limits?.withdrawal?.[0]?.remainingLimit || 0
-  }, [limitData?.me?.defaultAccount?.limits?.withdrawal?.[0]?.remainingLimit])
+    return parseFloat(contract?.getWithdrawalContract?.limits?.limitValue || "0")
+  }, [contract?.getWithdrawalContract?.limits?.limitValue])
 
   const usdRemainingLimitMoneyAmount =
     typeof remainingLimit === "number"
@@ -253,18 +255,7 @@ const useSnipeConfirmation = ({ route }: Props) => {
       })}`
     : ""
 
-  const amountFieldError = useMemo(() => {
-    if (remainingLimit < parseFloat(totalInUSD)) {
-      return LL.SendBitcoinScreen.amountExceedsLimit({
-        limit: usdRemainingLimitMoneyAmount
-          ? formatMoneyAmount({
-              moneyAmount: usdRemainingLimitMoneyAmount,
-            })
-          : "",
-      })
-    }
-    return null
-  }, [remainingLimit, totalInUSD, LL.SendBitcoinScreen, usdRemainingLimitMoneyAmount])
+
   return {
     state: {
       LL,
@@ -287,7 +278,7 @@ const useSnipeConfirmation = ({ route }: Props) => {
       feesInUSD,
       totalInUSD,
       remainingLimit: remainingLimitText,
-      amountFieldError,
+      canWithdraw: contract?.getWithdrawalContract?.limits?.canExecute,
     },
     actions: {
       onWithdraw,

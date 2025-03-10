@@ -40,6 +40,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
     fromAccountBalance,
     isLoading,
     errorMessage,
+    canWithdraw,
   } = state
   if (
     !state.data?.me ||
@@ -141,7 +142,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
           name={"info-outline"}
           size={16}
           color={colors.grey1}
-          onPress={() => navigation.navigate("transactionLimitsScreen")}
+          // onPress={() => navigation.navigate("transactionLimitsScreen")}
         />
       </View>
       {state.amountFieldError && (
@@ -152,7 +153,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
       <GaloyPrimaryButton
         title={LL.common.withdraw()}
         containerStyle={styles.buttonContainer}
-        disabled={isLoading || Boolean(state.amountFieldError)}
+        disabled={isLoading || !canWithdraw}
         onPress={actions?.onWithdraw}
         loading={isLoading}
       />
