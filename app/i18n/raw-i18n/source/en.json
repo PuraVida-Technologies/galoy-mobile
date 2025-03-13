@@ -2266,6 +2266,18 @@
         "nfcNotSupported": "NFC is not supported on this device",
         "logInOrCreateAccount": "Log in or create account"
     },
+    "BankAccountScreen": {
+        "accountHolderName": "Account Holder Name",
+        "currency": "Currency",
+        "iban": "IBAN",
+        "bankName": "Bank Name",
+        "swiftCode": "SWIFT Code",
+        "sinpeCode": "SINP Code",
+        "nationalId": "National ID",
+        "removeBankAccount": "Remove Bank Account",
+        "confirmRemoveBankAccountTitle": "Are you sure you want to remove this bank account?",
+        "confirmRemoveBankAccountContent": "This action cannot be undone."
+    },
     "NotificationSettingsScreen": {
         "title": "Notification Settings",
         "pushNotifications": "Push Notifications",
@@ -2524,7 +2536,9 @@
         "back": "Back",
         "backHome": "Back home",
         "bank": "Bank",
-        "bankAccount": "Cash Account",
+        "addBankAccount": "Add Bank Account",
+        "bankAccount": "Bank Account",
+        "bankAccounts": "Bank Accounts",
         "bankAdvice": "{bankName: string} Advice",
         "bankInfo": "{bankName: string} Info",
         "beta": "beta",
@@ -2609,6 +2623,7 @@
         "today": "Today",
         "yesterday": "Yesterday",
         "thisMonth": "This month",
+        "remove": "Remove",
         "prevMonths": "Previous months",
         "problemMaybeReauth": "There was a problem with your request. Please retry in one minute. If the problem persist, we recommend that you log out and log back in. You can log out by going into Settings > Account > Log out",
         "warning": "Warning",

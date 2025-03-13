@@ -32,6 +32,9 @@ import {
   UserEmailDeleteMutation,
   UserEmailDeleteDocument,
 } from "../../app/graphql/generated"
+import { onError } from "@apollo/client/link/error"
+import { toastShow } from "@app/utils/toast"
+import { useI18nContext } from "@app/i18n/i18n-react"
 
 type Config = {
   network: string
@@ -44,6 +47,7 @@ const config = {
 }
 
 const createGaloyServerClient = (config: Config) => (authToken: string) => {
+  const { LL } = useI18nContext()
   const httpLink = createHttpLink({
     uri: config.graphqlUrl,
     headers: {
@@ -54,7 +58,25 @@ const createGaloyServerClient = (config: Config) => (authToken: string) => {
 
   const retryLink = new RetryLink()
 
-  const link = ApolloLink.from([retryLink, httpLink])
+  const errorLink = onError(({ graphQLErrors, networkError }) => {
+    // graphqlErrors should be managed locally
+    if (graphQLErrors) {
+      graphQLErrors.forEach(({ message, locations, path }) => {
+        toastShow({ message, type: "error", LL })
+        if (message === "PersistedQueryNotFound") {
+          console.log(`[GraphQL info]: Message: ${message}, Path: ${path}}`, {
+            locations,
+          })
+        } else {
+          console.warn(`[GraphQL error]: Message: ${message}, Path: ${path}}`, {
+            locations,
+          })
+        }
+      })
+    }
+  })
+
+  const link = ApolloLink.from([retryLink, errorLink, httpLink])
 
   return new ApolloClient({
     ssrMode: true,

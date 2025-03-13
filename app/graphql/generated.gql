@@ -74,6 +74,23 @@ fragment TransactionList on TransactionConnection {
   __typename
 }
 
+mutation RemoveMyBankAccount($bankAccountId: String!) {
+  removeMyBankAccount(bankAccountId: $bankAccountId) {
+    ... on BankAccountCR {
+      id
+      __typename
+    }
+    __typename
+  }
+}
+
+mutation UpdateBankAccountCR($updateBankAccountCrId: String!, $input: UpdateBankAccountCRDTO!) {
+  updateBankAccountCR(id: $updateBankAccountCrId, input: $input) {
+    id
+    __typename
+  }
+}
+
 mutation accountDelete {
   accountDelete {
     errors {
@@ -199,6 +216,13 @@ mutation accountUpdateDisplayCurrency($input: AccountUpdateDisplayCurrencyInput!
       displayCurrency
       __typename
     }
+    __typename
+  }
+}
+
+mutation addBankAccountCR($input: AddBankAccountCRDTO!) {
+  addBankAccountCR(input: $input) {
+    id
     __typename
   }
 }
@@ -1023,6 +1047,29 @@ query balanceHeader {
         id
         balance
         walletCurrency
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+
+query bankAccounts {
+  getMyBankAccounts {
+    ... on BankAccountCR {
+      id
+      galoyUserId
+      type
+      countryCode
+      data {
+        bankName
+        accountHolderName
+        nationalId
+        iban
+        sinpeCode
+        swiftCode
+        currency
         __typename
       }
       __typename
