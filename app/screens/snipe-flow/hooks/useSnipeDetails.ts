@@ -54,7 +54,8 @@ const useSnipeDetails = () => {
     returnPartialData: true,
   })
 
-  const { formatDisplayAndWalletAmount, formatMoneyAmount } = useDisplayCurrency()
+  const { formatDisplayAndWalletAmount, formatMoneyAmount, fiatSymbol } =
+    useDisplayCurrency()
 
   const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
   const usdWallet = getUsdWallet(data?.me?.defaultAccount?.wallets)
@@ -106,7 +107,7 @@ const useSnipeDetails = () => {
   })
 
   const amountFieldError = useMemo(() => {
-    if (parseFloat(formattedAmount) < parseFloat(amount)) {
+    if (parseFloat(formattedAmount?.replace(/\,/g, "")) < parseFloat(amount)) {
       return LL.SendBitcoinScreen.amountExceed({
         balance: fromWalletBalanceFormatted,
       })
@@ -123,8 +124,7 @@ const useSnipeDetails = () => {
         currencyCode: from === WalletCurrency.Btc ? "BTC" : "USD",
       },
       bankAccount: {
-        accountHolderName: selectedBank?.data?.accountHolderName || "",
-        iban: selectedBank?.data?.iban || "",
+        ...selectedBank?.data,
         id: selectedBank?.id || "",
       },
       fromAccountBalance: fromWalletBalanceFormatted,
@@ -201,6 +201,7 @@ const useSnipeDetails = () => {
       data,
       amountFieldError,
       bankAccounts,
+      fiatSymbol,
     },
     actions: {
       moveToNextScreen,

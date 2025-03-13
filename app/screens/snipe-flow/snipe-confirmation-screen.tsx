@@ -41,6 +41,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
     isLoading,
     errorMessage,
     canWithdraw,
+    fiatSymbol,
   } = state
   if (
     !state.data?.me ||
@@ -77,7 +78,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
               {LL.SnipeConfirmationScreen.amount()}
             </Text>
             <View style={{ flexDirection: "row" }}>
-              <Text style={styles.snipeInfoFieldValue}>$ </Text>
+              <Text style={styles.snipeInfoFieldValue}>{fiatSymbol} </Text>
               <AnimatedRollingNumber
                 value={Number(state?.sellAmountInBtc)}
                 useGrouping
@@ -88,7 +89,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
             </View>
             {state.fromWalletCurrency === WalletCurrency.Btc && (
               <View style={{ flexDirection: "row" }}>
-                <Text style={styles.snipeInfoFieldTitle}>At $</Text>
+                <Text style={styles.snipeInfoFieldTitle}>At {fiatSymbol}</Text>
                 <AnimatedRollingNumber
                   value={Number(state?.btcPriceInUsd)}
                   useGrouping
@@ -112,7 +113,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
 
           <View style={styles.sellAmount}>
             <Text style={styles.snipeInfoFieldTitle}>
-              {LL.common.includes().slice(0, 3)}. $
+              {LL.common.includes().slice(0, 3)}. {fiatSymbol}
             </Text>
             <AnimatedRollingNumber
               value={Number(state.feesInUSD)}
@@ -124,7 +125,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
           </View>
         </View>
         <View style={styles.sellAmount}>
-          <Text style={styles.snipeInfoFieldValue}> $</Text>
+          <Text style={styles.snipeInfoFieldValue}> {fiatSymbol}</Text>
           <AnimatedRollingNumber
             value={Number(state.totalInUSD)}
             useGrouping

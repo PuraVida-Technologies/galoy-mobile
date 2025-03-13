@@ -166,7 +166,7 @@ export const SnipeDetailsScreen = () => {
         <View style={[styles.fieldContainer, styles.amountContainer]}>
           <Text style={styles.fieldTitleText}>{LL.SnipeDetailsScreen.amount()}</Text>
           <View style={styles.amountInputContainer}>
-            <Text style={styles.primaryCurrencySymbol}>$</Text>
+            <Text style={styles.primaryCurrencySymbol}>{state?.fiatSymbol}</Text>
 
             <Input
               value={state.amount}

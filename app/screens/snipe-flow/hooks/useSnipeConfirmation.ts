@@ -124,10 +124,10 @@ export interface BankAccountDetails {
 const useSnipeConfirmation = ({ route }: Props) => {
   const [success, setSuccess] = useState(false)
   const navigation = useNavigation()
-  const { formatMoneyAmount, displayCurrency } = useDisplayCurrency()
+  const { formatMoneyAmount, moneyAmountToMajorUnitOrSats, fiatSymbol, displayCurrency } =
+    useDisplayCurrency()
   const { convertMoneyAmount } = usePriceConversion()
   const interval = useRef<NodeJS.Timeout>()
-
   const { fromWalletCurrency, moneyAmount, fromAccountBalance, wallet, bankAccount } =
     route.params
   const [accountDefaultWalletQuery, { data: contract, loading, error }] =
@@ -136,7 +136,8 @@ const useSnipeConfirmation = ({ route }: Props) => {
         input: {
           amount: (moneyAmount?.amount * 100).toString(),
           bankAccountId: bankAccount?.id,
-          targetCurrency: WalletCurrency.Usd,
+          targetCurrency: bankAccount?.currency,
+          sourceCurrency: displayCurrency,
           walletId: wallet.id,
         },
       },
@@ -200,23 +201,57 @@ const useSnipeConfirmation = ({ route }: Props) => {
   const fromAmount = convertMoneyAmount?.(moneyAmount, fromWallet.currency)
   const toAmount = convertMoneyAmount?.(moneyAmount, toWallet.currency)
 
+  const btcPriceInAmount = convertMoneyAmount?.(
+    toUsdMoneyAmount(
+      parseFloat(
+        (contract?.getWithdrawalContract?.amounts?.target?.btcSatPrice || 0) * 1000000 ||
+          "0",
+      ),
+    ),
+    DisplayCurrency,
+  )
+
   const btcPriceInUsd = useMemo(() => {
     return (
-      (contract?.getWithdrawalContract?.amounts?.target?.btcSatPrice || 0) * 1000000
+      btcPriceInAmount ? moneyAmountToMajorUnitOrSats(btcPriceInAmount) : 0
     ).toFixed(2)
-  }, [contract?.getWithdrawalContract?.amounts?.target?.btcSatPrice])
+  }, [btcPriceInAmount])
+
+  const sellMoneyAmount = convertMoneyAmount?.(
+    toUsdMoneyAmount(
+      parseFloat(contract?.getWithdrawalContract.amounts.target.amount || "0"),
+    ),
+    DisplayCurrency,
+  )
 
   const sellAmountInBtc = useMemo(() => {
-    return ((contract?.getWithdrawalContract.amounts.target.amount || 0) / 100).toFixed(2)
-  }, [contract?.getWithdrawalContract?.amounts?.target?.amount])
+    return (sellMoneyAmount ? moneyAmountToMajorUnitOrSats(sellMoneyAmount) : 0).toFixed(
+      2,
+    )
+  }, [sellMoneyAmount])
+
+  const feesMoneyAmount = convertMoneyAmount?.(
+    toUsdMoneyAmount(
+      parseFloat(contract?.getWithdrawalContract.amounts.fee.amount || "0"),
+    ),
+    DisplayCurrency,
+  )
+
   const feesInUSD = useMemo(() => {
-    return ((contract?.getWithdrawalContract.amounts.fee.amount || 0) / 100).toFixed(2)
-  }, [contract?.getWithdrawalContract.amounts.fee.amount])
+    return feesMoneyAmount ? moneyAmountToMajorUnitOrSats(feesMoneyAmount) : 0
+  }, [feesMoneyAmount])
+
+  const totalMoneyAmount = convertMoneyAmount?.(
+    toUsdMoneyAmount(
+      parseFloat(contract?.getWithdrawalContract.amounts.walletDebit.amount || "0"),
+    ),
+    DisplayCurrency,
+  )
   const totalInUSD = useMemo(() => {
     return (
-      (contract?.getWithdrawalContract.amounts.walletDebit.amount || 0) / 100
+      totalMoneyAmount ? moneyAmountToMajorUnitOrSats(totalMoneyAmount) : 0
     ).toFixed(2)
-  }, [contract?.getWithdrawalContract.amounts.walletDebit.amount])
+  }, [totalMoneyAmount])
 
   const onWithdraw = useCallback(async () => {
     try {
@@ -241,8 +276,8 @@ const useSnipeConfirmation = ({ route }: Props) => {
   }
 
   const remainingLimit = useMemo(() => {
-    return parseFloat(contract?.getWithdrawalContract?.limits?.limitValue || "0")
-  }, [contract?.getWithdrawalContract?.limits?.limitValue])
+    return parseFloat(contract?.getWithdrawalContract?.limits?.[0]?.limitValue || "0")
+  }, [contract?.getWithdrawalContract?.limits?.[0]?.limitValue])
 
   const usdRemainingLimitMoneyAmount =
     typeof remainingLimit === "number"
@@ -254,7 +289,6 @@ const useSnipeConfirmation = ({ route }: Props) => {
         moneyAmount: usdRemainingLimitMoneyAmount,
       })}`
     : ""
-
 
   return {
     state: {
@@ -278,7 +312,8 @@ const useSnipeConfirmation = ({ route }: Props) => {
       feesInUSD,
       totalInUSD,
       remainingLimit: remainingLimitText,
-      canWithdraw: contract?.getWithdrawalContract?.limits?.canExecute,
+      canWithdraw: contract?.getWithdrawalContract?.limits?.[0]?.canExecute,
+      fiatSymbol,
     },
     actions: {
       onWithdraw,
