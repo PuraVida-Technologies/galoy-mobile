@@ -73,7 +73,7 @@ const en: BaseTranslation = {
     stableSats: "Stable Sats",
     sinpeIBAN: "Sinpe IBAN",
     sinpeIBANSubtitle: "(only available in Costa Rica)",
-    sinpeMovil: "Sinpe móvil (coming soon)",
+    sinpeMovil: "Sinpe móvil",
     sinpeIBANTransfers: "Sinpe IBAN transfers",
     sinpeMovilTransfers: "Sinpe móvil transfers",
     sinpeIBANTransfersKYCDescription: "To initiate transfers to Sinpe IBAN you need to complete the KYC details required by our banking partners. Click the button below to start this process.",

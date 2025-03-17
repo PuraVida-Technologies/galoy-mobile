@@ -249,7 +249,7 @@ type RootTranslation = {
 		 */
 		sinpeIBANSubtitle: string
 		/**
-		 * S​i​n​p​e​ ​m​ó​v​i​l​ ​(​c​o​m​i​n​g​ ​s​o​o​n​)
+		 * S​i​n​p​e​ ​m​ó​v​i​l
 		 */
 		sinpeMovil: string
 		/**
@@ -7128,6 +7128,10 @@ type RootTranslation = {
 		 */
 		amount: string
 		/**
+		 * R​e​m​a​i​n​i​n​g​ ​d​a​i​l​y​ ​l​i​m​i​t
+		 */
+		remainingDailyLimit: string
+		/**
 		 * A​m​o​u​n​t​ ​e​x​c​e​e​d​s​ ​y​o​u​r​ ​b​a​l​a​n​c​e​ ​o​f​ ​{​b​a​l​a​n​c​e​}
 		 * @param {string} balance
 		 */
@@ -9712,7 +9716,7 @@ export type TranslationFunctions = {
 		 */
 		sinpeIBANSubtitle: () => LocalizedString
 		/**
-		 * Sinpe móvil (coming soon)
+		 * Sinpe móvil
 		 */
 		sinpeMovil: () => LocalizedString
 		/**
@@ -16557,7 +16561,7 @@ export type TranslationFunctions = {
 		 */
 		amount: () => LocalizedString
 		/**
-		 * remaining daily limit
+		 * Remaining daily limit
 		 */
 		remainingDailyLimit: () => LocalizedString
 		/**

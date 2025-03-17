@@ -61,7 +61,7 @@
         "stableSats": "Stable Sats",
         "sinpeIBAN": "Sinpe IBAN",
         "sinpeIBANSubtitle": "(only available in Costa Rica)",
-        "sinpeMovil": "Sinpe móvil (coming soon)",
+        "sinpeMovil": "Sinpe móvil",
         "sinpeIBANTransfers": "Sinpe IBAN transfers",
         "sinpeMovilTransfers": "Sinpe móvil transfers",
         "sinpeIBANTransfersKYCDescription": "To initiate transfers to Sinpe IBAN you need to complete the KYC details required by our banking partners. Click the button below to start this process.",
@@ -2225,6 +2225,7 @@
     "SendBitcoinScreen": {
         "willBeSentToMempoolBy": "Transaction should be submitted to mempool",
         "amount": "Amount",
+        "remainingDailyLimit": "Remaining daily limit",
         "amountExceed": "Amount exceeds your balance of {balance: string}",
         "amountExceedsLimit": "Amount exceeds your remaining daily limit of {limit: string}",
         "upgradeAccountToIncreaseLimit": "Upgrade your account to increase your limit",
