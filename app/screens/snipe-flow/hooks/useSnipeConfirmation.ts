@@ -1,15 +1,13 @@
 import { gql } from "@apollo/client"
 import {
   HomeAuthedDocument,
-  useConversionScreenQuery,
   useExecuteWithdrawalContractMutation,
   useGetWithdrawalContractLazyQuery,
   WalletCurrency,
 } from "@app/graphql/generated"
-import { useIsAuthed } from "@app/graphql/is-authed-context"
-import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
 import { usePriceConversion } from "@app/hooks"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
+import useWallet from "@app/hooks/use-wallet"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { DisplayCurrency, toUsdMoneyAmount } from "@app/types/amounts"
@@ -123,13 +121,21 @@ export interface BankAccountDetails {
 
 const useSnipeConfirmation = ({ route }: Props) => {
   const [success, setSuccess] = useState(false)
-  const navigation = useNavigation()
-  const { formatMoneyAmount, moneyAmountToMajorUnitOrSats, fiatSymbol, displayCurrency } =
-    useDisplayCurrency()
-  const { convertMoneyAmount } = usePriceConversion()
   const interval = useRef<NodeJS.Timeout>()
+  const { LL } = useI18nContext()
+
+  // Navigation and params
+  const navigation = useNavigation()
   const { fromWalletCurrency, moneyAmount, fromAccountBalance, wallet, bankAccount } =
     route.params
+
+  const { data, isAuthed, btcWallet, usdWallet } = useWallet()
+
+  const { formatMoneyAmount, moneyAmountToMajorUnitOrSats, fiatSymbol, displayCurrency } =
+    useDisplayCurrency()
+
+  const { convertMoneyAmount } = usePriceConversion()
+
   const [accountDefaultWalletQuery, { data: contract, loading, error }] =
     useGetWithdrawalContractLazyQuery({
       variables: {
@@ -161,8 +167,9 @@ const useSnipeConfirmation = ({ route }: Props) => {
     interval.current = setInterval(() => {
       accountDefaultWalletQuery({ fetchPolicy: "network-only" })
     }, 15000)
+
     return () => clearInterval(interval.current)
-  }, [accountDefaultWalletQuery])
+  }, [])
 
   useEffect(() => {
     if (success) {
@@ -171,87 +178,76 @@ const useSnipeConfirmation = ({ route }: Props) => {
   }, [success, interval.current])
 
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
-  const isAuthed = useIsAuthed()
-
-  const isLoading = false
-  const { LL } = useI18nContext()
-
-  const { data } = useConversionScreenQuery({
-    fetchPolicy: "cache-first",
-    skip: !isAuthed,
-  })
-
-  const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
-  const usdWallet = getUsdWallet(data?.me?.defaultAccount?.wallets)
-
-  const fromWallet = useMemo(() => {
-    if (fromWalletCurrency === WalletCurrency.Btc) {
-      return { id: btcWallet?.id, currency: WalletCurrency.Btc }
-    }
-    return { id: usdWallet?.id, currency: WalletCurrency.Usd }
-  }, [btcWallet?.id, fromWalletCurrency, usdWallet?.id])
-
-  const toWallet = useMemo(() => {
-    if (fromWalletCurrency === WalletCurrency.Btc) {
-      return { id: usdWallet?.id, currency: WalletCurrency.Usd }
-    }
-    return { id: btcWallet?.id, currency: WalletCurrency.Btc }
-  }, [btcWallet?.id, fromWalletCurrency, usdWallet?.id])
-
-  const fromAmount = convertMoneyAmount?.(moneyAmount, fromWallet.currency)
-  const toAmount = convertMoneyAmount?.(moneyAmount, toWallet.currency)
 
   const btcPriceInAmount = convertMoneyAmount?.(
-    toUsdMoneyAmount(
-      parseFloat(
-        (contract?.getWithdrawalContract?.amounts?.target?.btcSatPrice || 0) * 1000000 ||
-          "0",
-      ),
-    ),
+    {
+      amount:
+        parseFloat(contract?.getWithdrawalContract?.amounts?.target?.btcSatPrice || "0") *
+        1000000,
+      currency: WalletCurrency.Usd,
+      currencyCode: "USD",
+    },
     DisplayCurrency,
   )
 
-  const btcPriceInUsd = useMemo(() => {
-    return (
-      btcPriceInAmount ? moneyAmountToMajorUnitOrSats(btcPriceInAmount) : 0
-    ).toFixed(2)
-  }, [btcPriceInAmount])
+  const sellAmount = moneyAmountToMajorUnitOrSats({
+    amount: parseFloat(contract?.getWithdrawalContract.amounts.target.amount || "0"),
+    currency: WalletCurrency.Usd,
+    currencyCode: "USD",
+  })
 
   const sellMoneyAmount = convertMoneyAmount?.(
-    toUsdMoneyAmount(
-      parseFloat(contract?.getWithdrawalContract.amounts.target.amount || "0"),
-    ),
+    { amount: sellAmount, currency: WalletCurrency.Usd, currencyCode: "USD" },
     DisplayCurrency,
   )
 
-  const sellAmountInBtc = useMemo(() => {
-    return (sellMoneyAmount ? moneyAmountToMajorUnitOrSats(sellMoneyAmount) : 0).toFixed(
-      2,
-    )
-  }, [sellMoneyAmount])
+  const feesAmount = moneyAmountToMajorUnitOrSats({
+    amount: parseFloat(contract?.getWithdrawalContract.amounts.fee.amount || "0"),
+    currency: WalletCurrency.Usd,
+    currencyCode: "USD",
+  })
 
   const feesMoneyAmount = convertMoneyAmount?.(
-    toUsdMoneyAmount(
-      parseFloat(contract?.getWithdrawalContract.amounts.fee.amount || "0"),
-    ),
+    { amount: feesAmount, currency: WalletCurrency.Usd, currencyCode: "USD" },
     DisplayCurrency,
   )
 
-  const feesInUSD = useMemo(() => {
-    return feesMoneyAmount ? moneyAmountToMajorUnitOrSats(feesMoneyAmount) : 0
-  }, [feesMoneyAmount])
+  const totalAmount = formatMoneyAmount({
+    moneyAmount: convertMoneyAmount?.(
+      {
+        amount: parseFloat(
+          contract?.getWithdrawalContract.amounts.walletDebit.amount || "0",
+        ),
+        currency:
+          contract?.getWithdrawalContract.amounts.walletDebit.currency ||
+          fromWalletCurrency,
+        currencyCode:
+          contract?.getWithdrawalContract.amounts.walletDebit.currency ||
+          fromWalletCurrency,
+      },
+      DisplayCurrency,
+    ) || {
+      amount: 0,
+      currency: DisplayCurrency,
+      currencyCode: "BTC",
+    },
+    noSymbol: true,
+  })
 
-  const totalMoneyAmount = convertMoneyAmount?.(
-    toUsdMoneyAmount(
-      parseFloat(contract?.getWithdrawalContract.amounts.walletDebit.amount || "0"),
-    ),
-    DisplayCurrency,
-  )
-  const totalInUSD = useMemo(() => {
-    return (
-      totalMoneyAmount ? moneyAmountToMajorUnitOrSats(totalMoneyAmount) : 0
-    ).toFixed(2)
-  }, [totalMoneyAmount])
+  const remainingLimit = useMemo(() => {
+    return parseFloat(contract?.getWithdrawalContract?.limits?.[0]?.limitValue || "0")
+  }, [contract?.getWithdrawalContract?.limits?.[0]?.limitValue])
+
+  const usdRemainingLimitMoneyAmount =
+    typeof remainingLimit === "number"
+      ? convertMoneyAmount?.(toUsdMoneyAmount(remainingLimit), DisplayCurrency)
+      : null
+
+  const remainingLimitText = usdRemainingLimitMoneyAmount
+    ? `${formatMoneyAmount({
+        moneyAmount: usdRemainingLimitMoneyAmount,
+      })}`
+    : ""
 
   const onWithdraw = useCallback(async () => {
     try {
@@ -275,26 +271,9 @@ const useSnipeConfirmation = ({ route }: Props) => {
     setSuccess(false)
   }
 
-  const remainingLimit = useMemo(() => {
-    return parseFloat(contract?.getWithdrawalContract?.limits?.[0]?.limitValue || "0")
-  }, [contract?.getWithdrawalContract?.limits?.[0]?.limitValue])
-
-  const usdRemainingLimitMoneyAmount =
-    typeof remainingLimit === "number"
-      ? convertMoneyAmount?.(toUsdMoneyAmount(remainingLimit), DisplayCurrency)
-      : null
-
-  const remainingLimitText = usdRemainingLimitMoneyAmount
-    ? `${formatMoneyAmount({
-        moneyAmount: usdRemainingLimitMoneyAmount,
-      })}`
-    : ""
-
   return {
     state: {
       LL,
-      fromAmount,
-      toAmount,
       usdWallet,
       btcWallet,
       data,
@@ -302,15 +281,13 @@ const useSnipeConfirmation = ({ route }: Props) => {
       bankAccount,
       fromWalletCurrency,
       errorMessage,
-      isLoading: isLoading || loading || withdrawing,
+      isLoading: loading || withdrawing,
       moneyAmount,
-      fromWallet,
-      toWallet,
-      btcPriceInUsd,
-      sellAmountInBtc,
+      btcPrice: btcPriceInAmount?.amount,
+      sellAmount: sellMoneyAmount?.amount,
       success,
-      feesInUSD,
-      totalInUSD,
+      feesAmount: feesMoneyAmount?.amount,
+      totalAmount: parseFloat(totalAmount.replace(/,/g, "")),
       remainingLimit: remainingLimitText,
       canWithdraw: contract?.getWithdrawalContract?.limits?.[0]?.canExecute,
       fiatSymbol,

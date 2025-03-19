@@ -43,6 +43,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
     canWithdraw,
     fiatSymbol,
   } = state
+
   if (
     !state.data?.me ||
     !state.usdWallet ||
@@ -80,7 +81,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.snipeInfoFieldValue}>{fiatSymbol} </Text>
               <AnimatedRollingNumber
-                value={Number(state?.sellAmountInBtc)}
+                value={Number(state?.sellAmount)}
                 useGrouping
                 compactToFixed={2}
                 textStyle={styles.snipeInfoFieldValue}
@@ -91,7 +92,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
               <View style={{ flexDirection: "row" }}>
                 <Text style={styles.snipeInfoFieldTitle}>At {fiatSymbol}</Text>
                 <AnimatedRollingNumber
-                  value={Number(state?.btcPriceInUsd)}
+                  value={Number(state?.btcPrice)}
                   useGrouping
                   compactToFixed={2}
                   textStyle={styles.snipeInfoFieldTitle}
@@ -116,7 +117,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
               {LL.common.includes().slice(0, 3)}. {fiatSymbol}
             </Text>
             <AnimatedRollingNumber
-              value={Number(state.feesInUSD)}
+              value={Number(state.feesAmount)}
               useGrouping
               compactToFixed={2}
               textStyle={styles.snipeInfoFieldTitle}
@@ -127,14 +128,14 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
         <View style={styles.sellAmount}>
           <Text style={styles.snipeInfoFieldValue}> {fiatSymbol}</Text>
           <AnimatedRollingNumber
-            value={Number(state.totalInUSD)}
+            value={Number(state.totalAmount)}
             useGrouping
             compactToFixed={2}
             textStyle={styles.snipeInfoFieldValue}
           />
         </View>
       </View>
-      <View style={styles.remainingLimitContainer}>
+      {/* <View style={styles.remainingLimitContainer}>
         <Text style={styles.primaryCurrencySymbol}>{state.remainingLimit}</Text>
         <Text style={styles.fieldTitleText}>
           {LL.SendBitcoinScreen.remainingDailyLimit()}
@@ -145,12 +146,12 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
           color={colors.grey1}
           // onPress={() => navigation.navigate("transactionLimitsScreen")}
         />
-      </View>
-      {state.amountFieldError && (
+      </View> */}
+      {/* {state.amountFieldError && (
         <View style={styles.errorContainer}>
           <Text color={colors.error}>{state.amountFieldError}</Text>
         </View>
-      )}
+      )} */}
       <GaloyPrimaryButton
         title={LL.common.withdraw()}
         containerStyle={styles.buttonContainer}

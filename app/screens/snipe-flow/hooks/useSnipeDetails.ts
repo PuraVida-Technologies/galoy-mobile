@@ -1,6 +1,10 @@
+import { gql } from "@apollo/client"
 import {
+  BankAccountCurrencies,
+  PaymentSystem,
   useBankAccountsQuery,
   useConversionScreenQuery,
+  useGetWithdrawalLimitsQuery,
   useRealtimePriceQuery,
   Wallet,
   WalletCurrency,
@@ -14,6 +18,19 @@ import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { DisplayCurrency, toBtcMoneyAmount, toUsdMoneyAmount } from "@app/types/amounts"
 import { NavigationProp, useNavigation } from "@react-navigation/native"
 import { useCallback, useEffect, useMemo, useState } from "react"
+
+gql`
+  query getWithdrawalLimits($input: GetWithdrawalLimitsInputDTO!) {
+    getWithdrawalLimits(input: $input) {
+      totalAmount
+      limitValue
+      currency
+      limitPeriodUnit
+      limitPeriodValue
+      canExecute
+    }
+  }
+`
 
 export interface BankAccountDetails {
   id: string
@@ -48,19 +65,27 @@ const useSnipeDetails = () => {
   useRealtimePriceQuery({
     fetchPolicy: "network-only",
   })
+  const { data: bankAccountData } = useBankAccountsQuery({ fetchPolicy: "network-only" })
+
+  const { data: withdrawalLimit, refetch } = useGetWithdrawalLimitsQuery({
+    variables: {
+      input: {
+        currency: selectedBank?.data?.currency || BankAccountCurrencies.Usd,
+        paymentSystemType: PaymentSystem.Iban,
+      },
+    },
+  })
 
   const { data } = useConversionScreenQuery({
     fetchPolicy: "cache-and-network",
     returnPartialData: true,
   })
 
-  const { formatDisplayAndWalletAmount, formatMoneyAmount, fiatSymbol } =
+  const { formatDisplayAndWalletAmount, displayCurrency, formatMoneyAmount, fiatSymbol } =
     useDisplayCurrency()
 
   const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
   const usdWallet = getUsdWallet(data?.me?.defaultAccount?.wallets)
-
-  const { data: bankAccountData } = useBankAccountsQuery({ fetchPolicy: "network-only" })
 
   const { convertMoneyAmount } = usePriceConversion()
 
@@ -106,22 +131,13 @@ const useSnipeDetails = () => {
     noSymbol: true,
   })
 
-  const amountFieldError = useMemo(() => {
-    if (parseFloat(formattedAmount?.replace(/\,/g, "")) < parseFloat(amount)) {
-      return LL.SendBitcoinScreen.amountExceed({
-        balance: fromWalletBalanceFormatted,
-      })
-    }
-    return null
-  }, [formattedAmount, amount, fromWalletBalanceFormatted])
-
   const moveToNextScreen = () => {
     navigation.navigate("snipeConfirmation", {
       fromWalletCurrency: from,
       moneyAmount: {
         amount: Number(amount),
-        currency: from,
-        currencyCode: from === WalletCurrency.Btc ? "BTC" : "USD",
+        currency: displayCurrency,
+        currencyCode: displayCurrency,
       },
       bankAccount: {
         ...selectedBank?.data,
@@ -138,10 +154,6 @@ const useSnipeDetails = () => {
   const bankAccounts = useMemo(() => {
     return bankAccountData?.getMyBankAccounts?.slice() ?? []
   }, [bankAccountData])
-
-  const isValidAmount = useMemo(() => {
-    return amount?.length && parseFloat(amount || "") > 0 && !amountFieldError?.length
-  }, [amount, amountFieldError])
 
   useEffect(() => {
     setMatchingAccounts(bankAccounts)
@@ -182,6 +194,44 @@ const useSnipeDetails = () => {
     setMatchingAccounts(bankAccounts)
   }, [bankAccounts])
 
+  const onBankAccountSelection = useCallback((account) => {
+    setOpenBankSelection(false)
+    setSelectedBank(account)
+    refetch()
+  }, [])
+
+  const remainingLimit = useMemo(() => {
+    return parseFloat(withdrawalLimit?.getWithdrawalLimits?.[0]?.limitValue || "0")
+  }, [withdrawalLimit?.getWithdrawalLimits?.[0]?.limitValue])
+
+  const usdRemainingLimitMoneyAmount =
+    typeof remainingLimit === "number"
+      ? convertMoneyAmount?.(toUsdMoneyAmount(remainingLimit), DisplayCurrency)
+      : null
+
+  const remainingLimitText = usdRemainingLimitMoneyAmount
+    ? `${formatMoneyAmount({
+        moneyAmount: usdRemainingLimitMoneyAmount,
+      })}`
+    : ""
+
+  const amountFieldError = useMemo(() => {
+    if (parseFloat(formattedAmount?.replace(/\,/g, "")) < parseFloat(amount)) {
+      return LL.SendBitcoinScreen.amountExceed({
+        balance: fromWalletBalanceFormatted,
+      })
+    } else if (parseFloat(amount) > remainingLimit) {
+      return LL.SendBitcoinScreen.amountExceedsLimit({
+        limit: remainingLimitText,
+      })
+    }
+    return null
+  }, [formattedAmount, amount, fromWalletBalanceFormatted])
+
+  const isValidAmount = useMemo(() => {
+    return amount?.length && parseFloat(amount || "") > 0 && !amountFieldError?.length
+  }, [amount, amountFieldError])
+
   return {
     state: {
       LL,
@@ -202,6 +252,7 @@ const useSnipeDetails = () => {
       amountFieldError,
       bankAccounts,
       fiatSymbol,
+      remainingLimit: remainingLimitText,
     },
     actions: {
       moveToNextScreen,
@@ -218,6 +269,7 @@ const useSnipeDetails = () => {
       chooseWallet,
       toggleBankModal,
       toggleModal,
+      onBankAccountSelection,
     },
   }
 }

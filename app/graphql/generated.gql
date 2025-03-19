@@ -1284,6 +1284,18 @@ query getWithdrawalContract($input: GetWithDrawalContractInput!) {
   }
 }
 
+query getWithdrawalLimits($input: GetWithdrawalLimitsInputDTO!) {
+  getWithdrawalLimits(input: $input) {
+    totalAmount
+    limitValue
+    currency
+    limitPeriodUnit
+    limitPeriodValue
+    canExecute
+    __typename
+  }
+}
+
 query hasPromptedSetDefaultAccount {
   hasPromptedSetDefaultAccount @client
 }

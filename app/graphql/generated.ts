@@ -3662,6 +3662,13 @@ export type GetWithdrawalContractQueryVariables = Exact<{
 
 export type GetWithdrawalContractQuery = { readonly __typename: 'Query', readonly getWithdrawalContract: { readonly __typename: 'WithdrawalContract', readonly feeExplanation: string, readonly id: string, readonly amounts: { readonly __typename: 'WithdrawalContractAmounts', readonly bankAccountCredit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly fee: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly target: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly walletDebit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string } }, readonly limits: ReadonlyArray<{ readonly __typename: 'WithdrawalLimits', readonly totalAmount: string, readonly canExecute: boolean, readonly currency: Currencies, readonly limitPeriodUnit: string, readonly limitPeriodValue: number, readonly limitValue: string }>, readonly bankAccount: { readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly accountHolderName: string, readonly nationalId: string, readonly iban: string, readonly sinpeCode: string, readonly swiftCode: string, readonly currency: BankAccountCurrencies } }, readonly exchangeWallet: { readonly __typename: 'PublicKycWallet', readonly id: string, readonly currency: Currencies }, readonly sourceWallet: { readonly __typename: 'PublicKycWallet', readonly currency: Currencies, readonly id: string }, readonly tokenDetails: { readonly __typename: 'WithdrawalContractTokenDetails', readonly body: string, readonly createdAt: string, readonly executedAt?: string | null, readonly expiresAt: string } } };
 
+export type GetWithdrawalLimitsQueryVariables = Exact<{
+  input: GetWithdrawalLimitsInputDto;
+}>;
+
+
+export type GetWithdrawalLimitsQuery = { readonly __typename: 'Query', readonly getWithdrawalLimits: ReadonlyArray<{ readonly __typename: 'WithdrawalLimits', readonly totalAmount: string, readonly limitValue: string, readonly currency: Currencies, readonly limitPeriodUnit: string, readonly limitPeriodValue: number, readonly canExecute: boolean }> };
+
 export type TotpRegistrationScreenQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -8689,6 +8696,51 @@ export type GetWithdrawalContractQueryHookResult = ReturnType<typeof useGetWithd
 export type GetWithdrawalContractLazyQueryHookResult = ReturnType<typeof useGetWithdrawalContractLazyQuery>;
 export type GetWithdrawalContractSuspenseQueryHookResult = ReturnType<typeof useGetWithdrawalContractSuspenseQuery>;
 export type GetWithdrawalContractQueryResult = Apollo.QueryResult<GetWithdrawalContractQuery, GetWithdrawalContractQueryVariables>;
+export const GetWithdrawalLimitsDocument = gql`
+    query getWithdrawalLimits($input: GetWithdrawalLimitsInputDTO!) {
+  getWithdrawalLimits(input: $input) {
+    totalAmount
+    limitValue
+    currency
+    limitPeriodUnit
+    limitPeriodValue
+    canExecute
+  }
+}
+    `;
+
+/**
+ * __useGetWithdrawalLimitsQuery__
+ *
+ * To run a query within a React component, call `useGetWithdrawalLimitsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWithdrawalLimitsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWithdrawalLimitsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetWithdrawalLimitsQuery(baseOptions: Apollo.QueryHookOptions<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables> & ({ variables: GetWithdrawalLimitsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>(GetWithdrawalLimitsDocument, options);
+      }
+export function useGetWithdrawalLimitsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>(GetWithdrawalLimitsDocument, options);
+        }
+export function useGetWithdrawalLimitsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>(GetWithdrawalLimitsDocument, options);
+        }
+export type GetWithdrawalLimitsQueryHookResult = ReturnType<typeof useGetWithdrawalLimitsQuery>;
+export type GetWithdrawalLimitsLazyQueryHookResult = ReturnType<typeof useGetWithdrawalLimitsLazyQuery>;
+export type GetWithdrawalLimitsSuspenseQueryHookResult = ReturnType<typeof useGetWithdrawalLimitsSuspenseQuery>;
+export type GetWithdrawalLimitsQueryResult = Apollo.QueryResult<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>;
 export const TotpRegistrationScreenDocument = gql`
     query totpRegistrationScreen {
   me {

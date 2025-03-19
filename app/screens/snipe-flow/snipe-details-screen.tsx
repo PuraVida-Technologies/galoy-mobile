@@ -152,10 +152,7 @@ export const SnipeDetailsScreen = () => {
                 updateMatchingAccounts={actions.updateMatchingAccounts}
                 LL={LL}
                 state={state}
-                onBankAccountSelected={(account) => {
-                  actions.setSelectedBank(account)
-                  actions.setOpenBankSelection(false)
-                }}
+                onBankAccountSelected={actions.onBankAccountSelection}
                 toggleBankModal={actions.toggleBankModal}
                 colors={colors}
                 reset={actions.reset}
@@ -199,6 +196,10 @@ export const SnipeDetailsScreen = () => {
           )}
         </View>
       </ScrollView>
+      <View style={styles.remainingLimitContainer}>
+        <Text style={styles.fieldText}>{state.remainingLimit}</Text>
+        <Text style={styles.fieldText}>{LL.SendBitcoinScreen.remainingDailyLimit()}</Text>
+      </View>
       <GaloyPrimaryButton
         title={LL.common.next()}
         containerStyle={styles.buttonContainer}

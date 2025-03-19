@@ -233,6 +233,16 @@ const useStyles = makeStyles(({ colors }) => ({
     flexDirection: "row",
     alignItems: "center",
   },
+  remainingLimitContainer: {
+    justifyContent: "center",
+    flexDirection: "row",
+    marginBottom: 8,
+  },
+  fieldText: {
+    textTransform: "lowercase",
+    color: colors.grey1,
+    marginLeft: 4,
+  },
 }))
 export type UseSnipDetailsStyles = ReturnType<typeof useStyles>
 export default useStyles
