@@ -713,8 +713,6 @@ export type GetWithDrawalContractInput = {
   readonly bankAccountId: Scalars['String']['input'];
   /** The currency of the provided amount */
   readonly sourceCurrency: Currencies;
-  /** The currency of the withdrawal amount */
-  readonly targetCurrency?: Currencies;
   /** The user source wallet for galoy that will be used */
   readonly walletId: Scalars['String']['input'];
 };
@@ -2197,12 +2195,16 @@ export type ResolvedCurrencyExchangeAmount = {
   readonly amount: Scalars['BigDecimal']['output'];
   /** The same amount but represented in BTC (using Satoshi) */
   readonly amountInSats: Scalars['BigDecimal']['output'];
+  /** The same amount but represented in the input source currency */
+  readonly amountInSourceCurrency: Scalars['BigDecimal']['output'];
   /** Value of 1 Satoshi turned into the provided currency's minor unit */
   readonly btcSatPrice: Scalars['BigDecimal']['output'];
   /** currency of the provided amount */
   readonly currency: Currencies;
   /** The time at which the BTC currency exchange rate was evaluated */
   readonly resolvedAt: Scalars['String']['output'];
+  /** currency of the input source amount */
+  readonly sourceCurrency: Currencies;
 };
 
 export type RevokePermissionResponse = {
@@ -2314,6 +2316,7 @@ export type StoreResponse = {
   readonly __typename: 'StoreResponse';
   readonly appId?: Maybe<Scalars['String']['output']>;
   readonly id: Scalars['ID']['output'];
+  readonly name: Scalars['String']['output'];
   readonly rate: Scalars['String']['output'];
   readonly storeId: Scalars['ID']['output'];
   readonly username: Scalars['String']['output'];
@@ -2933,9 +2936,13 @@ export type WithdrawalContract = {
 
 export type WithdrawalContractAmounts = {
   readonly __typename: 'WithdrawalContractAmounts';
+  /** the amount that will be credited to the user bank account, the currency is the same as the target currency */
   readonly bankAccountCredit: ResolvedCurrencyExchangeAmount;
+  /** the amount that will be charged for the withdrawal from the galoy wallet, the currency is the same as the target currency */
   readonly fee: ResolvedCurrencyExchangeAmount;
+  /** the amount that will be credited to the user bank account, the currency is the same as the target currency */
   readonly target: ResolvedCurrencyExchangeAmount;
+  /** the amount that will be debited from the user galoy wallet, the currency is the same as the wallet currency */
   readonly walletDebit: ResolvedCurrencyExchangeAmount;
 };
 
@@ -3660,7 +3667,7 @@ export type GetWithdrawalContractQueryVariables = Exact<{
 }>;
 
 
-export type GetWithdrawalContractQuery = { readonly __typename: 'Query', readonly getWithdrawalContract: { readonly __typename: 'WithdrawalContract', readonly feeExplanation: string, readonly id: string, readonly amounts: { readonly __typename: 'WithdrawalContractAmounts', readonly bankAccountCredit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly fee: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly target: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly walletDebit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string } }, readonly limits: ReadonlyArray<{ readonly __typename: 'WithdrawalLimits', readonly totalAmount: string, readonly canExecute: boolean, readonly currency: Currencies, readonly limitPeriodUnit: string, readonly limitPeriodValue: number, readonly limitValue: string }>, readonly bankAccount: { readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly accountHolderName: string, readonly nationalId: string, readonly iban: string, readonly sinpeCode: string, readonly swiftCode: string, readonly currency: BankAccountCurrencies } }, readonly exchangeWallet: { readonly __typename: 'PublicKycWallet', readonly id: string, readonly currency: Currencies }, readonly sourceWallet: { readonly __typename: 'PublicKycWallet', readonly currency: Currencies, readonly id: string }, readonly tokenDetails: { readonly __typename: 'WithdrawalContractTokenDetails', readonly body: string, readonly createdAt: string, readonly executedAt?: string | null, readonly expiresAt: string } } };
+export type GetWithdrawalContractQuery = { readonly __typename: 'Query', readonly getWithdrawalContract: { readonly __typename: 'WithdrawalContract', readonly feeExplanation: string, readonly id: string, readonly amounts: { readonly __typename: 'WithdrawalContractAmounts', readonly bankAccountCredit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly fee: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly target: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly walletDebit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string } }, readonly limits: ReadonlyArray<{ readonly __typename: 'WithdrawalLimits', readonly totalAmount: string, readonly canExecute: boolean, readonly currency: Currencies, readonly limitPeriodUnit: string, readonly limitPeriodValue: number, readonly limitValue: string }>, readonly bankAccount: { readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly accountHolderName: string, readonly nationalId: string, readonly iban: string, readonly sinpeCode: string, readonly swiftCode: string, readonly currency: BankAccountCurrencies } }, readonly exchangeWallet: { readonly __typename: 'PublicKycWallet', readonly id: string, readonly currency: Currencies }, readonly sourceWallet: { readonly __typename: 'PublicKycWallet', readonly currency: Currencies, readonly id: string }, readonly tokenDetails: { readonly __typename: 'WithdrawalContractTokenDetails', readonly body: string, readonly createdAt: string, readonly executedAt?: string | null, readonly expiresAt: string } } };
 
 export type GetWithdrawalLimitsQueryVariables = Exact<{
   input: GetWithdrawalLimitsInputDto;
@@ -8593,6 +8600,7 @@ export const GetWithdrawalContractDocument = gql`
       bankAccountCredit {
         amount
         amountInSats
+        amountInSourceCurrency
         btcSatPrice
         currency
         resolvedAt
@@ -8601,12 +8609,14 @@ export const GetWithdrawalContractDocument = gql`
         amount
         amountInSats
         btcSatPrice
+        amountInSourceCurrency
         currency
         resolvedAt
       }
       target {
         amount
         amountInSats
+        amountInSourceCurrency
         btcSatPrice
         currency
         resolvedAt
@@ -8615,6 +8625,7 @@ export const GetWithdrawalContractDocument = gql`
         amount
         amountInSats
         btcSatPrice
+        amountInSourceCurrency
         currency
         resolvedAt
       }
@@ -10533,9 +10544,11 @@ export type RegionResolvers<ContextType = any, ParentType extends ResolversParen
 export type ResolvedCurrencyExchangeAmountResolvers<ContextType = any, ParentType extends ResolversParentTypes['ResolvedCurrencyExchangeAmount'] = ResolversParentTypes['ResolvedCurrencyExchangeAmount']> = {
   amount?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
   amountInSats?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
+  amountInSourceCurrency?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
   btcSatPrice?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
   currency?: Resolver<ResolversTypes['Currencies'], ParentType, ContextType>;
   resolvedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  sourceCurrency?: Resolver<ResolversTypes['Currencies'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -10638,6 +10651,7 @@ export type StatefulNotificationEdgeResolvers<ContextType = any, ParentType exte
 export type StoreResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['StoreResponse'] = ResolversParentTypes['StoreResponse']> = {
   appId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   rate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   storeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

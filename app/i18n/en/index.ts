@@ -2455,6 +2455,8 @@ const en: BaseTranslation = {
     amountExceed: "Amount exceeds your balance of {balance: string}",
     amountExceedsLimit:
       "Amount exceeds your remaining daily limit of {limit: string}",
+    amountMinimumLimit:
+      "Amount is lesser than a minimum limit of {limit: string}",
     upgradeAccountToIncreaseLimit:
       "Upgrade your account to increase your limit",
     amountIsRequired: "Amount is required",

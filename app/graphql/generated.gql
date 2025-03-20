@@ -1201,6 +1201,7 @@ query getWithdrawalContract($input: GetWithDrawalContractInput!) {
       bankAccountCredit {
         amount
         amountInSats
+        amountInSourceCurrency
         btcSatPrice
         currency
         resolvedAt
@@ -1210,6 +1211,7 @@ query getWithdrawalContract($input: GetWithDrawalContractInput!) {
         amount
         amountInSats
         btcSatPrice
+        amountInSourceCurrency
         currency
         resolvedAt
         __typename
@@ -1217,6 +1219,7 @@ query getWithdrawalContract($input: GetWithDrawalContractInput!) {
       target {
         amount
         amountInSats
+        amountInSourceCurrency
         btcSatPrice
         currency
         resolvedAt
@@ -1226,6 +1229,7 @@ query getWithdrawalContract($input: GetWithDrawalContractInput!) {
         amount
         amountInSats
         btcSatPrice
+        amountInSourceCurrency
         currency
         resolvedAt
         __typename

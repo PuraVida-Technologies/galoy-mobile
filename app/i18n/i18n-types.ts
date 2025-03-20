@@ -7142,6 +7142,11 @@ type RootTranslation = {
 		 */
 		amountExceedsLimit: RequiredParams<'limit'>
 		/**
+		 * A​m​o​u​n​t​ ​i​s​ ​l​e​s​s​e​r​ ​t​h​a​n​ ​a​ ​m​i​n​i​m​u​m​ ​l​i​m​i​t​ ​o​f​ ​{​l​i​m​i​t​}
+		 * @param {string} limit
+		 */
+		amountMinimumLimit: RequiredParams<'limit'>
+		/**
 		 * U​p​g​r​a​d​e​ ​y​o​u​r​ ​a​c​c​o​u​n​t​ ​t​o​ ​i​n​c​r​e​a​s​e​ ​y​o​u​r​ ​l​i​m​i​t
 		 */
 		upgradeAccountToIncreaseLimit: string
@@ -16572,6 +16577,10 @@ export type TranslationFunctions = {
 		 * Amount exceeds your remaining daily limit of {limit}
 		 */
 		amountExceedsLimit: (arg: { limit: string }) => LocalizedString
+		/**
+		 * Amount is lesser than a minimum limit of {limit}
+		 */
+		amountMinimumLimit: (arg: { limit: string }) => LocalizedString
 		/**
 		 * Upgrade your account to increase your limit
 		 */

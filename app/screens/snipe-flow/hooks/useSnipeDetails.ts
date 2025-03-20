@@ -65,7 +65,9 @@ const useSnipeDetails = () => {
   useRealtimePriceQuery({
     fetchPolicy: "network-only",
   })
-  const { data: bankAccountData } = useBankAccountsQuery({ fetchPolicy: "network-only" })
+  const { data: bankAccountData, loading } = useBankAccountsQuery({
+    fetchPolicy: "network-only",
+  })
 
   const { data: withdrawalLimit, refetch } = useGetWithdrawalLimitsQuery({
     variables: {
@@ -81,8 +83,13 @@ const useSnipeDetails = () => {
     returnPartialData: true,
   })
 
-  const { formatDisplayAndWalletAmount, displayCurrency, formatMoneyAmount, fiatSymbol } =
-    useDisplayCurrency()
+  const {
+    formatDisplayAndWalletAmount,
+    moneyAmountToMajorUnitOrSats,
+    displayCurrency,
+    formatMoneyAmount,
+    fiatSymbol,
+  } = useDisplayCurrency()
 
   const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
   const usdWallet = getUsdWallet(data?.me?.defaultAccount?.wallets)
@@ -204,19 +211,40 @@ const useSnipeDetails = () => {
     return parseFloat(withdrawalLimit?.getWithdrawalLimits?.[0]?.limitValue || "0")
   }, [withdrawalLimit?.getWithdrawalLimits?.[0]?.limitValue])
 
-  const usdRemainingLimitMoneyAmount =
-    typeof remainingLimit === "number"
-      ? convertMoneyAmount?.(toUsdMoneyAmount(remainingLimit), DisplayCurrency)
-      : null
+  const usdRemainingLimitMoneyAmount = convertMoneyAmount?.(
+    {
+      amount: remainingLimit || 0,
+      currency: selectedBank?.data?.currency || BankAccountCurrencies.Usd,
+      currencyCode: selectedBank?.data?.currency || BankAccountCurrencies.Usd,
+    },
+    selectedBank?.data?.currency || BankAccountCurrencies.Usd,
+  )
 
-  const remainingLimitText = usdRemainingLimitMoneyAmount
-    ? `${formatMoneyAmount({
-        moneyAmount: usdRemainingLimitMoneyAmount,
-      })}`
-    : ""
+  const remainingLimitText =
+    usdRemainingLimitMoneyAmount && !loading
+      ? `${formatMoneyAmount({
+          moneyAmount: usdRemainingLimitMoneyAmount,
+        })}`
+      : "0"
+
+  const minimumWithdrawal = useMemo(() => {
+    return displayCurrency === BankAccountCurrencies.Crc ? 500000 : 1000
+  }, [displayCurrency])
+
+  const minimumAmountText = formatMoneyAmount({
+    moneyAmount: {
+      amount: minimumWithdrawal,
+      currency: displayCurrency,
+      currencyCode: displayCurrency,
+    },
+  })
 
   const amountFieldError = useMemo(() => {
-    if (parseFloat(formattedAmount?.replace(/\,/g, "")) < parseFloat(amount)) {
+    if (parseFloat(amount) < minimumWithdrawal / 100) {
+      return LL.SendBitcoinScreen.amountMinimumLimit({
+        limit: minimumAmountText,
+      })
+    } else if (parseFloat(formattedAmount?.replace(/\,/g, "")) < parseFloat(amount)) {
       return LL.SendBitcoinScreen.amountExceed({
         balance: fromWalletBalanceFormatted,
       })
@@ -226,7 +254,7 @@ const useSnipeDetails = () => {
       })
     }
     return null
-  }, [formattedAmount, amount, fromWalletBalanceFormatted])
+  }, [formattedAmount, amount, minimumWithdrawal, fromWalletBalanceFormatted])
 
   const isValidAmount = useMemo(() => {
     return amount?.length && parseFloat(amount || "") > 0 && !amountFieldError?.length

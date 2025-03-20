@@ -81,7 +81,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.snipeInfoFieldValue}>{fiatSymbol} </Text>
               <AnimatedRollingNumber
-                value={Number(state?.sellAmount)}
+                value={state?.sellAmount}
                 useGrouping
                 compactToFixed={2}
                 textStyle={styles.snipeInfoFieldValue}
