@@ -69,6 +69,17 @@ const en: BaseTranslation = {
   ContactDetailsScreen: {
     title: "Transactions with {username: string}",
   },
+  TransferActions: {
+    stableSats: "Stable Sats",
+    sinpeIBAN: "Sinpe IBAN",
+    sinpeIBANSubtitle: "(only available in Costa Rica)",
+    sinpeMovil: "Sinpe móvil",
+    sinpeIBANTransfers: "Sinpe IBAN transfers",
+    sinpeMovilTransfers: "Sinpe móvil transfers",
+    sinpeIBANTransfersKYCDescription: "To initiate transfers to Sinpe IBAN you need to complete the KYC details required by our banking partners. Click the button below to start this process.",
+    sinpeIBANTransfersBankDescription: "To initiate transfers to Sinpe IBAN you need to have one bank account linked. Click the button below to start this process.",
+    sinpeIBANTransfersKYCPendingDescription: "Your KYC is still pending, As soon as it's approved you can do Sinpe IBAN transfers.",
+  },
   ConversionDetailsScreen: {
     title: "Convert",
     percentageToConvert: "% to convert",
@@ -81,6 +92,15 @@ const en: BaseTranslation = {
   ConversionSuccessScreen: {
     title: "Conversion Success",
     message: "Conversion successful",
+  },
+  SnipeDetailsScreen: {
+      title: "Snipe IBAN transfer",
+      percentageToConvert: "% to convert",
+      amount: "Amount",
+    },
+  SnipeConfirmationScreen: {
+    title: "Review Snipe IBAN transfer",
+    amount: "Amount",
   },
   EarnScreen: {
     earnSats: "Earn {formattedNumber|sats}",
@@ -2431,9 +2451,12 @@ const en: BaseTranslation = {
   SendBitcoinScreen: {
     willBeSentToMempoolBy: "Transaction should be submitted to mempool",
     amount: "Amount",
+    remainingDailyLimit: "Remaining daily limit",
     amountExceed: "Amount exceeds your balance of {balance: string}",
     amountExceedsLimit:
       "Amount exceeds your remaining daily limit of {limit: string}",
+    amountMinimumLimit:
+      "Amount is lesser than a minimum limit of {limit: string}",
     upgradeAccountToIncreaseLimit:
       "Upgrade your account to increase your limit",
     amountIsRequired: "Amount is required",
@@ -2802,6 +2825,7 @@ const en: BaseTranslation = {
     securityAndPrivacy: "Security and Privacy",
     advanced: "Advanced",
     community: "Community",
+    withdraw: "Withdraw",
     account: "Account",
     trialAccount: "Trial Account",
     blinkUser: "Blink User",
@@ -2814,6 +2838,7 @@ const en: BaseTranslation = {
     bank: "Bank",
     addBankAccount: "Add Bank Account",
     bankAccount: "Bank Account",
+    toBankAccount: "To Bank Account",
     bankAccounts: "Bank Accounts",
     bankAdvice: "{bankName: string} Advice",
     bankInfo: "{bankName: string} Info",
@@ -2825,6 +2850,7 @@ const en: BaseTranslation = {
     close: "Close",
     confirm: "Confirm",
     convert: "Convert",
+    transfer: "Transfer",
     codeConfirmation: "Code Confirmation",
     currency: "Currency",
     currencySyncIssue: "Currency issue. Refresh needed",
@@ -2838,6 +2864,7 @@ const en: BaseTranslation = {
     fee: "fee",
     Fee: "Fee",
     fees: "Fees",
+    includes: "Includes",
     firstName: "First Name",
     from: "From",
     hour: "hour",
@@ -2884,6 +2911,7 @@ const en: BaseTranslation = {
     success: "Success!",
     stablesatsUsd: "Stablesats USD",
     to: "To",
+    comingSoon: "coming soon",
     total: "Total",
     transactions: "Transactions",
     transactionsError: "Error loading transactions",

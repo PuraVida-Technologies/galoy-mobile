@@ -23,7 +23,7 @@ export type Scalars = {
   /** An Opaque Bearer token */
   AuthToken: { input: string; output: string; }
   /** Big js */
-  BigDecimal: { input: number; output: number; }
+  BigDecimal: { input: string; output: string; }
   /** (Positive) Cent amount (1/100 of a dollar) */
   CentAmount: { input: number; output: number; }
   /** An alias name that a user can set for a wallet (with which they have transactions) */
@@ -83,8 +83,6 @@ export type Scalars = {
   TotpSecret: { input: string; output: string; }
   /** An external reference id that can be optionally added for transactions. */
   TxExternalId: { input: string; output: string; }
-  /** A field whose value is a generic Universally Unique Identifier: https://en.wikipedia.org/wiki/Universally_unique_identifier. */
-  UUID: { input: string; output: string; }
   /** Unique identifier of a user */
   Username: { input: string; output: string; }
   /** Unique identifier of a wallet */
@@ -197,6 +195,15 @@ export type AccountLimits = {
   readonly withdrawal: ReadonlyArray<AccountLimit>;
 };
 
+export const AccountStatus = {
+  Active: 'Active',
+  Closed: 'Closed',
+  Locked: 'Locked',
+  New: 'New',
+  Pending: 'Pending'
+} as const;
+
+export type AccountStatus = typeof AccountStatus[keyof typeof AccountStatus];
 export type AccountUpdateDefaultWalletIdInput = {
   readonly walletId: Scalars['WalletId']['input'];
 };
@@ -280,6 +287,30 @@ export type ApiKeyRevokeInput = {
 export type ApiKeyRevokePayload = {
   readonly __typename: 'ApiKeyRevokePayload';
   readonly apiKey: ApiKey;
+};
+
+export type AuditedAccountEmail = {
+  readonly __typename: 'AuditedAccountEmail';
+  readonly email: Scalars['String']['output'];
+  readonly verified: Scalars['Boolean']['output'];
+};
+
+export type AuditedAccountOwner = {
+  readonly __typename: 'AuditedAccountOwner';
+  readonly email: AuditedAccountEmail;
+  readonly id: Scalars['String']['output'];
+  readonly phone: Scalars['String']['output'];
+};
+
+export type AuditedAccountResponse = {
+  readonly __typename: 'AuditedAccountResponse';
+  readonly createdAt: Scalars['DateTime']['output'];
+  readonly id: Scalars['String']['output'];
+  readonly level: UserAccountLevel;
+  readonly owner: AuditedAccountOwner;
+  readonly permissions: ReadonlyArray<Permission>;
+  readonly status: AccountStatus;
+  readonly username: Scalars['String']['output'];
 };
 
 export type AuthTokenPayload = {
@@ -536,6 +567,14 @@ export type Country = {
   readonly supportedAuthChannels: ReadonlyArray<PhoneCodeChannelType>;
 };
 
+/** General currencies that are supported by galoy be it wallets (USD, BTC) or in galoys currency list */
+export const Currencies = {
+  Btc: 'BTC',
+  Crc: 'CRC',
+  Usd: 'USD'
+} as const;
+
+export type Currencies = typeof Currencies[keyof typeof Currencies];
 export type Currency = {
   readonly __typename: 'Currency';
   readonly flag: Scalars['String']['output'];
@@ -562,10 +601,10 @@ export type CurrencyExchangeInstanceTransaction = {
   readonly createdAt: Scalars['DateTime']['output'];
   readonly currency: BankAccountCurrencies;
   readonly destinationId: Scalars['String']['output'];
-  readonly destinationType: TransactionSourceTypes;
+  readonly destinationType: TransactionDestinationTypes;
   readonly fee: Scalars['BigDecimal']['output'];
   readonly id: Scalars['String']['output'];
-  readonly metadata: TransactionMetadata;
+  readonly metadata?: Maybe<TransactionMetadata>;
   readonly relevantId: Scalars['String']['output'];
   readonly sourceId: Scalars['String']['output'];
   readonly sourceType: TransactionSourceTypes;
@@ -574,12 +613,15 @@ export type CurrencyExchangeInstanceTransaction = {
 export type CurrencyExchangeTransactionGraphqlResponse = {
   readonly __typename: 'CurrencyExchangeTransactionGraphqlResponse';
   readonly amount: Scalars['BigDecimal']['output'];
+  readonly baseAmount: Scalars['BigDecimal']['output'];
+  readonly baseAmountCurrency: Currencies;
   readonly createdAt: Scalars['DateTime']['output'];
   readonly currency: BankAccountCurrencies;
   readonly galoyUserId: Scalars['String']['output'];
   readonly id: Scalars['String']['output'];
   readonly status: CurrencyExchangeTransactionStatus;
   readonly transactions: ReadonlyArray<CurrencyExchangeInstanceTransaction>;
+  readonly username: Scalars['String']['output'];
 };
 
 /** Supported currencies for bank accounts */
@@ -623,6 +665,10 @@ export const ExchangeCurrencyUnit = {
 } as const;
 
 export type ExchangeCurrencyUnit = typeof ExchangeCurrencyUnit[keyof typeof ExchangeCurrencyUnit];
+export type ExecuteWithdrawalContract = {
+  readonly token: Scalars['String']['input'];
+};
+
 export type ExternalAccount = {
   readonly countryCode: ExternalAccountCountries;
   readonly galoyUserId: Scalars['String']['output'];
@@ -661,17 +707,21 @@ export const Gender = {
 } as const;
 
 export type Gender = typeof Gender[keyof typeof Gender];
-export type GetCurrencyExchangeFeesDto = {
-  /** using the smallest building unit of the currency i.e Cents */
+export type GetWithDrawalContractInput = {
+  /** Use minor units of the provided currency (SATS for BTC, cents for USD) */
   readonly amount: Scalars['BigDecimal']['input'];
-  readonly currency: BankAccountCurrencies;
-  readonly externalAccountId: Scalars['String']['input'];
+  readonly bankAccountId: Scalars['String']['input'];
+  /** The currency of the provided amount */
+  readonly sourceCurrency: Currencies;
+  /** The user source wallet for galoy that will be used */
+  readonly walletId: Scalars['String']['input'];
 };
 
-export type GetCurrencyExchangeFeesResponse = {
-  readonly __typename: 'GetCurrencyExchangeFeesResponse';
-  readonly amount: Scalars['BigDecimal']['output'];
+export type GetWithdrawalLimitsInputDto = {
+  /** currency to return amounts in */
   readonly currency: BankAccountCurrencies;
+  /** payment system to return amounts for */
+  readonly paymentSystemType?: PaymentSystem;
 };
 
 /** Provides global settings for the application which might have an impact for the user. */
@@ -691,6 +741,17 @@ export type Globals = {
   readonly nodesIds: ReadonlyArray<Scalars['String']['output']>;
   /** A list of countries and their supported auth channels */
   readonly supportedCountries: ReadonlyArray<Country>;
+};
+
+export type GrantPermissionInput = {
+  readonly galoyUserId: Scalars['String']['input'];
+  readonly permission: Permission;
+};
+
+export type GrantPermissionResponse = {
+  readonly __typename: 'GrantPermissionResponse';
+  readonly galoyUserId: Scalars['String']['output'];
+  readonly name: Scalars['String']['output'];
 };
 
 export type GraphQlApplicationError = Error & {
@@ -1210,7 +1271,13 @@ export type Mutation = {
   readonly captchaCreateChallenge: CaptchaCreateChallengePayload;
   readonly captchaRequestAuthCode: SuccessPayload;
   readonly deviceNotificationTokenCreate: SuccessPayload;
+  /**
+   * - Executes the given token that represents the withdrawal transaction
+   * - If token is not valid/expired transaction will fail
+   */
+  readonly executeWithdrawalContract?: Maybe<WithdrawalContract>;
   readonly feedbackSubmit: SuccessPayload;
+  readonly grantUserPermission: GrantPermissionResponse;
   /**
    * Actions a payment which is internal to the ledger e.g. it does
    * not use onchain/lightning. Returns payment status (success,
@@ -1305,6 +1372,7 @@ export type Mutation = {
   readonly onChainUsdPaymentSendAsBtcDenominated: PaymentSendPayload;
   readonly quizClaim: QuizClaimPayload;
   readonly removeMyBankAccount: BankAccount;
+  readonly revokeUserPermission: RevokePermissionResponse;
   readonly statefulNotificationAcknowledge: StatefulNotificationAcknowledgePayload;
   readonly supportChatMessageAdd: SupportChatMessageAddPayload;
   readonly supportChatReset: SuccessPayload;
@@ -1314,6 +1382,7 @@ export type Mutation = {
    */
   readonly updateBankAccountCR: BankAccountCr;
   readonly updateKyc: Kyc;
+  readonly updateSettings: SettingsResponse;
   /** @deprecated will be moved to AccountContact */
   readonly userContactUpdateAlias: UserContactUpdateAliasPayload;
   readonly userEmailDelete: UserEmailDeletePayload;
@@ -1331,12 +1400,6 @@ export type Mutation = {
   readonly userUpdateLanguage: UserUpdateLanguagePayload;
   /** @deprecated Username will be moved to @Handle in Accounts. Also SetUsername naming should be used instead of UpdateUsername to reflect the idempotency of Handles */
   readonly userUpdateUsername: UserUpdateUsernamePayload;
-  /**
-   * Performs a withdraw of USD currency to user external account:
-   *      - the fees amount will be added to the withdraw amount and the total will be deducted from the users wallet
-   *       - User wants to withdraw 200 cents, fees are 100 cents, 300 cents will be taken from the users wallet
-   */
-  readonly withdrawUSD?: Maybe<CurrencyExchangeTransactionGraphqlResponse>;
 };
 
 
@@ -1410,8 +1473,18 @@ export type MutationDeviceNotificationTokenCreateArgs = {
 };
 
 
+export type MutationExecuteWithdrawalContractArgs = {
+  input: ExecuteWithdrawalContract;
+};
+
+
 export type MutationFeedbackSubmitArgs = {
   input: FeedbackSubmitInput;
+};
+
+
+export type MutationGrantUserPermissionArgs = {
+  input: GrantPermissionInput;
 };
 
 
@@ -1555,6 +1628,11 @@ export type MutationRemoveMyBankAccountArgs = {
 };
 
 
+export type MutationRevokeUserPermissionArgs = {
+  input: GrantPermissionInput;
+};
+
+
 export type MutationStatefulNotificationAcknowledgeArgs = {
   input: StatefulNotificationAcknowledgeInput;
 };
@@ -1573,6 +1651,11 @@ export type MutationUpdateBankAccountCrArgs = {
 
 export type MutationUpdateKycArgs = {
   input: InputKyc;
+};
+
+
+export type MutationUpdateSettingsArgs = {
+  input: UpdateSettingsInput;
 };
 
 
@@ -1628,11 +1711,6 @@ export type MutationUserUpdateLanguageArgs = {
 
 export type MutationUserUpdateUsernameArgs = {
   input: UserUpdateUsernameInput;
-};
-
-
-export type MutationWithdrawUsdArgs = {
-  input: WithDrawUsdToBankAccountDto;
 };
 
 export type MyUpdatesPayload = {
@@ -1787,6 +1865,13 @@ export const PaymentSendResult = {
 } as const;
 
 export type PaymentSendResult = typeof PaymentSendResult[keyof typeof PaymentSendResult];
+/** Payment system that is by us be it IBAN or MOVIL */
+export const PaymentSystem = {
+  Iban: 'IBAN',
+  Movil: 'MOVIL'
+} as const;
+
+export type PaymentSystem = typeof PaymentSystem[keyof typeof PaymentSystem];
 export const PayoutSpeed = {
   Fast: 'FAST'
 } as const;
@@ -1796,7 +1881,9 @@ export const Permission = {
   ExternalTransactionsAccess: 'EXTERNAL_TRANSACTIONS_ACCESS',
   InternalToolsAccses: 'INTERNAL_TOOLS_ACCSES',
   KycApprovalAccess: 'KYC_APPROVAL_ACCESS',
-  ManageUsersAccess: 'MANAGE_USERS_ACCESS'
+  ManageUsersAccess: 'MANAGE_USERS_ACCESS',
+  MerchantsAccess: 'MERCHANTS_ACCESS',
+  SettingsAccess: 'SETTINGS_ACCESS'
 } as const;
 
 export type Permission = typeof Permission[keyof typeof Permission];
@@ -1880,6 +1967,12 @@ export type PricePoint = {
   readonly timestamp: Scalars['Timestamp']['output'];
 };
 
+export type PublicKycWallet = {
+  readonly __typename: 'PublicKycWallet';
+  readonly currency: Currencies;
+  readonly id: Scalars['String']['output'];
+};
+
 /** A public view of a generic wallet which stores value in one of our supported currencies. */
 export type PublicWallet = {
   readonly __typename: 'PublicWallet';
@@ -1904,13 +1997,19 @@ export type Query = {
   readonly currencyList: ReadonlyArray<Currency>;
   readonly exchangeCurrencyInstances: ReadonlyArray<CurrencyExchangeTransactionGraphqlResponse>;
   readonly exchangeCurrencyTransactions: ReadonlyArray<CurrencyExchangeInstanceTransaction>;
+  readonly externalDailyLimit: Scalars['BigDecimal']['output'];
   readonly feedbackModalShown: Scalars['Boolean']['output'];
-  /**
-   * get a breakdown of the fees for doing a withdrawal:
-   *     - must pass KYC process
-   */
-  readonly getCurrencyExchangeFees: GetCurrencyExchangeFeesResponse;
+  readonly findAuditedAccount?: Maybe<AuditedAccountResponse>;
+  readonly getAuditedAccount?: Maybe<AuditedAccountResponse>;
   readonly getMyBankAccounts: ReadonlyArray<BankAccount>;
+  /**
+   * - Returns contract details for performing the given transaction, exchange rates, fees, amounts
+   * - Returns a token as well, that can be used to actually execute the provided transaction with the given details
+   * - If the user has passed their limits, it will throw an unprocessable entity error
+   */
+  readonly getWithdrawalContract: WithdrawalContract;
+  /** returns the values of the current withdrawal limits for the user */
+  readonly getWithdrawalLimits: ReadonlyArray<WithdrawalLimits>;
   readonly globals?: Maybe<Globals>;
   readonly hasPromptedSetDefaultAccount: Scalars['Boolean']['output'];
   readonly hiddenBalanceToolTip: Scalars['Boolean']['output'];
@@ -1932,6 +2031,9 @@ export type Query = {
   /** Returns 1 Sat and 1 Usd Cent price for the given currency in minor unit */
   readonly realtimePrice: RealtimePrice;
   readonly region?: Maybe<Region>;
+  readonly setting: SettingsResponse;
+  readonly settings: ReadonlyArray<SettingsResponse>;
+  readonly stores: ReadonlyArray<StoreResponse>;
   /** @deprecated will be migrated to AccountDefaultWalletId */
   readonly userDefaultWalletId: Scalars['WalletId']['output'];
   readonly usernameAvailable?: Maybe<Scalars['Boolean']['output']>;
@@ -1955,8 +2057,23 @@ export type QueryCurrencyConversionEstimationArgs = {
 };
 
 
-export type QueryGetCurrencyExchangeFeesArgs = {
-  input: GetCurrencyExchangeFeesDto;
+export type QueryFindAuditedAccountArgs = {
+  input: Scalars['String']['input'];
+};
+
+
+export type QueryGetAuditedAccountArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryGetWithdrawalContractArgs = {
+  input: GetWithDrawalContractInput;
+};
+
+
+export type QueryGetWithdrawalLimitsArgs = {
+  input: GetWithdrawalLimitsInputDto;
 };
 
 
@@ -2006,6 +2123,11 @@ export type QueryOnChainUsdTxFeeAsBtcDenominatedArgs = {
 
 export type QueryRealtimePriceArgs = {
   currency?: InputMaybe<Scalars['DisplayCurrency']['input']>;
+};
+
+
+export type QuerySettingArgs = {
+  input: SettingsFilter;
 };
 
 
@@ -2067,6 +2189,31 @@ export type Region = {
   readonly longitudeDelta: Scalars['Float']['output'];
 };
 
+export type ResolvedCurrencyExchangeAmount = {
+  readonly __typename: 'ResolvedCurrencyExchangeAmount';
+  /** uses the minor unit of the currency (i.e USD is in cents) */
+  readonly amount: Scalars['BigDecimal']['output'];
+  /** The same amount but represented in BTC (using Satoshi) */
+  readonly amountInSats: Scalars['BigDecimal']['output'];
+  /** The same amount but represented in the input source currency */
+  readonly amountInSourceCurrency: Scalars['BigDecimal']['output'];
+  /** Value of 1 Satoshi turned into the provided currency's minor unit */
+  readonly btcSatPrice: Scalars['BigDecimal']['output'];
+  /** currency of the provided amount */
+  readonly currency: Currencies;
+  /** The time at which the BTC currency exchange rate was evaluated */
+  readonly resolvedAt: Scalars['String']['output'];
+  /** currency of the input source amount */
+  readonly sourceCurrency: Currencies;
+};
+
+export type RevokePermissionResponse = {
+  readonly __typename: 'RevokePermissionResponse';
+  readonly count: Scalars['Float']['output'];
+  readonly galoyUserId: Scalars['String']['output'];
+  readonly name: Scalars['String']['output'];
+};
+
 export type SatAmountPayload = {
   readonly __typename: 'SatAmountPayload';
   readonly amount?: Maybe<Scalars['SatAmount']['output']>;
@@ -2080,6 +2227,18 @@ export const Scope = {
 } as const;
 
 export type Scope = typeof Scope[keyof typeof Scope];
+export type SettingsFilter = {
+  readonly name: Scalars['String']['input'];
+};
+
+export type SettingsResponse = {
+  readonly __typename: 'SettingsResponse';
+  readonly description?: Maybe<Scalars['String']['output']>;
+  readonly id: Scalars['String']['output'];
+  readonly name: Scalars['String']['output'];
+  readonly value: Scalars['String']['output'];
+};
+
 export type SettlementVia = SettlementViaIntraLedger | SettlementViaLn | SettlementViaOnChain;
 
 export type SettlementViaIntraLedger = {
@@ -2153,6 +2312,16 @@ export const Status = {
 } as const;
 
 export type Status = typeof Status[keyof typeof Status];
+export type StoreResponse = {
+  readonly __typename: 'StoreResponse';
+  readonly appId?: Maybe<Scalars['String']['output']>;
+  readonly id: Scalars['ID']['output'];
+  readonly name: Scalars['String']['output'];
+  readonly rate: Scalars['String']['output'];
+  readonly storeId: Scalars['ID']['output'];
+  readonly username: Scalars['String']['output'];
+};
+
 export type Subscription = {
   readonly __typename: 'Subscription';
   /** @deprecated Deprecated in favor of lnInvoicePaymentStatusByPaymentRequest */
@@ -2260,6 +2429,13 @@ export type TransactionConnection = {
   readonly pageInfo: PageInfo;
 };
 
+/** Allowed destination types for transactions */
+export const TransactionDestinationTypes = {
+  ExternalAccount: 'EXTERNAL_ACCOUNT',
+  GaloyWallet: 'GALOY_WALLET'
+} as const;
+
+export type TransactionDestinationTypes = typeof TransactionDestinationTypes[keyof typeof TransactionDestinationTypes];
 /** An edge in a connection. */
 export type TransactionEdge = {
   readonly __typename: 'TransactionEdge';
@@ -2271,7 +2447,7 @@ export type TransactionEdge = {
 
 export type TransactionMetadata = {
   readonly __typename: 'TransactionMetadata';
-  readonly memo: Scalars['String']['output'];
+  readonly memo?: Maybe<Scalars['String']['output']>;
 };
 
 /** Allowed source types for transactions */
@@ -2327,6 +2503,11 @@ export type UpdateBankAccountCrdto = {
    *     - optional 3 chars from the set [A-Z0-9]
    */
   readonly swiftCode?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateSettingsInput = {
+  readonly id: Scalars['String']['input'];
+  readonly value: Scalars['String']['input'];
 };
 
 export type UpgradePayload = {
@@ -2475,6 +2656,13 @@ export type UserUnacknowledgedStatefulNotificationsWithBulletinEnabledArgs = {
   first: Scalars['Int']['input'];
 };
 
+export const UserAccountLevel = {
+  One: 'One',
+  Two: 'Two',
+  Zero: 'Zero'
+} as const;
+
+export type UserAccountLevel = typeof UserAccountLevel[keyof typeof UserAccountLevel];
 export type UserContact = {
   readonly __typename: 'UserContact';
   /**
@@ -2724,17 +2912,60 @@ export const WalletCurrency = {
 } as const;
 
 export type WalletCurrency = typeof WalletCurrency[keyof typeof WalletCurrency];
-export type WithDrawUsdToBankAccountDto = {
+export type WithdrawalContract = {
+  readonly __typename: 'WithdrawalContract';
+  readonly amounts: WithdrawalContractAmounts;
+  readonly bankAccount: BankAccount;
+  /** Our galoy wallet that was used to transfer user amounts to */
+  readonly exchangeWallet: PublicKycWallet;
+  /** A string representation of the withdrawal fees (does not include internal fees for our exchange providers) */
+  readonly feeExplanation: Scalars['String']['output'];
+  /** id that represents the whole withdrawal operation */
+  readonly id: Scalars['String']['output'];
+  readonly limits: ReadonlyArray<WithdrawalLimits>;
+  /** Users galoy wallet that was used to withdraw  */
+  readonly sourceWallet: PublicKycWallet;
   /**
-   * - Amount in cents
-   * - Must be above 200
-   * - Doesn't include the fees, amount only evaluates what the user want to withdraw to their account
+   * Token that represents a snapshot in time:
+   * - Used as input to execute the withdrawal
+   * - Expires after a certain time (which is declared in the object)
    */
-  readonly amount: Scalars['BigDecimal']['input'];
-  /** The external account id (bank account) the user wants to withdraw to */
-  readonly externalAccountId: Scalars['UUID']['input'];
-  /** The galoy USD wallet id that has the user stablesats */
-  readonly walletId: Scalars['String']['input'];
+  readonly tokenDetails: WithdrawalContractTokenDetails;
+  readonly userId: Scalars['String']['output'];
+};
+
+export type WithdrawalContractAmounts = {
+  readonly __typename: 'WithdrawalContractAmounts';
+  /** the amount that will be credited to the user bank account, the currency is the same as the target currency */
+  readonly bankAccountCredit: ResolvedCurrencyExchangeAmount;
+  /** the amount that will be charged for the withdrawal from the galoy wallet, the currency is the same as the target currency */
+  readonly fee: ResolvedCurrencyExchangeAmount;
+  /** the amount that will be credited to the user bank account, the currency is the same as the target currency */
+  readonly target: ResolvedCurrencyExchangeAmount;
+  /** the amount that will be debited from the user galoy wallet, the currency is the same as the wallet currency */
+  readonly walletDebit: ResolvedCurrencyExchangeAmount;
+};
+
+export type WithdrawalContractTokenDetails = {
+  readonly __typename: 'WithdrawalContractTokenDetails';
+  readonly body: Scalars['String']['output'];
+  readonly createdAt: Scalars['String']['output'];
+  readonly executedAt?: Maybe<Scalars['String']['output']>;
+  readonly expiresAt: Scalars['String']['output'];
+};
+
+export type WithdrawalLimits = {
+  readonly __typename: 'WithdrawalLimits';
+  /** defines if the current withdrawal can be executed */
+  readonly canExecute: Scalars['Boolean']['output'];
+  /** The currency used for the total amounts and limits values */
+  readonly currency: Currencies;
+  readonly limitPeriodUnit: Scalars['String']['output'];
+  readonly limitPeriodValue: Scalars['Float']['output'];
+  /** The limit of transactions amount in the given period time */
+  readonly limitValue: Scalars['BigDecimal']['output'];
+  /** The total amount summation of transactions in the past limit period */
+  readonly totalAmount: Scalars['BigDecimal']['output'];
 };
 
 export type MobileUpdateQueryVariables = Exact<{ [key: string]: never; }>;
@@ -2876,6 +3107,33 @@ export type UserLogoutMutationVariables = Exact<{
 
 
 export type UserLogoutMutation = { readonly __typename: 'Mutation', readonly userLogout: { readonly __typename: 'SuccessPayload', readonly success?: boolean | null } };
+
+export type AddBankAccountCrMutationVariables = Exact<{
+  input: AddBankAccountCrdto;
+}>;
+
+
+export type AddBankAccountCrMutation = { readonly __typename: 'Mutation', readonly addBankAccountCR: { readonly __typename: 'BankAccountCR', readonly id: string } };
+
+export type UpdateBankAccountCrMutationVariables = Exact<{
+  updateBankAccountCrId: Scalars['String']['input'];
+  input: UpdateBankAccountCrdto;
+}>;
+
+
+export type UpdateBankAccountCrMutation = { readonly __typename: 'Mutation', readonly updateBankAccountCR: { readonly __typename: 'BankAccountCR', readonly id: string } };
+
+export type RemoveMyBankAccountMutationVariables = Exact<{
+  bankAccountId: Scalars['String']['input'];
+}>;
+
+
+export type RemoveMyBankAccountMutation = { readonly __typename: 'Mutation', readonly removeMyBankAccount: { readonly __typename: 'BankAccountCR', readonly id: string } };
+
+export type BankAccountsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type BankAccountsQuery = { readonly __typename: 'Query', readonly getMyBankAccounts: ReadonlyArray<{ readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly accountHolderName: string, readonly nationalId: string, readonly iban: string, readonly sinpeCode: string, readonly swiftCode: string, readonly currency: BankAccountCurrencies } }> };
 
 export type SupportChatQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3299,33 +3557,6 @@ export type WarningSecureAccountQueryVariables = Exact<{ [key: string]: never; }
 
 export type WarningSecureAccountQuery = { readonly __typename: 'Query', readonly me?: { readonly __typename: 'User', readonly id: string, readonly defaultAccount: { readonly __typename: 'ConsumerAccount', readonly level: AccountLevel, readonly id: string, readonly wallets: ReadonlyArray<{ readonly __typename: 'BTCWallet', readonly id: string, readonly balance: number, readonly walletCurrency: WalletCurrency } | { readonly __typename: 'UsdWallet', readonly id: string, readonly balance: number, readonly walletCurrency: WalletCurrency }> } } | null };
 
-export type AddBankAccountCrMutationVariables = Exact<{
-  input: AddBankAccountCrdto;
-}>;
-
-
-export type AddBankAccountCrMutation = { readonly __typename: 'Mutation', readonly addBankAccountCR: { readonly __typename: 'BankAccountCR', readonly id: string } };
-
-export type UpdateBankAccountCrMutationVariables = Exact<{
-  updateBankAccountCrId: Scalars['String']['input'];
-  input: UpdateBankAccountCrdto;
-}>;
-
-
-export type UpdateBankAccountCrMutation = { readonly __typename: 'Mutation', readonly updateBankAccountCR: { readonly __typename: 'BankAccountCR', readonly id: string } };
-
-export type RemoveMyBankAccountMutationVariables = Exact<{
-  bankAccountId: Scalars['String']['input'];
-}>;
-
-
-export type RemoveMyBankAccountMutation = { readonly __typename: 'Mutation', readonly removeMyBankAccount: { readonly __typename: 'BankAccountCR', readonly id: string } };
-
-export type BankAccountsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type BankAccountsQuery = { readonly __typename: 'Query', readonly getMyBankAccounts: ReadonlyArray<{ readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly accountHolderName: string, readonly nationalId: string, readonly iban: string, readonly sinpeCode: string, readonly swiftCode: string, readonly currency: BankAccountCurrencies } }> };
-
 export type AccountUpdateDefaultWalletIdMutationVariables = Exact<{
   input: AccountUpdateDefaultWalletIdInput;
 }>;
@@ -3423,6 +3654,27 @@ export type AccountLimitsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type AccountLimitsQuery = { readonly __typename: 'Query', readonly me?: { readonly __typename: 'User', readonly id: string, readonly defaultAccount: { readonly __typename: 'ConsumerAccount', readonly id: string, readonly limits: { readonly __typename: 'AccountLimits', readonly withdrawal: ReadonlyArray<{ readonly __typename: 'OneDayAccountLimit', readonly totalLimit: number, readonly remainingLimit?: number | null, readonly interval?: number | null }>, readonly internalSend: ReadonlyArray<{ readonly __typename: 'OneDayAccountLimit', readonly totalLimit: number, readonly remainingLimit?: number | null, readonly interval?: number | null }>, readonly convert: ReadonlyArray<{ readonly __typename: 'OneDayAccountLimit', readonly totalLimit: number, readonly remainingLimit?: number | null, readonly interval?: number | null }> } } } | null };
+
+export type ExecuteWithdrawalContractMutationVariables = Exact<{
+  input: ExecuteWithdrawalContract;
+}>;
+
+
+export type ExecuteWithdrawalContractMutation = { readonly __typename: 'Mutation', readonly executeWithdrawalContract?: { readonly __typename: 'WithdrawalContract', readonly id: string } | null };
+
+export type GetWithdrawalContractQueryVariables = Exact<{
+  input: GetWithDrawalContractInput;
+}>;
+
+
+export type GetWithdrawalContractQuery = { readonly __typename: 'Query', readonly getWithdrawalContract: { readonly __typename: 'WithdrawalContract', readonly feeExplanation: string, readonly id: string, readonly amounts: { readonly __typename: 'WithdrawalContractAmounts', readonly bankAccountCredit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly fee: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly target: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly walletDebit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string } }, readonly limits: ReadonlyArray<{ readonly __typename: 'WithdrawalLimits', readonly totalAmount: string, readonly canExecute: boolean, readonly currency: Currencies, readonly limitPeriodUnit: string, readonly limitPeriodValue: number, readonly limitValue: string }>, readonly bankAccount: { readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly accountHolderName: string, readonly nationalId: string, readonly iban: string, readonly sinpeCode: string, readonly swiftCode: string, readonly currency: BankAccountCurrencies } }, readonly exchangeWallet: { readonly __typename: 'PublicKycWallet', readonly id: string, readonly currency: Currencies }, readonly sourceWallet: { readonly __typename: 'PublicKycWallet', readonly currency: Currencies, readonly id: string }, readonly tokenDetails: { readonly __typename: 'WithdrawalContractTokenDetails', readonly body: string, readonly createdAt: string, readonly executedAt?: string | null, readonly expiresAt: string } } };
+
+export type GetWithdrawalLimitsQueryVariables = Exact<{
+  input: GetWithdrawalLimitsInputDto;
+}>;
+
+
+export type GetWithdrawalLimitsQuery = { readonly __typename: 'Query', readonly getWithdrawalLimits: ReadonlyArray<{ readonly __typename: 'WithdrawalLimits', readonly totalAmount: string, readonly limitValue: string, readonly currency: Currencies, readonly limitPeriodUnit: string, readonly limitPeriodValue: number, readonly canExecute: boolean }> };
 
 export type TotpRegistrationScreenQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4589,6 +4841,161 @@ export function useUserLogoutMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UserLogoutMutationHookResult = ReturnType<typeof useUserLogoutMutation>;
 export type UserLogoutMutationResult = Apollo.MutationResult<UserLogoutMutation>;
 export type UserLogoutMutationOptions = Apollo.BaseMutationOptions<UserLogoutMutation, UserLogoutMutationVariables>;
+export const AddBankAccountCrDocument = gql`
+    mutation addBankAccountCR($input: AddBankAccountCRDTO!) {
+  addBankAccountCR(input: $input) {
+    id
+  }
+}
+    `;
+export type AddBankAccountCrMutationFn = Apollo.MutationFunction<AddBankAccountCrMutation, AddBankAccountCrMutationVariables>;
+
+/**
+ * __useAddBankAccountCrMutation__
+ *
+ * To run a mutation, you first call `useAddBankAccountCrMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddBankAccountCrMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addBankAccountCrMutation, { data, loading, error }] = useAddBankAccountCrMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddBankAccountCrMutation(baseOptions?: Apollo.MutationHookOptions<AddBankAccountCrMutation, AddBankAccountCrMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddBankAccountCrMutation, AddBankAccountCrMutationVariables>(AddBankAccountCrDocument, options);
+      }
+export type AddBankAccountCrMutationHookResult = ReturnType<typeof useAddBankAccountCrMutation>;
+export type AddBankAccountCrMutationResult = Apollo.MutationResult<AddBankAccountCrMutation>;
+export type AddBankAccountCrMutationOptions = Apollo.BaseMutationOptions<AddBankAccountCrMutation, AddBankAccountCrMutationVariables>;
+export const UpdateBankAccountCrDocument = gql`
+    mutation UpdateBankAccountCR($updateBankAccountCrId: String!, $input: UpdateBankAccountCRDTO!) {
+  updateBankAccountCR(id: $updateBankAccountCrId, input: $input) {
+    id
+  }
+}
+    `;
+export type UpdateBankAccountCrMutationFn = Apollo.MutationFunction<UpdateBankAccountCrMutation, UpdateBankAccountCrMutationVariables>;
+
+/**
+ * __useUpdateBankAccountCrMutation__
+ *
+ * To run a mutation, you first call `useUpdateBankAccountCrMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateBankAccountCrMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateBankAccountCrMutation, { data, loading, error }] = useUpdateBankAccountCrMutation({
+ *   variables: {
+ *      updateBankAccountCrId: // value for 'updateBankAccountCrId'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateBankAccountCrMutation(baseOptions?: Apollo.MutationHookOptions<UpdateBankAccountCrMutation, UpdateBankAccountCrMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateBankAccountCrMutation, UpdateBankAccountCrMutationVariables>(UpdateBankAccountCrDocument, options);
+      }
+export type UpdateBankAccountCrMutationHookResult = ReturnType<typeof useUpdateBankAccountCrMutation>;
+export type UpdateBankAccountCrMutationResult = Apollo.MutationResult<UpdateBankAccountCrMutation>;
+export type UpdateBankAccountCrMutationOptions = Apollo.BaseMutationOptions<UpdateBankAccountCrMutation, UpdateBankAccountCrMutationVariables>;
+export const RemoveMyBankAccountDocument = gql`
+    mutation RemoveMyBankAccount($bankAccountId: String!) {
+  removeMyBankAccount(bankAccountId: $bankAccountId) {
+    ... on BankAccountCR {
+      id
+    }
+  }
+}
+    `;
+export type RemoveMyBankAccountMutationFn = Apollo.MutationFunction<RemoveMyBankAccountMutation, RemoveMyBankAccountMutationVariables>;
+
+/**
+ * __useRemoveMyBankAccountMutation__
+ *
+ * To run a mutation, you first call `useRemoveMyBankAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveMyBankAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeMyBankAccountMutation, { data, loading, error }] = useRemoveMyBankAccountMutation({
+ *   variables: {
+ *      bankAccountId: // value for 'bankAccountId'
+ *   },
+ * });
+ */
+export function useRemoveMyBankAccountMutation(baseOptions?: Apollo.MutationHookOptions<RemoveMyBankAccountMutation, RemoveMyBankAccountMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveMyBankAccountMutation, RemoveMyBankAccountMutationVariables>(RemoveMyBankAccountDocument, options);
+      }
+export type RemoveMyBankAccountMutationHookResult = ReturnType<typeof useRemoveMyBankAccountMutation>;
+export type RemoveMyBankAccountMutationResult = Apollo.MutationResult<RemoveMyBankAccountMutation>;
+export type RemoveMyBankAccountMutationOptions = Apollo.BaseMutationOptions<RemoveMyBankAccountMutation, RemoveMyBankAccountMutationVariables>;
+export const BankAccountsDocument = gql`
+    query bankAccounts {
+  getMyBankAccounts {
+    ... on BankAccountCR {
+      id
+      galoyUserId
+      type
+      countryCode
+      data {
+        bankName
+        accountHolderName
+        nationalId
+        iban
+        sinpeCode
+        swiftCode
+        currency
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useBankAccountsQuery__
+ *
+ * To run a query within a React component, call `useBankAccountsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBankAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBankAccountsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useBankAccountsQuery(baseOptions?: Apollo.QueryHookOptions<BankAccountsQuery, BankAccountsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<BankAccountsQuery, BankAccountsQueryVariables>(BankAccountsDocument, options);
+      }
+export function useBankAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BankAccountsQuery, BankAccountsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<BankAccountsQuery, BankAccountsQueryVariables>(BankAccountsDocument, options);
+        }
+export function useBankAccountsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<BankAccountsQuery, BankAccountsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<BankAccountsQuery, BankAccountsQueryVariables>(BankAccountsDocument, options);
+        }
+export type BankAccountsQueryHookResult = ReturnType<typeof useBankAccountsQuery>;
+export type BankAccountsLazyQueryHookResult = ReturnType<typeof useBankAccountsLazyQuery>;
+export type BankAccountsSuspenseQueryHookResult = ReturnType<typeof useBankAccountsSuspenseQuery>;
+export type BankAccountsQueryResult = Apollo.QueryResult<BankAccountsQuery, BankAccountsQueryVariables>;
 export const SupportChatDocument = gql`
     query supportChat {
   me {
@@ -7433,161 +7840,6 @@ export type WarningSecureAccountQueryHookResult = ReturnType<typeof useWarningSe
 export type WarningSecureAccountLazyQueryHookResult = ReturnType<typeof useWarningSecureAccountLazyQuery>;
 export type WarningSecureAccountSuspenseQueryHookResult = ReturnType<typeof useWarningSecureAccountSuspenseQuery>;
 export type WarningSecureAccountQueryResult = Apollo.QueryResult<WarningSecureAccountQuery, WarningSecureAccountQueryVariables>;
-export const AddBankAccountCrDocument = gql`
-    mutation addBankAccountCR($input: AddBankAccountCRDTO!) {
-  addBankAccountCR(input: $input) {
-    id
-  }
-}
-    `;
-export type AddBankAccountCrMutationFn = Apollo.MutationFunction<AddBankAccountCrMutation, AddBankAccountCrMutationVariables>;
-
-/**
- * __useAddBankAccountCrMutation__
- *
- * To run a mutation, you first call `useAddBankAccountCrMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddBankAccountCrMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addBankAccountCrMutation, { data, loading, error }] = useAddBankAccountCrMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddBankAccountCrMutation(baseOptions?: Apollo.MutationHookOptions<AddBankAccountCrMutation, AddBankAccountCrMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddBankAccountCrMutation, AddBankAccountCrMutationVariables>(AddBankAccountCrDocument, options);
-      }
-export type AddBankAccountCrMutationHookResult = ReturnType<typeof useAddBankAccountCrMutation>;
-export type AddBankAccountCrMutationResult = Apollo.MutationResult<AddBankAccountCrMutation>;
-export type AddBankAccountCrMutationOptions = Apollo.BaseMutationOptions<AddBankAccountCrMutation, AddBankAccountCrMutationVariables>;
-export const UpdateBankAccountCrDocument = gql`
-    mutation UpdateBankAccountCR($updateBankAccountCrId: String!, $input: UpdateBankAccountCRDTO!) {
-  updateBankAccountCR(id: $updateBankAccountCrId, input: $input) {
-    id
-  }
-}
-    `;
-export type UpdateBankAccountCrMutationFn = Apollo.MutationFunction<UpdateBankAccountCrMutation, UpdateBankAccountCrMutationVariables>;
-
-/**
- * __useUpdateBankAccountCrMutation__
- *
- * To run a mutation, you first call `useUpdateBankAccountCrMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateBankAccountCrMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateBankAccountCrMutation, { data, loading, error }] = useUpdateBankAccountCrMutation({
- *   variables: {
- *      updateBankAccountCrId: // value for 'updateBankAccountCrId'
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateBankAccountCrMutation(baseOptions?: Apollo.MutationHookOptions<UpdateBankAccountCrMutation, UpdateBankAccountCrMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateBankAccountCrMutation, UpdateBankAccountCrMutationVariables>(UpdateBankAccountCrDocument, options);
-      }
-export type UpdateBankAccountCrMutationHookResult = ReturnType<typeof useUpdateBankAccountCrMutation>;
-export type UpdateBankAccountCrMutationResult = Apollo.MutationResult<UpdateBankAccountCrMutation>;
-export type UpdateBankAccountCrMutationOptions = Apollo.BaseMutationOptions<UpdateBankAccountCrMutation, UpdateBankAccountCrMutationVariables>;
-export const RemoveMyBankAccountDocument = gql`
-    mutation RemoveMyBankAccount($bankAccountId: String!) {
-  removeMyBankAccount(bankAccountId: $bankAccountId) {
-    ... on BankAccountCR {
-      id
-    }
-  }
-}
-    `;
-export type RemoveMyBankAccountMutationFn = Apollo.MutationFunction<RemoveMyBankAccountMutation, RemoveMyBankAccountMutationVariables>;
-
-/**
- * __useRemoveMyBankAccountMutation__
- *
- * To run a mutation, you first call `useRemoveMyBankAccountMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveMyBankAccountMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeMyBankAccountMutation, { data, loading, error }] = useRemoveMyBankAccountMutation({
- *   variables: {
- *      bankAccountId: // value for 'bankAccountId'
- *   },
- * });
- */
-export function useRemoveMyBankAccountMutation(baseOptions?: Apollo.MutationHookOptions<RemoveMyBankAccountMutation, RemoveMyBankAccountMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<RemoveMyBankAccountMutation, RemoveMyBankAccountMutationVariables>(RemoveMyBankAccountDocument, options);
-      }
-export type RemoveMyBankAccountMutationHookResult = ReturnType<typeof useRemoveMyBankAccountMutation>;
-export type RemoveMyBankAccountMutationResult = Apollo.MutationResult<RemoveMyBankAccountMutation>;
-export type RemoveMyBankAccountMutationOptions = Apollo.BaseMutationOptions<RemoveMyBankAccountMutation, RemoveMyBankAccountMutationVariables>;
-export const BankAccountsDocument = gql`
-    query bankAccounts {
-  getMyBankAccounts {
-    ... on BankAccountCR {
-      id
-      galoyUserId
-      type
-      countryCode
-      data {
-        bankName
-        accountHolderName
-        nationalId
-        iban
-        sinpeCode
-        swiftCode
-        currency
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useBankAccountsQuery__
- *
- * To run a query within a React component, call `useBankAccountsQuery` and pass it any options that fit your needs.
- * When your component renders, `useBankAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useBankAccountsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useBankAccountsQuery(baseOptions?: Apollo.QueryHookOptions<BankAccountsQuery, BankAccountsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<BankAccountsQuery, BankAccountsQueryVariables>(BankAccountsDocument, options);
-      }
-export function useBankAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BankAccountsQuery, BankAccountsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<BankAccountsQuery, BankAccountsQueryVariables>(BankAccountsDocument, options);
-        }
-export function useBankAccountsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<BankAccountsQuery, BankAccountsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<BankAccountsQuery, BankAccountsQueryVariables>(BankAccountsDocument, options);
-        }
-export type BankAccountsQueryHookResult = ReturnType<typeof useBankAccountsQuery>;
-export type BankAccountsLazyQueryHookResult = ReturnType<typeof useBankAccountsLazyQuery>;
-export type BankAccountsSuspenseQueryHookResult = ReturnType<typeof useBankAccountsSuspenseQuery>;
-export type BankAccountsQueryResult = Apollo.QueryResult<BankAccountsQuery, BankAccountsQueryVariables>;
 export const AccountUpdateDefaultWalletIdDocument = gql`
     mutation accountUpdateDefaultWalletId($input: AccountUpdateDefaultWalletIdInput!) {
   accountUpdateDefaultWalletId(input: $input) {
@@ -8308,6 +8560,198 @@ export type AccountLimitsQueryHookResult = ReturnType<typeof useAccountLimitsQue
 export type AccountLimitsLazyQueryHookResult = ReturnType<typeof useAccountLimitsLazyQuery>;
 export type AccountLimitsSuspenseQueryHookResult = ReturnType<typeof useAccountLimitsSuspenseQuery>;
 export type AccountLimitsQueryResult = Apollo.QueryResult<AccountLimitsQuery, AccountLimitsQueryVariables>;
+export const ExecuteWithdrawalContractDocument = gql`
+    mutation ExecuteWithdrawalContract($input: ExecuteWithdrawalContract!) {
+  executeWithdrawalContract(input: $input) {
+    id
+  }
+}
+    `;
+export type ExecuteWithdrawalContractMutationFn = Apollo.MutationFunction<ExecuteWithdrawalContractMutation, ExecuteWithdrawalContractMutationVariables>;
+
+/**
+ * __useExecuteWithdrawalContractMutation__
+ *
+ * To run a mutation, you first call `useExecuteWithdrawalContractMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useExecuteWithdrawalContractMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [executeWithdrawalContractMutation, { data, loading, error }] = useExecuteWithdrawalContractMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useExecuteWithdrawalContractMutation(baseOptions?: Apollo.MutationHookOptions<ExecuteWithdrawalContractMutation, ExecuteWithdrawalContractMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ExecuteWithdrawalContractMutation, ExecuteWithdrawalContractMutationVariables>(ExecuteWithdrawalContractDocument, options);
+      }
+export type ExecuteWithdrawalContractMutationHookResult = ReturnType<typeof useExecuteWithdrawalContractMutation>;
+export type ExecuteWithdrawalContractMutationResult = Apollo.MutationResult<ExecuteWithdrawalContractMutation>;
+export type ExecuteWithdrawalContractMutationOptions = Apollo.BaseMutationOptions<ExecuteWithdrawalContractMutation, ExecuteWithdrawalContractMutationVariables>;
+export const GetWithdrawalContractDocument = gql`
+    query getWithdrawalContract($input: GetWithDrawalContractInput!) {
+  getWithdrawalContract(input: $input) {
+    amounts {
+      bankAccountCredit {
+        amount
+        amountInSats
+        amountInSourceCurrency
+        btcSatPrice
+        currency
+        resolvedAt
+      }
+      fee {
+        amount
+        amountInSats
+        btcSatPrice
+        amountInSourceCurrency
+        currency
+        resolvedAt
+      }
+      target {
+        amount
+        amountInSats
+        amountInSourceCurrency
+        btcSatPrice
+        currency
+        resolvedAt
+      }
+      walletDebit {
+        amount
+        amountInSats
+        btcSatPrice
+        amountInSourceCurrency
+        currency
+        resolvedAt
+      }
+    }
+    limits {
+      totalAmount
+      canExecute
+      currency
+      limitPeriodUnit
+      limitPeriodValue
+      limitValue
+    }
+    bankAccount {
+      ... on BankAccountCR {
+        id
+        galoyUserId
+        type
+        countryCode
+        data {
+          bankName
+          accountHolderName
+          nationalId
+          iban
+          sinpeCode
+          swiftCode
+          currency
+        }
+      }
+    }
+    exchangeWallet {
+      id
+      currency
+    }
+    feeExplanation
+    id
+    sourceWallet {
+      currency
+      id
+    }
+    tokenDetails {
+      body
+      createdAt
+      executedAt
+      expiresAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetWithdrawalContractQuery__
+ *
+ * To run a query within a React component, call `useGetWithdrawalContractQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWithdrawalContractQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWithdrawalContractQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetWithdrawalContractQuery(baseOptions: Apollo.QueryHookOptions<GetWithdrawalContractQuery, GetWithdrawalContractQueryVariables> & ({ variables: GetWithdrawalContractQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetWithdrawalContractQuery, GetWithdrawalContractQueryVariables>(GetWithdrawalContractDocument, options);
+      }
+export function useGetWithdrawalContractLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWithdrawalContractQuery, GetWithdrawalContractQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetWithdrawalContractQuery, GetWithdrawalContractQueryVariables>(GetWithdrawalContractDocument, options);
+        }
+export function useGetWithdrawalContractSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetWithdrawalContractQuery, GetWithdrawalContractQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetWithdrawalContractQuery, GetWithdrawalContractQueryVariables>(GetWithdrawalContractDocument, options);
+        }
+export type GetWithdrawalContractQueryHookResult = ReturnType<typeof useGetWithdrawalContractQuery>;
+export type GetWithdrawalContractLazyQueryHookResult = ReturnType<typeof useGetWithdrawalContractLazyQuery>;
+export type GetWithdrawalContractSuspenseQueryHookResult = ReturnType<typeof useGetWithdrawalContractSuspenseQuery>;
+export type GetWithdrawalContractQueryResult = Apollo.QueryResult<GetWithdrawalContractQuery, GetWithdrawalContractQueryVariables>;
+export const GetWithdrawalLimitsDocument = gql`
+    query getWithdrawalLimits($input: GetWithdrawalLimitsInputDTO!) {
+  getWithdrawalLimits(input: $input) {
+    totalAmount
+    limitValue
+    currency
+    limitPeriodUnit
+    limitPeriodValue
+    canExecute
+  }
+}
+    `;
+
+/**
+ * __useGetWithdrawalLimitsQuery__
+ *
+ * To run a query within a React component, call `useGetWithdrawalLimitsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWithdrawalLimitsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWithdrawalLimitsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetWithdrawalLimitsQuery(baseOptions: Apollo.QueryHookOptions<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables> & ({ variables: GetWithdrawalLimitsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>(GetWithdrawalLimitsDocument, options);
+      }
+export function useGetWithdrawalLimitsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>(GetWithdrawalLimitsDocument, options);
+        }
+export function useGetWithdrawalLimitsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>(GetWithdrawalLimitsDocument, options);
+        }
+export type GetWithdrawalLimitsQueryHookResult = ReturnType<typeof useGetWithdrawalLimitsQuery>;
+export type GetWithdrawalLimitsLazyQueryHookResult = ReturnType<typeof useGetWithdrawalLimitsLazyQuery>;
+export type GetWithdrawalLimitsSuspenseQueryHookResult = ReturnType<typeof useGetWithdrawalLimitsSuspenseQuery>;
+export type GetWithdrawalLimitsQueryResult = Apollo.QueryResult<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>;
 export const TotpRegistrationScreenDocument = gql`
     query totpRegistrationScreen {
   me {
@@ -8665,6 +9109,7 @@ export type ResolversTypes = {
   AccountLevel: AccountLevel;
   AccountLimit: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['AccountLimit']>;
   AccountLimits: ResolverTypeWrapper<AccountLimits>;
+  AccountStatus: AccountStatus;
   AccountUpdateDefaultWalletIdInput: AccountUpdateDefaultWalletIdInput;
   AccountUpdateDefaultWalletIdPayload: ResolverTypeWrapper<AccountUpdateDefaultWalletIdPayload>;
   AccountUpdateDisplayCurrencyInput: AccountUpdateDisplayCurrencyInput;
@@ -8676,6 +9121,9 @@ export type ResolversTypes = {
   ApiKeyCreatePayload: ResolverTypeWrapper<ApiKeyCreatePayload>;
   ApiKeyRevokeInput: ApiKeyRevokeInput;
   ApiKeyRevokePayload: ResolverTypeWrapper<ApiKeyRevokePayload>;
+  AuditedAccountEmail: ResolverTypeWrapper<AuditedAccountEmail>;
+  AuditedAccountOwner: ResolverTypeWrapper<AuditedAccountOwner>;
+  AuditedAccountResponse: ResolverTypeWrapper<AuditedAccountResponse>;
   AuthToken: ResolverTypeWrapper<Scalars['AuthToken']['output']>;
   AuthTokenPayload: ResolverTypeWrapper<AuthTokenPayload>;
   Authorization: ResolverTypeWrapper<Authorization>;
@@ -8702,6 +9150,7 @@ export type ResolversTypes = {
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   Country: ResolverTypeWrapper<Country>;
   CountryCode: ResolverTypeWrapper<Scalars['CountryCode']['output']>;
+  Currencies: Currencies;
   Currency: ResolverTypeWrapper<Currency>;
   CurrencyConversionEstimation: ResolverTypeWrapper<CurrencyConversionEstimation>;
   CurrencyExchangeInstanceTransaction: ResolverTypeWrapper<CurrencyExchangeInstanceTransaction>;
@@ -8718,6 +9167,7 @@ export type ResolversTypes = {
   EndpointUrl: ResolverTypeWrapper<Scalars['EndpointUrl']['output']>;
   Error: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Error']>;
   ExchangeCurrencyUnit: ExchangeCurrencyUnit;
+  ExecuteWithdrawalContract: ExecuteWithdrawalContract;
   ExternalAccount: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['ExternalAccount']>;
   ExternalAccountCountries: ExternalAccountCountries;
   ExternalAccountTypes: ExternalAccountTypes;
@@ -8725,9 +9175,11 @@ export type ResolversTypes = {
   FeedbackSubmitInput: FeedbackSubmitInput;
   FeesInformation: ResolverTypeWrapper<FeesInformation>;
   Gender: Gender;
-  GetCurrencyExchangeFeesDTO: GetCurrencyExchangeFeesDto;
-  GetCurrencyExchangeFeesResponse: ResolverTypeWrapper<GetCurrencyExchangeFeesResponse>;
+  GetWithDrawalContractInput: GetWithDrawalContractInput;
+  GetWithdrawalLimitsInputDTO: GetWithdrawalLimitsInputDto;
   Globals: ResolverTypeWrapper<Globals>;
+  GrantPermissionInput: GrantPermissionInput;
+  GrantPermissionResponse: ResolverTypeWrapper<GrantPermissionResponse>;
   GraphQLApplicationError: ResolverTypeWrapper<GraphQlApplicationError>;
   Hex32Bytes: ResolverTypeWrapper<Scalars['Hex32Bytes']['output']>;
   Icon: Icon;
@@ -8814,6 +9266,7 @@ export type ResolversTypes = {
   PaymentHash: ResolverTypeWrapper<Scalars['PaymentHash']['output']>;
   PaymentSendPayload: ResolverTypeWrapper<PaymentSendPayload>;
   PaymentSendResult: PaymentSendResult;
+  PaymentSystem: PaymentSystem;
   PayoutSpeed: PayoutSpeed;
   Permission: Permission;
   Phone: ResolverTypeWrapper<Scalars['Phone']['output']>;
@@ -8827,6 +9280,7 @@ export type ResolversTypes = {
   PriceOfOneUsdCentInMinorUnit: ResolverTypeWrapper<PriceOfOneUsdCentInMinorUnit>;
   PricePayload: ResolverTypeWrapper<PricePayload>;
   PricePoint: ResolverTypeWrapper<PricePoint>;
+  PublicKycWallet: ResolverTypeWrapper<PublicKycWallet>;
   PublicWallet: ResolverTypeWrapper<PublicWallet>;
   Query: ResolverTypeWrapper<{}>;
   Quiz: ResolverTypeWrapper<Quiz>;
@@ -8836,11 +9290,15 @@ export type ResolversTypes = {
   RealtimePriceInput: RealtimePriceInput;
   RealtimePricePayload: ResolverTypeWrapper<RealtimePricePayload>;
   Region: ResolverTypeWrapper<Region>;
+  ResolvedCurrencyExchangeAmount: ResolverTypeWrapper<ResolvedCurrencyExchangeAmount>;
+  RevokePermissionResponse: ResolverTypeWrapper<RevokePermissionResponse>;
   SafeInt: ResolverTypeWrapper<Scalars['SafeInt']['output']>;
   SatAmount: ResolverTypeWrapper<Scalars['SatAmount']['output']>;
   SatAmountPayload: ResolverTypeWrapper<SatAmountPayload>;
   Scope: Scope;
   Seconds: ResolverTypeWrapper<Scalars['Seconds']['output']>;
+  SettingsFilter: SettingsFilter;
+  SettingsResponse: ResolverTypeWrapper<SettingsResponse>;
   SettlementVia: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['SettlementVia']>;
   SettlementViaIntraLedger: ResolverTypeWrapper<SettlementViaIntraLedger>;
   SettlementViaLn: ResolverTypeWrapper<SettlementViaLn>;
@@ -8853,6 +9311,7 @@ export type ResolversTypes = {
   StatefulNotificationConnection: ResolverTypeWrapper<StatefulNotificationConnection>;
   StatefulNotificationEdge: ResolverTypeWrapper<StatefulNotificationEdge>;
   Status: Status;
+  StoreResponse: ResolverTypeWrapper<StoreResponse>;
   Subscription: ResolverTypeWrapper<{}>;
   SuccessPayload: ResolverTypeWrapper<SuccessPayload>;
   SupportChatMessageAddInput: SupportChatMessageAddInput;
@@ -8865,6 +9324,7 @@ export type ResolversTypes = {
   TotpSecret: ResolverTypeWrapper<Scalars['TotpSecret']['output']>;
   Transaction: ResolverTypeWrapper<Omit<Transaction, 'initiationVia' | 'settlementVia'> & { initiationVia: ResolversTypes['InitiationVia'], settlementVia: ResolversTypes['SettlementVia'] }>;
   TransactionConnection: ResolverTypeWrapper<TransactionConnection>;
+  TransactionDestinationTypes: TransactionDestinationTypes;
   TransactionEdge: ResolverTypeWrapper<TransactionEdge>;
   TransactionMetadata: ResolverTypeWrapper<TransactionMetadata>;
   TransactionSourceTypes: TransactionSourceTypes;
@@ -8872,11 +9332,12 @@ export type ResolversTypes = {
   TxExternalId: ResolverTypeWrapper<Scalars['TxExternalId']['output']>;
   TxNotificationType: TxNotificationType;
   TxStatus: TxStatus;
-  UUID: ResolverTypeWrapper<Scalars['UUID']['output']>;
   UpdateBankAccountCRDTO: UpdateBankAccountCrdto;
+  UpdateSettingsInput: UpdateSettingsInput;
   UpgradePayload: ResolverTypeWrapper<UpgradePayload>;
   UsdWallet: ResolverTypeWrapper<UsdWallet>;
   User: ResolverTypeWrapper<User>;
+  UserAccountLevel: UserAccountLevel;
   UserContact: ResolverTypeWrapper<UserContact>;
   UserContactUpdateAliasInput: UserContactUpdateAliasInput;
   UserContactUpdateAliasPayload: ResolverTypeWrapper<UserContactUpdateAliasPayload>;
@@ -8905,7 +9366,10 @@ export type ResolversTypes = {
   Wallet: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Wallet']>;
   WalletCurrency: WalletCurrency;
   WalletId: ResolverTypeWrapper<Scalars['WalletId']['output']>;
-  WithDrawUSDToBankAccountDTO: WithDrawUsdToBankAccountDto;
+  WithdrawalContract: ResolverTypeWrapper<Omit<WithdrawalContract, 'bankAccount'> & { bankAccount: ResolversTypes['BankAccount'] }>;
+  WithdrawalContractAmounts: ResolverTypeWrapper<WithdrawalContractAmounts>;
+  WithdrawalContractTokenDetails: ResolverTypeWrapper<WithdrawalContractTokenDetails>;
+  WithdrawalLimits: ResolverTypeWrapper<WithdrawalLimits>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -8933,6 +9397,9 @@ export type ResolversParentTypes = {
   ApiKeyCreatePayload: ApiKeyCreatePayload;
   ApiKeyRevokeInput: ApiKeyRevokeInput;
   ApiKeyRevokePayload: ApiKeyRevokePayload;
+  AuditedAccountEmail: AuditedAccountEmail;
+  AuditedAccountOwner: AuditedAccountOwner;
+  AuditedAccountResponse: AuditedAccountResponse;
   AuthToken: Scalars['AuthToken']['output'];
   AuthTokenPayload: AuthTokenPayload;
   Authorization: Authorization;
@@ -8972,13 +9439,16 @@ export type ResolversParentTypes = {
   EndpointId: Scalars['EndpointId']['output'];
   EndpointUrl: Scalars['EndpointUrl']['output'];
   Error: ResolversInterfaceTypes<ResolversParentTypes>['Error'];
+  ExecuteWithdrawalContract: ExecuteWithdrawalContract;
   ExternalAccount: ResolversInterfaceTypes<ResolversParentTypes>['ExternalAccount'];
   Feedback: Scalars['Feedback']['output'];
   FeedbackSubmitInput: FeedbackSubmitInput;
   FeesInformation: FeesInformation;
-  GetCurrencyExchangeFeesDTO: GetCurrencyExchangeFeesDto;
-  GetCurrencyExchangeFeesResponse: GetCurrencyExchangeFeesResponse;
+  GetWithDrawalContractInput: GetWithDrawalContractInput;
+  GetWithdrawalLimitsInputDTO: GetWithdrawalLimitsInputDto;
   Globals: Globals;
+  GrantPermissionInput: GrantPermissionInput;
+  GrantPermissionResponse: GrantPermissionResponse;
   GraphQLApplicationError: GraphQlApplicationError;
   Hex32Bytes: Scalars['Hex32Bytes']['output'];
   Identification: Identification;
@@ -9067,6 +9537,7 @@ export type ResolversParentTypes = {
   PriceOfOneUsdCentInMinorUnit: PriceOfOneUsdCentInMinorUnit;
   PricePayload: PricePayload;
   PricePoint: PricePoint;
+  PublicKycWallet: PublicKycWallet;
   PublicWallet: PublicWallet;
   Query: {};
   Quiz: Quiz;
@@ -9076,10 +9547,14 @@ export type ResolversParentTypes = {
   RealtimePriceInput: RealtimePriceInput;
   RealtimePricePayload: RealtimePricePayload;
   Region: Region;
+  ResolvedCurrencyExchangeAmount: ResolvedCurrencyExchangeAmount;
+  RevokePermissionResponse: RevokePermissionResponse;
   SafeInt: Scalars['SafeInt']['output'];
   SatAmount: Scalars['SatAmount']['output'];
   SatAmountPayload: SatAmountPayload;
   Seconds: Scalars['Seconds']['output'];
+  SettingsFilter: SettingsFilter;
+  SettingsResponse: SettingsResponse;
   SettlementVia: ResolversUnionTypes<ResolversParentTypes>['SettlementVia'];
   SettlementViaIntraLedger: SettlementViaIntraLedger;
   SettlementViaLn: SettlementViaLn;
@@ -9091,6 +9566,7 @@ export type ResolversParentTypes = {
   StatefulNotificationAcknowledgePayload: StatefulNotificationAcknowledgePayload;
   StatefulNotificationConnection: StatefulNotificationConnection;
   StatefulNotificationEdge: StatefulNotificationEdge;
+  StoreResponse: StoreResponse;
   Subscription: {};
   SuccessPayload: SuccessPayload;
   SupportChatMessageAddInput: SupportChatMessageAddInput;
@@ -9105,8 +9581,8 @@ export type ResolversParentTypes = {
   TransactionEdge: TransactionEdge;
   TransactionMetadata: TransactionMetadata;
   TxExternalId: Scalars['TxExternalId']['output'];
-  UUID: Scalars['UUID']['output'];
   UpdateBankAccountCRDTO: UpdateBankAccountCrdto;
+  UpdateSettingsInput: UpdateSettingsInput;
   UpgradePayload: UpgradePayload;
   UsdWallet: UsdWallet;
   User: User;
@@ -9137,7 +9613,10 @@ export type ResolversParentTypes = {
   Username: Scalars['Username']['output'];
   Wallet: ResolversInterfaceTypes<ResolversParentTypes>['Wallet'];
   WalletId: Scalars['WalletId']['output'];
-  WithDrawUSDToBankAccountDTO: WithDrawUsdToBankAccountDto;
+  WithdrawalContract: Omit<WithdrawalContract, 'bankAccount'> & { bankAccount: ResolversParentTypes['BankAccount'] };
+  WithdrawalContractAmounts: WithdrawalContractAmounts;
+  WithdrawalContractTokenDetails: WithdrawalContractTokenDetails;
+  WithdrawalLimits: WithdrawalLimits;
 };
 
 export type DeferDirectiveArgs = {
@@ -9228,6 +9707,30 @@ export type ApiKeyCreatePayloadResolvers<ContextType = any, ParentType extends R
 
 export type ApiKeyRevokePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['ApiKeyRevokePayload'] = ResolversParentTypes['ApiKeyRevokePayload']> = {
   apiKey?: Resolver<ResolversTypes['ApiKey'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AuditedAccountEmailResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuditedAccountEmail'] = ResolversParentTypes['AuditedAccountEmail']> = {
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  verified?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AuditedAccountOwnerResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuditedAccountOwner'] = ResolversParentTypes['AuditedAccountOwner']> = {
+  email?: Resolver<ResolversTypes['AuditedAccountEmail'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  phone?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AuditedAccountResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuditedAccountResponse'] = ResolversParentTypes['AuditedAccountResponse']> = {
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  level?: Resolver<ResolversTypes['UserAccountLevel'], ParentType, ContextType>;
+  owner?: Resolver<ResolversTypes['AuditedAccountOwner'], ParentType, ContextType>;
+  permissions?: Resolver<ReadonlyArray<ResolversTypes['Permission']>, ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['AccountStatus'], ParentType, ContextType>;
+  username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -9405,10 +9908,10 @@ export type CurrencyExchangeInstanceTransactionResolvers<ContextType = any, Pare
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   currency?: Resolver<ResolversTypes['BankAccountCurrencies'], ParentType, ContextType>;
   destinationId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  destinationType?: Resolver<ResolversTypes['TransactionSourceTypes'], ParentType, ContextType>;
+  destinationType?: Resolver<ResolversTypes['TransactionDestinationTypes'], ParentType, ContextType>;
   fee?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  metadata?: Resolver<ResolversTypes['TransactionMetadata'], ParentType, ContextType>;
+  metadata?: Resolver<Maybe<ResolversTypes['TransactionMetadata']>, ParentType, ContextType>;
   relevantId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   sourceId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   sourceType?: Resolver<ResolversTypes['TransactionSourceTypes'], ParentType, ContextType>;
@@ -9417,12 +9920,15 @@ export type CurrencyExchangeInstanceTransactionResolvers<ContextType = any, Pare
 
 export type CurrencyExchangeTransactionGraphqlResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['CurrencyExchangeTransactionGraphqlResponse'] = ResolversParentTypes['CurrencyExchangeTransactionGraphqlResponse']> = {
   amount?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
+  baseAmount?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
+  baseAmountCurrency?: Resolver<ResolversTypes['Currencies'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   currency?: Resolver<ResolversTypes['BankAccountCurrencies'], ParentType, ContextType>;
   galoyUserId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['CurrencyExchangeTransactionStatus'], ParentType, ContextType>;
   transactions?: Resolver<ReadonlyArray<ResolversTypes['CurrencyExchangeInstanceTransaction']>, ParentType, ContextType>;
+  username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -9487,12 +9993,6 @@ export type FeesInformationResolvers<ContextType = any, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type GetCurrencyExchangeFeesResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['GetCurrencyExchangeFeesResponse'] = ResolversParentTypes['GetCurrencyExchangeFeesResponse']> = {
-  amount?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
-  currency?: Resolver<ResolversTypes['BankAccountCurrencies'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type GlobalsResolvers<ContextType = any, ParentType extends ResolversParentTypes['Globals'] = ResolversParentTypes['Globals']> = {
   buildInformation?: Resolver<ResolversTypes['BuildInformation'], ParentType, ContextType>;
   feesInformation?: Resolver<ResolversTypes['FeesInformation'], ParentType, ContextType>;
@@ -9501,6 +10001,12 @@ export type GlobalsResolvers<ContextType = any, ParentType extends ResolversPare
   network?: Resolver<ResolversTypes['Network'], ParentType, ContextType>;
   nodesIds?: Resolver<ReadonlyArray<ResolversTypes['String']>, ParentType, ContextType>;
   supportedCountries?: Resolver<ReadonlyArray<ResolversTypes['Country']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GrantPermissionResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['GrantPermissionResponse'] = ResolversParentTypes['GrantPermissionResponse']> = {
+  galoyUserId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -9730,7 +10236,9 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   captchaCreateChallenge?: Resolver<ResolversTypes['CaptchaCreateChallengePayload'], ParentType, ContextType>;
   captchaRequestAuthCode?: Resolver<ResolversTypes['SuccessPayload'], ParentType, ContextType, RequireFields<MutationCaptchaRequestAuthCodeArgs, 'input'>>;
   deviceNotificationTokenCreate?: Resolver<ResolversTypes['SuccessPayload'], ParentType, ContextType, RequireFields<MutationDeviceNotificationTokenCreateArgs, 'input'>>;
+  executeWithdrawalContract?: Resolver<Maybe<ResolversTypes['WithdrawalContract']>, ParentType, ContextType, RequireFields<MutationExecuteWithdrawalContractArgs, 'input'>>;
   feedbackSubmit?: Resolver<ResolversTypes['SuccessPayload'], ParentType, ContextType, RequireFields<MutationFeedbackSubmitArgs, 'input'>>;
+  grantUserPermission?: Resolver<ResolversTypes['GrantPermissionResponse'], ParentType, ContextType, RequireFields<MutationGrantUserPermissionArgs, 'input'>>;
   intraLedgerPaymentSend?: Resolver<ResolversTypes['PaymentSendPayload'], ParentType, ContextType, RequireFields<MutationIntraLedgerPaymentSendArgs, 'input'>>;
   intraLedgerUsdPaymentSend?: Resolver<ResolversTypes['PaymentSendPayload'], ParentType, ContextType, RequireFields<MutationIntraLedgerUsdPaymentSendArgs, 'input'>>;
   lnAddressPaymentSend?: Resolver<ResolversTypes['PaymentSendPayload'], ParentType, ContextType, RequireFields<MutationLnAddressPaymentSendArgs, 'input'>>;
@@ -9759,11 +10267,13 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   onChainUsdPaymentSendAsBtcDenominated?: Resolver<ResolversTypes['PaymentSendPayload'], ParentType, ContextType, RequireFields<MutationOnChainUsdPaymentSendAsBtcDenominatedArgs, 'input'>>;
   quizClaim?: Resolver<ResolversTypes['QuizClaimPayload'], ParentType, ContextType, RequireFields<MutationQuizClaimArgs, 'input'>>;
   removeMyBankAccount?: Resolver<ResolversTypes['BankAccount'], ParentType, ContextType, RequireFields<MutationRemoveMyBankAccountArgs, 'bankAccountId'>>;
+  revokeUserPermission?: Resolver<ResolversTypes['RevokePermissionResponse'], ParentType, ContextType, RequireFields<MutationRevokeUserPermissionArgs, 'input'>>;
   statefulNotificationAcknowledge?: Resolver<ResolversTypes['StatefulNotificationAcknowledgePayload'], ParentType, ContextType, RequireFields<MutationStatefulNotificationAcknowledgeArgs, 'input'>>;
   supportChatMessageAdd?: Resolver<ResolversTypes['SupportChatMessageAddPayload'], ParentType, ContextType, RequireFields<MutationSupportChatMessageAddArgs, 'input'>>;
   supportChatReset?: Resolver<ResolversTypes['SuccessPayload'], ParentType, ContextType>;
   updateBankAccountCR?: Resolver<ResolversTypes['BankAccountCR'], ParentType, ContextType, RequireFields<MutationUpdateBankAccountCrArgs, 'id' | 'input'>>;
   updateKyc?: Resolver<ResolversTypes['Kyc'], ParentType, ContextType, RequireFields<MutationUpdateKycArgs, 'input'>>;
+  updateSettings?: Resolver<ResolversTypes['SettingsResponse'], ParentType, ContextType, RequireFields<MutationUpdateSettingsArgs, 'input'>>;
   userContactUpdateAlias?: Resolver<ResolversTypes['UserContactUpdateAliasPayload'], ParentType, ContextType, RequireFields<MutationUserContactUpdateAliasArgs, 'input'>>;
   userEmailDelete?: Resolver<ResolversTypes['UserEmailDeletePayload'], ParentType, ContextType>;
   userEmailRegistrationInitiate?: Resolver<ResolversTypes['UserEmailRegistrationInitiatePayload'], ParentType, ContextType, RequireFields<MutationUserEmailRegistrationInitiateArgs, 'input'>>;
@@ -9779,7 +10289,6 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   userTotpRegistrationValidate?: Resolver<ResolversTypes['UserTotpRegistrationValidatePayload'], ParentType, ContextType, RequireFields<MutationUserTotpRegistrationValidateArgs, 'input'>>;
   userUpdateLanguage?: Resolver<ResolversTypes['UserUpdateLanguagePayload'], ParentType, ContextType, RequireFields<MutationUserUpdateLanguageArgs, 'input'>>;
   userUpdateUsername?: Resolver<ResolversTypes['UserUpdateUsernamePayload'], ParentType, ContextType, RequireFields<MutationUserUpdateUsernameArgs, 'input'>>;
-  withdrawUSD?: Resolver<Maybe<ResolversTypes['CurrencyExchangeTransactionGraphqlResponse']>, ParentType, ContextType, RequireFields<MutationWithdrawUsdArgs, 'input'>>;
 };
 
 export type MyUpdatesPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['MyUpdatesPayload'] = ResolversParentTypes['MyUpdatesPayload']> = {
@@ -9936,6 +10445,12 @@ export type PricePointResolvers<ContextType = any, ParentType extends ResolversP
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type PublicKycWalletResolvers<ContextType = any, ParentType extends ResolversParentTypes['PublicKycWallet'] = ResolversParentTypes['PublicKycWallet']> = {
+  currency?: Resolver<ResolversTypes['Currencies'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type PublicWalletResolvers<ContextType = any, ParentType extends ResolversParentTypes['PublicWallet'] = ResolversParentTypes['PublicWallet']> = {
   currency?: Resolver<ResolversTypes['WalletCurrency'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -9955,9 +10470,13 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   currencyList?: Resolver<ReadonlyArray<ResolversTypes['Currency']>, ParentType, ContextType>;
   exchangeCurrencyInstances?: Resolver<ReadonlyArray<ResolversTypes['CurrencyExchangeTransactionGraphqlResponse']>, ParentType, ContextType>;
   exchangeCurrencyTransactions?: Resolver<ReadonlyArray<ResolversTypes['CurrencyExchangeInstanceTransaction']>, ParentType, ContextType>;
+  externalDailyLimit?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
   feedbackModalShown?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  getCurrencyExchangeFees?: Resolver<ResolversTypes['GetCurrencyExchangeFeesResponse'], ParentType, ContextType, RequireFields<QueryGetCurrencyExchangeFeesArgs, 'input'>>;
+  findAuditedAccount?: Resolver<Maybe<ResolversTypes['AuditedAccountResponse']>, ParentType, ContextType, RequireFields<QueryFindAuditedAccountArgs, 'input'>>;
+  getAuditedAccount?: Resolver<Maybe<ResolversTypes['AuditedAccountResponse']>, ParentType, ContextType, RequireFields<QueryGetAuditedAccountArgs, 'id'>>;
   getMyBankAccounts?: Resolver<ReadonlyArray<ResolversTypes['BankAccount']>, ParentType, ContextType>;
+  getWithdrawalContract?: Resolver<ResolversTypes['WithdrawalContract'], ParentType, ContextType, RequireFields<QueryGetWithdrawalContractArgs, 'input'>>;
+  getWithdrawalLimits?: Resolver<ReadonlyArray<ResolversTypes['WithdrawalLimits']>, ParentType, ContextType, RequireFields<QueryGetWithdrawalLimitsArgs, 'input'>>;
   globals?: Resolver<Maybe<ResolversTypes['Globals']>, ParentType, ContextType>;
   hasPromptedSetDefaultAccount?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hiddenBalanceToolTip?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -9977,6 +10496,9 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   price?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   realtimePrice?: Resolver<ResolversTypes['RealtimePrice'], ParentType, ContextType, RequireFields<QueryRealtimePriceArgs, 'currency'>>;
   region?: Resolver<Maybe<ResolversTypes['Region']>, ParentType, ContextType>;
+  setting?: Resolver<ResolversTypes['SettingsResponse'], ParentType, ContextType, RequireFields<QuerySettingArgs, 'input'>>;
+  settings?: Resolver<ReadonlyArray<ResolversTypes['SettingsResponse']>, ParentType, ContextType>;
+  stores?: Resolver<ReadonlyArray<ResolversTypes['StoreResponse']>, ParentType, ContextType>;
   userDefaultWalletId?: Resolver<ResolversTypes['WalletId'], ParentType, ContextType, RequireFields<QueryUserDefaultWalletIdArgs, 'username'>>;
   usernameAvailable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<QueryUsernameAvailableArgs, 'username'>>;
 };
@@ -10019,6 +10541,24 @@ export type RegionResolvers<ContextType = any, ParentType extends ResolversParen
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ResolvedCurrencyExchangeAmountResolvers<ContextType = any, ParentType extends ResolversParentTypes['ResolvedCurrencyExchangeAmount'] = ResolversParentTypes['ResolvedCurrencyExchangeAmount']> = {
+  amount?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
+  amountInSats?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
+  amountInSourceCurrency?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
+  btcSatPrice?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
+  currency?: Resolver<ResolversTypes['Currencies'], ParentType, ContextType>;
+  resolvedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  sourceCurrency?: Resolver<ResolversTypes['Currencies'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RevokePermissionResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['RevokePermissionResponse'] = ResolversParentTypes['RevokePermissionResponse']> = {
+  count?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  galoyUserId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface SafeIntScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['SafeInt'], any> {
   name: 'SafeInt';
 }
@@ -10036,6 +10576,14 @@ export type SatAmountPayloadResolvers<ContextType = any, ParentType extends Reso
 export interface SecondsScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Seconds'], any> {
   name: 'Seconds';
 }
+
+export type SettingsResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['SettingsResponse'] = ResolversParentTypes['SettingsResponse']> = {
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  value?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
 
 export type SettlementViaResolvers<ContextType = any, ParentType extends ResolversParentTypes['SettlementVia'] = ResolversParentTypes['SettlementVia']> = {
   __resolveType: TypeResolveFn<'SettlementViaIntraLedger' | 'SettlementViaLn' | 'SettlementViaOnChain', ParentType, ContextType>;
@@ -10097,6 +10645,16 @@ export type StatefulNotificationConnectionResolvers<ContextType = any, ParentTyp
 export type StatefulNotificationEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['StatefulNotificationEdge'] = ResolversParentTypes['StatefulNotificationEdge']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['StatefulNotification'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type StoreResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['StoreResponse'] = ResolversParentTypes['StoreResponse']> = {
+  appId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  rate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  storeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -10177,16 +10735,12 @@ export type TransactionEdgeResolvers<ContextType = any, ParentType extends Resol
 };
 
 export type TransactionMetadataResolvers<ContextType = any, ParentType extends ResolversParentTypes['TransactionMetadata'] = ResolversParentTypes['TransactionMetadata']> = {
-  memo?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  memo?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export interface TxExternalIdScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['TxExternalId'], any> {
   name: 'TxExternalId';
-}
-
-export interface UuidScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['UUID'], any> {
-  name: 'UUID';
 }
 
 export type UpgradePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpgradePayload'] = ResolversParentTypes['UpgradePayload']> = {
@@ -10343,6 +10897,45 @@ export interface WalletIdScalarConfig extends GraphQLScalarTypeConfig<ResolversT
   name: 'WalletId';
 }
 
+export type WithdrawalContractResolvers<ContextType = any, ParentType extends ResolversParentTypes['WithdrawalContract'] = ResolversParentTypes['WithdrawalContract']> = {
+  amounts?: Resolver<ResolversTypes['WithdrawalContractAmounts'], ParentType, ContextType>;
+  bankAccount?: Resolver<ResolversTypes['BankAccount'], ParentType, ContextType>;
+  exchangeWallet?: Resolver<ResolversTypes['PublicKycWallet'], ParentType, ContextType>;
+  feeExplanation?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  limits?: Resolver<ReadonlyArray<ResolversTypes['WithdrawalLimits']>, ParentType, ContextType>;
+  sourceWallet?: Resolver<ResolversTypes['PublicKycWallet'], ParentType, ContextType>;
+  tokenDetails?: Resolver<ResolversTypes['WithdrawalContractTokenDetails'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WithdrawalContractAmountsResolvers<ContextType = any, ParentType extends ResolversParentTypes['WithdrawalContractAmounts'] = ResolversParentTypes['WithdrawalContractAmounts']> = {
+  bankAccountCredit?: Resolver<ResolversTypes['ResolvedCurrencyExchangeAmount'], ParentType, ContextType>;
+  fee?: Resolver<ResolversTypes['ResolvedCurrencyExchangeAmount'], ParentType, ContextType>;
+  target?: Resolver<ResolversTypes['ResolvedCurrencyExchangeAmount'], ParentType, ContextType>;
+  walletDebit?: Resolver<ResolversTypes['ResolvedCurrencyExchangeAmount'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WithdrawalContractTokenDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['WithdrawalContractTokenDetails'] = ResolversParentTypes['WithdrawalContractTokenDetails']> = {
+  body?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  executedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  expiresAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WithdrawalLimitsResolvers<ContextType = any, ParentType extends ResolversParentTypes['WithdrawalLimits'] = ResolversParentTypes['WithdrawalLimits']> = {
+  canExecute?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  currency?: Resolver<ResolversTypes['Currencies'], ParentType, ContextType>;
+  limitPeriodUnit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  limitPeriodValue?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  limitValue?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
+  totalAmount?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   Account?: AccountResolvers<ContextType>;
   AccountDeletePayload?: AccountDeletePayloadResolvers<ContextType>;
@@ -10354,6 +10947,9 @@ export type Resolvers<ContextType = any> = {
   ApiKey?: ApiKeyResolvers<ContextType>;
   ApiKeyCreatePayload?: ApiKeyCreatePayloadResolvers<ContextType>;
   ApiKeyRevokePayload?: ApiKeyRevokePayloadResolvers<ContextType>;
+  AuditedAccountEmail?: AuditedAccountEmailResolvers<ContextType>;
+  AuditedAccountOwner?: AuditedAccountOwnerResolvers<ContextType>;
+  AuditedAccountResponse?: AuditedAccountResponseResolvers<ContextType>;
   AuthToken?: GraphQLScalarType;
   AuthTokenPayload?: AuthTokenPayloadResolvers<ContextType>;
   Authorization?: AuthorizationResolvers<ContextType>;
@@ -10391,8 +10987,8 @@ export type Resolvers<ContextType = any> = {
   ExternalAccount?: ExternalAccountResolvers<ContextType>;
   Feedback?: GraphQLScalarType;
   FeesInformation?: FeesInformationResolvers<ContextType>;
-  GetCurrencyExchangeFeesResponse?: GetCurrencyExchangeFeesResponseResolvers<ContextType>;
   Globals?: GlobalsResolvers<ContextType>;
+  GrantPermissionResponse?: GrantPermissionResponseResolvers<ContextType>;
   GraphQLApplicationError?: GraphQlApplicationErrorResolvers<ContextType>;
   Hex32Bytes?: GraphQLScalarType;
   Identification?: IdentificationResolvers<ContextType>;
@@ -10450,6 +11046,7 @@ export type Resolvers<ContextType = any> = {
   PriceOfOneUsdCentInMinorUnit?: PriceOfOneUsdCentInMinorUnitResolvers<ContextType>;
   PricePayload?: PricePayloadResolvers<ContextType>;
   PricePoint?: PricePointResolvers<ContextType>;
+  PublicKycWallet?: PublicKycWalletResolvers<ContextType>;
   PublicWallet?: PublicWalletResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Quiz?: QuizResolvers<ContextType>;
@@ -10457,10 +11054,13 @@ export type Resolvers<ContextType = any> = {
   RealtimePrice?: RealtimePriceResolvers<ContextType>;
   RealtimePricePayload?: RealtimePricePayloadResolvers<ContextType>;
   Region?: RegionResolvers<ContextType>;
+  ResolvedCurrencyExchangeAmount?: ResolvedCurrencyExchangeAmountResolvers<ContextType>;
+  RevokePermissionResponse?: RevokePermissionResponseResolvers<ContextType>;
   SafeInt?: GraphQLScalarType;
   SatAmount?: GraphQLScalarType;
   SatAmountPayload?: SatAmountPayloadResolvers<ContextType>;
   Seconds?: GraphQLScalarType;
+  SettingsResponse?: SettingsResponseResolvers<ContextType>;
   SettlementVia?: SettlementViaResolvers<ContextType>;
   SettlementViaIntraLedger?: SettlementViaIntraLedgerResolvers<ContextType>;
   SettlementViaLn?: SettlementViaLnResolvers<ContextType>;
@@ -10471,6 +11071,7 @@ export type Resolvers<ContextType = any> = {
   StatefulNotificationAcknowledgePayload?: StatefulNotificationAcknowledgePayloadResolvers<ContextType>;
   StatefulNotificationConnection?: StatefulNotificationConnectionResolvers<ContextType>;
   StatefulNotificationEdge?: StatefulNotificationEdgeResolvers<ContextType>;
+  StoreResponse?: StoreResponseResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   SuccessPayload?: SuccessPayloadResolvers<ContextType>;
   SupportChatMessageAddPayload?: SupportChatMessageAddPayloadResolvers<ContextType>;
@@ -10484,7 +11085,6 @@ export type Resolvers<ContextType = any> = {
   TransactionEdge?: TransactionEdgeResolvers<ContextType>;
   TransactionMetadata?: TransactionMetadataResolvers<ContextType>;
   TxExternalId?: GraphQLScalarType;
-  UUID?: GraphQLScalarType;
   UpgradePayload?: UpgradePayloadResolvers<ContextType>;
   UsdWallet?: UsdWalletResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
@@ -10504,6 +11104,10 @@ export type Resolvers<ContextType = any> = {
   Username?: GraphQLScalarType;
   Wallet?: WalletResolvers<ContextType>;
   WalletId?: GraphQLScalarType;
+  WithdrawalContract?: WithdrawalContractResolvers<ContextType>;
+  WithdrawalContractAmounts?: WithdrawalContractAmountsResolvers<ContextType>;
+  WithdrawalContractTokenDetails?: WithdrawalContractTokenDetailsResolvers<ContextType>;
+  WithdrawalLimits?: WithdrawalLimitsResolvers<ContextType>;
 };
 
 export type DirectiveResolvers<ContextType = any> = {

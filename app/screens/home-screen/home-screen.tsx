@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useMemo } from "react"
-import { RefreshControl, View, Alert } from "react-native"
+import { RefreshControl, View, Alert, SafeAreaView } from "react-native"
 import {
   ScrollView,
   TouchableOpacity,
@@ -38,7 +38,7 @@ import { useI18nContext } from "@app/i18n/i18n-react"
 import { isIos } from "@app/utils/helper"
 import { useNavigation, useIsFocused } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
-import { Text, makeStyles, useTheme } from "@rneui/themed"
+import { BottomSheet, ListItem, Text, makeStyles, useTheme } from "@rneui/themed"
 
 import { BalanceHeader } from "../../components/balance-header"
 import { Screen } from "../../components/screen"
@@ -97,7 +97,57 @@ gql`
 `
 
 export const HomeScreen: React.FC = () => {
+  const [isVisible, setIsVisible] = React.useState(false)
+  const { LL } = useI18nContext()
+  const { data } = useSettingsScreenQuery()
   const styles = useStyles()
+
+  const onSnipeIBANPress = React.useCallback(() => {
+    const message =
+      data?.me?.kyc?.status === "PENDING"
+        ? LL.TransferActions.sinpeIBANTransfersKYCPendingDescription()
+        : data?.me?.kyc?.status !== "APPROVED"
+          ? LL.TransferActions.sinpeIBANTransfersKYCDescription()
+          : LL.TransferActions.sinpeIBANTransfersBankDescription()
+    if (data?.me?.kyc?.status !== "APPROVED") {
+      Alert.alert(LL.TransferActions.sinpeIBANTransfers(), message, [
+        {
+          text: LL.common.confirm(),
+          onPress: () => navigation.navigate("KYCScreen"),
+        },
+        {
+          text: LL.common.cancel(),
+          style: "cancel",
+        },
+      ])
+    } else {
+      navigation.navigate("snipeDetails")
+    }
+  }, [data])
+
+  const list = [
+    {
+      title: LL.TransferActions.stableSats(),
+      onPress: () => navigation.navigate("conversionDetails"),
+    },
+    {
+      title: LL.TransferActions.sinpeIBAN(),
+      subtitle: LL.TransferActions.sinpeIBANSubtitle(),
+      onPress: () => onSnipeIBANPress(),
+    },
+    {
+      title: LL.TransferActions.sinpeMovil(),
+      subtitle: `(${LL.common.comingSoon()})`,
+      disabled: true,
+      onPress: () => console.log("List Item 1 pressed"),
+    },
+    {
+      title: LL.common.cancel(),
+      titleStyle: styles.cancelText,
+      onPress: () => setIsVisible(false),
+    },
+  ]
+
   const {
     theme: { colors },
   } = useTheme()
@@ -112,7 +162,7 @@ export const HomeScreen: React.FC = () => {
     setSetDefaultAccountModalVisible(!setDefaultAccountModalVisible)
 
   const isAuthed = useIsAuthed()
-  const { LL } = useI18nContext()
+
   const {
     appConfig: {
       galoyInstance: { id: galoyInstanceId },
@@ -315,7 +365,7 @@ export const HomeScreen: React.FC = () => {
     dataAuthed?.me?.defaultAccount.level === AccountLevel.Two
   ) {
     buttons.unshift({
-      title: LL.ConversionDetailsScreen.title(),
+      title: LL.common.transfer(),
       target: "conversionDetails" as Target,
       icon: "transfer" as IconNamesType,
     })
@@ -395,7 +445,11 @@ export const HomeScreen: React.FC = () => {
                 name={item.icon}
                 size="large"
                 text={item.title}
-                onPress={() => onMenuClick(item.target)}
+                onPress={() =>
+                  item.title === LL.common.transfer()
+                    ? setIsVisible(true)
+                    : onMenuClick(item.target)
+                }
               />
             </View>
           ))}
@@ -429,6 +483,40 @@ export const HomeScreen: React.FC = () => {
           toggleModal={toggleSetDefaultAccountModal}
         />
       </ScrollView>
+      <BottomSheet
+        containerStyle={styles.bottomSheetContainer}
+        isVisible={isVisible}
+        onBackdropPress={() => setIsVisible(false)}
+      >
+        <View style={styles.listContainer}>
+          {list.map((l, i) => (
+            <ListItem
+              key={i}
+              containerStyle={styles.listItemContainer}
+              disabled={l.disabled}
+              onPress={() => {
+                setIsVisible(false)
+                l.onPress()
+              }}
+            >
+              <ListItem.Content disabled={l.disabled}>
+                <ListItem.Title
+                  style={[
+                    l.titleStyle,
+                    styles.titleStyle,
+                    l.disabled && styles.listItemSubtitle,
+                  ]}
+                >
+                  {l.title}
+                  {l?.subtitle && (
+                    <Text style={styles.listItemSubtitle}> {l.subtitle}</Text>
+                  )}
+                </ListItem.Title>
+              </ListItem.Content>
+            </ListItem>
+          ))}
+        </View>
+      </BottomSheet>
     </Screen>
   )
 }
@@ -508,5 +596,26 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   container: {
     marginHorizontal: 20,
+  },
+  bottomSheetContainer: {
+    marginBottom: 20,
+  },
+  listContainer: {
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  listItemContainer: {
+    borderBottomWidth: 1,
+    borderBottomColor: colors.grey4,
+    alignItems: "center",
+  },
+  listItemSubtitle: {
+    color: colors.grey3,
+  },
+  titleStyle: {
+    textAlign: "center",
+  },
+  cancelText: {
+    color: colors.red,
   },
 }))

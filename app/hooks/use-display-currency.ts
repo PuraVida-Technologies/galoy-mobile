@@ -1,7 +1,11 @@
 import { useCallback, useMemo } from "react"
 
 import { gql } from "@apollo/client"
-import { useCurrencyListQuery, WalletCurrency } from "@app/graphql/generated"
+import {
+  BankAccountCurrencies,
+  useCurrencyListQuery,
+  WalletCurrency,
+} from "@app/graphql/generated"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { ConvertMoneyAmount } from "@app/screens/send-bitcoin-screen/payment-details"
@@ -52,6 +56,11 @@ const usdDisplayCurrency = {
   symbol: "$",
   id: "USD",
   fractionDigits: 2,
+}
+const crcDisplayCurrency = {
+  symbol: "₡",
+  id: "CRC",
+  fractionDigits: 0,
 }
 
 const defaultDisplayCurrency = usdDisplayCurrency
@@ -141,7 +150,9 @@ export const useDisplayCurrency = () => {
         case WalletCurrency.Btc:
           return moneyAmount.amount
         case WalletCurrency.Usd:
-          return moneyAmount.amount / 100
+          return (moneyAmount.amount / 100).toFixed(2)
+        case BankAccountCurrencies.Crc:
+          return (moneyAmount.amount / 100).toFixed(0)
         case DisplayCurrency:
           return moneyAmount.amount / 10 ** displayCurrencyInfo.fractionDigits
       }
@@ -180,6 +191,12 @@ export const useDisplayCurrency = () => {
         minorUnitToMajorUnitOffset: usdDisplayCurrency.fractionDigits,
         showFractionDigits: true,
         currencyCode: usdDisplayCurrency.id,
+      },
+      [BankAccountCurrencies.Crc]: {
+        symbol: crcDisplayCurrency.symbol,
+        minorUnitToMajorUnitOffset: crcDisplayCurrency.fractionDigits,
+        showFractionDigits: false,
+        currencyCode: crcDisplayCurrency.id,
       },
       [WalletCurrency.Btc]: {
         symbol: "",
@@ -353,6 +370,7 @@ export const useDisplayCurrency = () => {
     // TODO: remove export. we should only accept MoneyAmount instead of number as input
     // for exported functions for consistency
     displayCurrencyShouldDisplayDecimals,
+    displayCurrencyDictionary,
     currencyInfo,
     moneyAmountToMajorUnitOrSats,
     zeroDisplayAmount: toDisplayMoneyAmount(0),

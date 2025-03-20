@@ -1,11 +1,14 @@
-import { WalletCurrency } from "@app/graphql/generated"
+import { BankAccountCurrencies, WalletCurrency } from "@app/graphql/generated"
 
 export const DisplayCurrency = "DisplayCurrency" as const
 export type DisplayCurrency = typeof DisplayCurrency
 
 export type DisplayAmount = MoneyAmount<DisplayCurrency>
 
-export type WalletOrDisplayCurrency = WalletCurrency | DisplayCurrency
+export type WalletOrDisplayCurrency =
+  | WalletCurrency
+  | DisplayCurrency
+  | BankAccountCurrencies
 
 export const moneyAmountIsCurrencyType = <T extends WalletOrDisplayCurrency>(
   moneyAmount: MoneyAmount<WalletOrDisplayCurrency>,

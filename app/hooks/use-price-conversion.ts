@@ -1,6 +1,10 @@
 import { useMemo } from "react"
 
-import { useRealtimePriceQuery, WalletCurrency } from "@app/graphql/generated"
+import {
+  BankAccountCurrencies,
+  useRealtimePriceQuery,
+  WalletCurrency,
+} from "@app/graphql/generated"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import {
   createToDisplayAmount,
@@ -61,6 +65,11 @@ export const usePriceConversion = () => {
           [WalletCurrency.Btc]: displayCurrencyPerCent * (1 / displayCurrencyPerSat),
           [WalletCurrency.Usd]: 1,
         },
+        [BankAccountCurrencies.Crc]: {
+          [WalletCurrency.Btc]: 1 / displayCurrencyPerSat,
+          [WalletCurrency.Usd]: 1 / displayCurrencyPerCent,
+          [DisplayCurrency]: 1,
+        },
         [DisplayCurrency]: {
           [WalletCurrency.Btc]: 1 / displayCurrencyPerSat,
           [WalletCurrency.Usd]: 1 / displayCurrencyPerCent,
@@ -103,7 +112,10 @@ export const usePriceConversion = () => {
       }
 
       return {
-        amount,
+        amount:
+          toCurrency === BankAccountCurrencies.Crc
+            ? parseFloat(amount.toFixed(0))
+            : parseFloat(amount.toFixed(2)),
         currency: toCurrency,
         currencyCode: toCurrency === DisplayCurrency ? displayCurrency : toCurrency,
       }

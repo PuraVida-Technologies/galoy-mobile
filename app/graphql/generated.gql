@@ -74,6 +74,13 @@ fragment TransactionList on TransactionConnection {
   __typename
 }
 
+mutation ExecuteWithdrawalContract($input: ExecuteWithdrawalContract!) {
+  executeWithdrawalContract(input: $input) {
+    id
+    __typename
+  }
+}
+
 mutation RemoveMyBankAccount($bankAccountId: String!) {
   removeMyBankAccount(bankAccountId: $bankAccountId) {
     ... on BankAccountCR {
@@ -1186,6 +1193,111 @@ query displayCurrency {
 
 query feedbackModalShown {
   feedbackModalShown @client
+}
+
+query getWithdrawalContract($input: GetWithDrawalContractInput!) {
+  getWithdrawalContract(input: $input) {
+    amounts {
+      bankAccountCredit {
+        amount
+        amountInSats
+        amountInSourceCurrency
+        btcSatPrice
+        currency
+        resolvedAt
+        __typename
+      }
+      fee {
+        amount
+        amountInSats
+        btcSatPrice
+        amountInSourceCurrency
+        currency
+        resolvedAt
+        __typename
+      }
+      target {
+        amount
+        amountInSats
+        amountInSourceCurrency
+        btcSatPrice
+        currency
+        resolvedAt
+        __typename
+      }
+      walletDebit {
+        amount
+        amountInSats
+        btcSatPrice
+        amountInSourceCurrency
+        currency
+        resolvedAt
+        __typename
+      }
+      __typename
+    }
+    limits {
+      totalAmount
+      canExecute
+      currency
+      limitPeriodUnit
+      limitPeriodValue
+      limitValue
+      __typename
+    }
+    bankAccount {
+      ... on BankAccountCR {
+        id
+        galoyUserId
+        type
+        countryCode
+        data {
+          bankName
+          accountHolderName
+          nationalId
+          iban
+          sinpeCode
+          swiftCode
+          currency
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    exchangeWallet {
+      id
+      currency
+      __typename
+    }
+    feeExplanation
+    id
+    sourceWallet {
+      currency
+      id
+      __typename
+    }
+    tokenDetails {
+      body
+      createdAt
+      executedAt
+      expiresAt
+      __typename
+    }
+    __typename
+  }
+}
+
+query getWithdrawalLimits($input: GetWithdrawalLimitsInputDTO!) {
+  getWithdrawalLimits(input: $input) {
+    totalAmount
+    limitValue
+    currency
+    limitPeriodUnit
+    limitPeriodValue
+    canExecute
+    __typename
+  }
 }
 
 query hasPromptedSetDefaultAccount {

@@ -235,6 +235,44 @@ type RootTranslation = {
 		 */
 		title: RequiredParams<'username'>
 	}
+	TransferActions: {
+		/**
+		 * S​t​a​b​l​e​ ​S​a​t​s
+		 */
+		stableSats: string
+		/**
+		 * S​i​n​p​e​ ​I​B​A​N
+		 */
+		sinpeIBAN: string
+		/**
+		 * (​o​n​l​y​ ​a​v​a​i​l​a​b​l​e​ ​i​n​ ​C​o​s​t​a​ ​R​i​c​a​)
+		 */
+		sinpeIBANSubtitle: string
+		/**
+		 * S​i​n​p​e​ ​m​ó​v​i​l
+		 */
+		sinpeMovil: string
+		/**
+		 * S​i​n​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r​s
+		 */
+		sinpeIBANTransfers: string
+		/**
+		 * S​i​n​p​e​ ​m​ó​v​i​l​ ​t​r​a​n​s​f​e​r​s
+		 */
+		sinpeMovilTransfers: string
+		/**
+		 * T​o​ ​i​n​i​t​i​a​t​e​ ​t​r​a​n​s​f​e​r​s​ ​t​o​ ​S​i​n​p​e​ ​I​B​A​N​ ​y​o​u​ ​n​e​e​d​ ​t​o​ ​c​o​m​p​l​e​t​e​ ​t​h​e​ ​K​Y​C​ ​d​e​t​a​i​l​s​ ​r​e​q​u​i​r​e​d​ ​b​y​ ​o​u​r​ ​b​a​n​k​i​n​g​ ​p​a​r​t​n​e​r​s​.​ ​C​l​i​c​k​ ​t​h​e​ ​b​u​t​t​o​n​ ​b​e​l​o​w​ ​t​o​ ​s​t​a​r​t​ ​t​h​i​s​ ​p​r​o​c​e​s​s​.
+		 */
+		sinpeIBANTransfersKYCDescription: string
+		/**
+		 * T​o​ ​i​n​i​t​i​a​t​e​ ​t​r​a​n​s​f​e​r​s​ ​t​o​ ​S​i​n​p​e​ ​I​B​A​N​ ​y​o​u​ ​n​e​e​d​ ​t​o​ ​h​a​v​e​ ​o​n​e​ ​b​a​n​k​ ​a​c​c​o​u​n​t​ ​l​i​n​k​e​d​.​ ​C​l​i​c​k​ ​t​h​e​ ​b​u​t​t​o​n​ ​b​e​l​o​w​ ​t​o​ ​s​t​a​r​t​ ​t​h​i​s​ ​p​r​o​c​e​s​s​.
+		 */
+		sinpeIBANTransfersBankDescription: string
+		/**
+		 * Y​o​u​r​ ​K​Y​C​ ​i​s​ ​s​t​i​l​l​ ​p​e​n​d​i​n​g​,​ ​A​s​ ​s​o​o​n​ ​a​s​ ​i​t​'​s​ ​a​p​p​r​o​v​e​d​ ​y​o​u​ ​c​a​n​ ​d​o​ ​S​i​n​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r​s​.
+		 */
+		sinpeIBANTransfersKYCPendingDescription: string
+	}
 	ConversionDetailsScreen: {
 		/**
 		 * C​o​n​v​e​r​t
@@ -268,6 +306,30 @@ type RootTranslation = {
 		 * C​o​n​v​e​r​s​i​o​n​ ​s​u​c​c​e​s​s​f​u​l
 		 */
 		message: string
+	}
+	SnipeDetailsScreen: {
+		/**
+		 * S​n​i​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
+		 */
+		title: string
+		/**
+		 * %​ ​t​o​ ​c​o​n​v​e​r​t
+		 */
+		percentageToConvert: string
+		/**
+		 * A​m​o​u​n​t
+		 */
+		amount: string
+	}
+	SnipeConfirmationScreen: {
+		/**
+		 * R​e​v​i​e​w​ ​S​n​i​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
+		 */
+		title: string
+		/**
+		 * A​m​o​u​n​t
+		 */
+		amount: string
 	}
 	EarnScreen: {
 		/**
@@ -7066,6 +7128,10 @@ type RootTranslation = {
 		 */
 		amount: string
 		/**
+		 * R​e​m​a​i​n​i​n​g​ ​d​a​i​l​y​ ​l​i​m​i​t
+		 */
+		remainingDailyLimit: string
+		/**
 		 * A​m​o​u​n​t​ ​e​x​c​e​e​d​s​ ​y​o​u​r​ ​b​a​l​a​n​c​e​ ​o​f​ ​{​b​a​l​a​n​c​e​}
 		 * @param {string} balance
 		 */
@@ -7075,6 +7141,11 @@ type RootTranslation = {
 		 * @param {string} limit
 		 */
 		amountExceedsLimit: RequiredParams<'limit'>
+		/**
+		 * A​m​o​u​n​t​ ​i​s​ ​l​e​s​s​e​r​ ​t​h​a​n​ ​a​ ​m​i​n​i​m​u​m​ ​l​i​m​i​t​ ​o​f​ ​{​l​i​m​i​t​}
+		 * @param {string} limit
+		 */
+		amountMinimumLimit: RequiredParams<'limit'>
 		/**
 		 * U​p​g​r​a​d​e​ ​y​o​u​r​ ​a​c​c​o​u​n​t​ ​t​o​ ​i​n​c​r​e​a​s​e​ ​y​o​u​r​ ​l​i​m​i​t
 		 */
@@ -8180,6 +8251,10 @@ type RootTranslation = {
 		 */
 		community: string
 		/**
+		 * W​i​t​h​d​r​a​w
+		 */
+		withdraw: string
+		/**
 		 * A​c​c​o​u​n​t
 		 */
 		account: string
@@ -8195,10 +8270,6 @@ type RootTranslation = {
 		 * T​r​a​n​s​a​c​t​i​o​n​ ​L​i​m​i​t​s
 		 */
 		transactionLimits: string
-		/**
-		 * K​Y​C
-		 */
-		KYC: string
 		/**
 		 * K​Y​C
 		 */
@@ -8231,6 +8302,10 @@ type RootTranslation = {
 		 * B​a​n​k​ ​A​c​c​o​u​n​t
 		 */
 		bankAccount: string
+		/**
+		 * T​o​ ​B​a​n​k​ ​A​c​c​o​u​n​t
+		 */
+		toBankAccount: string
 		/**
 		 * B​a​n​k​ ​A​c​c​o​u​n​t​s
 		 */
@@ -8277,6 +8352,10 @@ type RootTranslation = {
 		 * C​o​n​v​e​r​t
 		 */
 		convert: string
+		/**
+		 * T​r​a​n​s​f​e​r
+		 */
+		transfer: string
 		/**
 		 * C​o​d​e​ ​C​o​n​f​i​r​m​a​t​i​o​n
 		 */
@@ -8329,6 +8408,10 @@ type RootTranslation = {
 		 * F​e​e​s
 		 */
 		fees: string
+		/**
+		 * I​n​c​l​u​d​e​s
+		 */
+		includes: string
 		/**
 		 * F​i​r​s​t​ ​N​a​m​e
 		 */
@@ -8397,6 +8480,14 @@ type RootTranslation = {
 		 * N​e​x​t
 		 */
 		next: string
+		/**
+		 * P​r​e​v​i​o​u​s
+		 */
+		previous: string
+		/**
+		 * G​e​n​d​e​r
+		 */
+		gender: string
 		/**
 		 * N​o
 		 */
@@ -8505,6 +8596,10 @@ type RootTranslation = {
 		 * T​o
 		 */
 		to: string
+		/**
+		 * c​o​m​i​n​g​ ​s​o​o​n
+		 */
+		comingSoon: string
 		/**
 		 * T​o​t​a​l
 		 */
@@ -9612,6 +9707,44 @@ export type TranslationFunctions = {
 		 */
 		title: (arg: { username: string }) => LocalizedString
 	}
+	TransferActions: {
+		/**
+		 * Stable Sats
+		 */
+		stableSats: () => LocalizedString
+		/**
+		 * Sinpe IBAN
+		 */
+		sinpeIBAN: () => LocalizedString
+		/**
+		 * (only available in Costa Rica)
+		 */
+		sinpeIBANSubtitle: () => LocalizedString
+		/**
+		 * Sinpe móvil
+		 */
+		sinpeMovil: () => LocalizedString
+		/**
+		 * Sinpe IBAN transfers
+		 */
+		sinpeIBANTransfers: () => LocalizedString
+		/**
+		 * Sinpe móvil transfers
+		 */
+		sinpeMovilTransfers: () => LocalizedString
+		/**
+		 * To initiate transfers to Sinpe IBAN you need to complete the KYC details required by our banking partners. Click the button below to start this process.
+		 */
+		sinpeIBANTransfersKYCDescription: () => LocalizedString
+		/**
+		 * To initiate transfers to Sinpe IBAN you need to have one bank account linked. Click the button below to start this process.
+		 */
+		sinpeIBANTransfersBankDescription: () => LocalizedString
+		/**
+		 * Your KYC is still pending, As soon as it's approved you can do Sinpe IBAN transfers.
+		 */
+		sinpeIBANTransfersKYCPendingDescription: () => LocalizedString
+	}
 	ConversionDetailsScreen: {
 		/**
 		 * Convert
@@ -9645,6 +9778,30 @@ export type TranslationFunctions = {
 		 * Conversion successful
 		 */
 		message: () => LocalizedString
+	}
+	SnipeDetailsScreen: {
+		/**
+		 * Snipe IBAN transfer
+		 */
+		title: () => LocalizedString
+		/**
+		 * % to convert
+		 */
+		percentageToConvert: () => LocalizedString
+		/**
+		 * Amount
+		 */
+		amount: () => LocalizedString
+	}
+	SnipeConfirmationScreen: {
+		/**
+		 * Review Snipe IBAN transfer
+		 */
+		title: () => LocalizedString
+		/**
+		 * Amount
+		 */
+		amount: () => LocalizedString
 	}
 	EarnScreen: {
 		/**
@@ -16409,6 +16566,10 @@ export type TranslationFunctions = {
 		 */
 		amount: () => LocalizedString
 		/**
+		 * Remaining daily limit
+		 */
+		remainingDailyLimit: () => LocalizedString
+		/**
 		 * Amount exceeds your balance of {balance}
 		 */
 		amountExceed: (arg: { balance: string }) => LocalizedString
@@ -16416,6 +16577,10 @@ export type TranslationFunctions = {
 		 * Amount exceeds your remaining daily limit of {limit}
 		 */
 		amountExceedsLimit: (arg: { limit: string }) => LocalizedString
+		/**
+		 * Amount is lesser than a minimum limit of {limit}
+		 */
+		amountMinimumLimit: (arg: { limit: string }) => LocalizedString
 		/**
 		 * Upgrade your account to increase your limit
 		 */
@@ -17500,6 +17665,10 @@ export type TranslationFunctions = {
 		 */
 		community: () => LocalizedString
 		/**
+		 * Withdraw
+		 */
+		withdraw: () => LocalizedString
+		/**
 		 * Account
 		 */
 		account: () => LocalizedString
@@ -17548,6 +17717,10 @@ export type TranslationFunctions = {
 		 */
 		bankAccount: () => LocalizedString
 		/**
+		 * To Bank Account
+		 */
+		toBankAccount: () => LocalizedString
+		/**
 		 * Bank Accounts
 		 */
 		bankAccounts: () => LocalizedString
@@ -17591,6 +17764,10 @@ export type TranslationFunctions = {
 		 * Convert
 		 */
 		convert: () => LocalizedString
+		/**
+		 * Transfer
+		 */
+		transfer: () => LocalizedString
 		/**
 		 * Code Confirmation
 		 */
@@ -17643,6 +17820,10 @@ export type TranslationFunctions = {
 		 * Fees
 		 */
 		fees: () => LocalizedString
+		/**
+		 * Includes
+		 */
+		includes: () => LocalizedString
 		/**
 		 * First Name
 		 */
@@ -17711,6 +17892,14 @@ export type TranslationFunctions = {
 		 * Next
 		 */
 		next: () => LocalizedString
+		/**
+		 * Previous
+		 */
+		previous: () => LocalizedString
+		/**
+		 * Gender
+		 */
+		gender: () => LocalizedString
 		/**
 		 * No
 		 */
@@ -17819,6 +18008,10 @@ export type TranslationFunctions = {
 		 * To
 		 */
 		to: () => LocalizedString
+		/**
+		 * coming soon
+		 */
+		comingSoon: () => LocalizedString
 		/**
 		 * Total
 		 */

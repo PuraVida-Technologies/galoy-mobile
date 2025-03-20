@@ -19,6 +19,7 @@ import {
 } from "../config"
 import { onError } from "@apollo/client/link/error"
 import { toastShow } from "@app/utils/toast"
+import { useI18nContext } from "@app/i18n/i18n-react"
 
 export const cache = new InMemoryCache({ addTypename: false })
 
@@ -35,6 +36,7 @@ const defaultOptions: DefaultOptions = {
 
 export const initPuravidaMarketPlaceClient = () => {
   const { appConfig } = useAppConfig()
+  const { LL } = useI18nContext()
 
   const uri =
     appConfig.galoyInstance.name === "Staging"
