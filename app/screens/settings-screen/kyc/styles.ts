@@ -22,12 +22,16 @@ const useStyles = makeStyles(({ colors }) => ({
   flexContainer: {
     display: "flex",
     flexDirection: "row",
+    justifyContent: "space-between",
     paddingTop: 20,
     backgroundColor: colors.white,
   },
   buttonContainerStyle: {
     paddingBottom: 0,
     flex: 1,
+  },
+  perviousButtonContainer: {
+    marginRight: 10,
   },
   buttonStyle: {
     flexGrow: 1,
@@ -38,19 +42,11 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   previousStyle: {
     backgroundColor: colors.grey4,
-    marginRight: 10,
-  },
-  buttonText: {
-    color: colors.white,
-    fontSize: 18,
-    paddingTop: 0,
-    paddingBottom: 0,
-    paddingRight: 0,
-    paddingLeft: 0,
   },
   disabled: {
     backgroundColor: colors.grey4,
     color: colors.grey1,
+    opacity: 0.8,
   },
   buttonInActiveText: {
     color: colors.grey1,

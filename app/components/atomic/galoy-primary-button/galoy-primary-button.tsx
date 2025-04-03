@@ -11,12 +11,12 @@ export const GaloyPrimaryButton: FC<PropsWithChildren<ButtonProps>> = (props) =>
     <Button
       {...(typeof props.title === "string" ? testProps(props.title) : {})}
       activeOpacity={0.85}
-      TouchableComponent={TouchableHighlight}
-      buttonStyle={styles.buttonStyle}
-      titleStyle={styles.titleStyle}
-      disabledStyle={styles.disabledStyle}
-      disabledTitleStyle={styles.disabledTitleStyle}
       {...props}
+      titleStyle={[styles.titleStyle, props?.titleStyle]}
+      TouchableComponent={TouchableHighlight}
+      buttonStyle={[styles.buttonStyle, props?.buttonStyle]}
+      disabledStyle={[styles.disabledStyle, props?.disabledStyle]}
+      disabledTitleStyle={[styles.disabledTitleStyle, props?.disabledTitleStyle]}
     />
   )
 }

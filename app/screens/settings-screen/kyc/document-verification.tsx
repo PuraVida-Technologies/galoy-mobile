@@ -3,7 +3,6 @@ import { useI18nContext } from "@app/i18n/i18n-react"
 import { Image, TouchableOpacity, View } from "react-native"
 import Stepper from "./stepper"
 import { Text, Divider } from "@rneui/themed"
-import Icon from "react-native-vector-icons/AntDesign"
 import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons"
 import ActionSheet from "@alessiocancian/react-native-actionsheet"
 import { IDType } from "./types"
@@ -11,15 +10,24 @@ import { Route } from "./hooks/useKYCState"
 import useDocumentVerification from "./hooks/useDocumentVerification"
 import { LoadingComponent } from "@app/modules/market-place/components/loading-component"
 
-const DocumentUpload = ({ LL, styles, onPress, file, icon, loading }) => {
+interface Props {
+  label: string
+  styles: any
+  onPress: () => void
+  file: string | null
+  icon: string
+  loading: boolean
+}
+
+const DocumentUpload = ({ label, styles, onPress, file, icon, loading }: Props) => {
   return (
     <TouchableOpacity style={styles.pickerContainer} onPress={onPress}>
-      {Boolean(file) ? (
+      {file ? (
         <Image source={{ uri: file }} style={{ width: "100%", height: 200 }} />
       ) : (
         <>
           <MaterialIcon name={icon} size={50} />
-          <Text type={"p1"}>{LL.KYCScreen.uploadIDFront()}</Text>
+          <Text type={"p1"}>{label}</Text>
         </>
       )}
       {loading ? <LoadingComponent isLoading={loading} /> : <></>}
@@ -43,7 +51,7 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
           <Divider style={styles.titleContainer} />
         </View>
         <DocumentUpload
-          LL={LL}
+          label={LL.KYCScreen.uploadIDFront()}
           loading={state.uploadingFrontDoc}
           file={state.idFront}
           icon="card-account-details-outline"
@@ -55,7 +63,7 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
         />
         {route?.state?.idDetails?.type === IDType.DriverLicense ? (
           <DocumentUpload
-            LL={LL}
+            label={LL.KYCScreen.uploadIDBack()}
             loading={state.uploadingBackDoc}
             file={state.idBack}
             icon="card-bulleted-outline"
@@ -75,8 +83,12 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
         previous
         nextPage={"user"}
         disableNext={
-          Boolean(!state.idFront) || state.uploadingFrontDoc || state.uploadingBackDoc
+          Boolean(!state.idFront) ||
+          (route?.state?.idDetails?.type === IDType.DriverLicense && !state.idBack) ||
+          state.uploadingFrontDoc ||
+          state.uploadingBackDoc
         }
+        loading={state.uploadingFrontDoc || state.uploadingBackDoc}
         previousPage={"docType"}
       />
       <ActionSheet

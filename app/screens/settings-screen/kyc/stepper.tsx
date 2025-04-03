@@ -1,9 +1,9 @@
 import { testProps } from "@app/utils/testProps"
 import { View } from "react-native"
 import useStyles from "./styles"
-import { Button } from "@rneui/themed"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { useCallback } from "react"
+import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 
 interface Props {
   jumpTo: (x: string) => void
@@ -15,6 +15,7 @@ interface Props {
   next?: boolean
   allowNext?: boolean
   disableNext?: boolean
+  loading?: boolean
   onNext?: () => void
   onPrevious?: () => void
 }
@@ -29,6 +30,7 @@ const Stepper = ({
   previous,
   next = true,
   disableNext,
+  loading,
   onNext,
   onPrevious,
 }: Props) => {
@@ -52,26 +54,29 @@ const Stepper = ({
   return (
     <View style={styles.flexContainer}>
       {previous ? (
-        <Button
+        <GaloyPrimaryButton
           {...testProps(LL.common.previous())}
           title={previousTitle || LL.common.previous()}
           buttonStyle={[styles.buttonStyle, styles.previousStyle]}
-          containerStyle={styles.buttonContainerStyle}
-          titleProps={{ style: [styles.buttonText, styles.buttonInActiveText] }}
+          disabledStyle={[styles.buttonStyle, styles.disabled]}
+          containerStyle={[styles.buttonContainerStyle, styles.perviousButtonContainer]}
+          titleStyle={styles.buttonInActiveText}
+          disabledTitleStyle={[styles.buttonInActiveText, styles.disabled]}
           onPress={onPreviousPage}
+          disabled={loading}
         />
       ) : (
         <></>
       )}
       {next ? (
-        <Button
+        <GaloyPrimaryButton
           {...testProps(LL.common.next())}
           title={nextTitle || LL.common.next()}
           containerStyle={styles.buttonContainerStyle}
           buttonStyle={[styles.buttonStyle, disableNext ? styles.disabled : {}]}
-          titleProps={{ style: [styles.buttonText, disableNext ? styles.disabled : {}] }}
+          disabled={disableNext || !allowNext}
           onPress={onNextPage}
-          disabled={disableNext}
+          loading={loading}
         />
       ) : (
         <></>

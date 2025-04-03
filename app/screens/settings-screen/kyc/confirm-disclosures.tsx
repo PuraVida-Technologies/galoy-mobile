@@ -8,6 +8,7 @@ import RadioGroup from "@app/components/radio-input/radio-input-group"
 import { Route } from "./hooks/useKYCState"
 import useConfirmKYC from "./hooks/useConfirmKYC"
 import { LoadingComponent } from "@app/modules/market-place/components/loading-component"
+import { palette } from "@app/theme/palette"
 
 const radioGroup = [
   { label: "Yes", value: "yes" },
@@ -25,7 +26,6 @@ const ConfirmDisclosures = ({ jumpTo, route }: Route) => {
   return (
     <>
       <View style={styles.container}>
-        {state.loading ? <LoadingComponent isLoading={state.loading} /> : <></>}
         <View>
           <Text type={"h2"}>{LL.KYCScreen.confirmDisclosures()}</Text>
           <Divider style={styles.titleContainer} />
@@ -57,7 +57,13 @@ const ConfirmDisclosures = ({ jumpTo, route }: Route) => {
         nextTitle={LL.common.confirm()}
         previousPage={"user"}
         disableNext={state.loading}
+        allowNext={!state.loading}
         onNext={() => actions?.onConfirm()}
+      />
+      <LoadingComponent
+        isLoading={state.loading}
+        color={palette.coolGrey}
+        styles={{ backgroundColor: palette.lightWhite }}
       />
     </>
   )
