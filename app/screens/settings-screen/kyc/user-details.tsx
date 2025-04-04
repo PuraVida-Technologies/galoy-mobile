@@ -1,4 +1,4 @@
-import React, { useMemo } from "react"
+import React from "react"
 import useStyles from "./styles"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { testProps } from "@app/utils/testProps"
@@ -9,6 +9,7 @@ import { View } from "react-native"
 import { Route } from "./hooks/useKYCState"
 import RadioGroup from "@app/components/radio-input/radio-input-group"
 import FormContainer from "@app/components/form-input/form-container"
+import useUserDetails from "./hooks/useUserDetails"
 
 const radioGroup = [
   { label: "Male", value: "MALE" },
@@ -19,23 +20,10 @@ const radioGroup = [
 const UserDetails = ({ jumpTo, route }: Route) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
-  const allowed = useMemo(
-    () =>
-      Boolean(
-        (route?.state?.email && route?.state?.phoneNumber && route?.state?.gender) ||
-          (route?.state?.idDetails?.email &&
-            route?.state?.idDetails?.phoneNumber &&
-            route?.state?.idDetails?.gender),
-      ),
-    [
-      route?.state?.email,
-      route?.state?.gender,
-      route?.state?.idDetails?.email,
-      route?.state?.idDetails?.gender,
-      route?.state?.idDetails?.phoneNumber,
-      route?.state?.phoneNumber,
-    ],
-  )
+  const { state, actions } = useUserDetails({
+    state: route.state,
+    setState: route.setState,
+  })
 
   return (
     <>
@@ -49,11 +37,10 @@ const UserDetails = ({ jumpTo, route }: Route) => {
           {...testProps(LL.EmailRegistrationInitiateScreen.placeholder())}
           placeholder={LL.EmailRegistrationInitiateScreen.placeholder()}
           autoCapitalize="none"
-          value={route?.state?.idDetails?.email || route?.state?.email}
+          value={state?.userDetails?.email}
           onChangeText={(text) =>
-            route?.setState({
+            actions?.setUserDetails({
               email: text,
-              idDetails: { ...route?.state?.idDetails, email: text },
             })
           }
         />
@@ -65,11 +52,10 @@ const UserDetails = ({ jumpTo, route }: Route) => {
           autoCapitalize="none"
           keyboardType="numeric"
           maxLength={13}
-          value={route?.state?.idDetails?.phoneNumber || route?.state?.phoneNumber}
+          value={state?.userDetails?.phoneNumber}
           onChangeText={(text) =>
-            route?.setState({
+            actions?.setUserDetails({
               phoneNumber: text,
-              idDetails: { ...route?.state?.idDetails, phoneNumber: text },
             })
           }
         />
@@ -77,11 +63,10 @@ const UserDetails = ({ jumpTo, route }: Route) => {
         <FormContainer label={LL.common.gender()}>
           <RadioGroup
             group={radioGroup}
-            value={route?.state?.idDetails?.gender || route?.state?.gender}
+            value={state?.userDetails?.gender}
             onChange={(value) => {
-              route?.setState({
+              actions?.setUserDetails({
                 gender: value,
-                idDetails: { ...route?.state?.idDetails, gender: value },
               })
             }}
           />
@@ -89,11 +74,12 @@ const UserDetails = ({ jumpTo, route }: Route) => {
       </View>
       <Stepper
         jumpTo={jumpTo}
-        allowNext={allowed}
-        disableNext={!allowed}
+        allowNext={state.allowed && !state.loading}
+        disableNext={!state.allowed && state.loading}
         previous
         previousPage={"docProof"}
         nextPage={"confirm"}
+        onNext={() => actions?.onConfirm()}
       />
     </>
   )

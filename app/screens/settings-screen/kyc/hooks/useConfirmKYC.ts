@@ -17,7 +17,7 @@ const useConfirmKYC = ({ state, setState }) => {
   const [isPoliticallyExposed, setPoliticallyExposed] = useState("yes")
   const [isHighRisk, setIsHighRisk] = useState("yes")
   const [loading, setLoading] = useState(false)
-  const [updateKYCDetails] = useUpdateKycMutation()
+  const [updateKYCDetails] = useUpdateKycMutation({ refetchQueries: ["KycDetails"] })
   const navigation = useNavigation()
   const stateRef = useRef(state)
 

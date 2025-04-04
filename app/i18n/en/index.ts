@@ -2838,6 +2838,7 @@ const en: BaseTranslation = {
     bank: "Bank",
     addBankAccount: "Add Bank Account",
     bankAccount: "Bank Account",
+    kycIsPending: "KYC is pending",
     toBankAccount: "To Bank Account",
     bankAccounts: "Bank Accounts",
     bankAdvice: "{bankName: string} Advice",

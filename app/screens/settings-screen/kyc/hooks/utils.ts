@@ -42,3 +42,12 @@ export const prepareKYCDetails = (state: any) => {
     status: state?.idDetails?.status,
   }
 }
+export const prepareUserDetails = (state: any) => {
+  return {
+    email: state?.idDetails?.email || state?.email,
+    phoneNumber: state?.idDetails?.phoneNumber || state?.phoneNumber,
+    gender: state?.idDetails?.gender,
+    status: state?.idDetails?.status,
+    id: state?.idDetails?.id,
+  }
+}

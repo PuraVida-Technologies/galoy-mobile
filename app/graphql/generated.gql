@@ -911,6 +911,8 @@ query KycDetails {
   me {
     username
     kyc {
+      id
+      status
       fullName
       citizenships
       email

@@ -3586,7 +3586,7 @@ export type UpdateKycMutation = { readonly __typename: 'Mutation', readonly upda
 export type KycDetailsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type KycDetailsQuery = { readonly __typename: 'Query', readonly me?: { readonly __typename: 'User', readonly username?: string | null, readonly kyc?: { readonly __typename: 'Kyc', readonly fullName?: string | null, readonly citizenships?: ReadonlyArray<string> | null, readonly email?: string | null, readonly phoneNumber?: string | null, readonly gender?: Gender | null, readonly isPoliticallyExposed?: boolean | null, readonly isHighRisk?: boolean | null, readonly primaryIdentification?: { readonly __typename: 'Identification', readonly expiration?: string | null, readonly files: ReadonlyArray<string>, readonly type: IdentificationType } | null } | null } | null };
+export type KycDetailsQuery = { readonly __typename: 'Query', readonly me?: { readonly __typename: 'User', readonly username?: string | null, readonly kyc?: { readonly __typename: 'Kyc', readonly id: string, readonly status: Status, readonly fullName?: string | null, readonly citizenships?: ReadonlyArray<string> | null, readonly email?: string | null, readonly phoneNumber?: string | null, readonly gender?: Gender | null, readonly isPoliticallyExposed?: boolean | null, readonly isHighRisk?: boolean | null, readonly primaryIdentification?: { readonly __typename: 'Identification', readonly expiration?: string | null, readonly files: ReadonlyArray<string>, readonly type: IdentificationType } | null } | null } | null };
 
 export type LanguageQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -8004,6 +8004,8 @@ export const KycDetailsDocument = gql`
   me {
     username
     kyc {
+      id
+      status
       fullName
       citizenships
       email

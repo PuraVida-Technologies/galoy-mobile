@@ -3,14 +3,28 @@ import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { SettingsRow } from "../row"
-import { useSettingsScreenQuery, Status } from "@app/graphql/generated"
+import { useKycDetailsQuery, Status } from "@app/graphql/generated"
 import { useMemo } from "react"
 import { color } from "@app/modules/market-place/theme"
 
 export const KYC: React.FC = () => {
   const { LL } = useI18nContext()
   const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>()
-  const { data, loading } = useSettingsScreenQuery()
+  const { data, loading } = useKycDetailsQuery()
+
+  const awaitingApproval = useMemo(() => {
+    const kyc = data?.me?.kyc
+    return Boolean(
+      kyc?.primaryIdentification?.type &&
+        kyc?.primaryIdentification?.files &&
+        kyc?.primaryIdentification?.files?.length > 0 &&
+        kyc?.phoneNumber &&
+        kyc?.email &&
+        kyc?.gender &&
+        kyc?.isPoliticallyExposed?.toString() &&
+        kyc?.isHighRisk?.toString(),
+    )
+  }, [data?.me?.kyc?.status])
 
   const subtitleColor = useMemo(() => {
     switch (data?.me?.kyc?.status) {
@@ -31,11 +45,13 @@ export const KYC: React.FC = () => {
       shorter
       title={LL.common.KYC()}
       leftIcon="verified-user"
-      subtitle={data?.me?.kyc?.status}
+      subtitle={awaitingApproval ? "Awaiting Approval" : data?.me?.kyc?.status}
       subtitleStyles={{ textTransform: "capitalize", color: subtitleColor }}
       iconType="material"
       action={() => navigate("KYCScreen")}
-      disabled={["APPROVED", "PENDING"].includes(data?.me?.kyc?.status || "")}
+      disabled={
+        loading || awaitingApproval || ["APPROVED"].includes(data?.me?.kyc?.status || "")
+      }
     />
   )
 }

@@ -6,13 +6,15 @@ import ConfirmDisclosures from "../confirm-disclosures"
 import { useWindowDimensions } from "react-native"
 import { useCallback, useEffect, useState } from "react"
 import { gql } from "@apollo/client"
-import { useKycDetailsQuery } from "@app/graphql/generated"
+import { useKycDetailsQuery, Status, IdentificationType } from "@app/graphql/generated"
 
 gql`
   query KycDetails {
     me {
       username
       kyc {
+        id
+        status
         fullName
         citizenships
         email
@@ -53,13 +55,18 @@ const useKYCState = () => {
   useEffect(() => {
     if (!loading) {
       const kyc = data?.me?.kyc
+      const isDrivingLicense =
+        kyc?.primaryIdentification?.type === IdentificationType.DrivingLicense
+      const isForntSide = kyc?.primaryIdentification?.files?.[0]
+      const isBackSide = kyc?.primaryIdentification?.files?.[0]
       setState({
         idDetails: {
           type: kyc?.primaryIdentification?.type,
-          front: kyc?.primaryIdentification?.files?.[0],
-          back: kyc?.primaryIdentification?.files?.[1],
+          front: isDrivingLicense && isForntSide && isBackSide ? isForntSide : "",
+          back: isDrivingLicense && isForntSide && isBackSide ? isBackSide : "",
           email: kyc?.email,
           phoneNumber: kyc?.phoneNumber,
+          id: kyc?.id,
           gender: kyc?.gender,
           isPoliticallyExposed: kyc?.isPoliticallyExposed,
           isHighRisk: kyc?.isHighRisk,
@@ -74,6 +81,30 @@ const useKYCState = () => {
     { key: "user", title: "User", setState, state },
     { key: "confirm", title: "Confirm Disclosures", setState, state },
   ]
+
+  useEffect(() => {
+    if (data?.me?.kyc?.status === Status.Pending) {
+      if (state?.idDetails?.type) {
+        setIndex(1)
+      }
+      if (
+        (state?.idDetails?.type === IdentificationType.DrivingLicense &&
+          state?.idDetails?.front &&
+          state?.idDetails?.back) ||
+        (state?.idDetails?.type !== IdentificationType.DrivingLicense &&
+          state?.idDetails?.front)
+      ) {
+        setIndex(2)
+      }
+      if (
+        state?.idDetails?.email &&
+        state?.idDetails?.phoneNumber &&
+        state?.idDetails?.gender
+      ) {
+        setIndex(3)
+      }
+    }
+  }, [state, data?.me?.kyc?.status])
 
   return {
     state: { state, routes, layout, index },

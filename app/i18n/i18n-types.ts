@@ -8303,6 +8303,10 @@ type RootTranslation = {
 		 */
 		bankAccount: string
 		/**
+		 * K​Y​C​ ​i​s​ ​p​e​n​d​i​n​g
+		 */
+		kycIsPending: string
+		/**
 		 * T​o​ ​B​a​n​k​ ​A​c​c​o​u​n​t
 		 */
 		toBankAccount: string
@@ -17716,6 +17720,10 @@ export type TranslationFunctions = {
 		 * Bank Account
 		 */
 		bankAccount: () => LocalizedString
+		/**
+		 * KYC is pending
+		 */
+		kycIsPending: () => LocalizedString
 		/**
 		 * To Bank Account
 		 */

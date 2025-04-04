@@ -25,6 +25,7 @@ export const BankAccount: React.FC = () => {
             : "bankAccount",
         )
       }
+      subtitle={data?.me?.kyc?.status !== "APPROVED" ? LL.common.kycIsPending() : ""}
       disabled={data?.me?.kyc?.status !== "APPROVED"}
     />
   )
