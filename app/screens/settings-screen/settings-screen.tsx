@@ -73,7 +73,7 @@ export const SettingsScreen: React.FC = () => {
     () => ({
       account: isAtLeastLevelTwo
         ? [AccountLevelSetting, TxLimits, KYC, BankAccount]
-        : [AccountLevelSetting, TxLimits, KYC],
+        : [AccountLevelSetting, TxLimits],
       loginMethods: [EmailSetting, PhoneSetting],
       waysToGetPaid: [AccountLNAddress, AccountPOS, AccountStaticQR],
       preferences: [
