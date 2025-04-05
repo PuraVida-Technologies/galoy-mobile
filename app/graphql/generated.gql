@@ -683,35 +683,11 @@ mutation userLogin($input: UserLoginInput!) {
   userLogin(input: $input) {
     errors {
       message
-      __typename
-    }
-    authToken
-    __typename
-  }
-}
-
-mutation userLoginForPhoneLoginValidation($input: UserLoginInput!) {
-  userLogin(input: $input) {
-    errors {
-      message
       code
       __typename
     }
     authToken
     totpRequired
-    __typename
-  }
-}
-
-mutation userLoginUpgrade($input: UserLoginUpgradeInput!) {
-  userLoginUpgrade(input: $input) {
-    errors {
-      message
-      code
-      __typename
-    }
-    success
-    authToken
     __typename
   }
 }

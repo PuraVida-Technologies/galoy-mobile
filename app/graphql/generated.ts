@@ -567,6 +567,14 @@ export type Country = {
   readonly supportedAuthChannels: ReadonlyArray<PhoneCodeChannelType>;
 };
 
+export type CreateStoreInput = {
+  readonly email: Scalars['String']['input'];
+  readonly rate: Scalars['String']['input'];
+  readonly referringStoreId: Scalars['String']['input'];
+  readonly store: Scalars['String']['input'];
+  readonly username: Scalars['String']['input'];
+};
+
 /** General currencies that are supported by galoy be it wallets (USD, BTC) or in galoys currency list */
 export const Currencies = {
   Btc: 'BTC',
@@ -1270,6 +1278,8 @@ export type Mutation = {
   readonly callbackEndpointDelete: SuccessPayload;
   readonly captchaCreateChallenge: CaptchaCreateChallengePayload;
   readonly captchaRequestAuthCode: SuccessPayload;
+  readonly createStore: Scalars['Boolean']['output'];
+  readonly denyKyc: Kyc;
   readonly deviceNotificationTokenCreate: SuccessPayload;
   /**
    * - Executes the given token that represents the withdrawal transaction
@@ -1465,6 +1475,16 @@ export type MutationCallbackEndpointDeleteArgs = {
 
 export type MutationCaptchaRequestAuthCodeArgs = {
   input: CaptchaRequestAuthCodeInput;
+};
+
+
+export type MutationCreateStoreArgs = {
+  input: CreateStoreInput;
+};
+
+
+export type MutationDenyKycArgs = {
+  id: Scalars['String']['input'];
 };
 
 
@@ -2315,6 +2335,7 @@ export type Status = typeof Status[keyof typeof Status];
 export type StoreResponse = {
   readonly __typename: 'StoreResponse';
   readonly appId?: Maybe<Scalars['String']['output']>;
+  readonly email: Scalars['String']['output'];
   readonly id: Scalars['ID']['output'];
   readonly name: Scalars['String']['output'];
   readonly rate: Scalars['String']['output'];
@@ -3238,20 +3259,6 @@ export type CaptchaRequestAuthCodeForPhoneInputMutationVariables = Exact<{
 
 export type CaptchaRequestAuthCodeForPhoneInputMutation = { readonly __typename: 'Mutation', readonly captchaRequestAuthCode: { readonly __typename: 'SuccessPayload', readonly success?: boolean | null, readonly errors: ReadonlyArray<{ readonly __typename: 'GraphQLApplicationError', readonly message: string }> } };
 
-export type UserLoginForPhoneLoginValidationMutationVariables = Exact<{
-  input: UserLoginInput;
-}>;
-
-
-export type UserLoginForPhoneLoginValidationMutation = { readonly __typename: 'Mutation', readonly userLogin: { readonly __typename: 'AuthTokenPayload', readonly authToken?: string | null, readonly totpRequired?: boolean | null, readonly errors: ReadonlyArray<{ readonly __typename: 'GraphQLApplicationError', readonly message: string, readonly code?: string | null }> } };
-
-export type UserLoginUpgradeMutationVariables = Exact<{
-  input: UserLoginUpgradeInput;
-}>;
-
-
-export type UserLoginUpgradeMutation = { readonly __typename: 'Mutation', readonly userLoginUpgrade: { readonly __typename: 'UpgradePayload', readonly success: boolean, readonly authToken?: string | null, readonly errors: ReadonlyArray<{ readonly __typename: 'GraphQLApplicationError', readonly message: string, readonly code?: string | null }> } };
-
 export type UserPhoneRegistrationValidateMutationVariables = Exact<{
   input: UserPhoneRegistrationValidateInput;
 }>;
@@ -3264,7 +3271,7 @@ export type UserLoginMutationVariables = Exact<{
 }>;
 
 
-export type UserLoginMutation = { readonly __typename: 'Mutation', readonly userLogin: { readonly __typename: 'AuthTokenPayload', readonly authToken?: string | null, readonly errors: ReadonlyArray<{ readonly __typename: 'GraphQLApplicationError', readonly message: string }> } };
+export type UserLoginMutation = { readonly __typename: 'Mutation', readonly userLogin: { readonly __typename: 'AuthTokenPayload', readonly authToken?: string | null, readonly totpRequired?: boolean | null, readonly errors: ReadonlyArray<{ readonly __typename: 'GraphQLApplicationError', readonly message: string, readonly code?: string | null }> } };
 
 export type CaptchaRequestAuthCodeMutationVariables = Exact<{
   input: CaptchaRequestAuthCodeInput;
@@ -5756,82 +5763,6 @@ export function useCaptchaRequestAuthCodeForPhoneInputMutation(baseOptions?: Apo
 export type CaptchaRequestAuthCodeForPhoneInputMutationHookResult = ReturnType<typeof useCaptchaRequestAuthCodeForPhoneInputMutation>;
 export type CaptchaRequestAuthCodeForPhoneInputMutationResult = Apollo.MutationResult<CaptchaRequestAuthCodeForPhoneInputMutation>;
 export type CaptchaRequestAuthCodeForPhoneInputMutationOptions = Apollo.BaseMutationOptions<CaptchaRequestAuthCodeForPhoneInputMutation, CaptchaRequestAuthCodeForPhoneInputMutationVariables>;
-export const UserLoginForPhoneLoginValidationDocument = gql`
-    mutation userLoginForPhoneLoginValidation($input: UserLoginInput!) {
-  userLogin(input: $input) {
-    errors {
-      message
-      code
-    }
-    authToken
-    totpRequired
-  }
-}
-    `;
-export type UserLoginForPhoneLoginValidationMutationFn = Apollo.MutationFunction<UserLoginForPhoneLoginValidationMutation, UserLoginForPhoneLoginValidationMutationVariables>;
-
-/**
- * __useUserLoginForPhoneLoginValidationMutation__
- *
- * To run a mutation, you first call `useUserLoginForPhoneLoginValidationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUserLoginForPhoneLoginValidationMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [userLoginForPhoneLoginValidationMutation, { data, loading, error }] = useUserLoginForPhoneLoginValidationMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUserLoginForPhoneLoginValidationMutation(baseOptions?: Apollo.MutationHookOptions<UserLoginForPhoneLoginValidationMutation, UserLoginForPhoneLoginValidationMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UserLoginForPhoneLoginValidationMutation, UserLoginForPhoneLoginValidationMutationVariables>(UserLoginForPhoneLoginValidationDocument, options);
-      }
-export type UserLoginForPhoneLoginValidationMutationHookResult = ReturnType<typeof useUserLoginForPhoneLoginValidationMutation>;
-export type UserLoginForPhoneLoginValidationMutationResult = Apollo.MutationResult<UserLoginForPhoneLoginValidationMutation>;
-export type UserLoginForPhoneLoginValidationMutationOptions = Apollo.BaseMutationOptions<UserLoginForPhoneLoginValidationMutation, UserLoginForPhoneLoginValidationMutationVariables>;
-export const UserLoginUpgradeDocument = gql`
-    mutation userLoginUpgrade($input: UserLoginUpgradeInput!) {
-  userLoginUpgrade(input: $input) {
-    errors {
-      message
-      code
-    }
-    success
-    authToken
-  }
-}
-    `;
-export type UserLoginUpgradeMutationFn = Apollo.MutationFunction<UserLoginUpgradeMutation, UserLoginUpgradeMutationVariables>;
-
-/**
- * __useUserLoginUpgradeMutation__
- *
- * To run a mutation, you first call `useUserLoginUpgradeMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUserLoginUpgradeMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [userLoginUpgradeMutation, { data, loading, error }] = useUserLoginUpgradeMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUserLoginUpgradeMutation(baseOptions?: Apollo.MutationHookOptions<UserLoginUpgradeMutation, UserLoginUpgradeMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UserLoginUpgradeMutation, UserLoginUpgradeMutationVariables>(UserLoginUpgradeDocument, options);
-      }
-export type UserLoginUpgradeMutationHookResult = ReturnType<typeof useUserLoginUpgradeMutation>;
-export type UserLoginUpgradeMutationResult = Apollo.MutationResult<UserLoginUpgradeMutation>;
-export type UserLoginUpgradeMutationOptions = Apollo.BaseMutationOptions<UserLoginUpgradeMutation, UserLoginUpgradeMutationVariables>;
 export const UserPhoneRegistrationValidateDocument = gql`
     mutation userPhoneRegistrationValidate($input: UserPhoneRegistrationValidateInput!) {
   userPhoneRegistrationValidate(input: $input) {
@@ -5881,8 +5812,10 @@ export const UserLoginDocument = gql`
   userLogin(input: $input) {
     errors {
       message
+      code
     }
     authToken
+    totpRequired
   }
 }
     `;
@@ -9150,6 +9083,7 @@ export type ResolversTypes = {
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   Country: ResolverTypeWrapper<Country>;
   CountryCode: ResolverTypeWrapper<Scalars['CountryCode']['output']>;
+  CreateStoreInput: CreateStoreInput;
   Currencies: Currencies;
   Currency: ResolverTypeWrapper<Currency>;
   CurrencyConversionEstimation: ResolverTypeWrapper<CurrencyConversionEstimation>;
@@ -9425,6 +9359,7 @@ export type ResolversParentTypes = {
   Float: Scalars['Float']['output'];
   Country: Country;
   CountryCode: Scalars['CountryCode']['output'];
+  CreateStoreInput: CreateStoreInput;
   Currency: Currency;
   CurrencyConversionEstimation: CurrencyConversionEstimation;
   CurrencyExchangeInstanceTransaction: CurrencyExchangeInstanceTransaction;
@@ -10235,6 +10170,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   callbackEndpointDelete?: Resolver<ResolversTypes['SuccessPayload'], ParentType, ContextType, RequireFields<MutationCallbackEndpointDeleteArgs, 'input'>>;
   captchaCreateChallenge?: Resolver<ResolversTypes['CaptchaCreateChallengePayload'], ParentType, ContextType>;
   captchaRequestAuthCode?: Resolver<ResolversTypes['SuccessPayload'], ParentType, ContextType, RequireFields<MutationCaptchaRequestAuthCodeArgs, 'input'>>;
+  createStore?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationCreateStoreArgs, 'input'>>;
+  denyKyc?: Resolver<ResolversTypes['Kyc'], ParentType, ContextType, RequireFields<MutationDenyKycArgs, 'id'>>;
   deviceNotificationTokenCreate?: Resolver<ResolversTypes['SuccessPayload'], ParentType, ContextType, RequireFields<MutationDeviceNotificationTokenCreateArgs, 'input'>>;
   executeWithdrawalContract?: Resolver<Maybe<ResolversTypes['WithdrawalContract']>, ParentType, ContextType, RequireFields<MutationExecuteWithdrawalContractArgs, 'input'>>;
   feedbackSubmit?: Resolver<ResolversTypes['SuccessPayload'], ParentType, ContextType, RequireFields<MutationFeedbackSubmitArgs, 'input'>>;
@@ -10650,6 +10587,7 @@ export type StatefulNotificationEdgeResolvers<ContextType = any, ParentType exte
 
 export type StoreResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['StoreResponse'] = ResolversParentTypes['StoreResponse']> = {
   appId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   rate?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
