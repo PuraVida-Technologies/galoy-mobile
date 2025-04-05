@@ -10,21 +10,26 @@ import { color } from "@app/modules/market-place/theme"
 export const KYC: React.FC = () => {
   const { LL } = useI18nContext()
   const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>()
-  const { data, loading } = useKycDetailsQuery()
+  const { data, loading } = useKycDetailsQuery({ fetchPolicy: "network-only" })
 
   const awaitingApproval = useMemo(() => {
     const kyc = data?.me?.kyc
-    return Boolean(
-      kyc?.primaryIdentification?.type &&
-        kyc?.primaryIdentification?.files &&
-        kyc?.primaryIdentification?.files?.length > 0 &&
-        kyc?.phoneNumber &&
-        kyc?.email &&
-        kyc?.gender &&
-        kyc?.isPoliticallyExposed?.toString() &&
-        kyc?.isHighRisk?.toString(),
-    )
-  }, [data?.me?.kyc?.status])
+    if (!loading) {
+      return (
+        Boolean(
+          kyc?.primaryIdentification?.type &&
+            kyc?.primaryIdentification?.files &&
+            kyc?.primaryIdentification?.files?.length > 0 &&
+            kyc?.phoneNumber &&
+            kyc?.email &&
+            kyc?.gender &&
+            kyc?.isPoliticallyExposed?.toString() &&
+            kyc?.isHighRisk?.toString(),
+        ) && kyc?.status !== Status.Approved
+      )
+    }
+    return false
+  }, [data?.me?.kyc, loading])
 
   const subtitleColor = useMemo(() => {
     switch (data?.me?.kyc?.status) {

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import crashlytics from "@react-native-firebase/crashlytics"
-import { useUpdateKycMutation } from "@app/graphql/generated"
+import { KycDetailsDocument, useUpdateKycMutation } from "@app/graphql/generated"
 import { prepareUserDetails } from "./utils"
 
 const useUserDetails = ({ state, setState }) => {
@@ -10,7 +10,9 @@ const useUserDetails = ({ state, setState }) => {
     email: "",
   })
   const [loading, setLoading] = useState(false)
-  const [updateKYCDetails] = useUpdateKycMutation({ refetchQueries: ["KycDetails"] })
+  const [updateKYCDetails] = useUpdateKycMutation({
+    refetchQueries: [KycDetailsDocument],
+  })
   const stateRef = useRef(userDetails)
 
   const setUserDetails = useCallback((next) => {

@@ -11,7 +11,7 @@ import { Icon, Text } from "@rneui/themed"
 const KYCScreen = () => {
   const { state, actions } = useKYCState()
   const { state: formState, index, routes, layout } = state
-  const { renderScene, setIndex } = actions
+  const { renderScene, setIndex, onBack } = actions
   const styles = useStyles()
   const { LL } = useI18nContext()
 
@@ -28,13 +28,7 @@ const KYCScreen = () => {
       headerLeft: (props) => (
         <TouchableOpacity
           style={{ flexDirection: "row", alignItems: "center" }}
-          onPress={() => {
-            if (index === 0) {
-              navigation.goBack()
-            } else {
-              setIndex(index - 1)
-            }
-          }}
+          onPress={onBack}
         >
           <Icon name="chevron-left" type="feather" size={34} />
           <Text type="p1">{LL.common.back()}</Text>

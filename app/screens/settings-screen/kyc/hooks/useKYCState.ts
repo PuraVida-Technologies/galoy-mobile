@@ -4,9 +4,10 @@ import DocumentProof from "../document-verification"
 import UserDetails from "../user-details"
 import ConfirmDisclosures from "../confirm-disclosures"
 import { useWindowDimensions } from "react-native"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { gql } from "@apollo/client"
 import { useKycDetailsQuery, Status, IdentificationType } from "@app/graphql/generated"
+import { useNavigation } from "@react-navigation/native"
 
 gql`
   query KycDetails {
@@ -47,23 +48,41 @@ const useKYCState = () => {
   const [state, _setState] = useState({ pep: "yes", moneyTransfers: "yes" })
   const [index, setIndex] = useState(0)
   const layout = useWindowDimensions()
-  const { data, loading } = useKycDetailsQuery()
+  const navigation = useNavigation()
+  const { data, loading } = useKycDetailsQuery({ fetchPolicy: "network-only" })
   const setState = useCallback((next) => {
     _setState((perv) => ({ ...perv, ...next }))
   }, [])
 
+  const { kyc, primaryIdentification, isDrivingLicense } = useMemo(() => {
+    const kyc = data?.me?.kyc
+    const primaryIdentification = Array.isArray(kyc?.primaryIdentification)
+      ? kyc?.primaryIdentification?.at?.(-1)
+      : kyc?.primaryIdentification
+    const isDrivingLicense =
+      primaryIdentification?.type === IdentificationType.DrivingLicense
+    return { kyc, primaryIdentification, isDrivingLicense }
+  }, [data?.me?.kyc])
+
   useEffect(() => {
     if (!loading) {
-      const kyc = data?.me?.kyc
-      const isDrivingLicense =
-        kyc?.primaryIdentification?.type === IdentificationType.DrivingLicense
-      const isForntSide = kyc?.primaryIdentification?.files?.[0]
-      const isBackSide = kyc?.primaryIdentification?.files?.[0]
+      const isForntSide = primaryIdentification?.files?.[0]
+      const isBackSide = primaryIdentification?.files?.[1]
       setState({
         idDetails: {
-          type: kyc?.primaryIdentification?.type,
-          front: isDrivingLicense && isForntSide && isBackSide ? isForntSide : "",
-          back: isDrivingLicense && isForntSide && isBackSide ? isBackSide : "",
+          type: primaryIdentification?.type,
+          front:
+            isDrivingLicense && isForntSide && isBackSide
+              ? isForntSide
+              : !isDrivingLicense
+                ? isForntSide
+                : "",
+          back:
+            isDrivingLicense && isForntSide && isBackSide
+              ? isBackSide
+              : !isDrivingLicense
+                ? isBackSide
+                : "",
           email: kyc?.email,
           phoneNumber: kyc?.phoneNumber,
           id: kyc?.id,
@@ -73,7 +92,20 @@ const useKYCState = () => {
         },
       })
     }
-  }, [loading, data, setState])
+  }, [
+    loading,
+    data,
+    setState,
+    primaryIdentification?.files,
+    primaryIdentification?.type,
+    isDrivingLicense,
+    kyc?.email,
+    kyc?.phoneNumber,
+    kyc?.id,
+    kyc?.gender,
+    kyc?.isPoliticallyExposed,
+    kyc?.isHighRisk,
+  ])
 
   const routes = [
     { key: "docType", title: "Document Type", setState, state },
@@ -83,16 +115,13 @@ const useKYCState = () => {
   ]
 
   useEffect(() => {
-    if (data?.me?.kyc?.status === Status.Pending) {
-      if (state?.idDetails?.type) {
-        setIndex(1)
-      }
+    if (kyc?.status === Status.Pending) {
+      const isForntSide = primaryIdentification?.files?.[0]
+      const isBackSide = primaryIdentification?.files?.[1]
       if (
-        (state?.idDetails?.type === IdentificationType.DrivingLicense &&
-          state?.idDetails?.front &&
-          state?.idDetails?.back) ||
-        (state?.idDetails?.type !== IdentificationType.DrivingLicense &&
-          state?.idDetails?.front)
+        state?.idDetails?.type &&
+        ((isDrivingLicense && isForntSide && isBackSide) ||
+          (!isDrivingLicense && isForntSide))
       ) {
         setIndex(2)
       }
@@ -104,11 +133,41 @@ const useKYCState = () => {
         setIndex(3)
       }
     }
-  }, [state, data?.me?.kyc?.status])
+  }, [state, kyc, primaryIdentification?.files, isDrivingLicense])
+
+  const isStepOneAndTwoCompleted = useMemo(() => {
+    return (
+      Boolean(primaryIdentification?.type) &&
+      Boolean(primaryIdentification?.files) &&
+      Boolean(
+        (state?.idDetails?.type === IdentificationType.DrivingLicense &&
+          state?.idDetails?.front &&
+          state?.idDetails?.back) ||
+          (state?.idDetails?.type !== IdentificationType.DrivingLicense &&
+            state?.idDetails?.front),
+      )
+    )
+  }, [
+    primaryIdentification?.type,
+    primaryIdentification?.files,
+    state?.idDetails?.type,
+    state?.idDetails?.front,
+    state?.idDetails?.back,
+  ])
+
+  const onBack = useCallback(() => {
+    if (isStepOneAndTwoCompleted) {
+      navigation.goBack()
+    } else if (index === 0) {
+      navigation.goBack()
+    } else {
+      setIndex(index - 1)
+    }
+  }, [index, navigation, isStepOneAndTwoCompleted])
 
   return {
-    state: { state, routes, layout, index },
-    actions: { setIndex, setState, renderScene },
+    state: { state, routes, layout, index, isStepOneAndTwoCompleted },
+    actions: { setIndex, setState, renderScene, onBack },
   }
 }
 

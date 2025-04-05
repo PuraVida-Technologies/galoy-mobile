@@ -27,6 +27,24 @@ export const getPermissionMessage = (
   }
 }
 
+export const prepareIdDetails = (state: any) => {
+  return {
+    address: state?.address,
+    citizenships: state?.citizenships,
+    email: state?.email,
+    front: state?.front,
+    fullName: state?.fullName,
+    galoyUserId: state?.galoyUserId,
+    gender: state?.gender,
+    id: state?.id,
+    isHighRisk: state?.isHighRisk,
+    isPoliticallyExposed: state?.isPoliticallyExposed,
+    maritalStatus: state?.maritalStatus,
+    phoneNumber: state?.phoneNumber,
+    type: state?.type,
+  }
+}
+
 export const prepareKYCDetails = (state: any) => {
   return {
     email: state?.idDetails?.email || state?.email,

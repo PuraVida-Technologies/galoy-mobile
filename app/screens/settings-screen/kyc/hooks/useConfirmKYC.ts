@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { prepareKYCDetails } from "./utils"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { gql } from "@apollo/client"
-import { useUpdateKycMutation } from "@app/graphql/generated"
+import { KycDetailsDocument, useUpdateKycMutation } from "@app/graphql/generated"
 
 gql`
   mutation updateKYC($input: InputKyc!) {
@@ -17,7 +17,9 @@ const useConfirmKYC = ({ state, setState }) => {
   const [isPoliticallyExposed, setPoliticallyExposed] = useState("yes")
   const [isHighRisk, setIsHighRisk] = useState("yes")
   const [loading, setLoading] = useState(false)
-  const [updateKYCDetails] = useUpdateKycMutation({ refetchQueries: ["KycDetails"] })
+  const [updateKYCDetails] = useUpdateKycMutation({
+    refetchQueries: [KycDetailsDocument],
+  })
   const navigation = useNavigation()
   const stateRef = useRef(state)
 

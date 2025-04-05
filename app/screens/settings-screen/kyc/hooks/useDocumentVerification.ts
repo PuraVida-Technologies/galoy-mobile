@@ -5,6 +5,7 @@ import { RESULTS, PERMISSIONS } from "react-native-permissions"
 import { useEffect, useRef, useState } from "react"
 import axios from "@app/services/axios"
 import { IDType } from "../types"
+import { prepareIdDetails } from "./utils"
 
 const useDocumentVerification = ({ state, setState }) => {
   const [uploadingFront, setUploadingFront] = useState(false)
@@ -69,8 +70,13 @@ const useDocumentVerification = ({ state, setState }) => {
           setUploadingFront(false)
           uploadingFrontRef.current = false
           kycId.current = res.data.id
+          const idDetails = prepareIdDetails({
+            ...res.data,
+            type: state.idDetails.type,
+            front: response.path,
+          })
           setState({
-            idDetails: { ...res.data, front: response.path },
+            idDetails,
           })
         }
       } else if (
@@ -130,9 +136,9 @@ const useDocumentVerification = ({ state, setState }) => {
       const permission = PERMISSIONS.IOS.PHOTO_LIBRARY
       checkPermission(permission).then((res) => {
         console.log("res ===>", res)
-        // if ([RESULTS.LIMITED, RESULTS.GRANTED].includes(res)) {
-        selectImage()
-        // }
+        if ([RESULTS.LIMITED, RESULTS.GRANTED].includes(res)) {
+          selectImage()
+        }
       })
     }
   }
