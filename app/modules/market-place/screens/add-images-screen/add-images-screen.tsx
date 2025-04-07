@@ -108,9 +108,10 @@ export const AddImageScreen: React.FC<Props> = ({ navigation }) => {
     images.forEach(
       (img: { path: string; sourceURL: string; filename: string; mime: string }) => {
         const arrPath = Platform.OS === "android" ? img?.path?.split("/") : []
+        console.log("img", JSON.stringify(img, null, 2))
         promiseArray.push(
           uploadSingle(
-            Platform.OS === "android" ? img.path : img.sourceURL,
+            Platform.OS === "android" ? img.path : img.path,
             Platform.OS === "android" ? arrPath[arrPath.length - 1] : img.filename,
             img.mime,
           ).then((url) => {
@@ -148,9 +149,7 @@ export const AddImageScreen: React.FC<Props> = ({ navigation }) => {
           const tempPickedImgs = pickedImages.map((img, index) => {
             if (images.length - 1 < index) return img
 
-            return Platform.OS === "android"
-              ? images[index].path
-              : images[index].sourceURL
+            return Platform.OS === "android" ? images[index].path : images[index].path
           })
 
           setPickedImages(tempPickedImgs)
@@ -173,6 +172,8 @@ export const AddImageScreen: React.FC<Props> = ({ navigation }) => {
         try {
           setIsLoading(true)
           const arrPath = Platform.OS === "android" ? image?.path?.split("/") : []
+
+          const imageUrl = Platform.OS === "android" ? image.path : image.sourceURL
 
           const url = await uploadSingle(
             Platform.OS === "android" ? image.path : image.sourceURL,
