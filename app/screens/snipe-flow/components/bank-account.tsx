@@ -39,7 +39,7 @@ const BankAccounts = ({
       color={colors.black}
     />
 
-    {bankAccount?.length && (
+    {bankAccount?.length > 0 && (
       <SearchBar
         {...testProps(LL.common.search())}
         placeholder={LL.common.search()}

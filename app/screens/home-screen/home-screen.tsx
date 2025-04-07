@@ -22,14 +22,17 @@ import { StableSatsModal } from "@app/components/stablesats-modal"
 import WalletOverview from "@app/components/wallet-overview/wallet-overview"
 import {
   AccountLevel,
+  Status,
   TransactionFragment,
   TxDirection,
   TxStatus,
   useHasPromptedSetDefaultAccountQuery,
   useHomeAuthedQuery,
   useHomeUnauthedQuery,
+  useBankAccountsQuery,
   useRealtimePriceQuery,
   useSettingsScreenQuery,
+  useKycDetailsQuery,
 } from "@app/graphql/generated"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { getErrorMessages } from "@app/graphql/utils"
@@ -99,8 +102,30 @@ gql`
 export const HomeScreen: React.FC = () => {
   const [isVisible, setIsVisible] = React.useState(false)
   const { LL } = useI18nContext()
-  const { data } = useSettingsScreenQuery()
+  const { data, loading: kycLoading } = useKycDetailsQuery({ fetchPolicy: "network-only" })
+  const { data: bankAccountData } = useBankAccountsQuery({
+    fetchPolicy: "network-only",
+  })
   const styles = useStyles()
+
+  const awaitingApproval = useMemo(() => {
+    const kyc = data?.me?.kyc
+    if (!kycLoading) {
+      return (
+        Boolean(
+          kyc?.primaryIdentification?.type &&
+            kyc?.primaryIdentification?.files &&
+            kyc?.primaryIdentification?.files?.length > 0 &&
+            kyc?.phoneNumber &&
+            kyc?.email &&
+            kyc?.gender &&
+            kyc?.isPoliticallyExposed?.toString() &&
+            kyc?.isHighRisk?.toString(),
+        ) && kyc?.status !== Status.Approved
+      )
+    }
+    return false
+  }, [data?.me?.kyc, kycLoading])
 
   const onSnipeIBANPress = React.useCallback(() => {
     const message =
@@ -113,7 +138,18 @@ export const HomeScreen: React.FC = () => {
       Alert.alert(LL.TransferActions.sinpeIBANTransfers(), message, [
         {
           text: LL.common.confirm(),
-          onPress: () => navigation.navigate("KYCScreen"),
+          onPress: () => (!awaitingApproval ? "" : navigation.navigate("KYCScreen")),
+        },
+        {
+          text: LL.common.cancel(),
+          style: "cancel",
+        },
+      ])
+    } else if (bankAccountData?.getMyBankAccounts?.length === 0) {
+      Alert.alert(LL.TransferActions.sinpeIBANTransfers(), message, [
+        {
+          text: LL.common.confirm(),
+          onPress: () => navigation.navigate("addBankAccount"),
         },
         {
           text: LL.common.cancel(),

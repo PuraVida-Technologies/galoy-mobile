@@ -22,7 +22,7 @@ export const BankAccount: React.FC = () => {
         navigate(
           bankAccounts && bankAccounts?.getMyBankAccounts?.length > 0
             ? "bankAccounts"
-            : "bankAccount",
+            : "addBankAccount",
         )
       }
       subtitle={data?.me?.kyc?.status !== "APPROVED" ? LL.common.kycIsPending() : ""}
