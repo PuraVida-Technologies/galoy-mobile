@@ -3143,6 +3143,7 @@ const en: BaseTranslation = {
     "create_post": "Create Post",
     "my_post": "My Posts",
     "register_store": "Register Store",
+    "your_post_is_submitted_to_review": "Your post has been submitted for review",
     "next": "Next",
     "skip": "Skip",
     "share_location": "Share location",

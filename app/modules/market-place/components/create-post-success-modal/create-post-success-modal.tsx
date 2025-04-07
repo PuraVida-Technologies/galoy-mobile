@@ -62,6 +62,7 @@ export const CreatePostSuccessModal = ({ isVisible, onClose }: Props) => {
             fontSize: fontSize.font24,
             textAlign: "center",
             marginTop: 20,
+            color: color.primary,
           }}
         >
           {t.marketPlace.your_post_is_submitted_to_review()}
