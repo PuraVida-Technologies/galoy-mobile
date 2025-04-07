@@ -7,6 +7,7 @@ import Icon from "react-native-vector-icons/Ionicons"
 import { UseSnipDetailsStyles } from "../styles/snipe-deatils"
 import { TranslationFunctions } from "@app/i18n/i18n-types"
 import { BankAccountDetails, SnipeDetailsState } from "../hooks/useSnipeDetails"
+import { TouchableOpacity } from "react-native-gesture-handler"
 
 interface Props {
   bankAccount: Array<BankAccountCr>
@@ -61,7 +62,7 @@ const BankAccounts = ({
     )}
     <ScrollView>
       {state.matchingAccounts?.map((account, index) => (
-        <Pressable
+        <TouchableOpacity
           key={index}
           onPress={() => onBankAccountSelected(account)}
           style={styles.cardContainer}
@@ -75,7 +76,7 @@ const BankAccounts = ({
               {account?.data?.currency}
             </Text>
           </View>
-        </Pressable>
+        </TouchableOpacity>
       ))}
     </ScrollView>
   </View>
