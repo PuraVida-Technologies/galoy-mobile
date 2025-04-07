@@ -102,8 +102,10 @@ gql`
     userLogin(input: $input) {
       errors {
         message
+        code
       }
       authToken
+      totpRequired
     }
   }
 `

@@ -8,7 +8,7 @@ import { GaloyInfo } from "@app/components/atomic/galoy-info"
 import { GaloySecondaryButton } from "@app/components/atomic/galoy-secondary-button"
 import {
   PhoneCodeChannelType,
-  useUserLoginForPhoneLoginValidationMutation,
+  useUserLoginMutation,
   useUserLoginUpgradeMutation,
 } from "@app/graphql/generated"
 import { AccountLevel, useLevel } from "@app/graphql/level-context"
@@ -188,10 +188,9 @@ export const PhoneLoginValidationScreen: React.FC<PhoneLoginValidationScreenProp
 
   const { LL } = useI18nContext()
 
-  const [userLoginForPhoneLoginValidationMutation] =
-    useUserLoginForPhoneLoginValidationMutation({
-      fetchPolicy: "no-cache",
-    })
+  const [userLoginMutation] = useUserLoginMutation({
+    fetchPolicy: "no-cache",
+  })
 
   const [userLoginUpgradeMutation] = useUserLoginUpgradeMutation({
     fetchPolicy: "no-cache",
@@ -241,7 +240,7 @@ export const PhoneLoginValidationScreen: React.FC<PhoneLoginValidationScreenProp
 
           errors = data?.userLoginUpgrade?.errors
         } else {
-          const { data } = await userLoginForPhoneLoginValidationMutation({
+          const { data } = await userLoginMutation({
             variables: { input: { phone, code } },
           })
 
@@ -290,7 +289,7 @@ export const PhoneLoginValidationScreen: React.FC<PhoneLoginValidationScreenProp
     },
     [
       status,
-      userLoginForPhoneLoginValidationMutation,
+      userLoginMutation,
       userLoginUpgradeMutation,
       phone,
       saveToken,
