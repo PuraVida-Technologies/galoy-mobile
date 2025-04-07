@@ -159,7 +159,7 @@ export const HomeScreen: React.FC = () => {
     } else {
       navigation.navigate("snipeDetails")
     }
-  }, [data])
+  }, [data, bankAccountData])
 
   const list = [
     {

@@ -2531,7 +2531,7 @@ const en: BaseTranslation = {
     iban: "IBAN",
     bankName: "Bank Name",
     swiftCode: "SWIFT Code",
-    sinpeCode: "SINP Code",
+    sinpeCode: "SINPE Code",
     nationalId: "National ID",
     removeBankAccount: "Remove Bank Account",
     confirmRemoveBankAccountTitle: "Are you sure you want to remove this bank account?",

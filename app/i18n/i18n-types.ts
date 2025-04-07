@@ -7398,7 +7398,7 @@ type RootTranslation = {
 		 */
 		swiftCode: string
 		/**
-		 * S​I​N​P​ ​C​o​d​e
+		 * S​I​N​P​E​ ​C​o​d​e
 		 */
 		sinpeCode: string
 		/**
@@ -16836,7 +16836,7 @@ export type TranslationFunctions = {
 		 */
 		swiftCode: () => LocalizedString
 		/**
-		 * SINP Code
+		 * SINPE Code
 		 */
 		sinpeCode: () => LocalizedString
 		/**
