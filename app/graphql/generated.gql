@@ -683,9 +683,11 @@ mutation userLogin($input: UserLoginInput!) {
   userLogin(input: $input) {
     errors {
       message
+      code
       __typename
     }
     authToken
+    totpRequired
     __typename
   }
 }
