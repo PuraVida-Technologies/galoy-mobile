@@ -1281,7 +1281,7 @@ PODS:
     - Firebase/RemoteConfig (= 10.24.0)
     - React-Core
     - RNFBApp
-  - RNGestureHandler (2.24.0):
+  - RNGestureHandler (2.18.1):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1754,7 +1754,7 @@ SPEC CHECKSUMS:
   RNFBCrashlytics: c39e903af97cb426f36a10d3268fb0623a1ccddf
   RNFBMessaging: 74754ed198239360950f54f3e3de365fe85db451
   RNFBRemoteConfig: ae7080ed8bc072751999f615879096ab616eeb83
-  RNGestureHandler: a83edbc2de807c2f1329e7001cfe49fa3d879319
+  RNGestureHandler: 1155b1898ceddefeebf77792927360d44fe11e77
   RNImageCropPicker: e7ab6fb43d2fc3e84651e786ef4a080d63b0ed3d
   RNInAppBrowser: e36d6935517101ccba0e875bac8ad7b0cb655364
   RNKeychain: bfe3d12bf4620fe488771c414530bf16e88f3678
