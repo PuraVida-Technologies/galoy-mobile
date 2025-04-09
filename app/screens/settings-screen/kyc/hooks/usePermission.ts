@@ -32,19 +32,21 @@ Alert.alert = (...args) => {
   })
 }
 
-const usePermission = ({ onDecline }: Props) => {
+const usePermission = ({ onDecline, shouldRequestPermissionOnLoad }: Props) => {
   const { LL } = useI18nContext()
 
   const device =
     Platform.OS === "android" ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA
+
   useEffect(() => {
-    // to get updated stale props
-    props = { onDecline }
-  }, [onDecline])
+    if (shouldRequestPermissionOnLoad) {
+      checkPermission()
+    }
+  }, [onDecline, shouldRequestPermissionOnLoad, checkPermission])
 
   const handelRedirection = useCallback(() => {
-    props?.onDecline?.()
-  }, [props?.onDecline])
+    onDecline?.()
+  }, [onDecline])
 
   const handelPermissionInfo = useCallback(
     (permission) => {
@@ -52,14 +54,14 @@ const usePermission = ({ onDecline }: Props) => {
 
       Alert.alert(message?.title, message?.message, [
         {
-          text: "Agree",
+          text: "Open Settings",
           onPress: () => {
             handelRedirection()
             Linking.openSettings()
           },
         },
         {
-          text: "Decline",
+          text: "Cancel",
           onPress: () => handelRedirection(),
           style: "cancel",
         },
@@ -69,15 +71,14 @@ const usePermission = ({ onDecline }: Props) => {
   )
 
   const requestPermission = useCallback(
-    (device: Permission) => {
-      return request(device).then(async (res: any) => {
-        if ([RESULTS.BLOCKED, RESULTS.DENIED].includes(res)) {
-          handelPermissionInfo(device)
-        }
-        return res
-      })
+    async (device: Permission) => {
+      const res = await request(device)
+      if (res === RESULTS.BLOCKED) {
+        handelPermissionInfo(device)
+      }
+      return res
     },
-    [handelPermissionInfo, request],
+    [handelPermissionInfo],
   )
 
   const checkPermission = useCallback(
@@ -86,16 +87,14 @@ const usePermission = ({ onDecline }: Props) => {
         const result = await check(permission || device)
         switch (result) {
           case RESULTS.UNAVAILABLE:
+            Alert.alert(
+              "Permission Unavailable",
+              "This permission is not available on your device.",
+            )
             return result
           case RESULTS.DENIED:
-            if (Platform.OS === "ios") {
-              await requestPermission(permission || device)
-            } else {
-              handelPermissionInfo(permission || device)
-            }
-            return result
+            return await requestPermission(permission || device)
           case RESULTS.LIMITED:
-            return result
           case RESULTS.GRANTED:
             return result
           case RESULTS.BLOCKED:
@@ -103,11 +102,15 @@ const usePermission = ({ onDecline }: Props) => {
             return result
         }
       } catch (error) {
-        console.log("error", error)
+        console.log("Permission check error:", error)
+        Alert.alert(
+          "Permission Error",
+          "An unexpected error occurred while checking permissions. Please try again.",
+        )
         return error
       }
     },
-    [requestPermission, handelPermissionInfo, check],
+    [requestPermission, handelPermissionInfo],
   )
 
   return {

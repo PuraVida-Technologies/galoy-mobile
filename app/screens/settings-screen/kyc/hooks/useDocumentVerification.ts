@@ -1,6 +1,6 @@
 import { openCamera, openPicker } from "react-native-image-crop-picker"
 import usePermission from "./usePermission"
-import { Platform } from "react-native"
+import { Platform, Alert, Linking } from "react-native"
 import { RESULTS, PERMISSIONS } from "react-native-permissions"
 import { useEffect, useRef, useState } from "react"
 import axios from "@app/services/axios"
@@ -32,6 +32,9 @@ const useDocumentVerification = ({ state, setState }) => {
   })
 
   const cropOption = {
+    width: 1000,
+    height: 1000,
+    cropping: true,
     compressVideoPreset: "Passthrough",
     compressImageMaxWidth: 1000,
     compressImageMaxHeight: 1000,
@@ -114,30 +117,68 @@ const useDocumentVerification = ({ state, setState }) => {
   }
 
   const captureImage = async () => {
+    console.log("captureImage called")
     openCamera(cropOption)
       .then((response) => {
+        console.log("Camera response:", response)
         handleCropImageResponse(response)
       })
       .catch((error) => {
-        console.log(error)
+        console.error("Error opening camera:", error)
       })
   }
 
   const handlePress = (type) => {
     if (type === "capture") {
-      checkPermission().then((res) => {
+      const permission =
+        Platform.OS === "android" ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA
+      checkPermission(permission).then((res) => {
+        console.log("Camera permission result:", res) // Log the permission result
         if (res === RESULTS.GRANTED) {
           captureImage()
+        } else if (res === RESULTS.DENIED) {
+          console.log("Permission denied. Requesting permission...")
+          checkPermission(permission).then((newRes) => {
+            console.log("New camera permission result:", newRes) // Log the new result
+            if (newRes === RESULTS.GRANTED) {
+              captureImage()
+            } else {
+              console.log("Camera permission denied after request.")
+            }
+          })
+        } else if (res === RESULTS.BLOCKED) {
+          console.log("Permission blocked. Redirecting to settings...")
+          Alert.alert(
+            "Permission Blocked",
+            "Camera permission is blocked. Please enable it in your device settings.",
+            [
+              { text: "Cancel", style: "cancel" },
+              { text: "Open Settings", onPress: () => Linking.openSettings() },
+            ],
+          )
+        } else {
+          console.log("Camera permission not granted.")
         }
       })
-    } else if (Platform.OS === "android") {
-      selectImage()
-    } else {
-      const permission = PERMISSIONS.IOS.PHOTO_LIBRARY
+    } else if (type === "library") {
+      const permission =
+        Platform.OS === "android"
+          ? PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
+          : PERMISSIONS.IOS.PHOTO_LIBRARY
       checkPermission(permission).then((res) => {
-        console.log("res ===>", res)
         if ([RESULTS.LIMITED, RESULTS.GRANTED].includes(res)) {
           selectImage()
+        } else if (res === RESULTS.DENIED) {
+          // Request permission if denied
+          checkPermission(permission, true).then((newRes) => {
+            if ([RESULTS.LIMITED, RESULTS.GRANTED].includes(newRes)) {
+              selectImage()
+            } else {
+              console.log("Gallery permission denied")
+            }
+          })
+        } else {
+          console.log("Gallery permission not granted")
         }
       })
     }
