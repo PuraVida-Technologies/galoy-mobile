@@ -11,7 +11,6 @@ import { getPermissionMessage } from "./utils"
 import { useI18nContext } from "@app/i18n/i18n-react"
 
 interface Props {
-  cameraState?: any
   redirectTo?: string
   shouldRedirect?: boolean
   checkPermissionOnLoad?: boolean
@@ -19,8 +18,6 @@ interface Props {
   permission?: Permission
   onDecline?: () => void
 }
-
-let props: any = {}
 
 const OldAlert = Alert.alert
 
@@ -42,14 +39,14 @@ const usePermission = ({ onDecline, shouldRequestPermissionOnLoad }: Props) => {
     if (shouldRequestPermissionOnLoad) {
       checkPermission()
     }
-  }, [onDecline, shouldRequestPermissionOnLoad, checkPermission])
+  }, [onDecline, shouldRequestPermissionOnLoad])
 
   const handelRedirection = useCallback(() => {
     onDecline?.()
   }, [onDecline])
 
   const handelPermissionInfo = useCallback(
-    (permission) => {
+    (permission: Permission) => {
       const message = getPermissionMessage(permission, LL)
 
       Alert.alert(message?.title, message?.message, [

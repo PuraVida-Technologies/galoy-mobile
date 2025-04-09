@@ -8,7 +8,6 @@ import Input from "@app/components/form-input/form-input"
 import { Controller } from "react-hook-form"
 import useBankAccount from "@app/modules/bank-account/hooks/useAddBankAccount"
 import { useRoute } from "@react-navigation/native"
-import { GaloyButtonField } from "@app/components/atomic/galoy-button-field"
 
 const AddBankAccountScreen = () => {
   const styles = useStyles()

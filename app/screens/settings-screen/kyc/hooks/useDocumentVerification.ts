@@ -1,4 +1,4 @@
-import { openCamera, openPicker } from "react-native-image-crop-picker"
+import { Image, openCamera, openPicker, Options } from "react-native-image-crop-picker"
 import usePermission from "./usePermission"
 import { Platform, Alert, Linking } from "react-native"
 import { RESULTS, PERMISSIONS } from "react-native-permissions"
@@ -6,15 +6,21 @@ import { useEffect, useRef, useState } from "react"
 import axios from "@app/services/axios"
 import { IDType } from "../types"
 import { prepareIdDetails } from "./utils"
+import { UseKYCStateReturnType } from "./useKYCState"
 
-const useDocumentVerification = ({ state, setState }) => {
+interface Props {
+  state: UseKYCStateReturnType["state"]["state"]
+  setState: UseKYCStateReturnType["actions"]["setState"]
+}
+
+const useDocumentVerification = ({ state, setState }: Props) => {
   const [uploadingFront, setUploadingFront] = useState(false)
   const [uploadingBack, setUploadingBack] = useState(false)
-  const [idFront, setIdFront] = useState(null)
-  const [idBack, setIdBack] = useState(null)
+  const [idFront, setIdFront] = useState<string | null>(null)
+  const [idBack, setIdBack] = useState<string | null>(null)
   const actionSheetRef = useRef()
 
-  const uploadingFrontRef = useRef(false)
+  const uploadingFrontRef = useRef<boolean>(false)
   const uploadingBackRef = useRef(false)
   const kycId = useRef(null)
 
@@ -31,21 +37,22 @@ const useDocumentVerification = ({ state, setState }) => {
     shouldRequestPermissionOnLoad: false,
   })
 
-  const cropOption = {
+  const cropOption: Options = {
     width: 1000,
     height: 1000,
-    cropping: true,
+    // cropping: true,
     compressVideoPreset: "Passthrough",
     compressImageMaxWidth: 1000,
     compressImageMaxHeight: 1000,
     compressImageQuality: 0.7,
   }
 
-  const uploadDocument = async (image, url) => {
+  const uploadDocument = async (image: Image, url: string) => {
+    console.log("Uploading document to URL:", image, url)
     try {
       const formData = new FormData()
       formData.append("file", {
-        name: image.filename,
+        name: image.filename || "document.jpg",
         type: image.mime,
         uri: image.path,
       })
@@ -60,7 +67,7 @@ const useDocumentVerification = ({ state, setState }) => {
     }
   }
 
-  const handleCropImageResponse = async (response) => {
+  const handleCropImageResponse = async (response: Image) => {
     try {
       if (uploadingFrontRef.current) {
         setIdFront(response.path)
@@ -68,14 +75,14 @@ const useDocumentVerification = ({ state, setState }) => {
         if (response.path) {
           const res = await uploadDocument(
             response,
-            `identification/upload?documentType=${state.idDetails.type}`,
+            `identification/upload?documentType=${state?.idDetails?.type}`,
           )
           setUploadingFront(false)
           uploadingFrontRef.current = false
-          kycId.current = res.data.id
+          kycId.current = res?.data?.id
           const idDetails = prepareIdDetails({
-            ...res.data,
-            type: state.idDetails.type,
+            ...res?.data,
+            type: state?.idDetails?.type,
             front: response.path,
           })
           setState({
@@ -84,6 +91,8 @@ const useDocumentVerification = ({ state, setState }) => {
         }
       } else if (
         uploadingBackRef.current &&
+        state &&
+        state.idDetails &&
         state.idDetails.type === IDType.DriverLicense
       ) {
         setIdBack(response.path)
@@ -104,9 +113,8 @@ const useDocumentVerification = ({ state, setState }) => {
   }
 
   const selectImage = async () => {
-    const pickerOptions = {
+    const pickerOptions: Options = {
       mediaType: "photo",
-      mimeTypes: ["image/jpeg", "image/png"],
     }
 
     openPicker(pickerOptions)
@@ -117,10 +125,8 @@ const useDocumentVerification = ({ state, setState }) => {
   }
 
   const captureImage = async () => {
-    console.log("captureImage called")
     openCamera(cropOption)
       .then((response) => {
-        console.log("Camera response:", response)
         handleCropImageResponse(response)
       })
       .catch((error) => {
@@ -128,7 +134,7 @@ const useDocumentVerification = ({ state, setState }) => {
       })
   }
 
-  const handlePress = (type) => {
+  const handlePress = (type: string) => {
     if (type === "capture") {
       const permission =
         Platform.OS === "android" ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA
@@ -170,7 +176,7 @@ const useDocumentVerification = ({ state, setState }) => {
           selectImage()
         } else if (res === RESULTS.DENIED) {
           // Request permission if denied
-          checkPermission(permission, true).then((newRes) => {
+          checkPermission(permission).then((newRes) => {
             if ([RESULTS.LIMITED, RESULTS.GRANTED].includes(newRes)) {
               selectImage()
             } else {

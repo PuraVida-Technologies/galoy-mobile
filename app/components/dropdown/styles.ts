@@ -10,6 +10,9 @@ const useStyles = makeStyles(({ colors }) => ({
     borderRadius: 8,
     minHeight: 48,
   },
+  innerContainer: {
+    backgroundColor: colors.background,
+  },
   placeholderStyle: {
     fontSize: 16,
     color: colors.grey3, // Keep the existing placeholder color
@@ -22,6 +25,9 @@ const useStyles = makeStyles(({ colors }) => ({
     width: 20,
     height: 20,
     tintColor: colors.text, // Dynamically set the icon color based on the theme
+  },
+  itemTextStyle: {
+    color: colors.text, // Dynamically set the item text color based on the theme
   },
   inputSearchStyle: {
     fontSize: 16,

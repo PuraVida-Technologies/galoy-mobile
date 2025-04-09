@@ -92,7 +92,7 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
         previousPage={"docType"}
       />
       <ActionSheet
-        ref={state?.actionSheetRef}
+        ref={state.actionSheetRef}
         title={LL.KYCScreen.uploadID()}
         options={["Camera", "Gallery", "Cancel"]}
         cancelButtonIndex={2}

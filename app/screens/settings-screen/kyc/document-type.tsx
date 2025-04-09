@@ -7,7 +7,7 @@ import { View } from "react-native"
 import Stepper from "./stepper"
 import FormContainer from "@app/components/form-input/form-container"
 import Input from "@app/components/form-input/form-input"
-import { Divider, Text, useTheme } from "@rneui/themed" // Import useTheme
+import { Divider, Text } from "@rneui/themed" // Import useTheme
 import { IDType } from "./types"
 import { Route } from "./hooks/useKYCState"
 
@@ -22,7 +22,6 @@ const DocumentType = ({ jumpTo, route }: Route) => {
   const [otherDoc, setOtherDoc] = useState("")
   const styles = useStyles()
   const { LL } = useI18nContext()
-  const { theme } = useTheme() // Get the current theme
 
   useEffect(() => {
     setDoc(route?.state?.idDetails?.type)
@@ -45,8 +44,6 @@ const DocumentType = ({ jumpTo, route }: Route) => {
                 idDetails: { ...route?.state?.idDetails, type: item?.value },
               })
             }}
-            textStyle={{ color: theme.colors.text }} // Dynamically set text color
-            dropdownStyle={{ backgroundColor: theme.colors.background }} // Dynamically set dropdown background
           />
         </FormContainer>
 

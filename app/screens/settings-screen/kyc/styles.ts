@@ -1,6 +1,13 @@
 import { makeStyles } from "@rneui/themed"
 
 const useStyles = makeStyles(({ colors }) => ({
+  displayNone: {
+    display: "none",
+  },
+  headerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   screenStyle: {
     padding: 20,
     flex: 1,

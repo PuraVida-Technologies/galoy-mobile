@@ -6,7 +6,12 @@ import ConfirmDisclosures from "../confirm-disclosures"
 import { useWindowDimensions } from "react-native"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { gql } from "@apollo/client"
-import { useKycDetailsQuery, Status, IdentificationType } from "@app/graphql/generated"
+import {
+  useKycDetailsQuery,
+  Status,
+  IdentificationType,
+  Kyc,
+} from "@app/graphql/generated"
 import { useNavigation } from "@react-navigation/native"
 
 gql`
@@ -37,6 +42,17 @@ export interface Route extends Omit<SceneRendererProps, "layout"> {
   route: any
 }
 
+export interface KYCState {
+  pep?: string
+  moneyTransfers?: string
+  idDetails?: {
+    type?: string | null | undefined
+    front?: string | null | undefined
+    back?: string | null | undefined
+    id?: string
+  } & Kyc
+}
+
 const renderScene = SceneMap({
   docType: DocumentType,
   docProof: DocumentProof,
@@ -45,12 +61,12 @@ const renderScene = SceneMap({
 })
 
 const useKYCState = () => {
-  const [state, _setState] = useState({ pep: "yes", moneyTransfers: "yes" })
+  const [state, _setState] = useState<KYCState>({ pep: "yes", moneyTransfers: "yes" })
   const [index, setIndex] = useState(0)
   const layout = useWindowDimensions()
   const navigation = useNavigation()
   const { data, loading } = useKycDetailsQuery({ fetchPolicy: "network-only" })
-  const setState = useCallback((next) => {
+  const setState = useCallback((next: KYCState) => {
     _setState((perv) => ({ ...perv, ...next }))
   }, [])
 
@@ -74,15 +90,15 @@ const useKYCState = () => {
           front:
             isDrivingLicense && isForntSide && isBackSide
               ? isForntSide
-              : !isDrivingLicense
-                ? isForntSide
-                : "",
+              : isDrivingLicense
+                ? " "
+                : isForntSide,
           back:
             isDrivingLicense && isForntSide && isBackSide
               ? isBackSide
-              : !isDrivingLicense
-                ? isBackSide
-                : "",
+              : isDrivingLicense
+                ? " "
+                : isBackSide,
           email: kyc?.email,
           phoneNumber: kyc?.phoneNumber,
           id: kyc?.id,
@@ -170,5 +186,7 @@ const useKYCState = () => {
     actions: { setIndex, setState, renderScene, onBack },
   }
 }
+
+export type UseKYCStateReturnType = ReturnType<typeof useKYCState>
 
 export default useKYCState

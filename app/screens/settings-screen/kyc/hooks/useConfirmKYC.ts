@@ -4,6 +4,7 @@ import { prepareKYCDetails } from "./utils"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { gql } from "@apollo/client"
 import { KycDetailsDocument, useUpdateKycMutation } from "@app/graphql/generated"
+import { UseKYCStateReturnType } from "./useKYCState"
 
 gql`
   mutation updateKYC($input: InputKyc!) {
@@ -13,7 +14,12 @@ gql`
   }
 `
 
-const useConfirmKYC = ({ state, setState }) => {
+interface Props {
+  state: UseKYCStateReturnType["state"]["state"]
+  setState: UseKYCStateReturnType["actions"]["setState"]
+}
+
+const useConfirmKYC = ({ state, setState }: Props) => {
   const [isPoliticallyExposed, setPoliticallyExposed] = useState("yes")
   const [isHighRisk, setIsHighRisk] = useState("yes")
   const [loading, setLoading] = useState(false)

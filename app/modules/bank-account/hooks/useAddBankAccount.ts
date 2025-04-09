@@ -1,14 +1,14 @@
 import { gql } from "@apollo/client"
 import {
+  BankAccountCr,
   useAddBankAccountCrMutation,
-  useRemoveMyBankAccountMutation,
   useUpdateBankAccountCrMutation,
 } from "@app/graphql/generated"
 import { useCallback, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { useNavigation } from "@react-navigation/native"
-import { Alert } from "react-native"
+import { TranslationFunctions } from "@app/i18n/i18n-types"
 
 gql`
   mutation addBankAccountCR($input: AddBankAccountCRDTO!) {
@@ -29,6 +29,11 @@ gql`
   }
 `
 
+interface Props {
+  account?: BankAccountCr
+  LL: TranslationFunctions
+}
+
 const defaultValues = {
   accountHolderName: "",
   bankName: "",
@@ -39,7 +44,7 @@ const defaultValues = {
   nationalId: "",
 }
 
-const useAddBankAccount = ({ account, LL }) => {
+const useAddBankAccount = ({ account, LL }: Props) => {
   const navigation = useNavigation()
   const [addBankAccountCr, { loading: addingAccount }] = useAddBankAccountCrMutation({
     refetchQueries: ["bankAccounts"],

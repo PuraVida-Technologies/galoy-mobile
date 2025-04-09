@@ -2,9 +2,21 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { KycDetailsDocument, useUpdateKycMutation } from "@app/graphql/generated"
 import { prepareUserDetails } from "./utils"
+import { UseKYCStateReturnType } from './useKYCState'
 
-const useUserDetails = ({ state, setState }) => {
-  const [userDetails, _setUserDetails] = useState({
+type UserDetails = {
+  gender?: string | null
+  phoneNumber?: string | null
+  email?: string | null
+}
+
+interface Props {
+  state: UseKYCStateReturnType["state"]["state"]
+  setState: UseKYCStateReturnType["actions"]["setState"]
+}
+
+const useUserDetails = ({ state, setState }: Props) => {
+  const [userDetails, _setUserDetails] = useState<UserDetails>({
     gender: "MALE",
     phoneNumber: "",
     email: "",
@@ -15,7 +27,7 @@ const useUserDetails = ({ state, setState }) => {
   })
   const stateRef = useRef(userDetails)
 
-  const setUserDetails = useCallback((next) => {
+  const setUserDetails = useCallback((next: UserDetails) => {
     _setUserDetails((prev) => {
       const data = { ...prev, ...next }
       stateRef.current = data
@@ -37,7 +49,7 @@ const useUserDetails = ({ state, setState }) => {
     try {
       setState({ idDetails: { ...state?.idDetails, ...stateRef.current } })
       const input = prepareUserDetails({
-        idDetails: { id: state.idDetails.id, ...stateRef.current },
+        idDetails: { id: state?.idDetails?.id, ...stateRef.current },
       })
 
       await updateKYCDetails({

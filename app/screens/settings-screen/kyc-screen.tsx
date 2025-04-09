@@ -1,6 +1,11 @@
 import { useCallback, useEffect } from "react"
-import useKYCState from "./kyc/hooks/useKYCState"
-import { TabBar, TabView } from "react-native-tab-view"
+import useKYCState, { KYCState } from "./kyc/hooks/useKYCState"
+import {
+  NavigationState,
+  SceneRendererProps,
+  TabBar,
+  TabView,
+} from "react-native-tab-view"
 import { SafeAreaView, TouchableOpacity } from "react-native"
 import useStyles from "./kyc/styles"
 import { Screen } from "@app/components/screen"
@@ -10,26 +15,35 @@ import { Icon, Text } from "@rneui/themed"
 
 const KYCScreen = () => {
   const { state, actions } = useKYCState()
-  const { state: formState, index, routes, layout } = state
+  const { index, routes, layout } = state
   const { renderScene, setIndex, onBack } = actions
   const styles = useStyles()
   const { LL } = useI18nContext()
 
-  const renderTabBar = useCallback((props) => {
-    return (
-      <TabBar {...props} style={{ display: "none" }} tabStyle={{ display: "none" }} />
-    )
-  }, [])
+  const renderTabBar = useCallback(
+    (
+      props: SceneRendererProps & {
+        navigationState: NavigationState<{
+          key: string
+          title: string
+          setState: (next: KYCState) => void
+          state: KYCState
+        }>
+      },
+    ) => {
+      return (
+        <TabBar {...props} style={styles.displayNone} tabStyle={styles.displayNone} />
+      )
+    },
+    [],
+  )
 
   const navigation = useNavigation()
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: (props) => (
-        <TouchableOpacity
-          style={{ flexDirection: "row", alignItems: "center" }}
-          onPress={onBack}
-        >
+      headerLeft: () => (
+        <TouchableOpacity style={styles.headerLeft} onPress={onBack}>
           <Icon name="chevron-left" type="feather" size={34} />
           <Text type="p1">{LL.common.back()}</Text>
         </TouchableOpacity>

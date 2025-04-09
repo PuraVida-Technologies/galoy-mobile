@@ -1,8 +1,15 @@
+import { TranslationFunctions } from "@app/i18n/i18n-types"
 import { makeStyles } from "@rneui/themed"
-import { I18nManager, Text, TouchableOpacity, View } from "react-native"
-import Reanimated, { useAnimatedStyle } from "react-native-reanimated"
+import { Text, TouchableOpacity } from "react-native"
+import Reanimated, { SharedValue, useAnimatedStyle } from "react-native-reanimated"
 
-const RightAction = ({ progress, LL, onPress }) => {
+interface Props {
+  progress: SharedValue<number>
+  LL: TranslationFunctions
+  onPress: () => void
+}
+
+const RightAction = ({ progress, LL, onPress }: Props) => {
   const styles = useStyles()
   const styleAnimation = useAnimatedStyle(() => {
     return {
@@ -11,7 +18,7 @@ const RightAction = ({ progress, LL, onPress }) => {
   })
   return (
     <>
-      <Reanimated.View style={[styleAnimation]}>
+      <Reanimated.View style={styleAnimation}>
         <TouchableOpacity onPress={onPress} style={styles.container}>
           <Text style={styles.removeText}>{LL.common.remove()}</Text>
         </TouchableOpacity>
