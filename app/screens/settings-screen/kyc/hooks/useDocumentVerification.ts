@@ -46,8 +46,8 @@ const useDocumentVerification = ({ state, setState }) => {
       const formData = new FormData()
       formData.append("file", {
         name: image.filename,
-        type: image.type,
-        uri: image.sourceURL,
+        type: image.mime,
+        uri: image.path,
       })
       const res = await axios.post(url, formData, {
         headers: {
@@ -56,7 +56,7 @@ const useDocumentVerification = ({ state, setState }) => {
       })
       return res
     } catch (error) {
-      console.log("error", error)
+      console.log("Error uploading document:", error)
     }
   }
 
