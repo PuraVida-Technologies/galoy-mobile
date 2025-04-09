@@ -44,6 +44,9 @@ const light = {
   red: "#DC2626",
 
   warning: "#F59E0B",
+
+  // New property for text color
+  text: "#000000", // Default text color for light mode
 }
 
 const dark = {
@@ -92,6 +95,9 @@ const dark = {
   red: "#DC2626",
 
   warning: "#F59E0B",
+
+  // New property for text color
+  text: "#FFFFFF", // Default text color for dark mode
 }
 
 export { light, dark }
