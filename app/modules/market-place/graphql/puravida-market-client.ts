@@ -63,9 +63,12 @@ export const initPuravidaMarketPlaceClient = () => {
             locations,
           })
         } else {
-          console.warn(`[GraphQL error]: Message: ${message}, Path: ${path}}`, {
-            locations,
-          })
+          console.warn(
+            `[Marketplace GraphQL error]: Message: ${message}, Path: ${path}}`,
+            {
+              locations,
+            },
+          )
         }
       })
     }
