@@ -4,24 +4,27 @@ import { Platform, Alert, Linking } from "react-native"
 import { RESULTS, PERMISSIONS } from "react-native-permissions"
 import { useEffect, useRef, useState } from "react"
 import axios from "@app/services/axios"
-import { IDType } from "../types"
+import { IDType, PermissionStatus } from "../types"
 import { prepareIdDetails } from "./utils"
 import { UseKYCStateReturnType } from "./useKYCState"
+import { toastShow } from "@app/utils/toast"
+import ActionSheet from "@alessiocancian/react-native-actionsheet"
 
 interface Props {
   state: UseKYCStateReturnType["state"]["state"]
   setState: UseKYCStateReturnType["actions"]["setState"]
 }
 
+let isUploadingFront = false
+let isUploadingBack = false
+
 const useDocumentVerification = ({ state, setState }: Props) => {
   const [uploadingFront, setUploadingFront] = useState(false)
   const [uploadingBack, setUploadingBack] = useState(false)
   const [idFront, setIdFront] = useState<string | null>(null)
   const [idBack, setIdBack] = useState<string | null>(null)
-  const actionSheetRef = useRef()
+  const actionSheetRef = useRef<ActionSheet>()
 
-  const uploadingFrontRef = useRef<boolean>(false)
-  const uploadingBackRef = useRef(false)
   const kycId = useRef(null)
 
   useEffect(() => {
@@ -40,7 +43,7 @@ const useDocumentVerification = ({ state, setState }: Props) => {
   const cropOption: Options = {
     width: 1000,
     height: 1000,
-    // cropping: true,
+    cropping: true,
     compressVideoPreset: "Passthrough",
     compressImageMaxWidth: 1000,
     compressImageMaxHeight: 1000,
@@ -52,7 +55,7 @@ const useDocumentVerification = ({ state, setState }: Props) => {
     try {
       const formData = new FormData()
       formData.append("file", {
-        name: image.filename || "document.jpg",
+        name: image.filename,
         type: image.mime,
         uri: image.path,
       })
@@ -64,12 +67,13 @@ const useDocumentVerification = ({ state, setState }: Props) => {
       return res
     } catch (error) {
       console.log("Error uploading document:", error)
+      throw new Error("Error uploading document")
     }
   }
 
   const handleCropImageResponse = async (response: Image) => {
     try {
-      if (uploadingFrontRef.current) {
+      if (isUploadingFront) {
         setIdFront(response.path)
         setUploadingFront(true)
         if (response.path) {
@@ -78,7 +82,7 @@ const useDocumentVerification = ({ state, setState }: Props) => {
             `identification/upload?documentType=${state?.idDetails?.type}`,
           )
           setUploadingFront(false)
-          uploadingFrontRef.current = false
+          isUploadingFront = false
           kycId.current = res?.data?.id
           const idDetails = prepareIdDetails({
             ...res?.data,
@@ -90,7 +94,7 @@ const useDocumentVerification = ({ state, setState }: Props) => {
           })
         }
       } else if (
-        uploadingBackRef.current &&
+        isUploadingBack &&
         state &&
         state.idDetails &&
         state.idDetails.type === IDType.DriverLicense
@@ -104,16 +108,32 @@ const useDocumentVerification = ({ state, setState }: Props) => {
           )
           setState({ idDetails: { ...state.idDetails, back: response.path } })
           setUploadingBack(false)
-          uploadingBackRef.current = false
+          isUploadingBack = false
         }
       }
     } catch (error) {
+      toastShow({
+        message: `Error uploading document ${isUploadingFront ? "front" : "back"}. Please try again.`,
+        type: "error",
+      })
+      if (isUploadingFront) {
+        setIdFront("")
+        isUploadingFront = false
+      }
+      if (isUploadingBack) {
+        setIdBack("")
+        isUploadingBack = false
+      }
       console.log("error", error)
+    } finally {
+      setUploadingFront(false)
+      setUploadingBack(false)
     }
   }
 
   const selectImage = async () => {
     const pickerOptions: Options = {
+      ...cropOption,
       mediaType: "photo",
     }
 
@@ -172,12 +192,15 @@ const useDocumentVerification = ({ state, setState }: Props) => {
           ? PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
           : PERMISSIONS.IOS.PHOTO_LIBRARY
       checkPermission(permission).then((res) => {
-        if ([RESULTS.LIMITED, RESULTS.GRANTED].includes(res)) {
+        if (res && [PermissionStatus.LIMITED, PermissionStatus.GRANTED].includes(res)) {
           selectImage()
         } else if (res === RESULTS.DENIED) {
           // Request permission if denied
           checkPermission(permission).then((newRes) => {
-            if ([RESULTS.LIMITED, RESULTS.GRANTED].includes(newRes)) {
+            if (
+              newRes &&
+              [PermissionStatus.LIMITED, PermissionStatus.GRANTED].includes(newRes)
+            ) {
               selectImage()
             } else {
               console.log("Gallery permission denied")
@@ -216,16 +239,16 @@ const useDocumentVerification = ({ state, setState }: Props) => {
       actionSheetRef,
       idFront,
       idBack,
-      uploadingFront: uploadingFrontRef.current,
-      uploadingBack: uploadingBackRef.current,
+      uploadingFront: isUploadingFront,
+      uploadingBack: isUploadingBack,
       uploadingFrontDoc: uploadingFront,
       uploadingBackDoc: uploadingBack,
     },
     actions: {
       onMenuPress,
       handlePreviewPress,
-      setUploadingFront: (value: boolean) => (uploadingFrontRef.current = value),
-      setUploadingBack: (value: boolean) => (uploadingBackRef.current = value),
+      setUploadingFront: (value: boolean) => (isUploadingFront = value),
+      setUploadingBack: (value: boolean) => (isUploadingBack = value),
     },
   }
 }

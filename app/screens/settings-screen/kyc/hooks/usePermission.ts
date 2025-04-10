@@ -9,6 +9,7 @@ import {
 } from "react-native-permissions"
 import { getPermissionMessage } from "./utils"
 import { useI18nContext } from "@app/i18n/i18n-react"
+import { PermissionStatus } from "../types"
 
 interface Props {
   redirectTo?: string
@@ -73,13 +74,13 @@ const usePermission = ({ onDecline, shouldRequestPermissionOnLoad }: Props) => {
       if (res === RESULTS.BLOCKED) {
         handelPermissionInfo(device)
       }
-      return res
+      return PermissionStatus.DENIED
     },
     [handelPermissionInfo],
   )
 
   const checkPermission = useCallback(
-    async (permission?: Permission) => {
+    async (permission?: Permission): Promise<PermissionStatus | null> => {
       try {
         const result = await check(permission || device)
         switch (result) {
@@ -88,15 +89,16 @@ const usePermission = ({ onDecline, shouldRequestPermissionOnLoad }: Props) => {
               "Permission Unavailable",
               "This permission is not available on your device.",
             )
-            return result
+            return PermissionStatus.UNAVAILABLE
           case RESULTS.DENIED:
             return await requestPermission(permission || device)
           case RESULTS.LIMITED:
+            return PermissionStatus.LIMITED
           case RESULTS.GRANTED:
-            return result
+            return PermissionStatus.GRANTED
           case RESULTS.BLOCKED:
             handelPermissionInfo(permission || device)
-            return result
+            return PermissionStatus.BLOCKED
         }
       } catch (error) {
         console.log("Permission check error:", error)
@@ -104,7 +106,7 @@ const usePermission = ({ onDecline, shouldRequestPermissionOnLoad }: Props) => {
           "Permission Error",
           "An unexpected error occurred while checking permissions. Please try again.",
         )
-        return error
+        return null
       }
     },
     [requestPermission, handelPermissionInfo],

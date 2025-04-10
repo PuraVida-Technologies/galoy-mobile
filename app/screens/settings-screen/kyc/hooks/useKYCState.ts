@@ -38,8 +38,15 @@ gql`
   }
 `
 
+export type TabRoute = {
+  key: string
+  title: string
+  setState: (next: KYCState) => void
+  state: KYCState
+}
+
 export interface Route extends Omit<SceneRendererProps, "layout"> {
-  route: any
+  route: TabRoute
 }
 
 export interface KYCState {
@@ -50,7 +57,7 @@ export interface KYCState {
     front?: string | null | undefined
     back?: string | null | undefined
     id?: string
-  } & Kyc
+  } & Partial<Kyc>
 }
 
 const renderScene = SceneMap({
@@ -91,13 +98,13 @@ const useKYCState = () => {
             isDrivingLicense && isForntSide && isBackSide
               ? isForntSide
               : isDrivingLicense
-                ? " "
+                ? null
                 : isForntSide,
           back:
             isDrivingLicense && isForntSide && isBackSide
               ? isBackSide
               : isDrivingLicense
-                ? " "
+                ? null
                 : isBackSide,
           email: kyc?.email,
           phoneNumber: kyc?.phoneNumber,

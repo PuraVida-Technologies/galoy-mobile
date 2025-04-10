@@ -1,6 +1,9 @@
 import { makeStyles } from "@rneui/themed"
 
 const useStyles = makeStyles(({ colors }) => ({
+  flexRow: {
+    flexDirection: "row",
+  },
   scrollViewContainer: {
     flexDirection: "column",
   },

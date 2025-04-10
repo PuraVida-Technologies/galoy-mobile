@@ -9,7 +9,6 @@ import {
   Wallet,
   WalletCurrency,
 } from "@app/graphql/generated"
-import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
 import { usePriceConversion } from "@app/hooks"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
@@ -44,7 +43,7 @@ export interface BankAccountDetails {
     iban: string
     sinpeCode: string
     swiftCode: string
-    currency: string
+    currency: BankAccountCurrencies
   }
 }
 
@@ -83,13 +82,8 @@ const useSnipeDetails = () => {
     returnPartialData: true,
   })
 
-  const {
-    formatDisplayAndWalletAmount,
-    moneyAmountToMajorUnitOrSats,
-    displayCurrency,
-    formatMoneyAmount,
-    fiatSymbol,
-  } = useDisplayCurrency()
+  const { formatDisplayAndWalletAmount, displayCurrency, formatMoneyAmount, fiatSymbol } =
+    useDisplayCurrency()
 
   const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
   const usdWallet = getUsdWallet(data?.me?.defaultAccount?.wallets)

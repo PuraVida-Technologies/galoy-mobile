@@ -1,8 +1,14 @@
 import useStyles from "./styles"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { Image, TouchableOpacity, View } from "react-native"
+import {
+  Image,
+  TouchableOpacity,
+  View,
+  TouchableOpacityProps,
+  ImageStyle,
+} from "react-native"
 import Stepper from "./stepper"
-import { Text, Divider } from "@rneui/themed"
+import { Text, Divider, useTheme } from "@rneui/themed"
 import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons"
 import ActionSheet from "@alessiocancian/react-native-actionsheet"
 import { IDType } from "./types"
@@ -12,22 +18,40 @@ import { LoadingComponent } from "@app/modules/market-place/components/loading-c
 
 interface Props {
   label: string
-  styles: any
+  styles: TouchableOpacityProps["style"]
+  imageStyles: ImageStyle
   onPress: () => void
   file: string | null
   icon: string
   loading: boolean
+  disabled?: boolean
 }
 
-const DocumentUpload = ({ label, styles, onPress, file, icon, loading }: Props) => {
+const DocumentUpload = ({
+  label,
+  styles,
+  imageStyles,
+  onPress,
+  file,
+  icon,
+  loading,
+  disabled,
+}: Props) => {
+  const { theme } = useTheme()
   return (
-    <TouchableOpacity style={styles.pickerContainer} onPress={onPress}>
+    <TouchableOpacity style={styles} onPress={onPress} disabled={loading || disabled}>
       {file ? (
-        <Image source={{ uri: file }} style={{ width: "100%", height: 200 }} />
+        <Image source={{ uri: file }} style={imageStyles} />
       ) : (
         <>
-          <MaterialIcon name={icon} size={50} />
-          <Text type={"p1"}>{label}</Text>
+          <MaterialIcon
+            name={icon}
+            size={50}
+            color={disabled ? theme.colors.grey3 : theme.colors.text}
+          />
+          <Text type={"p1"} color={disabled ? theme.colors.grey3 : theme.colors.text}>
+            {label}
+          </Text>
         </>
       )}
       {loading ? <LoadingComponent isLoading={loading} /> : <></>}
@@ -59,7 +83,8 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
             actions?.setUploadingFront(true)
             actions?.handlePreviewPress()
           }}
-          styles={styles}
+          styles={styles.pickerContainer}
+          imageStyles={styles.image}
         />
         {route?.state?.idDetails?.type === IDType.DriverLicense ? (
           <DocumentUpload
@@ -71,7 +96,9 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
               actions?.setUploadingBack(true)
               actions?.handlePreviewPress()
             }}
-            styles={styles}
+            styles={styles.pickerContainer}
+            imageStyles={styles.image}
+            disabled={!state.idFront || state.uploadingFrontDoc}
           />
         ) : (
           <></>

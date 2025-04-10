@@ -84,6 +84,7 @@ const useStyles = makeStyles(({ colors }) => ({
     alignItems: "center",
     marginBottom: 20,
   },
+  image: { width: "100%", height: 200 },
   disclosuresText: {
     marginBottom: 10,
   },

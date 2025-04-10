@@ -10,11 +10,12 @@ import { Route } from "./hooks/useKYCState"
 import RadioGroup from "@app/components/radio-input/radio-input-group"
 import FormContainer from "@app/components/form-input/form-container"
 import useUserDetails from "./hooks/useUserDetails"
+import { Gender } from "@app/graphql/generated"
 
 const radioGroup = [
-  { label: "Male", value: "MALE" },
-  { label: "Female", value: "FEMALE", style: { marginLeft: 10 } },
-  { label: "Other", value: "OTHER", style: { marginLeft: 10 } },
+  { label: "Male", value: Gender.Male },
+  { label: "Female", value: Gender.Female, style: { marginLeft: 10 } },
+  { label: "Other", value: Gender.Other, style: { marginLeft: 10 } },
 ]
 
 const UserDetails = ({ jumpTo, route }: Route) => {
@@ -37,7 +38,7 @@ const UserDetails = ({ jumpTo, route }: Route) => {
           {...testProps(LL.EmailRegistrationInitiateScreen.placeholder())}
           placeholder={LL.EmailRegistrationInitiateScreen.placeholder()}
           autoCapitalize="none"
-          value={state?.userDetails?.email}
+          value={state?.userDetails?.email || ""}
           onChangeText={(text) =>
             actions?.setUserDetails({
               email: text,
@@ -52,7 +53,7 @@ const UserDetails = ({ jumpTo, route }: Route) => {
           autoCapitalize="none"
           keyboardType="numeric"
           maxLength={13}
-          value={state?.userDetails?.phoneNumber}
+          value={state?.userDetails?.phoneNumber || ""}
           onChangeText={(text) =>
             actions?.setUserDetails({
               phoneNumber: text,
@@ -63,7 +64,7 @@ const UserDetails = ({ jumpTo, route }: Route) => {
         <FormContainer label={LL.common.gender()}>
           <RadioGroup
             group={radioGroup}
-            value={state?.userDetails?.gender}
+            value={state?.userDetails?.gender || ""}
             onChange={(value) => {
               actions?.setUserDetails({
                 gender: value,

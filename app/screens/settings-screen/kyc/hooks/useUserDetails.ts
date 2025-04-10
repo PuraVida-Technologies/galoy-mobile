@@ -1,11 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import crashlytics from "@react-native-firebase/crashlytics"
-import { KycDetailsDocument, useUpdateKycMutation } from "@app/graphql/generated"
+import {
+  Gender,
+  KycDetailsDocument,
+  Maybe,
+  useUpdateKycMutation,
+} from "@app/graphql/generated"
 import { prepareUserDetails } from "./utils"
-import { UseKYCStateReturnType } from './useKYCState'
+import { UseKYCStateReturnType } from "./useKYCState"
 
 type UserDetails = {
-  gender?: string | null
+  gender?: Maybe<Gender>
   phoneNumber?: string | null
   email?: string | null
 }
