@@ -75,6 +75,9 @@ const useStyles = makeStyles(({ colors }) => ({
     paddingRight: 0,
     paddingLeft: 0,
   },
+  documentTypeDropDown: {
+    height: 48, // needed because flex: 1 will not work in tab view
+  },
   pickerContainer: {
     backgroundColor: colors.grey4,
     padding: 16,

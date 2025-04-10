@@ -639,7 +639,7 @@ const useStyles = makeStyles(({ colors }, { theme }: { theme?: string }) => ({
     marginHorizontal: 20,
   },
   bottomSheetContainer: {
-    marginBottom: 20,
+    // marginBottom: 20,
   },
   listContainer: {
     borderRadius: 16,

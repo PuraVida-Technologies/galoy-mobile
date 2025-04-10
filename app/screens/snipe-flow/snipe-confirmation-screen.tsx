@@ -75,7 +75,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
             <View style={styles.flexRow}>
               <Text style={styles.snipeInfoFieldValue}>{fiatSymbol} </Text>
               <AnimatedRollingNumber
-                value={state?.sellAmount}
+                value={Number(state?.sellAmount)}
                 useGrouping
                 compactToFixed={2}
                 textStyle={styles.snipeInfoFieldValue}
@@ -111,7 +111,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
               {LL.common.includes().slice(0, 3)}. {fiatSymbol}
             </Text>
             <AnimatedRollingNumber
-              value={state.feesAmount}
+              value={Number(state.feesAmount)}
               useGrouping
               compactToFixed={2}
               textStyle={styles.snipeInfoFieldTitle}
@@ -122,7 +122,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
         <View style={styles.sellAmount}>
           <Text style={styles.snipeInfoFieldValue}> {fiatSymbol}</Text>
           <AnimatedRollingNumber
-            value={state.totalAmount}
+            value={Number(state.totalAmount)}
             useGrouping
             compactToFixed={2}
             textStyle={styles.snipeInfoFieldValue}
