@@ -23,7 +23,7 @@ const useDocumentVerification = ({ state, setState }: Props) => {
   const [uploadingBack, setUploadingBack] = useState(false)
   const [idFront, setIdFront] = useState<string | null>(null)
   const [idBack, setIdBack] = useState<string | null>(null)
-  const actionSheetRef = useRef<ActionSheet>()
+  const actionSheetRef = useRef<ActionSheet>(null)
 
   const kycId = useRef(null)
 
@@ -54,6 +54,7 @@ const useDocumentVerification = ({ state, setState }: Props) => {
     console.log("Uploading document to URL:", image, url)
     try {
       const formData = new FormData()
+      // @ts-expect-error it's required to pass JSON instead of string or Blob
       formData.append("file", {
         name: image.filename,
         type: image.mime,

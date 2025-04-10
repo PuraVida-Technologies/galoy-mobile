@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useMemo } from "react"
-import { RefreshControl, View, Alert, SafeAreaView } from "react-native"
+import { RefreshControl, View, Alert } from "react-native"
 import {
   ScrollView,
   TouchableOpacity,
@@ -33,6 +33,7 @@ import {
   useRealtimePriceQuery,
   useSettingsScreenQuery,
   useKycDetailsQuery,
+  useColorSchemeQuery,
 } from "@app/graphql/generated"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { getErrorMessages } from "@app/graphql/utils"
@@ -101,12 +102,15 @@ gql`
 
 export const HomeScreen: React.FC = () => {
   const [isVisible, setIsVisible] = React.useState(false)
+  const colorSchemeData = useColorSchemeQuery()
   const { LL } = useI18nContext()
-  const { data, loading: kycLoading } = useKycDetailsQuery({ fetchPolicy: "network-only" })
+  const { data, loading: kycLoading } = useKycDetailsQuery({
+    fetchPolicy: "network-only",
+  })
   const { data: bankAccountData } = useBankAccountsQuery({
     fetchPolicy: "network-only",
   })
-  const styles = useStyles()
+  const styles = useStyles({ theme: colorSchemeData.data?.colorScheme })
 
   const awaitingApproval = useMemo(() => {
     const kyc = data?.me?.kyc
@@ -131,14 +135,14 @@ export const HomeScreen: React.FC = () => {
     const message =
       data?.me?.kyc?.status === "PENDING"
         ? LL.TransferActions.sinpeIBANTransfersKYCPendingDescription()
-        : data?.me?.kyc?.status !== "APPROVED"
-          ? LL.TransferActions.sinpeIBANTransfersKYCDescription()
-          : LL.TransferActions.sinpeIBANTransfersBankDescription()
+        : data?.me?.kyc?.status === "APPROVED"
+          ? LL.TransferActions.sinpeIBANTransfersBankDescription()
+          : LL.TransferActions.sinpeIBANTransfersKYCDescription()
     if (data?.me?.kyc?.status !== "APPROVED") {
       Alert.alert(LL.TransferActions.sinpeIBANTransfers(), message, [
         {
           text: LL.common.confirm(),
-          onPress: () => (!awaitingApproval ? "" : navigation.navigate("KYCScreen")),
+          onPress: () => (awaitingApproval ? navigation.navigate("KYCScreen") : ""),
         },
         {
           text: LL.common.cancel(),
@@ -393,6 +397,7 @@ export const HomeScreen: React.FC = () => {
         WAIT_TIME_TO_PROMPT_USER,
       )
     }
+    return () => clearTimeout(timeout)
   }, [])
 
   if (
@@ -557,7 +562,7 @@ export const HomeScreen: React.FC = () => {
   )
 }
 
-const useStyles = makeStyles(({ colors }) => ({
+const useStyles = makeStyles(({ colors }, { theme }: { theme?: string }) => ({
   scrollViewContainer: {
     paddingHorizontal: 20,
     paddingBottom: 20,
@@ -644,6 +649,7 @@ const useStyles = makeStyles(({ colors }) => ({
     borderBottomWidth: 1,
     borderBottomColor: colors.grey4,
     alignItems: "center",
+    backgroundColor: theme === "light" ? colors._white : colors.grey5,
   },
   listItemSubtitle: {
     color: colors.grey3,

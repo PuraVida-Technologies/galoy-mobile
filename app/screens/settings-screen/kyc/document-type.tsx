@@ -35,16 +35,18 @@ const DocumentType = ({ jumpTo, route }: Route) => {
           <Divider style={styles.titleContainer} />
         </View>
         <FormContainer label={LL.KYCScreen.idType()}>
-          <Dropdown
-            data={data}
-            value={doc}
-            onChange={(item) => {
-              setDoc(item?.value)
-              route?.setState?.({
-                idDetails: { ...route?.state?.idDetails, type: item?.value },
-              })
-            }}
-          />
+          <View style={styles.documentTypeDropDown}>
+            <Dropdown
+              data={data}
+              value={doc}
+              onChange={(item) => {
+                setDoc(item?.value)
+                route?.setState?.({
+                  idDetails: { ...route?.state?.idDetails, type: item?.value },
+                })
+              }}
+            />
+          </View>
         </FormContainer>
 
         {doc === IDType.Other ? (

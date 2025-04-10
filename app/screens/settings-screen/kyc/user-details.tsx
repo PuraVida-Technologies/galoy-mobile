@@ -67,7 +67,7 @@ const UserDetails = ({ jumpTo, route }: Route) => {
             value={state?.userDetails?.gender || ""}
             onChange={(value) => {
               actions?.setUserDetails({
-                gender: value,
+                gender: value as Gender,
               })
             }}
           />

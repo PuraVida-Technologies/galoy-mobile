@@ -1,5 +1,5 @@
 import { testProps } from "@app/utils/testProps"
-import { View } from "react-native"
+import { Keyboard, Platform, View } from "react-native"
 import useStyles from "./styles"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { useCallback } from "react"
@@ -20,6 +20,21 @@ interface Props {
   onPrevious?: () => void
 }
 
+export const dismissKeyboard = async (): Promise<void> => {
+  if (!Keyboard.isVisible()) return
+  return new Promise((resolve) => {
+    if (Platform.OS === "ios") {
+      const keyboardShowListener = Keyboard.addListener("keyboardDidHide", () => {
+        resolve()
+        keyboardShowListener.remove()
+      })
+    } else {
+      resolve()
+    }
+    Keyboard.dismiss()
+  })
+}
+
 const Stepper = ({
   allowNext,
   jumpTo,
@@ -37,18 +52,28 @@ const Stepper = ({
   const styles = useStyles()
   const { LL } = useI18nContext()
 
-  const onPreviousPage = useCallback(() => {
-    if (previousPage) {
-      jumpTo(previousPage as string)
+  const onPreviousPage = useCallback(async () => {
+    try {
+      await dismissKeyboard() // Dismiss keyboard before navigating to avoid layout issues
+      if (previousPage) {
+        jumpTo?.(previousPage as string)
+      }
+      onPrevious?.()
+    } catch (error) {
+      console.error("Error in onPreviousPage", error)
     }
-    onPrevious?.()
   }, [previousPage])
 
-  const onNextPage = useCallback(() => {
-    if (nextPage && allowNext) {
-      jumpTo(nextPage as string)
+  const onNextPage = useCallback(async () => {
+    try {
+      await dismissKeyboard() // Dismiss keyboard before navigating to avoid layout issues
+      if (nextPage && allowNext) {
+        jumpTo(nextPage as string)
+      }
+      onNext?.()
+    } catch (error) {
+      console.error("Error in onNextPage", error)
     }
-    onNext?.()
   }, [nextPage, allowNext])
 
   return (

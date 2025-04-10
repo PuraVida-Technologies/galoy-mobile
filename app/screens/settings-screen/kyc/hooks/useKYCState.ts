@@ -147,13 +147,13 @@ const useKYCState = () => {
           (!isDrivingLicense && isForntSide))
       ) {
         setIndex(2)
-      }
-      if (
-        state?.idDetails?.email &&
-        state?.idDetails?.phoneNumber &&
-        state?.idDetails?.gender
-      ) {
-        setIndex(3)
+        if (
+          state?.idDetails?.email &&
+          state?.idDetails?.phoneNumber &&
+          state?.idDetails?.gender
+        ) {
+          setIndex(3)
+        }
       }
     }
   }, [state, kyc, primaryIdentification?.files, isDrivingLicense])
