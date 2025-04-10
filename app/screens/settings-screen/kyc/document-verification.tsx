@@ -67,6 +67,8 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
     setState: route.setState,
   })
 
+  console.log("DocumentVerification state", state)
+
   return (
     <>
       <View style={styles.container}>
@@ -76,7 +78,7 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
         </View>
         <DocumentUpload
           label={LL.KYCScreen.uploadIDFront()}
-          loading={state.uploadingFrontDoc}
+          loading={state.uploadingFront}
           file={state.idFront}
           icon="card-account-details-outline"
           onPress={() => {
@@ -89,7 +91,7 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
         {route?.state?.idDetails?.type === IDType.DriverLicense ? (
           <DocumentUpload
             label={LL.KYCScreen.uploadIDBack()}
-            loading={state.uploadingBackDoc}
+            loading={state.uploadingBack}
             file={state.idBack}
             icon="card-bulleted-outline"
             onPress={() => {
@@ -98,7 +100,7 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
             }}
             styles={styles.pickerContainer}
             imageStyles={styles.image}
-            disabled={!state.idFront || state.uploadingFrontDoc}
+            disabled={!state.idFront || state.uploadingFront}
           />
         ) : (
           <></>
@@ -112,10 +114,10 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
         disableNext={
           Boolean(!state.idFront) ||
           (route?.state?.idDetails?.type === IDType.DriverLicense && !state.idBack) ||
-          state.uploadingFrontDoc ||
-          state.uploadingBackDoc
+          state.uploadingFront ||
+          state.uploadingBack
         }
-        loading={state.uploadingFrontDoc || state.uploadingBackDoc}
+        loading={state.uploadingFront || state.uploadingBack}
         previousPage={"docType"}
       />
       <ActionSheet
