@@ -1,10 +1,9 @@
 import { Image, openCamera, openPicker, Options } from "react-native-image-crop-picker"
 import usePermission from "./usePermission"
-import { Platform, Alert, Linking } from "react-native"
+import { Platform } from "react-native"
 import { RESULTS, PERMISSIONS } from "react-native-permissions"
 import { useEffect, useRef, useState } from "react"
 import axios from "@app/services/axios"
-import { IDType, PermissionStatus } from "../types"
 import { prepareIdDetails } from "./utils"
 import { UseKYCStateReturnType } from "./useKYCState"
 import { toastShow } from "@app/utils/toast"
@@ -150,6 +149,14 @@ const useDocumentVerification = ({ state, setState }: Props) => {
       .catch((error) => {
         console.error("Error selecting image:", error)
       })
+      .finally(() => {
+        if (uploadingFrontRef.current) {
+          setUploadingFront(false)
+        }
+        if (uploadingBackRef.current) {
+          setUploadingBack(false)
+        }
+      })
   }
 
   const captureImage = async () => {
@@ -160,10 +167,17 @@ const useDocumentVerification = ({ state, setState }: Props) => {
       .catch((error) => {
         console.error("Error opening camera:", error)
       })
+      .finally(() => {
+        if (uploadingFrontRef.current) {
+          setUploadingFront(false)
+        }
+        if (uploadingBackRef.current) {
+          setUploadingBack(false)
+        }
+      })
   }
 
   const handlePress = async (type: string) => {
-    console.log("handlePress called with type:", type)
     if (type === "capture") {
       const permission =
         Platform.OS === "android" ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA
