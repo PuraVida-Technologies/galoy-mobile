@@ -400,17 +400,17 @@ export const HomeScreen: React.FC = () => {
     return () => clearTimeout(timeout)
   }, [])
 
-  if (
-    !isIos ||
-    dataUnauthed?.globals?.network !== "mainnet" ||
-    dataAuthed?.me?.defaultAccount.level === AccountLevel.Two
-  ) {
-    buttons.unshift({
-      title: LL.common.transfer(),
-      target: "conversionDetails" as Target,
-      icon: "transfer" as IconNamesType,
-    })
-  }
+  // if (
+  //   !isIos ||
+  //   dataUnauthed?.globals?.network !== "mainnet" ||
+  //   dataAuthed?.me?.defaultAccount.level === AccountLevel.Two
+  // ) {
+  buttons.unshift({
+    title: LL.common.transfer(),
+    target: "conversionDetails" as Target,
+    icon: "transfer" as IconNamesType,
+  })
+  // }
 
   const AccountCreationNeededModal = (
     <Modal
