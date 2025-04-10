@@ -15,8 +15,8 @@ interface Props {
   setState: UseKYCStateReturnType["actions"]["setState"]
 }
 
-let isUploadingFront = false
-let isUploadingBack = false
+// let isUploadingFront = false
+// let isUploadingBack = false
 
 const useDocumentVerification = ({ state, setState }: Props) => {
   const [uploadingFront, setUploadingFront] = useState(false)
@@ -28,6 +28,7 @@ const useDocumentVerification = ({ state, setState }: Props) => {
   const kycId = useRef(null)
 
   useEffect(() => {
+    console.log("setting statge in useEffect: ", state)
     if (state?.idDetails?.front) {
       setIdFront(state.idDetails.front)
     }
@@ -73,8 +74,10 @@ const useDocumentVerification = ({ state, setState }: Props) => {
   }
 
   const handleCropImageResponse = async (response: Image) => {
+    console.log("uploadingFront: ", uploadingFront)
+    console.log("uploadingBack: ", uploadingBack)
     try {
-      if (isUploadingFront) {
+      if (uploadingFront) {
         setIdFront(response.path)
         setUploadingFront(true)
         if (response.path) {
@@ -83,7 +86,7 @@ const useDocumentVerification = ({ state, setState }: Props) => {
             `identification/upload?documentType=${state?.idDetails?.type}`,
           )
           setUploadingFront(false)
-          isUploadingFront = false
+          // isUploadingFront = false
           kycId.current = res?.data?.id
           const idDetails = prepareIdDetails({
             ...res?.data,
@@ -95,7 +98,7 @@ const useDocumentVerification = ({ state, setState }: Props) => {
           })
         }
       } else if (
-        isUploadingBack &&
+        uploadingBack &&
         state &&
         state.idDetails &&
         state.idDetails.type === IDType.DriverLicense
@@ -109,21 +112,23 @@ const useDocumentVerification = ({ state, setState }: Props) => {
           )
           setState({ idDetails: { ...state.idDetails, back: response.path } })
           setUploadingBack(false)
-          isUploadingBack = false
+          // isUploadingBack = false
         }
       }
     } catch (error) {
       toastShow({
-        message: `Error uploading document ${isUploadingFront ? "front" : "back"}. Please try again.`,
+        message: `Error uploading document ${uploadingFront ? "front" : "back"}. Please try again.`,
         type: "error",
       })
-      if (isUploadingFront) {
+      if (uploadingFront) {
         setIdFront("")
-        isUploadingFront = false
+        setUploadingFront(false)
+        // isUploadingFront = false
       }
-      if (isUploadingBack) {
+      if (uploadingBack) {
         setIdBack("")
-        isUploadingBack = false
+        setUploadingBack(false)
+        // isUploadingBack = false
       }
       console.log("error", error)
     } finally {
@@ -147,28 +152,29 @@ const useDocumentVerification = ({ state, setState }: Props) => {
 
   const captureImage = async () => {
     openCamera(cropOption)
-      .then((response) => {
-        handleCropImageResponse(response)
+      .then(async (response) => {
+        await handleCropImageResponse(response)
       })
       .catch((error) => {
         console.error("Error opening camera:", error)
       })
   }
 
-  const handlePress = (type: string) => {
+  const handlePress = async (type: string) => {
+    console.log("handlePress called with type:", type) // Log the type
     if (type === "capture") {
       const permission =
         Platform.OS === "android" ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA
-      checkPermission(permission).then((res) => {
+      checkPermission(permission).then(async (res) => {
         console.log("Camera permission result:", res) // Log the permission result
         if (res === RESULTS.GRANTED) {
-          captureImage()
+          await captureImage()
         } else if (res === RESULTS.DENIED) {
           console.log("Permission denied. Requesting permission...")
-          checkPermission(permission).then((newRes) => {
+          checkPermission(permission).then(async (newRes) => {
             console.log("New camera permission result:", newRes) // Log the new result
             if (newRes === RESULTS.GRANTED) {
-              captureImage()
+              await captureImage()
             } else {
               console.log("Camera permission denied after request.")
             }
@@ -240,16 +246,14 @@ const useDocumentVerification = ({ state, setState }: Props) => {
       actionSheetRef,
       idFront,
       idBack,
-      uploadingFront: isUploadingFront,
-      uploadingBack: isUploadingBack,
-      uploadingFrontDoc: uploadingFront,
-      uploadingBackDoc: uploadingBack,
+      uploadingFront,
+      uploadingBack,
     },
     actions: {
       onMenuPress,
       handlePreviewPress,
-      setUploadingFront: (value: boolean) => (isUploadingFront = value),
-      setUploadingBack: (value: boolean) => (isUploadingBack = value),
+      setUploadingFront,
+      setUploadingBack,
     },
   }
 }

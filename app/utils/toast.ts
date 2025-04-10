@@ -13,7 +13,7 @@ export const toastShow = ({
   autoHide,
 }: {
   message: ((translations: TranslationFunctions) => string) | string
-  LL: TranslationFunctions
+  LL?: TranslationFunctions
   onHide?: () => void
   type?: "error" | "success" | "warning"
   autoHide?: boolean
@@ -21,7 +21,7 @@ export const toastShow = ({
   const englishTranslation = i18nObject("en")
   const englishMessage =
     typeof message === "function" ? message(englishTranslation) : message
-  const translatedMessage = typeof message === "function" ? message(LL) : message
+  const translatedMessage = typeof message === "function" && LL ? message(LL) : message
 
   logToastShown({
     message: englishMessage,
