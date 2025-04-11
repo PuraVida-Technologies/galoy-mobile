@@ -2,32 +2,76 @@ import { Image, openCamera, openPicker, Options } from "react-native-image-crop-
 import usePermission from "./usePermission"
 import { Platform } from "react-native"
 import { RESULTS, PERMISSIONS } from "react-native-permissions"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import axios from "@app/services/axios"
 import { prepareIdDetails } from "./utils"
 import { UseKYCStateReturnType } from "./useKYCState"
 import { toastShow } from "@app/utils/toast"
 import ActionSheet from "@alessiocancian/react-native-actionsheet"
-import { DocumentUploadResponse, IDType } from "../types"
+import { IDType } from "../types"
+import { TranslationFunctions } from "@app/i18n/i18n-types"
 
+export enum UploadingId {
+  UploadingFront = "uploading-front",
+  UploadingBack = "uploading-back",
+}
 interface Props {
   state: UseKYCStateReturnType["state"]["state"]
   setState: UseKYCStateReturnType["actions"]["setState"]
+  LL: TranslationFunctions
 }
 
-const useDocumentVerification = ({ state, setState }: Props) => {
-  const [uploadingFront, setUploadingFrontState] = useState(false)
-  const [uploadingBack, setUploadingBackState] = useState(false)
+const useDocumentVerification = ({ state, setState, LL }: Props) => {
   const [idFront, setIdFront] = useState<string | null>(null)
   const [idBack, setIdBack] = useState<string | null>(null)
   const actionSheetRef = useRef<ActionSheet>(null)
-
-  const uploadingFrontRef = useRef(false)
-  const uploadingBackRef = useRef(false)
+  const uploadingUrlRef = useRef<string>("")
+  const [uploadingId, setUploadingId] = useState<UploadingId>(UploadingId.UploadingFront)
+  const [uploading, setUploading] = useState(false)
   const kycId = useRef<string | null>(null)
+  const options = [
+    { label: "Camera", onPress: () => handlePress("capture") },
+    { label: "Gallery", onPress: () => handlePress("library") },
+    {
+      label: "Cancel",
+      onPress: () => {
+        setUploading(false)
+      },
+      type: "cancel",
+    },
+  ]
+
+  const cropOption: Options = useMemo(
+    () => ({
+      width: 1000,
+      height: 1000,
+      cropping: true,
+      compressVideoPreset: "Passthrough",
+      compressImageMaxWidth: 1000,
+      compressImageMaxHeight: 1000,
+      compressImageQuality: 0.7,
+    }),
+    [],
+  )
+
+  const isUploadingFront = useMemo(
+    () => uploadingId === UploadingId.UploadingFront,
+    [uploadingId],
+  )
+  const isUploadingBack = useMemo(
+    () => uploadingId === UploadingId.UploadingBack,
+    [uploadingId],
+  )
 
   useEffect(() => {
-    console.log("Setting state in useEffect: ", state)
+    let url = `identification/upload?documentType=${state?.idDetails?.type === IDType.Other ? state?.IDType : state?.idDetails?.type}`
+    if (isUploadingBack) {
+      url = `${url}&kycId=${kycId.current}`
+    }
+    uploadingUrlRef.current = url
+  }, [isUploadingBack, state?.idDetails?.type, state?.IDType])
+
+  useEffect(() => {
     if (state?.idDetails?.front) {
       setIdFront(state.idDetails.front)
     }
@@ -36,110 +80,86 @@ const useDocumentVerification = ({ state, setState }: Props) => {
     }
   }, [state])
 
-  const setUploadingFront = (value: boolean) => {
-    uploadingFrontRef.current = value
-    setUploadingFrontState(value)
-  }
-
-  const setUploadingBack = (value: boolean) => {
-    uploadingBackRef.current = value
-    setUploadingBackState(value)
-  }
-
   const { checkPermission } = usePermission({
     shouldRequestPermissionOnLoad: false,
   })
 
-  const cropOption: Options = {
-    width: 1000,
-    height: 1000,
-    cropping: true,
-    compressVideoPreset: "Passthrough",
-    compressImageMaxWidth: 1000,
-    compressImageMaxHeight: 1000,
-    compressImageQuality: 0.7,
-  }
-
-  const uploadDocument = async (image: Image, url: string) => {
-    console.log("Uploading document to URL:", image, url)
-    try {
-      const formData = new FormData()
-      formData.append("file", {
-        name: image.filename || "photo.jpg",
-        type: image.mime || "image/jpeg",
-        uri: image.path,
-      })
-      console.log("FormData:", formData)
-      const res = await axios.post(url, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      console.log("Document uploaded successfully:", res.data)
-      return res
-    } catch (error) {
-      console.error("Error uploading document:", error)
-      throw new Error("Error uploading document")
-    }
-  }
-
-  const handleCropImageResponse = async (response: Image) => {
-    console.log("uploadingFront:", uploadingFrontRef.current)
-    console.log("uploadingBack:", uploadingBackRef.current)
-    try {
-      if (uploadingFrontRef.current) {
-        console.log("Uploading ID Front...")
-        setIdFront(response.path)
-        setUploadingFront(true)
-        if (response.path) {
-          const res: DocumentUploadResponse = await uploadDocument(
-            response,
-            `identification/upload?documentType=${state?.idDetails?.type === IDType.Other ? state?.IDType : state?.idDetails?.type}`,
-          )
-          setUploadingFront(false)
-          kycId.current = res?.data?.id
-          const idDetails = prepareIdDetails({
-            ...res?.data,
-            type: state?.idDetails?.type,
-            front: response.path,
-          })
-          setState({
-            idDetails,
-          })
+  const uploadDocument = useCallback(
+    async (image: Image) => {
+      try {
+        const formData = new FormData()
+        formData.append("file", {
+          name: image.filename || "photo.jpg",
+          type: image.mime || "image/jpeg",
+          uri: image.path,
+        })
+        console.log("formData", uploadingUrlRef.current)
+        const res = await axios.post(uploadingUrlRef.current, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        kycId.current = res?.data?.id
+        const idDetails = prepareIdDetails({
+          ...res?.data,
+          type: state?.idDetails?.type,
+        })
+        if (actionSheetRef.current?.props.id === UploadingId.UploadingFront) {
+          idDetails.front = image.path
+        } else if (actionSheetRef.current?.props.id === UploadingId.UploadingBack) {
+          idDetails.back = image.path
         }
-      } else if (uploadingBackRef.current) {
-        console.log("Uploading ID Back...")
-        setIdBack(response.path)
-        setUploadingBack(true)
-        if (response.path) {
-          await uploadDocument(
-            response,
-            `identification/upload?documentType=${state?.idDetails?.type === IDType.Other ? state?.IDType : state?.idDetails?.type}&kycId=${kycId.current}`,
-          )
-          setUploadingBack(false)
-          setState({ idDetails: { ...state.idDetails, back: response.path } })
+        setState({
+          idDetails,
+        })
+        return res
+      } catch (error) {
+        console.error("Error uploading document:", error)
+        throw new Error("Error uploading document")
+      }
+    },
+    [setState, state?.idDetails?.type],
+  )
+
+  const handleCropImageResponse = useCallback(
+    async (response: Image) => {
+      try {
+        if (actionSheetRef.current?.props.id === UploadingId.UploadingFront) {
+          setIdFront(response.path)
+          if (response.path) {
+            await uploadDocument(response)
+          }
+        } else if (actionSheetRef.current?.props.id === UploadingId.UploadingBack) {
+          setIdBack(response.path)
+          if (response.path) {
+            await uploadDocument(response)
+          }
+        }
+      } catch (error) {
+        console.error("Error handling cropped image response:", error)
+        toastShow({
+          message: LL.KYCScreen.uploadingIdError({
+            uploadingId:
+              actionSheetRef.current?.props.id === UploadingId.UploadingFront
+                ? "front"
+                : "back",
+          }),
+          LL,
+          type: "error",
+        })
+        setUploading(false)
+        if (actionSheetRef.current?.props.id === UploadingId.UploadingFront) {
+          setIdFront("")
+        }
+        if (actionSheetRef.current?.props.id === UploadingId.UploadingBack) {
+          setIdBack("")
         }
       }
-    } catch (error) {
-      console.error("Error handling cropped image response:", error)
-      toastShow({
-        message: `Error uploading document ${
-          uploadingFrontRef.current ? "front" : "back"
-        }. Please try again.`,
-        type: "error",
-      })
-      if (uploadingFrontRef.current) {
-        setIdFront("")
-        setUploadingFront(false)
-      }
-      if (uploadingBackRef.current) {
-        setIdBack("")
-        setUploadingBack(false)
-      }
-    }
-  }
+    },
+    [LL, uploadDocument],
+  )
 
-  const selectImage = async () => {
+  const selectImage = useCallback(async () => {
     const pickerOptions: Options = {
       ...cropOption,
       mediaType: "photo",
@@ -151,16 +171,11 @@ const useDocumentVerification = ({ state, setState }: Props) => {
         console.error("Error selecting image:", error)
       })
       .finally(() => {
-        if (uploadingFrontRef.current) {
-          setUploadingFront(false)
-        }
-        if (uploadingBackRef.current) {
-          setUploadingBack(false)
-        }
+        setUploading(false)
       })
-  }
+  }, [handleCropImageResponse, cropOption])
 
-  const captureImage = async () => {
+  const captureImage = useCallback(async () => {
     openCamera(cropOption)
       .then(async (response) => {
         await handleCropImageResponse(response)
@@ -169,49 +184,35 @@ const useDocumentVerification = ({ state, setState }: Props) => {
         console.error("Error opening camera:", error)
       })
       .finally(() => {
-        if (uploadingFrontRef.current) {
-          setUploadingFront(false)
-        }
-        if (uploadingBackRef.current) {
-          setUploadingBack(false)
-        }
+        setUploading(false)
       })
-  }
+  }, [handleCropImageResponse, cropOption])
 
-  const handlePress = async (type: string) => {
-    if (type === "capture") {
-      const permission =
-        Platform.OS === "android" ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA
-      checkPermission(permission).then(async (res) => {
-        if (res === RESULTS.GRANTED) {
-          await captureImage()
-        }
-      })
-    } else if (type === "library") {
-      const permission =
-        Platform.OS === "android"
-          ? PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
-          : PERMISSIONS.IOS.PHOTO_LIBRARY
-      checkPermission(permission).then((res) => {
-        if (res === RESULTS.GRANTED) {
-          selectImage()
-        }
-      })
-    }
-  }
-
-  const options = [
-    { label: "Camera", onPress: () => handlePress("capture") },
-    { label: "Gallery", onPress: () => handlePress("library") },
-    {
-      label: "Cancel",
-      onPress: () => {
-        setUploadingFront(false)
-        setUploadingBack(false)
-      },
-      type: "cancel",
+  const handlePress = useCallback(
+    async (type: string) => {
+      setUploading(true)
+      if (type === "capture") {
+        const permission =
+          Platform.OS === "android" ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA
+        checkPermission(permission).then(async (res) => {
+          if (res === RESULTS.GRANTED) {
+            await captureImage()
+          }
+        })
+      } else if (type === "library") {
+        const permission =
+          Platform.OS === "android"
+            ? PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
+            : PERMISSIONS.IOS.PHOTO_LIBRARY
+        checkPermission(permission).then((res) => {
+          if (res === RESULTS.GRANTED) {
+            selectImage()
+          }
+        })
+      }
     },
-  ]
+    [captureImage, checkPermission, selectImage],
+  )
 
   const onMenuPress = (index: number) => {
     const currentOption = options.find((o, i) => i === index)
@@ -227,14 +228,15 @@ const useDocumentVerification = ({ state, setState }: Props) => {
       actionSheetRef,
       idFront,
       idBack,
-      uploadingFront,
-      uploadingBack,
+      uploadingId,
+      uploading,
+      isUploadingFront,
+      isUploadingBack,
     },
     actions: {
       onMenuPress,
       handlePreviewPress,
-      setUploadingFront,
-      setUploadingBack,
+      setUploadingId,
     },
   }
 }

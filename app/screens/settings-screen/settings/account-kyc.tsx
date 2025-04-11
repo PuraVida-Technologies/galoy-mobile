@@ -8,7 +8,7 @@ import { useMemo } from "react"
 import { color } from "@app/modules/market-place/theme"
 import { makeStyles } from "@rneui/themed"
 
-const KYC: React.FC = () => {
+export const KYC: React.FC = () => {
   const { LL } = useI18nContext()
   const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>()
   const { data, loading } = useKycDetailsQuery({ fetchPolicy: "network-only" })
@@ -70,5 +70,3 @@ const useStyles = makeStyles((theme, { subtitleColor }: { subtitleColor?: string
     color: subtitleColor,
   },
 }))
-
-export default KYC

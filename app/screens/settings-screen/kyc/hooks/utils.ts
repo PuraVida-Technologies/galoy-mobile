@@ -30,13 +30,14 @@ export const getPermissionMessage = (
 }
 
 export const prepareIdDetails = (
-  state: Document & { front?: string | null; type?: string | null },
+  state: Document & { front?: string | null; back?: string | null; type?: string | null },
 ) => {
   return {
     address: state?.address,
     citizenships: state?.citizenships,
     email: state?.email,
     front: state?.front,
+    back: state?.back,
     fullName: state?.fullName,
     galoyUserId: state?.galoyUserId,
     gender: state?.gender,
