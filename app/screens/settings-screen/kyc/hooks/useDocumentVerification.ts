@@ -1,14 +1,14 @@
 import { Image, openCamera, openPicker, Options } from "react-native-image-crop-picker"
 import usePermission from "./usePermission"
 import { Platform } from "react-native"
-import { RESULTS, PERMISSIONS } from "react-native-permissions"
+import { PERMISSIONS } from "react-native-permissions"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import axios from "@app/services/axios"
 import { prepareIdDetails } from "./utils"
 import { UseKYCStateReturnType } from "./useKYCState"
 import { toastShow } from "@app/utils/toast"
 import ActionSheet from "@alessiocancian/react-native-actionsheet"
-import { IDType } from "../types"
+import { IDType, PermissionStatus } from "../types"
 import { TranslationFunctions } from "@app/i18n/i18n-types"
 
 export enum UploadingId {
@@ -93,7 +93,6 @@ const useDocumentVerification = ({ state, setState, LL }: Props) => {
           type: image.mime || "image/jpeg",
           uri: image.path,
         })
-        console.log("formData", uploadingUrlRef.current)
         const res = await axios.post(uploadingUrlRef.current, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -195,7 +194,7 @@ const useDocumentVerification = ({ state, setState, LL }: Props) => {
         const permission =
           Platform.OS === "android" ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA
         checkPermission(permission).then(async (res) => {
-          if (res === RESULTS.GRANTED) {
+          if ([PermissionStatus.GRANTED, PermissionStatus.LIMITED].includes(res!)) {
             await captureImage()
           }
         })
@@ -205,7 +204,7 @@ const useDocumentVerification = ({ state, setState, LL }: Props) => {
             ? PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
             : PERMISSIONS.IOS.PHOTO_LIBRARY
         checkPermission(permission).then((res) => {
-          if (res === RESULTS.GRANTED) {
+          if ([PermissionStatus.GRANTED, PermissionStatus.LIMITED].includes(res!)) {
             selectImage()
           }
         })

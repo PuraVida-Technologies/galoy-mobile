@@ -29,6 +29,7 @@ export type RootStackParamList = {
     appCheckToken: string
   }
   developerScreen: undefined
+  bankAccounts: undefined
   authenticationCheck: undefined
   authentication: {
     screenPurpose: AuthenticationScreenPurpose

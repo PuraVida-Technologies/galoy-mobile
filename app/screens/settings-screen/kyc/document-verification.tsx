@@ -128,7 +128,6 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
         options={["Camera", "Gallery", "Cancel"]}
         cancelButtonIndex={2}
         id={state.uploadingId}
-        message={state.uploadingId}
         onPress={actions?.onMenuPress}
       />
     </>

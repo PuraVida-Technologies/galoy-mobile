@@ -74,7 +74,13 @@ const usePermission = ({ onDecline, shouldRequestPermissionOnLoad }: Props) => {
       if (res === RESULTS.BLOCKED) {
         handelPermissionInfo(device)
       }
-      return PermissionStatus.DENIED
+      return res === RESULTS.GRANTED
+        ? PermissionStatus.GRANTED
+        : res === RESULTS.LIMITED
+          ? PermissionStatus.LIMITED
+          : res === RESULTS.DENIED
+            ? PermissionStatus.DENIED
+            : null
     },
     [handelPermissionInfo],
   )
