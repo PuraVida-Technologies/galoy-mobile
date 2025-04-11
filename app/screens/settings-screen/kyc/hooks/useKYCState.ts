@@ -11,6 +11,10 @@ import {
   Status,
   IdentificationType,
   Kyc,
+  Gender,
+  Maybe,
+  InputMaybe,
+  MaritalStatus,
 } from "@app/graphql/generated"
 import { useNavigation } from "@react-navigation/native"
 
@@ -41,7 +45,7 @@ gql`
 export type TabRoute = {
   key: string
   title: string
-  setState: (next: KYCState) => void
+  setState: (next: Partial<KYCState>) => void
   state: KYCState
 }
 
@@ -52,12 +56,43 @@ export interface Route extends Omit<SceneRendererProps, "layout"> {
 export interface KYCState {
   pep?: string
   moneyTransfers?: string
-  idDetails?: {
+  IDType?: string
+  idDetails: {
     type?: string | null | undefined
     front?: string | null | undefined
     back?: string | null | undefined
-    id?: string
-  } & Partial<Kyc>
+    address?: string | null | undefined
+    martialStatus?: InputMaybe<MaritalStatus>
+    id?: string | null | undefined
+    email?: string | null | undefined
+    phoneNumber?: string | null | undefined
+    gender?: Maybe<Gender> | undefined
+    fullName?: string | null | undefined
+    citizenships?: []
+    galoyUserId?: string | null | undefined
+    placeOfBirth?: string | null | undefined
+    status?: Kyc["status"]
+    isHighRisk: string
+    isPoliticallyExposed: string
+  }
+}
+
+const initialKycState: KYCState = {
+  pep: "yes",
+  moneyTransfers: "yes",
+  IDType: "",
+  idDetails: {
+    type: "",
+    front: "",
+    back: "",
+    address: "",
+    martialStatus: undefined,
+    id: "",
+    email: "",
+    phoneNumber: "",
+    isHighRisk: "no",
+    isPoliticallyExposed: "no",
+  },
 }
 
 const renderScene = SceneMap({
@@ -68,13 +103,13 @@ const renderScene = SceneMap({
 })
 
 const useKYCState = () => {
-  const [state, _setState] = useState<KYCState>({ pep: "yes", moneyTransfers: "yes" })
+  const [state, _setState] = useState<KYCState>(initialKycState)
   const [index, setIndex] = useState(0)
   const layout = useWindowDimensions()
   const navigation = useNavigation()
   const { data, loading } = useKycDetailsQuery({ fetchPolicy: "network-only" })
-  const setState = useCallback((next: KYCState) => {
-    _setState((perv) => ({ ...perv, ...next }))
+  const setState = useCallback((next: Partial<KYCState>) => {
+    _setState((prev) => ({ ...prev, ...next }))
   }, [])
 
   const { kyc, primaryIdentification, isDrivingLicense } = useMemo(() => {
@@ -89,19 +124,19 @@ const useKYCState = () => {
 
   useEffect(() => {
     if (!loading) {
-      const isForntSide = primaryIdentification?.files?.[0]
+      const isFrontSide = primaryIdentification?.files?.[0]
       const isBackSide = primaryIdentification?.files?.[1]
       setState({
         idDetails: {
           type: primaryIdentification?.type,
           front:
-            isDrivingLicense && isForntSide && isBackSide
-              ? isForntSide
+            isDrivingLicense && isFrontSide && isBackSide
+              ? isFrontSide
               : isDrivingLicense
                 ? null
-                : isForntSide,
+                : isFrontSide,
           back:
-            isDrivingLicense && isForntSide && isBackSide
+            isDrivingLicense && isFrontSide && isBackSide
               ? isBackSide
               : isDrivingLicense
                 ? null
@@ -110,8 +145,8 @@ const useKYCState = () => {
           phoneNumber: kyc?.phoneNumber,
           id: kyc?.id,
           gender: kyc?.gender,
-          isPoliticallyExposed: kyc?.isPoliticallyExposed,
-          isHighRisk: kyc?.isHighRisk,
+          isPoliticallyExposed: kyc?.isPoliticallyExposed ? "yes" : "no",
+          isHighRisk: kyc?.isHighRisk ? "yes" : "no",
         },
       })
     }
@@ -139,12 +174,12 @@ const useKYCState = () => {
 
   useEffect(() => {
     if (kyc?.status === Status.Pending) {
-      const isForntSide = primaryIdentification?.files?.[0]
+      const isFrontSide = primaryIdentification?.files?.[0]
       const isBackSide = primaryIdentification?.files?.[1]
       if (
         state?.idDetails?.type &&
-        ((isDrivingLicense && isForntSide && isBackSide) ||
-          (!isDrivingLicense && isForntSide))
+        ((isDrivingLicense && isFrontSide && isBackSide) ||
+          (!isDrivingLicense && isFrontSide))
       ) {
         setIndex(2)
         if (

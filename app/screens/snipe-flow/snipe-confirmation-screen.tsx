@@ -33,7 +33,6 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
     bankAccount,
     fromAccountBalance,
     isLoading,
-    errorMessage,
     canWithdraw,
     fiatSymbol,
   } = state
@@ -96,11 +95,6 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
             )}
           </View>
         </View>
-        {errorMessage && (
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>{errorMessage}</Text>
-          </View>
-        )}
       </ScrollView>
       <View style={[styles.snipeInfoCard, styles.totalAmountContainer]}>
         <View>

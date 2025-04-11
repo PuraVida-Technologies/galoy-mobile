@@ -7,12 +7,14 @@ import { Button } from "@rneui/themed"
 import Input from "@app/components/form-input/form-input"
 import { Controller } from "react-hook-form"
 import useBankAccount from "@app/modules/bank-account/hooks/useAddBankAccount"
-import { useRoute } from "@react-navigation/native"
+import { useRoute, RouteProp } from "@react-navigation/native"
+import { BankAccountCr } from "@app/graphql/generated"
 
 const AddBankAccountScreen = () => {
   const styles = useStyles()
   const { LL } = useI18nContext()
-  const { params } = useRoute()
+  const { params } =
+    useRoute<RouteProp<{ params: { account: BankAccountCr } }, "params">>()
   const { state, actions } = useBankAccount({ account: params?.account, LL })
   const { control, loading } = state
 

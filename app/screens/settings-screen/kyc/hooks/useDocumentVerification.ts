@@ -8,6 +8,7 @@ import { prepareIdDetails } from "./utils"
 import { UseKYCStateReturnType } from "./useKYCState"
 import { toastShow } from "@app/utils/toast"
 import ActionSheet from "@alessiocancian/react-native-actionsheet"
+import { DocumentUploadResponse, IDType } from "../types"
 
 interface Props {
   state: UseKYCStateReturnType["state"]["state"]
@@ -23,7 +24,7 @@ const useDocumentVerification = ({ state, setState }: Props) => {
 
   const uploadingFrontRef = useRef(false)
   const uploadingBackRef = useRef(false)
-  const kycId = useRef(null)
+  const kycId = useRef<string | null>(null)
 
   useEffect(() => {
     console.log("Setting state in useEffect: ", state)
@@ -91,9 +92,9 @@ const useDocumentVerification = ({ state, setState }: Props) => {
         setIdFront(response.path)
         setUploadingFront(true)
         if (response.path) {
-          const res = await uploadDocument(
+          const res: DocumentUploadResponse = await uploadDocument(
             response,
-            `identification/upload?documentType=${state?.idDetails?.type}`,
+            `identification/upload?documentType=${state?.idDetails?.type === IDType.Other ? state?.IDType : state?.idDetails?.type}`,
           )
           setUploadingFront(false)
           kycId.current = res?.data?.id
@@ -111,9 +112,9 @@ const useDocumentVerification = ({ state, setState }: Props) => {
         setIdBack(response.path)
         setUploadingBack(true)
         if (response.path) {
-          const res = await uploadDocument(
+          await uploadDocument(
             response,
-            `identification/upload?documentType=${state.idDetails.type}&kycId=${kycId.current}`,
+            `identification/upload?documentType=${state?.idDetails?.type === IDType.Other ? state?.IDType : state?.idDetails?.type}&kycId=${kycId.current}`,
           )
           setUploadingBack(false)
           setState({ idDetails: { ...state.idDetails, back: response.path } })

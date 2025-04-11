@@ -18,7 +18,7 @@ const data = [
 ]
 
 const DocumentType = ({ jumpTo, route }: Route) => {
-  const [doc, setDoc] = useState("")
+  const [doc, setDoc] = useState<string | undefined | null>("")
   const [otherDoc, setOtherDoc] = useState("")
   const styles = useStyles()
   const { LL } = useI18nContext()
@@ -38,7 +38,7 @@ const DocumentType = ({ jumpTo, route }: Route) => {
           <View style={styles.documentTypeDropDown}>
             <Dropdown
               data={data}
-              value={doc}
+              value={doc as string}
               onChange={(item) => {
                 setDoc(item?.value)
                 route?.setState?.({

@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client"
 import {
   BankAccountCr,
+  BankAccountCurrencies,
   useAddBankAccountCrMutation,
   useUpdateBankAccountCrMutation,
 } from "@app/graphql/generated"
@@ -34,6 +35,17 @@ interface Props {
   LL: TranslationFunctions
 }
 
+type BankAccountForm = {
+  id?: string
+  accountHolderName: string
+  bankName: string
+  currency: BankAccountCurrencies
+  iban: string
+  nationalId: string
+  sinpeCode: string
+  swiftCode: string
+}
+
 const defaultValues = {
   accountHolderName: "",
   bankName: "",
@@ -44,7 +56,7 @@ const defaultValues = {
   nationalId: "",
 }
 
-const useAddBankAccount = ({ account, LL }: Props) => {
+const useAddBankAccount = ({ account }: Props) => {
   const navigation = useNavigation()
   const [addBankAccountCr, { loading: addingAccount }] = useAddBankAccountCrMutation({
     refetchQueries: ["bankAccounts"],
@@ -72,7 +84,7 @@ const useAddBankAccount = ({ account, LL }: Props) => {
     }
   }, [account, getValues, reset])
 
-  const onSubmit = useCallback(async (data) => {
+  const onSubmit = useCallback(async (data: BankAccountForm) => {
     try {
       if (data.id) {
         const _data = { ...data }

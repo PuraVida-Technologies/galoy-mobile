@@ -1,4 +1,4 @@
-import { Wallet, WalletCurrency } from "@app/graphql/generated"
+import { WalletCurrency } from "@app/graphql/generated"
 import { testProps } from "@app/utils/testProps"
 import { Text } from "@rneui/themed"
 import { View, TouchableWithoutFeedback } from "react-native"
@@ -11,7 +11,7 @@ interface Props {
   btcWalletBalanceFormatted: string
   usdWalletBalanceFormatted: string
   LL: TranslationFunctions
-  chooseWallet: (wallet: Pick<Wallet, "id" | "walletCurrency">) => void
+  chooseWallet: (wallet: WalletCurrency) => void
 }
 
 const WalletsModal = ({
