@@ -4,6 +4,7 @@ import useStyles from "./styles"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { useCallback } from "react"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
+import { useNavigation } from "@react-navigation/native"
 
 interface Props {
   jumpTo: (x: string) => void
@@ -15,6 +16,7 @@ interface Props {
   next?: boolean
   allowNext?: boolean
   disableNext?: boolean
+  isStepOneAndTwoCompleted?: boolean
   loading?: boolean
   onNext?: () => void
   onPrevious?: () => void
@@ -46,14 +48,20 @@ const Stepper = ({
   next = true,
   disableNext,
   loading,
+  isStepOneAndTwoCompleted,
   onNext,
   onPrevious,
 }: Props) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
+  const navigation = useNavigation()
 
   const onPreviousPage = useCallback(async () => {
     try {
+      if (isStepOneAndTwoCompleted) {
+        navigation.goBack()
+        return
+      }
       await dismissKeyboard() // Dismiss keyboard before navigating to avoid layout issues
       if (previousPage) {
         jumpTo?.(previousPage as string)
@@ -62,7 +70,7 @@ const Stepper = ({
     } catch (error) {
       console.error("Error in onPreviousPage", error)
     }
-  }, [previousPage])
+  }, [previousPage, isStepOneAndTwoCompleted])
 
   const onNextPage = useCallback(async () => {
     try {

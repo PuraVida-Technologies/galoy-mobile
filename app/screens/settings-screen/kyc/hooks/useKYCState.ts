@@ -47,6 +47,7 @@ export type TabRoute = {
   title: string
   setState: (next: Partial<KYCState>) => void
   state: KYCState
+  isStepOneAndTwoCompleted?: boolean
 }
 
 export interface Route extends Omit<SceneRendererProps, "layout"> {
@@ -165,13 +166,6 @@ const useKYCState = () => {
     kyc?.isHighRisk,
   ])
 
-  const routes = [
-    { key: "docType", title: "Document Type", setState, state },
-    { key: "docProof", title: "Document Proof", setState, state },
-    { key: "user", title: "User", setState, state },
-    { key: "confirm", title: "Confirm Disclosures", setState, state },
-  ]
-
   useEffect(() => {
     if (kyc?.status === Status.Pending) {
       const isFrontSide = primaryIdentification?.files?.[0]
@@ -222,6 +216,25 @@ const useKYCState = () => {
       setIndex(index - 1)
     }
   }, [index, navigation, isStepOneAndTwoCompleted])
+
+  const routes = [
+    { key: "docType", title: "Document Type", setState, state, isStepOneAndTwoCompleted },
+    {
+      key: "docProof",
+      title: "Document Proof",
+      setState,
+      state,
+      isStepOneAndTwoCompleted,
+    },
+    { key: "user", title: "User", setState, state, isStepOneAndTwoCompleted },
+    {
+      key: "confirm",
+      title: "Confirm Disclosures",
+      setState,
+      state,
+      isStepOneAndTwoCompleted,
+    },
+  ]
 
   return {
     state: { state, routes, layout, index, isStepOneAndTwoCompleted },
