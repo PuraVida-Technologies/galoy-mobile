@@ -9,7 +9,8 @@ import FormContainer from "@app/components/form-input/form-container"
 import Input from "@app/components/form-input/form-input"
 import { Divider, Text } from "@rneui/themed" // Import useTheme
 import { IDType } from "./types"
-import { Route } from "./hooks/useKYCState"
+import { TabProps } from "./hooks/useKYCState"
+import { stepWidth } from "./hooks/utils"
 
 const data = [
   { label: "Drivers License", value: IDType.DriverLicense },
@@ -17,18 +18,18 @@ const data = [
   { label: "Other", value: IDType.Other },
 ]
 
-const DocumentType = ({ jumpTo, route }: Route) => {
+const DocumentType = ({ jumpTo, KYCDetails, setKYCDetails }: TabProps) => {
   const [doc, setDoc] = useState<string | undefined | null>("")
   const [otherDoc, setOtherDoc] = useState("")
   const styles = useStyles()
   const { LL } = useI18nContext()
 
   useEffect(() => {
-    setDoc(route?.state?.idDetails?.type)
-  }, [route?.state?.idDetails?.type])
+    setDoc(KYCDetails?.idDetails?.type)
+  }, [KYCDetails?.idDetails?.type])
 
   return (
-    <>
+    <View style={{ width: stepWidth }}>
       <View style={styles.container}>
         <View>
           <Text type={"h2"}>{LL.KYCScreen.documentType()}</Text>
@@ -41,8 +42,8 @@ const DocumentType = ({ jumpTo, route }: Route) => {
               value={doc as string}
               onChange={(item) => {
                 setDoc(item?.value)
-                route?.setState?.({
-                  idDetails: { ...route?.state?.idDetails, type: item?.value },
+                setKYCDetails?.({
+                  idDetails: { ...KYCDetails?.idDetails, type: item?.value },
                 })
               }}
             />
@@ -57,7 +58,7 @@ const DocumentType = ({ jumpTo, route }: Route) => {
             value={otherDoc}
             onChangeText={(item) => {
               setOtherDoc(item)
-              route?.setState?.({ IDType: item })
+              setKYCDetails?.({ IDType: item })
             }}
           />
         ) : (
@@ -66,10 +67,10 @@ const DocumentType = ({ jumpTo, route }: Route) => {
       </View>
       <Stepper
         jumpTo={jumpTo}
-        allowNext={Boolean(route?.state?.idDetails?.type)}
-        nextPage={"docProof"}
+        allowNext={Boolean(KYCDetails?.idDetails?.type)}
+        nextPage={1}
       />
-    </>
+    </View>
   )
 }
 

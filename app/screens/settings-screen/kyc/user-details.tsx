@@ -6,11 +6,12 @@ import Stepper from "./stepper"
 import Input from "@app/components/form-input/form-input"
 import { Divider, Text } from "@rneui/themed"
 import { View } from "react-native"
-import { Route } from "./hooks/useKYCState"
+import { TabProps } from "./hooks/useKYCState"
 import RadioGroup from "@app/components/radio-input/radio-input-group"
 import FormContainer from "@app/components/form-input/form-container"
 import useUserDetails from "./hooks/useUserDetails"
 import { Gender } from "@app/graphql/generated"
+import { stepWidth } from "./hooks/utils"
 
 const radioGroup = [
   { label: "Male", value: Gender.Male },
@@ -18,16 +19,21 @@ const radioGroup = [
   { label: "Other", value: Gender.Other, style: { marginLeft: 10 } },
 ]
 
-const UserDetails = ({ jumpTo, route }: Route) => {
+const UserDetails = ({
+  jumpTo,
+  isStepOneAndTwoCompleted,
+  KYCDetails,
+  setKYCDetails,
+}: TabProps) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
   const { state, actions } = useUserDetails({
-    state: route.state,
-    setState: route.setState,
+    KYCDetails,
+    setKYCDetails,
   })
 
   return (
-    <>
+    <View style={{ width: stepWidth }}>
       <View style={styles.container}>
         <View>
           <Text type={"h2"}>{LL.KYCScreen.userDetails()}</Text>
@@ -76,14 +82,14 @@ const UserDetails = ({ jumpTo, route }: Route) => {
       <Stepper
         jumpTo={jumpTo}
         allowNext={state.allowed && !state.loading}
-        disableNext={!state.allowed && state.loading}
-        isStepOneAndTwoCompleted={route.isStepOneAndTwoCompleted}
+        disableNext={!state.allowed || state.loading}
+        isStepOneAndTwoCompleted={isStepOneAndTwoCompleted}
         previous
-        previousPage={"docProof"}
-        nextPage={"confirm"}
+        previousPage={1}
+        nextPage={3}
         onNext={() => actions?.onConfirm()}
       />
-    </>
+    </View>
   )
 }
 

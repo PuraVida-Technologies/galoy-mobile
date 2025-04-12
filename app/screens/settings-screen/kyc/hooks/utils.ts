@@ -1,7 +1,8 @@
 import { TranslationFunctions } from "@app/i18n/i18n-types"
 import { PERMISSIONS, Permission } from "react-native-permissions"
-import { KYCState } from "./useKYCState"
+import { KYCDetails } from "./useKYCState"
 import { Document } from "../types"
+import { Dimensions } from "react-native"
 
 export const getPermissionMessage = (
   permission: Permission,
@@ -50,7 +51,7 @@ export const prepareIdDetails = (
   }
 }
 
-export const prepareKYCDetails = (state: KYCState) => {
+export const prepareKYCDetails = (state: KYCDetails) => {
   return {
     email: state?.idDetails?.email,
     phoneNumber: state?.idDetails?.phoneNumber,
@@ -67,7 +68,7 @@ export const prepareKYCDetails = (state: KYCState) => {
 }
 export const prepareUserDetails = (state: {
   idDetails: Pick<
-    KYCState["idDetails"],
+    KYCDetails["idDetails"],
     "email" | "phoneNumber" | "gender" | "status" | "id"
   >
 }) => {
@@ -79,3 +80,5 @@ export const prepareUserDetails = (state: {
     id: state?.idDetails?.id || "",
   }
 }
+
+export const stepWidth = Dimensions.get("window").width - 40

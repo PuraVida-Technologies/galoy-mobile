@@ -1,6 +1,10 @@
 import { makeStyles } from "@rneui/themed"
 
 const useStyles = makeStyles(({ colors }) => ({
+  loadingContainer: {
+    zIndex: 10,
+    backgroundColor: colors.backdropWhiter,
+  },
   displayNone: {
     display: "none",
   },

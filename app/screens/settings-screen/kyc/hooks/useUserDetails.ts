@@ -16,11 +16,11 @@ type UserDetails = {
 }
 
 interface Props {
-  state: UseKYCStateReturnType["state"]["state"]
-  setState: UseKYCStateReturnType["actions"]["setState"]
+  KYCDetails: UseKYCStateReturnType["state"]["KYCDetails"]
+  setKYCDetails: UseKYCStateReturnType["actions"]["setKYCDetails"]
 }
 
-const useUserDetails = ({ state, setState }: Props) => {
+const useUserDetails = ({ KYCDetails, setKYCDetails }: Props) => {
   const [userDetails, _setUserDetails] = useState<UserDetails>({
     gender: "MALE",
     phoneNumber: "",
@@ -42,19 +42,19 @@ const useUserDetails = ({ state, setState }: Props) => {
 
   useEffect(() => {
     setUserDetails({
-      email: state?.idDetails?.email,
-      phoneNumber: state?.idDetails?.phoneNumber,
-      gender: state?.idDetails?.gender,
+      email: KYCDetails?.idDetails?.email,
+      phoneNumber: KYCDetails?.idDetails?.phoneNumber,
+      gender: KYCDetails?.idDetails?.gender,
     })
-  }, [state?.idDetails])
+  }, [KYCDetails?.idDetails])
 
   const onConfirm = useCallback(async () => {
     setLoading(true)
 
     try {
-      setState({ idDetails: { ...state?.idDetails, ...stateRef.current } })
+      setKYCDetails({ idDetails: { ...KYCDetails?.idDetails, ...stateRef.current } })
       const input = prepareUserDetails({
-        idDetails: { id: state?.idDetails?.id, ...stateRef.current },
+        idDetails: { id: KYCDetails?.idDetails?.id, ...stateRef.current },
       })
 
       await updateKYCDetails({
@@ -69,7 +69,7 @@ const useUserDetails = ({ state, setState }: Props) => {
     }
 
     setLoading(false)
-  }, [state, userDetails, stateRef.current, updateKYCDetails])
+  }, [KYCDetails, userDetails, stateRef.current, updateKYCDetails])
 
   const allowed = useMemo(
     () => Boolean(userDetails?.email && userDetails?.phoneNumber && userDetails?.gender),
