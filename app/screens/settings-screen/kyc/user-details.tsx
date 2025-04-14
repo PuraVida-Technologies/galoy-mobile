@@ -77,13 +77,17 @@ const UserDetails = ({
                 label={LL.common.phoneNumber()}
                 placeholder={LL.common.phoneNumber()}
                 autoCapitalize="none"
-                keyboardType="numeric"
+                keyboardType="phone-pad"
                 maxLength={13}
                 {...field}
                 value={field.value!}
                 errorMessage={fieldState?.error?.message}
                 onChangeText={(text) => {
-                  field.onChange(text)
+                  // Remove all non-digit characters except '+'
+                  const digitsOnly = text.replace(/[^0-9]/g, "")
+                  // Prepend '+' if not already there
+                  const formatted = "+" + digitsOnly
+                  field.onChange(formatted)
                 }}
               />
             )}
