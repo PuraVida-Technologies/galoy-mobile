@@ -87,8 +87,8 @@ import { ContactsScreen } from "@app/screens/contacts-screen/contacts"
 import { ContactsDetailScreen } from "@app/screens/contacts-screen"
 import KYCScreen from "@app/screens/settings-screen/kyc-screen"
 import { SnipeDetailsScreen } from "@app/screens/snipe-flow/snipe-details-screen"
-import AddBankAccountScreen from "@app/screens/settings-screen/add-bank-account-screen";
-import BankAccountsScreen from "@app/screens/settings-screen/bank-accounts-screen";
+import AddBankAccountScreen from "@app/screens/settings-screen/add-bank-account-screen"
+import BankAccountsScreen from "@app/screens/settings-screen/bank-accounts-screen"
 import { SnipeConfirmationScreen } from "@app/screens/snipe-flow/snipe-confirmation-screen"
 
 const RootNavigator = createStackNavigator<RootStackParamList>()
@@ -110,6 +110,7 @@ export const RootStack = () => {
         headerStyle: styles.headerStyle,
         headerTitleStyle: styles.title,
         headerBackTitleStyle: styles.title,
+        headerTitleAlign: "center",
         headerTintColor: colors.black,
       }}
       initialRouteName={isAuthed ? "authenticationCheck" : "getStarted"}

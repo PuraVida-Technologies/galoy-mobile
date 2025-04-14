@@ -9,6 +9,15 @@ import { Controller } from "react-hook-form"
 import useBankAccount from "@app/modules/bank-account/hooks/useAddBankAccount"
 import { useRoute, RouteProp } from "@react-navigation/native"
 import { BankAccountCr } from "@app/graphql/generated"
+import {
+  validateAccountHolderName,
+  validateBankName,
+  validateCurrency,
+  validateIban,
+  validateNationalId,
+  validateSnip,
+  validateSwift,
+} from "@app/modules/bank-account/validators"
 
 const AddBankAccountScreen = () => {
   const styles = useStyles()
@@ -31,8 +40,7 @@ const AddBankAccountScreen = () => {
             name="accountHolderName"
             control={control}
             rules={{
-              required: "Account Holder Name is required",
-              maxLength: { value: 50, message: "Max length is 50 characters" },
+              validate: (value) => validateAccountHolderName(value, LL),
             }}
             render={({ field, fieldState }) => (
               <Input
@@ -52,8 +60,7 @@ const AddBankAccountScreen = () => {
             name="bankName"
             control={control}
             rules={{
-              required: "Bank Name is required",
-              maxLength: { value: 50, message: "Max length is 50 characters" },
+              validate: (value) => validateBankName(value, LL),
             }}
             render={({ field, fieldState }) => (
               <Input
@@ -72,11 +79,7 @@ const AddBankAccountScreen = () => {
             name="currency"
             control={control}
             rules={{
-              required: "Currency is required",
-              pattern: {
-                value: /^[A-Z]{3}$/,
-                message: "Currency must be a 3-letter ISO code (e.g., USD)",
-              },
+              validate: (value) => validateCurrency(value, LL),
             }}
             render={({ field, fieldState }) => (
               <Input
@@ -95,19 +98,15 @@ const AddBankAccountScreen = () => {
             name="iban"
             control={control}
             rules={{
-              required: "IBAN is required",
-              pattern: {
-                value: /^[A-Z0-9]{15,34}$/,
-                message: "IBAN must be 15 to 34 alphanumeric characters",
-              },
+              validate: (value) => validateIban(value, LL),
             }}
             render={({ field, fieldState }) => (
               <Input
                 {...testProps(LL.BankAccountScreen.iban())}
                 label={LL.BankAccountScreen.iban()}
                 placeholder={LL.BankAccountScreen.iban()}
-                autoCapitalize="none"
-                maxLength={34}
+                autoCapitalize="characters"
+                maxLength={22}
                 errorMessage={fieldState.error?.message}
                 {...field}
                 onChangeText={(text) => field.onChange(text)}
@@ -118,11 +117,7 @@ const AddBankAccountScreen = () => {
             name="nationalId"
             control={control}
             rules={{
-              required: "National ID is required",
-              pattern: {
-                value: /^[A-Z0-9]{6,20}$/,
-                message: "National ID must be 6 to 20 alphanumeric characters",
-              },
+              validate: (value) => validateNationalId(value, LL),
             }}
             render={({ field, fieldState }) => (
               <Input
@@ -131,6 +126,7 @@ const AddBankAccountScreen = () => {
                 placeholder={LL.BankAccountScreen.nationalId()}
                 autoCapitalize="none"
                 maxLength={20}
+                keyboardType="numeric"
                 errorMessage={fieldState.error?.message}
                 {...field}
                 onChangeText={(text) => field.onChange(text)}
@@ -141,16 +137,15 @@ const AddBankAccountScreen = () => {
             name="sinpeCode"
             control={control}
             rules={{
-              required: "Snipe Code is required",
-              maxLength: { value: 20, message: "Max length is 20 characters" },
+              validate: (value) => validateSnip(value, LL),
             }}
             render={({ field, fieldState }) => (
               <Input
                 {...testProps(LL.BankAccountScreen.sinpeCode())}
                 label={LL.BankAccountScreen.sinpeCode()}
                 placeholder={LL.BankAccountScreen.sinpeCode()}
-                autoCapitalize="none"
-                maxLength={20}
+                autoCapitalize="characters"
+                maxLength={17}
                 errorMessage={fieldState.error?.message}
                 {...field}
                 onChangeText={(text) => field.onChange(text)}
@@ -161,18 +156,14 @@ const AddBankAccountScreen = () => {
             name="swiftCode"
             control={control}
             rules={{
-              required: "SWIFT Code is required",
-              pattern: {
-                value: /^[A-Z0-9]{8,11}$/,
-                message: "SWIFT Code must be 8 or 11 alphanumeric characters",
-              },
+              validate: (value) => validateSwift(value, LL),
             }}
             render={({ field, fieldState }) => (
               <Input
                 {...testProps(LL.BankAccountScreen.swiftCode())}
                 label={LL.BankAccountScreen.swiftCode()}
                 placeholder={LL.BankAccountScreen.swiftCode()}
-                autoCapitalize="none"
+                autoCapitalize="characters"
                 maxLength={11}
                 errorMessage={fieldState.error?.message}
                 {...field}

@@ -16,12 +16,12 @@ export enum UploadingId {
   UploadingBack = "uploading-back",
 }
 interface Props {
-  state: UseKYCStateReturnType["state"]["state"]
-  setState: UseKYCStateReturnType["actions"]["setState"]
+  KYCDetails: UseKYCStateReturnType["state"]["KYCDetails"]
+  setKYCDetails: UseKYCStateReturnType["actions"]["setKYCDetails"]
   LL: TranslationFunctions
 }
 
-const useDocumentVerification = ({ state, setState, LL }: Props) => {
+const useDocumentVerification = ({ KYCDetails, setKYCDetails, LL }: Props) => {
   const [idFront, setIdFront] = useState<string | null>(null)
   const [idBack, setIdBack] = useState<string | null>(null)
   const actionSheetRef = useRef<ActionSheet>(null)
@@ -64,21 +64,21 @@ const useDocumentVerification = ({ state, setState, LL }: Props) => {
   )
 
   useEffect(() => {
-    let url = `identification/upload?documentType=${state?.idDetails?.type === IDType.Other ? state?.IDType : state?.idDetails?.type}`
+    let url = `identification/upload?documentType=${KYCDetails?.idDetails?.type === IDType.Other ? KYCDetails?.IDType : KYCDetails?.idDetails?.type}`
     if (isUploadingBack) {
       url = `${url}&kycId=${kycId.current}`
     }
     uploadingUrlRef.current = url
-  }, [isUploadingBack, state?.idDetails?.type, state?.IDType])
+  }, [isUploadingBack, KYCDetails?.idDetails?.type, KYCDetails?.IDType])
 
   useEffect(() => {
-    if (state?.idDetails?.front) {
-      setIdFront(state.idDetails.front)
+    if (KYCDetails?.idDetails?.front) {
+      setIdFront(KYCDetails.idDetails.front)
     }
-    if (state?.idDetails?.back) {
-      setIdBack(state.idDetails.back)
+    if (KYCDetails?.idDetails?.back) {
+      setIdBack(KYCDetails.idDetails.back)
     }
-  }, [state])
+  }, [KYCDetails])
 
   const { checkPermission } = usePermission({
     shouldRequestPermissionOnLoad: false,
@@ -100,15 +100,16 @@ const useDocumentVerification = ({ state, setState, LL }: Props) => {
         })
         kycId.current = res?.data?.id
         const idDetails = prepareIdDetails({
+          ...KYCDetails?.idDetails,
           ...res?.data,
-          type: state?.idDetails?.type,
+          type: KYCDetails?.idDetails?.type,
         })
         if (actionSheetRef.current?.props.id === UploadingId.UploadingFront) {
           idDetails.front = image.path
         } else if (actionSheetRef.current?.props.id === UploadingId.UploadingBack) {
           idDetails.back = image.path
         }
-        setState({
+        setKYCDetails({
           idDetails,
         })
         return res
@@ -117,7 +118,7 @@ const useDocumentVerification = ({ state, setState, LL }: Props) => {
         throw new Error("Error uploading document")
       }
     },
-    [setState, state?.idDetails?.type],
+    [setKYCDetails, KYCDetails?.idDetails?.type],
   )
 
   const handleCropImageResponse = useCallback(
@@ -201,7 +202,7 @@ const useDocumentVerification = ({ state, setState, LL }: Props) => {
       } else if (type === "library") {
         const permission =
           Platform.OS === "android"
-            ? PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
+            ? PERMISSIONS.ANDROID.READ_MEDIA_IMAGES
             : PERMISSIONS.IOS.PHOTO_LIBRARY
         checkPermission(permission).then((res) => {
           if ([PermissionStatus.GRANTED, PermissionStatus.LIMITED].includes(res!)) {

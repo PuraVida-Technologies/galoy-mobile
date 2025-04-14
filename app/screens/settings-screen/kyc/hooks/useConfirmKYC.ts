@@ -15,11 +15,11 @@ gql`
 `
 
 interface Props {
-  state: UseKYCStateReturnType["state"]["state"]
-  setState: UseKYCStateReturnType["actions"]["setState"]
+  KYCDetails: UseKYCStateReturnType["state"]["KYCDetails"]
+  setKYCDetails: UseKYCStateReturnType["actions"]["setKYCDetails"]
 }
 
-const useConfirmKYC = ({ state, setState }: Props) => {
+const useConfirmKYC = ({ KYCDetails, setKYCDetails }: Props) => {
   const [isPoliticallyExposed, setPoliticallyExposed] = useState("yes")
   const [isHighRisk, setIsHighRisk] = useState("yes")
   const [loading, setLoading] = useState(false)
@@ -27,25 +27,25 @@ const useConfirmKYC = ({ state, setState }: Props) => {
     refetchQueries: [KycDetailsDocument],
   })
   const navigation = useNavigation()
-  const stateRef = useRef(state)
+  const stateRef = useRef(KYCDetails)
 
   useEffect(() => {
-    setPoliticallyExposed(state?.idDetails?.isPoliticallyExposed ? "yes" : "no")
-    setIsHighRisk(state?.idDetails?.isHighRisk ? "yes" : "no")
-    stateRef.current = state
-  }, [state])
+    setPoliticallyExposed(KYCDetails?.idDetails?.isPoliticallyExposed)
+    setIsHighRisk(KYCDetails?.idDetails?.isHighRisk)
+    stateRef.current = KYCDetails
+  }, [])
 
-  const onPepChange = (value: string) => {
-    setPoliticallyExposed(value)
-    setState({
-      idDetails: { ...state?.idDetails, isPoliticallyExposed: value },
+  const onPepChange = (value?: string) => {
+    setPoliticallyExposed(value || "no")
+    setKYCDetails({
+      idDetails: { ...KYCDetails?.idDetails, isPoliticallyExposed: value || "no" },
     })
   }
 
-  const onHighRiskChange = (value: string) => {
-    setIsHighRisk(value)
-    setState({
-      idDetails: { ...state?.idDetails, isHighRisk },
+  const onHighRiskChange = (value?: string) => {
+    setIsHighRisk(value || "no")
+    setKYCDetails({
+      idDetails: { ...KYCDetails?.idDetails, isHighRisk: value || "no" },
     })
   }
 
@@ -66,7 +66,7 @@ const useConfirmKYC = ({ state, setState }: Props) => {
 
     setLoading(false)
     navigation.goBack()
-  }, [state, updateKYCDetails])
+  }, [KYCDetails, updateKYCDetails])
 
   return {
     state: { isPoliticallyExposed, isHighRisk, loading },
