@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useMemo } from "react"
-import { RefreshControl, View, Alert, SafeAreaView } from "react-native"
+import { RefreshControl, View, Alert } from "react-native"
 import {
   ScrollView,
   TouchableOpacity,
@@ -22,14 +22,18 @@ import { StableSatsModal } from "@app/components/stablesats-modal"
 import WalletOverview from "@app/components/wallet-overview/wallet-overview"
 import {
   AccountLevel,
+  Status,
   TransactionFragment,
   TxDirection,
   TxStatus,
   useHasPromptedSetDefaultAccountQuery,
   useHomeAuthedQuery,
   useHomeUnauthedQuery,
+  useBankAccountsQuery,
   useRealtimePriceQuery,
   useSettingsScreenQuery,
+  useKycDetailsQuery,
+  useColorSchemeQuery,
 } from "@app/graphql/generated"
 import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { getErrorMessages } from "@app/graphql/utils"
@@ -98,22 +102,60 @@ gql`
 
 export const HomeScreen: React.FC = () => {
   const [isVisible, setIsVisible] = React.useState(false)
+  const colorSchemeData = useColorSchemeQuery()
   const { LL } = useI18nContext()
-  const { data } = useSettingsScreenQuery()
-  const styles = useStyles()
+  const { data, loading: kycLoading } = useKycDetailsQuery({
+    fetchPolicy: "network-only",
+  })
+  const { data: bankAccountData } = useBankAccountsQuery({
+    fetchPolicy: "network-only",
+  })
+  const styles = useStyles({ theme: colorSchemeData.data?.colorScheme })
+
+  const awaitingApproval = useMemo(() => {
+    const kyc = data?.me?.kyc
+    if (!kycLoading) {
+      return (
+        Boolean(
+          kyc?.primaryIdentification?.type &&
+            kyc?.primaryIdentification?.files &&
+            kyc?.primaryIdentification?.files?.length > 0 &&
+            kyc?.phoneNumber &&
+            kyc?.email &&
+            kyc?.gender &&
+            kyc?.isPoliticallyExposed !== null &&
+            kyc?.isPoliticallyExposed?.toString() &&
+            kyc?.isHighRisk !== null &&
+            kyc?.isHighRisk?.toString(),
+        ) && kyc?.status !== Status.Approved
+      )
+    }
+    return false
+  }, [data?.me?.kyc, kycLoading])
 
   const onSnipeIBANPress = React.useCallback(() => {
     const message =
       data?.me?.kyc?.status === "PENDING"
         ? LL.TransferActions.sinpeIBANTransfersKYCPendingDescription()
-        : data?.me?.kyc?.status !== "APPROVED"
-          ? LL.TransferActions.sinpeIBANTransfersKYCDescription()
-          : LL.TransferActions.sinpeIBANTransfersBankDescription()
+        : data?.me?.kyc?.status === "APPROVED"
+          ? LL.TransferActions.sinpeIBANTransfersBankDescription()
+          : LL.TransferActions.sinpeIBANTransfersKYCDescription()
     if (data?.me?.kyc?.status !== "APPROVED") {
       Alert.alert(LL.TransferActions.sinpeIBANTransfers(), message, [
         {
           text: LL.common.confirm(),
-          onPress: () => navigation.navigate("KYCScreen"),
+          onPress: () => (awaitingApproval ? "" : navigation.navigate("KYCScreen")),
+        },
+        {
+          text: LL.common.cancel(),
+          style: "cancel",
+        },
+      ])
+    } else if (bankAccountData?.getMyBankAccounts?.length === 0) {
+      Alert.alert(LL.TransferActions.sinpeIBANTransfers(), message, [
+        {
+          text: LL.common.confirm(),
+          onPress: () => navigation.navigate("addBankAccount"),
         },
         {
           text: LL.common.cancel(),
@@ -123,7 +165,7 @@ export const HomeScreen: React.FC = () => {
     } else {
       navigation.navigate("snipeDetails")
     }
-  }, [data])
+  }, [data, bankAccountData])
 
   const list = [
     {
@@ -357,19 +399,20 @@ export const HomeScreen: React.FC = () => {
         WAIT_TIME_TO_PROMPT_USER,
       )
     }
+    return () => clearTimeout(timeout)
   }, [])
 
-  if (
-    !isIos ||
-    dataUnauthed?.globals?.network !== "mainnet" ||
-    dataAuthed?.me?.defaultAccount.level === AccountLevel.Two
-  ) {
-    buttons.unshift({
-      title: LL.common.transfer(),
-      target: "conversionDetails" as Target,
-      icon: "transfer" as IconNamesType,
-    })
-  }
+  // if (
+  //   !isIos ||
+  //   dataUnauthed?.globals?.network !== "mainnet" ||
+  //   dataAuthed?.me?.defaultAccount.level === AccountLevel.Two
+  // ) {
+  buttons.unshift({
+    title: LL.common.transfer(),
+    target: "conversionDetails" as Target,
+    icon: "transfer" as IconNamesType,
+  })
+  // }
 
   const AccountCreationNeededModal = (
     <Modal
@@ -521,7 +564,7 @@ export const HomeScreen: React.FC = () => {
   )
 }
 
-const useStyles = makeStyles(({ colors }) => ({
+const useStyles = makeStyles(({ colors }, { theme }: { theme?: string }) => ({
   scrollViewContainer: {
     paddingHorizontal: 20,
     paddingBottom: 20,
@@ -598,7 +641,7 @@ const useStyles = makeStyles(({ colors }) => ({
     marginHorizontal: 20,
   },
   bottomSheetContainer: {
-    marginBottom: 20,
+    // marginBottom: 20,
   },
   listContainer: {
     borderRadius: 16,
@@ -608,6 +651,7 @@ const useStyles = makeStyles(({ colors }) => ({
     borderBottomWidth: 1,
     borderBottomColor: colors.grey4,
     alignItems: "center",
+    backgroundColor: theme === "light" ? colors._white : colors.grey5,
   },
   listItemSubtitle: {
     color: colors.grey3,

@@ -10,19 +10,29 @@ const useStyles = makeStyles(({ colors }) => ({
     borderRadius: 8,
     minHeight: 48,
   },
+  innerContainer: {
+    backgroundColor: colors.background,
+  },
   placeholderStyle: {
     fontSize: 16,
-    color: colors.grey3,
+    color: colors.grey3, // Keep the existing placeholder color
   },
   selectedTextStyle: {
     fontSize: 16,
+    color: colors.text, // Dynamically set the text color based on the theme
   },
   iconStyle: {
     width: 20,
     height: 20,
+    tintColor: colors.text, // Dynamically set the icon color based on the theme
+  },
+  itemTextStyle: {
+    color: colors.text, // Dynamically set the item text color based on the theme
   },
   inputSearchStyle: {
     fontSize: 16,
+    color: colors.text, // Dynamically set the search input text color
+    backgroundColor: colors.background, // Dynamically set the search input background color
   },
 }))
 

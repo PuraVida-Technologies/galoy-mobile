@@ -1,14 +1,15 @@
 import { gql } from "@apollo/client"
 import {
+  BankAccountCr,
+  BankAccountCurrencies,
   useAddBankAccountCrMutation,
-  useRemoveMyBankAccountMutation,
   useUpdateBankAccountCrMutation,
 } from "@app/graphql/generated"
 import { useCallback, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { useNavigation } from "@react-navigation/native"
-import { Alert } from "react-native"
+import { TranslationFunctions } from "@app/i18n/i18n-types"
 
 gql`
   mutation addBankAccountCR($input: AddBankAccountCRDTO!) {
@@ -29,6 +30,22 @@ gql`
   }
 `
 
+interface Props {
+  account?: BankAccountCr
+  LL: TranslationFunctions
+}
+
+type BankAccountForm = {
+  id?: string
+  accountHolderName: string
+  bankName: string
+  currency: BankAccountCurrencies
+  iban: string
+  nationalId: string
+  sinpeCode: string
+  swiftCode: string
+}
+
 const defaultValues = {
   accountHolderName: "",
   bankName: "",
@@ -39,7 +56,7 @@ const defaultValues = {
   nationalId: "",
 }
 
-const useAddBankAccount = ({ account, LL }) => {
+const useAddBankAccount = ({ account }: Props) => {
   const navigation = useNavigation()
   const [addBankAccountCr, { loading: addingAccount }] = useAddBankAccountCrMutation({
     refetchQueries: ["bankAccounts"],
@@ -67,7 +84,7 @@ const useAddBankAccount = ({ account, LL }) => {
     }
   }, [account, getValues, reset])
 
-  const onSubmit = useCallback(async (data) => {
+  const onSubmit = useCallback(async (data: BankAccountForm) => {
     try {
       if (data.id) {
         const _data = { ...data }

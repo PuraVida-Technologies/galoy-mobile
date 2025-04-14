@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
-import { View } from "react-native"
 import { Dropdown as RNDropDown } from "react-native-element-dropdown"
 import useStyles from "./styles"
+import { useTheme } from "@rneui/themed"
 
 export type Options = {
   label: string
@@ -21,8 +21,9 @@ export const Dropdown: React.FC<MenuSelectProps> = ({
   value: selectedValue,
   onChange,
 }) => {
-  const [value, setValue] = useState(null)
+  const [value, setValue] = useState<string | undefined | null>(null)
   const styles = useStyles()
+  const { theme } = useTheme()
 
   useEffect(() => {
     setValue(selectedValue)
@@ -32,9 +33,12 @@ export const Dropdown: React.FC<MenuSelectProps> = ({
     <>
       <RNDropDown
         style={styles.containerStyle}
+        containerStyle={styles.innerContainer}
         placeholderStyle={styles.placeholderStyle}
+        activeColor={theme.colors.grey5}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
+        itemTextStyle={styles.itemTextStyle}
         iconStyle={styles.iconStyle}
         data={data}
         maxHeight={300}

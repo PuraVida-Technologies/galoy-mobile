@@ -6,8 +6,7 @@ import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { Screen } from "@app/components/screen"
 import { WalletCurrency } from "@app/graphql/generated"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import { DisplayCurrency } from "@app/types/amounts"
-import { RouteProp, useNavigation } from "@react-navigation/native"
+import { RouteProp } from "@react-navigation/native"
 import useStyles from "./styles/snipe-confirmation"
 import useSnipeConfirmation from "./hooks/useSnipeConfirmation"
 import { AnimatedRollingNumber } from "react-native-animated-rolling-numbers"
@@ -17,8 +16,7 @@ import {
 } from "@app/components/success-animation"
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 import { testProps } from "@app/utils/testProps"
-import { Icon } from "@rneui/base"
-import { useTheme, Text } from "@rneui/themed"
+import { Text } from "@rneui/themed"
 
 type Props = {
   route: RouteProp<RootStackParamList, "snipeConfirmation">
@@ -26,12 +24,8 @@ type Props = {
 
 export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
   const styles = useStyles()
-  const {
-    theme: { colors },
-  } = useTheme()
 
   const { state, actions } = useSnipeConfirmation({ route })
-  const navigation = useNavigation()
 
   const {
     LL,
@@ -39,7 +33,6 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
     bankAccount,
     fromAccountBalance,
     isLoading,
-    errorMessage,
     canWithdraw,
     fiatSymbol,
   } = state
@@ -78,10 +71,10 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
             <Text style={styles.snipeInfoFieldTitle}>
               {LL.SnipeConfirmationScreen.amount()}
             </Text>
-            <View style={{ flexDirection: "row" }}>
+            <View style={styles.flexRow}>
               <Text style={styles.snipeInfoFieldValue}>{fiatSymbol} </Text>
               <AnimatedRollingNumber
-                value={state?.sellAmount}
+                value={Number(state?.sellAmount)}
                 useGrouping
                 compactToFixed={2}
                 textStyle={styles.snipeInfoFieldValue}
@@ -89,7 +82,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
               <Text style={styles.snipeInfoFieldValue}></Text>
             </View>
             {state.fromWalletCurrency === WalletCurrency.Btc && (
-              <View style={{ flexDirection: "row" }}>
+              <View style={styles.flexRow}>
                 <Text style={styles.snipeInfoFieldTitle}>At {fiatSymbol}</Text>
                 <AnimatedRollingNumber
                   value={Number(state?.btcPrice)}
@@ -102,11 +95,6 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
             )}
           </View>
         </View>
-        {errorMessage && (
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>{errorMessage}</Text>
-          </View>
-        )}
       </ScrollView>
       <View style={[styles.snipeInfoCard, styles.totalAmountContainer]}>
         <View>
@@ -117,7 +105,7 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
               {LL.common.includes().slice(0, 3)}. {fiatSymbol}
             </Text>
             <AnimatedRollingNumber
-              value={state.feesAmount}
+              value={Number(state.feesAmount)}
               useGrouping
               compactToFixed={2}
               textStyle={styles.snipeInfoFieldTitle}
@@ -128,30 +116,13 @@ export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
         <View style={styles.sellAmount}>
           <Text style={styles.snipeInfoFieldValue}> {fiatSymbol}</Text>
           <AnimatedRollingNumber
-            value={state.totalAmount}
+            value={Number(state.totalAmount)}
             useGrouping
             compactToFixed={2}
             textStyle={styles.snipeInfoFieldValue}
           />
         </View>
       </View>
-      {/* <View style={styles.remainingLimitContainer}>
-        <Text style={styles.primaryCurrencySymbol}>{state.remainingLimit}</Text>
-        <Text style={styles.fieldTitleText}>
-          {LL.SendBitcoinScreen.remainingDailyLimit()}
-        </Text>
-        <Icon
-          name={"info-outline"}
-          size={16}
-          color={colors.grey1}
-          // onPress={() => navigation.navigate("transactionLimitsScreen")}
-        />
-      </View> */}
-      {/* {state.amountFieldError && (
-        <View style={styles.errorContainer}>
-          <Text color={colors.error}>{state.amountFieldError}</Text>
-        </View>
-      )} */}
       <GaloyPrimaryButton
         title={LL.common.withdraw()}
         containerStyle={styles.buttonContainer}

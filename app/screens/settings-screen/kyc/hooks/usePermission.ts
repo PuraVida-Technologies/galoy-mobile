@@ -9,9 +9,9 @@ import {
 } from "react-native-permissions"
 import { getPermissionMessage } from "./utils"
 import { useI18nContext } from "@app/i18n/i18n-react"
+import { PermissionStatus } from "../types"
 
 interface Props {
-  cameraState?: any
   redirectTo?: string
   shouldRedirect?: boolean
   checkPermissionOnLoad?: boolean
@@ -19,8 +19,6 @@ interface Props {
   permission?: Permission
   onDecline?: () => void
 }
-
-let props: any = {}
 
 const OldAlert = Alert.alert
 
@@ -32,34 +30,36 @@ Alert.alert = (...args) => {
   })
 }
 
-const usePermission = ({ onDecline }: Props) => {
+const usePermission = ({ onDecline, shouldRequestPermissionOnLoad }: Props) => {
   const { LL } = useI18nContext()
 
   const device =
     Platform.OS === "android" ? PERMISSIONS.ANDROID.CAMERA : PERMISSIONS.IOS.CAMERA
+
   useEffect(() => {
-    // to get updated stale props
-    props = { onDecline }
-  }, [onDecline])
+    if (shouldRequestPermissionOnLoad) {
+      checkPermission()
+    }
+  }, [onDecline, shouldRequestPermissionOnLoad])
 
   const handelRedirection = useCallback(() => {
-    props?.onDecline?.()
-  }, [props?.onDecline])
+    onDecline?.()
+  }, [onDecline])
 
   const handelPermissionInfo = useCallback(
-    (permission) => {
+    (permission: Permission) => {
       const message = getPermissionMessage(permission, LL)
 
       Alert.alert(message?.title, message?.message, [
         {
-          text: "Agree",
+          text: "Open Settings",
           onPress: () => {
             handelRedirection()
             Linking.openSettings()
           },
         },
         {
-          text: "Decline",
+          text: "Cancel",
           onPress: () => handelRedirection(),
           style: "cancel",
         },
@@ -69,45 +69,53 @@ const usePermission = ({ onDecline }: Props) => {
   )
 
   const requestPermission = useCallback(
-    (device: Permission) => {
-      return request(device).then(async (res: any) => {
-        if ([RESULTS.BLOCKED, RESULTS.DENIED].includes(res)) {
-          handelPermissionInfo(device)
-        }
-        return res
-      })
+    async (device: Permission) => {
+      const res = await request(device)
+      if (res === RESULTS.BLOCKED) {
+        handelPermissionInfo(device)
+      }
+      return res === RESULTS.GRANTED
+        ? PermissionStatus.GRANTED
+        : res === RESULTS.LIMITED
+          ? PermissionStatus.LIMITED
+          : res === RESULTS.DENIED
+            ? PermissionStatus.DENIED
+            : null
     },
-    [handelPermissionInfo, request],
+    [handelPermissionInfo],
   )
 
   const checkPermission = useCallback(
-    async (permission?: Permission) => {
+    async (permission?: Permission): Promise<PermissionStatus | null> => {
       try {
         const result = await check(permission || device)
         switch (result) {
           case RESULTS.UNAVAILABLE:
-            return result
+            Alert.alert(
+              "Permission Unavailable",
+              "This permission is not available on your device.",
+            )
+            return PermissionStatus.UNAVAILABLE
           case RESULTS.DENIED:
-            if (Platform.OS === "ios") {
-              await requestPermission(permission || device)
-            } else {
-              handelPermissionInfo(permission || device)
-            }
-            return result
+            return await requestPermission(permission || device)
           case RESULTS.LIMITED:
-            return result
+            return PermissionStatus.LIMITED
           case RESULTS.GRANTED:
-            return result
+            return PermissionStatus.GRANTED
           case RESULTS.BLOCKED:
             handelPermissionInfo(permission || device)
-            return result
+            return PermissionStatus.BLOCKED
         }
       } catch (error) {
-        console.log("error", error)
-        return error
+        console.log("Permission check error:", error)
+        Alert.alert(
+          "Permission Error",
+          "An unexpected error occurred while checking permissions. Please try again.",
+        )
+        return null
       }
     },
-    [requestPermission, handelPermissionInfo, check],
+    [requestPermission, handelPermissionInfo],
   )
 
   return {

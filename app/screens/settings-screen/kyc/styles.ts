@@ -1,8 +1,18 @@
 import { makeStyles } from "@rneui/themed"
 
 const useStyles = makeStyles(({ colors }) => ({
+  loadingContainer: {
+    zIndex: 10,
+    backgroundColor: colors.backdropWhiter,
+  },
+  displayNone: {
+    display: "none",
+  },
+  headerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   screenStyle: {
-    padding: 20,
     flex: 1,
   },
   safeArea: {
@@ -10,6 +20,7 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.white,
   },
   container: {
+    padding: 20,
     flex: 1,
   },
   titleContainer: {
@@ -22,12 +33,17 @@ const useStyles = makeStyles(({ colors }) => ({
   flexContainer: {
     display: "flex",
     flexDirection: "row",
+    justifyContent: "space-between",
     paddingTop: 20,
+    paddingHorizontal: 20,
     backgroundColor: colors.white,
   },
   buttonContainerStyle: {
     paddingBottom: 0,
     flex: 1,
+  },
+  perviousButtonContainer: {
+    marginRight: 10,
   },
   buttonStyle: {
     flexGrow: 1,
@@ -38,19 +54,11 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   previousStyle: {
     backgroundColor: colors.grey4,
-    marginRight: 10,
-  },
-  buttonText: {
-    color: colors.white,
-    fontSize: 18,
-    paddingTop: 0,
-    paddingBottom: 0,
-    paddingRight: 0,
-    paddingLeft: 0,
   },
   disabled: {
     backgroundColor: colors.grey4,
     color: colors.grey1,
+    opacity: 0.8,
   },
   buttonInActiveText: {
     color: colors.grey1,
@@ -72,6 +80,9 @@ const useStyles = makeStyles(({ colors }) => ({
     paddingRight: 0,
     paddingLeft: 0,
   },
+  documentTypeDropDown: {
+    height: 48, // needed because flex: 1 will not work in tab view
+  },
   pickerContainer: {
     backgroundColor: colors.grey4,
     padding: 16,
@@ -81,8 +92,12 @@ const useStyles = makeStyles(({ colors }) => ({
     alignItems: "center",
     marginBottom: 20,
   },
+  image: { width: "100%", height: 200 },
   disclosuresText: {
     marginBottom: 10,
+  },
+  errorText: {
+    color: colors.error,
   },
 }))
 

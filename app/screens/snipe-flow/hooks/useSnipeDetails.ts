@@ -1,21 +1,25 @@
 import { gql } from "@apollo/client"
 import {
+  BankAccountCr,
   BankAccountCurrencies,
   PaymentSystem,
   useBankAccountsQuery,
   useConversionScreenQuery,
   useGetWithdrawalLimitsQuery,
   useRealtimePriceQuery,
-  Wallet,
   WalletCurrency,
 } from "@app/graphql/generated"
-import { useIsAuthed } from "@app/graphql/is-authed-context"
 import { getBtcWallet, getUsdWallet } from "@app/graphql/wallets-utils"
 import { usePriceConversion } from "@app/hooks"
 import { useDisplayCurrency } from "@app/hooks/use-display-currency"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
-import { DisplayCurrency, toBtcMoneyAmount, toUsdMoneyAmount } from "@app/types/amounts"
+import {
+  DisplayCurrency,
+  toBtcMoneyAmount,
+  toUsdMoneyAmount,
+  WalletOrDisplayCurrency,
+} from "@app/types/amounts"
 import { NavigationProp, useNavigation } from "@react-navigation/native"
 import { useCallback, useEffect, useMemo, useState } from "react"
 
@@ -38,13 +42,14 @@ export interface BankAccountDetails {
   type: string
   countryCode: string
   data: {
+    id: string
     bankName: string
     accountHolderName: string
     nationalId: string
     iban: string
     sinpeCode: string
     swiftCode: string
-    currency: string
+    currency: BankAccountCurrencies
   }
 }
 
@@ -53,9 +58,9 @@ const useSnipeDetails = () => {
   const [openFromSelection, setFromSelection] = useState<boolean>(false)
   const [paymentDetail, setPaymentDetail] = useState(null)
   const [openBankSelection, setOpenBankSelection] = useState<boolean>(false)
-  const [selectedBank, setSelectedBank] = useState<BankAccountDetails | null>(null)
+  const [selectedBank, setSelectedBank] = useState<BankAccountCr | null>(null)
   const [searchText, setSearchText] = useState<string>("")
-  const [matchingAccounts, setMatchingAccounts] = useState<BankAccountDetails[]>([])
+  const [matchingAccounts, setMatchingAccounts] = useState<BankAccountCr[]>([])
   const [amount, setAmount] = useState<string>("")
 
   const navigation = useNavigation<NavigationProp<RootStackParamList, "snipeDetails">>()
@@ -83,13 +88,8 @@ const useSnipeDetails = () => {
     returnPartialData: true,
   })
 
-  const {
-    formatDisplayAndWalletAmount,
-    moneyAmountToMajorUnitOrSats,
-    displayCurrency,
-    formatMoneyAmount,
-    fiatSymbol,
-  } = useDisplayCurrency()
+  const { formatDisplayAndWalletAmount, displayCurrency, formatMoneyAmount, fiatSymbol } =
+    useDisplayCurrency()
 
   const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
   const usdWallet = getUsdWallet(data?.me?.defaultAccount?.wallets)
@@ -143,7 +143,7 @@ const useSnipeDetails = () => {
       fromWalletCurrency: from,
       moneyAmount: {
         amount: Number(amount),
-        currency: displayCurrency,
+        currency: displayCurrency as WalletOrDisplayCurrency,
         currencyCode: displayCurrency,
       },
       bankAccount: {
@@ -191,7 +191,7 @@ const useSnipeDetails = () => {
     [bankAccounts, searchText],
   )
 
-  const chooseWallet = (wallet: Pick<Wallet, "id" | "walletCurrency">) => {
+  const chooseWallet = (wallet: WalletCurrency) => {
     setFrom(wallet)
     toggleModal()
   }
@@ -201,7 +201,7 @@ const useSnipeDetails = () => {
     setMatchingAccounts(bankAccounts)
   }, [bankAccounts])
 
-  const onBankAccountSelection = useCallback((account) => {
+  const onBankAccountSelection = useCallback((account: BankAccountCr) => {
     setOpenBankSelection(false)
     setSelectedBank(account)
     refetch()
@@ -234,7 +234,7 @@ const useSnipeDetails = () => {
   const minimumAmountText = formatMoneyAmount({
     moneyAmount: {
       amount: minimumWithdrawal,
-      currency: displayCurrency,
+      currency: displayCurrency as WalletOrDisplayCurrency,
       currencyCode: displayCurrency,
     },
   })
@@ -244,7 +244,7 @@ const useSnipeDetails = () => {
       return LL.SendBitcoinScreen.amountMinimumLimit({
         limit: minimumAmountText,
       })
-    } else if (parseFloat(formattedAmount?.replace(/\,/g, "")) < parseFloat(amount)) {
+    } else if (parseFloat(formattedAmount?.replace(/,/g, "")) < parseFloat(amount)) {
       return LL.SendBitcoinScreen.amountExceed({
         balance: fromWalletBalanceFormatted,
       })

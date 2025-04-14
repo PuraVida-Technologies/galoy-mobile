@@ -7398,7 +7398,7 @@ type RootTranslation = {
 		 */
 		swiftCode: string
 		/**
-		 * S​I​N​P​ ​C​o​d​e
+		 * S​I​N​P​E​ ​C​o​d​e
 		 */
 		sinpeCode: string
 		/**
@@ -7417,6 +7417,72 @@ type RootTranslation = {
 		 * T​h​i​s​ ​a​c​t​i​o​n​ ​c​a​n​n​o​t​ ​b​e​ ​u​n​d​o​n​e​.
 		 */
 		confirmRemoveBankAccountContent: string
+		validation: {
+			/**
+			 * I​B​A​N​ ​m​u​s​t​ ​b​e​ ​e​x​a​c​t​l​y​ ​2​2​ ​c​h​a​r​a​c​t​e​r​s​ ​l​o​n​g​.
+			 */
+			ibanLength: string
+			/**
+			 * I​B​A​N​ ​m​u​s​t​ ​s​t​a​r​t​ ​w​i​t​h​ ​'​C​R​'​.
+			 */
+			ibanStart: string
+			/**
+			 * I​B​A​N​ ​m​u​s​t​ ​p​a​s​s​ ​t​h​e​ ​m​o​d​-​9​7​ ​c​h​e​c​k​.
+			 */
+			ibanMod97: string
+			/**
+			 * I​B​A​N​ ​i​s​ ​r​e​q​u​i​r​e​d​.
+			 */
+			ibanRequired: string
+			/**
+			 * S​W​I​F​T​ ​m​u​s​t​ ​b​e​ ​i​n​ ​f​o​r​m​a​t​:​ ​4​ ​l​e​t​t​e​r​s​,​ ​"​C​R​"​,​ ​2​ ​a​l​p​h​a​n​u​m​e​r​i​c​s​,​ ​o​p​t​i​o​n​a​l​ ​3​ ​m​o​r​e​.
+			 */
+			swiftFormat: string
+			/**
+			 * S​W​I​F​T​ ​i​s​ ​r​e​q​u​i​r​e​d​.
+			 */
+			swiftRequired: string
+			/**
+			 * S​I​N​P​E​ ​i​s​ ​r​e​q​u​i​r​e​d​.
+			 */
+			sinpeRequired: string
+			/**
+			 * S​N​I​P​ ​m​u​s​t​ ​b​e​ ​e​x​a​c​t​l​y​ ​1​7​ ​d​i​g​i​t​s​.
+			 */
+			sinpeFormat: string
+			/**
+			 * N​a​t​i​o​n​a​l​ ​I​D​ ​i​s​ ​r​e​q​u​i​r​e​d​.
+			 */
+			nationalIdRequired: string
+			/**
+			 * N​a​t​i​o​n​a​l​ ​I​D​ ​m​u​s​t​ ​c​o​n​t​a​i​n​ ​d​i​g​i​t​s​ ​o​n​l​y​.
+			 */
+			nationalIdFormat: string
+			/**
+			 * A​c​c​o​u​n​t​ ​H​o​l​d​e​r​ ​N​a​m​e​ ​i​s​ ​r​e​q​u​i​r​e​d​.
+			 */
+			accountHolderNameRequired: string
+			/**
+			 * A​c​c​o​u​n​t​ ​H​o​l​d​e​r​ ​N​a​m​e​ ​m​u​s​t​ ​n​o​t​ ​e​x​c​e​e​d​ ​5​0​ ​d​i​g​i​t​s​.
+			 */
+			accountHolderNameLength: string
+			/**
+			 * B​a​n​k​ ​N​a​m​e​ ​i​s​ ​r​e​q​u​i​r​e​d​.
+			 */
+			bankNameRequired: string
+			/**
+			 * B​a​n​k​ ​N​a​m​e​ ​m​u​s​t​ ​n​o​t​ ​e​x​c​e​e​d​ ​5​0​ ​d​i​g​i​t​s​.
+			 */
+			bankNameLength: string
+			/**
+			 * C​u​r​r​e​n​c​y​ ​i​s​ ​r​e​q​u​i​r​e​d​.
+			 */
+			currencyRequired: string
+			/**
+			 * C​u​r​r​e​n​c​y​ ​m​u​s​t​ ​b​e​ ​a​ ​3​-​l​e​t​t​e​r​ ​I​S​O​ ​c​o​d​e​ ​(​e​.​g​.​,​ ​U​S​D​)
+			 */
+			currencyFormat: string
+		}
 	}
 	NotificationSettingsScreen: {
 		/**
@@ -8302,6 +8368,10 @@ type RootTranslation = {
 		 * B​a​n​k​ ​A​c​c​o​u​n​t
 		 */
 		bankAccount: string
+		/**
+		 * K​Y​C​ ​i​s​ ​p​e​n​d​i​n​g
+		 */
+		kycIsPending: string
 		/**
 		 * T​o​ ​B​a​n​k​ ​A​c​c​o​u​n​t
 		 */
@@ -9326,6 +9396,10 @@ type RootTranslation = {
 		 */
 		register_store: string
 		/**
+		 * Y​o​u​r​ ​p​o​s​t​ ​h​a​s​ ​b​e​e​n​ ​s​u​b​m​i​t​t​e​d​ ​f​o​r​ ​r​e​v​i​e​w
+		 */
+		your_post_is_submitted_to_review: string
+		/**
 		 * N​e​x​t
 		 */
 		next: string
@@ -9499,6 +9573,33 @@ type RootTranslation = {
 		 * C​o​n​f​i​r​m​ ​D​i​s​c​l​o​s​u​r​e​s
 		 */
 		confirmDisclosures: string
+		/**
+		 * E​r​r​o​r​ ​u​p​l​o​a​d​i​n​g​ ​d​o​c​u​m​e​n​t​ ​{​u​p​l​o​a​d​i​n​g​I​d​}​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+		 * @param {string} uploadingId
+		 */
+		uploadingIdError: RequiredParams<'uploadingId'>
+		validations: {
+			/**
+			 * E​m​a​i​l​ ​i​s​ ​r​e​q​u​i​r​e​d
+			 */
+			emailRequired: string
+			/**
+			 * P​l​e​a​s​e​ ​e​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​e​m​a​i​l​ ​a​d​d​r​e​s​s
+			 */
+			emailInvalid: string
+			/**
+			 * P​h​o​n​e​ ​n​u​m​b​e​r​ ​i​s​ ​r​e​q​u​i​r​e​d
+			 */
+			phoneRequired: string
+			/**
+			 * P​l​e​a​s​e​ ​e​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​p​h​o​n​e​ ​n​u​m​b​e​r
+			 */
+			phoneInvalid: string
+			/**
+			 * g​e​n​d​e​r​ ​i​s​ ​r​e​q​u​i​r​e​d
+			 */
+			genderRequired: string
+		}
 		labels: {
 			/**
 			 * H​a​v​e​ ​y​o​u​ ​o​r​ ​y​o​u​r​ ​s​p​o​u​s​e​ ​h​e​l​d​ ​a​ ​g​o​v​e​r​n​m​e​n​t​ ​p​o​s​i​t​i​o​n​,​ ​o​r​ ​a​r​e​ ​c​o​n​s​i​d​e​r​e​d​ ​a​ ​P​o​l​i​t​i​c​a​l​l​y​ ​E​x​p​o​s​e​d​ ​P​e​r​s​o​n​ ​(​"​P​E​P​"​)​?
@@ -16832,7 +16933,7 @@ export type TranslationFunctions = {
 		 */
 		swiftCode: () => LocalizedString
 		/**
-		 * SINP Code
+		 * SINPE Code
 		 */
 		sinpeCode: () => LocalizedString
 		/**
@@ -16851,6 +16952,72 @@ export type TranslationFunctions = {
 		 * This action cannot be undone.
 		 */
 		confirmRemoveBankAccountContent: () => LocalizedString
+		validation: {
+			/**
+			 * IBAN must be exactly 22 characters long.
+			 */
+			ibanLength: () => LocalizedString
+			/**
+			 * IBAN must start with 'CR'.
+			 */
+			ibanStart: () => LocalizedString
+			/**
+			 * IBAN must pass the mod-97 check.
+			 */
+			ibanMod97: () => LocalizedString
+			/**
+			 * IBAN is required.
+			 */
+			ibanRequired: () => LocalizedString
+			/**
+			 * SWIFT must be in format: 4 letters, "CR", 2 alphanumerics, optional 3 more.
+			 */
+			swiftFormat: () => LocalizedString
+			/**
+			 * SWIFT is required.
+			 */
+			swiftRequired: () => LocalizedString
+			/**
+			 * SINPE is required.
+			 */
+			sinpeRequired: () => LocalizedString
+			/**
+			 * SNIP must be exactly 17 digits.
+			 */
+			sinpeFormat: () => LocalizedString
+			/**
+			 * National ID is required.
+			 */
+			nationalIdRequired: () => LocalizedString
+			/**
+			 * National ID must contain digits only.
+			 */
+			nationalIdFormat: () => LocalizedString
+			/**
+			 * Account Holder Name is required.
+			 */
+			accountHolderNameRequired: () => LocalizedString
+			/**
+			 * Account Holder Name must not exceed 50 digits.
+			 */
+			accountHolderNameLength: () => LocalizedString
+			/**
+			 * Bank Name is required.
+			 */
+			bankNameRequired: () => LocalizedString
+			/**
+			 * Bank Name must not exceed 50 digits.
+			 */
+			bankNameLength: () => LocalizedString
+			/**
+			 * Currency is required.
+			 */
+			currencyRequired: () => LocalizedString
+			/**
+			 * Currency must be a 3-letter ISO code (e.g., USD)
+			 */
+			currencyFormat: () => LocalizedString
+		}
 	}
 	NotificationSettingsScreen: {
 		/**
@@ -17716,6 +17883,10 @@ export type TranslationFunctions = {
 		 * Bank Account
 		 */
 		bankAccount: () => LocalizedString
+		/**
+		 * KYC is pending
+		 */
+		kycIsPending: () => LocalizedString
 		/**
 		 * To Bank Account
 		 */
@@ -18718,6 +18889,10 @@ export type TranslationFunctions = {
 		 */
 		register_store: () => LocalizedString
 		/**
+		 * Your post has been submitted for review
+		 */
+		your_post_is_submitted_to_review: () => LocalizedString
+		/**
 		 * Next
 		 */
 		next: () => LocalizedString
@@ -18891,6 +19066,32 @@ export type TranslationFunctions = {
 		 * Confirm Disclosures
 		 */
 		confirmDisclosures: () => LocalizedString
+		/**
+		 * Error uploading document {uploadingId}. Please try again.
+		 */
+		uploadingIdError: (arg: { uploadingId: string }) => LocalizedString
+		validations: {
+			/**
+			 * Email is required
+			 */
+			emailRequired: () => LocalizedString
+			/**
+			 * Please enter a valid email address
+			 */
+			emailInvalid: () => LocalizedString
+			/**
+			 * Phone number is required
+			 */
+			phoneRequired: () => LocalizedString
+			/**
+			 * Please enter a valid phone number
+			 */
+			phoneInvalid: () => LocalizedString
+			/**
+			 * gender is required
+			 */
+			genderRequired: () => LocalizedString
+		}
 		labels: {
 			/**
 			 * Have you or your spouse held a government position, or are considered a Politically Exposed Person ("PEP")?

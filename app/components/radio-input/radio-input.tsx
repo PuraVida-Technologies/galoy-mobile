@@ -12,8 +12,8 @@ export type Option = {
 
 interface Props {
   option: Option
-  value: string
-  onChange?: (checked: string) => void
+  value?: string
+  onChange?: (checked?: string) => void
 }
 
 const RadioInput = ({ option, value, onChange }: Props) => {
@@ -26,7 +26,6 @@ const RadioInput = ({ option, value, onChange }: Props) => {
 
   const onSelect = () => {
     onChange?.(option?.value)
-    setChecked(!checked)
   }
 
   return (

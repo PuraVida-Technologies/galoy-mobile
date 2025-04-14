@@ -1,5 +1,5 @@
 import { ScrollView } from "react-native-gesture-handler"
-import { useMemo } from "react";
+import { useMemo } from "react"
 
 import { gql } from "@apollo/client"
 import { Screen } from "@app/components/screen"
@@ -18,7 +18,6 @@ import { AccountLNAddress } from "./settings/account-ln-address"
 import { AccountPOS } from "./settings/account-pos"
 import { AccountStaticQR } from "./settings/account-static-qr"
 import { TxLimits } from "./settings/account-tx-limits"
-import { ApiAccessSetting } from "./settings/advanced-api-access"
 import { ExportCsvSetting } from "./settings/advanced-export-csv"
 import { JoinCommunitySetting } from "./settings/community-join"
 import { NeedHelpSetting } from "./settings/community-need-help"
@@ -69,24 +68,29 @@ export const SettingsScreen: React.FC = () => {
 
   const { currentLevel, isAtLeastLevelOne, isAtLeastLevelTwo } = useLevel()
 
-  const items = useMemo(() => ({
-    account: isAtLeastLevelTwo ? [AccountLevelSetting, TxLimits, KYC, BankAccount] : [AccountLevelSetting, TxLimits],
-    loginMethods: [EmailSetting, PhoneSetting],
-    waysToGetPaid: [AccountLNAddress, AccountPOS, AccountStaticQR],
-    preferences: [
-      NotificationSetting,
-      DefaultWallet,
-      LanguageSetting,
-      CurrencySetting,
-      ThemeSetting,
-    ],
-    securityAndPrivacy: [TotpSetting, OnDeviceSecuritySetting],
-    advanced: [
-      ExportCsvSetting,
-      // , ApiAccessSetting
-    ],
-    community: [NeedHelpSetting, JoinCommunitySetting],
-  }), [isAtLeastLevelTwo]);
+  const items = useMemo(
+    () => ({
+      account: isAtLeastLevelTwo
+        ? [AccountLevelSetting, TxLimits, KYC, BankAccount]
+        : [AccountLevelSetting, TxLimits],
+      loginMethods: [EmailSetting, PhoneSetting],
+      waysToGetPaid: [AccountLNAddress, AccountPOS, AccountStaticQR],
+      preferences: [
+        NotificationSetting,
+        DefaultWallet,
+        LanguageSetting,
+        CurrencySetting,
+        ThemeSetting,
+      ],
+      securityAndPrivacy: [TotpSetting, OnDeviceSecuritySetting],
+      advanced: [
+        ExportCsvSetting,
+        // , ApiAccessSetting
+      ],
+      community: [NeedHelpSetting, JoinCommunitySetting],
+    }),
+    [isAtLeastLevelTwo],
+  )
 
   return (
     <Screen keyboardShouldPersistTaps="handled">

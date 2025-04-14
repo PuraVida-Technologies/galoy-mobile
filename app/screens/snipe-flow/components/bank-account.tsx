@@ -2,11 +2,12 @@ import { BankAccountCr } from "@app/graphql/generated"
 import { testProps } from "@app/utils/testProps"
 import { SearchBar } from "@rneui/base"
 import { Colors, Text } from "@rneui/themed"
-import { View, ScrollView, Pressable } from "react-native"
+import { View, ScrollView } from "react-native"
 import Icon from "react-native-vector-icons/Ionicons"
 import { UseSnipDetailsStyles } from "../styles/snipe-deatils"
 import { TranslationFunctions } from "@app/i18n/i18n-types"
-import { BankAccountDetails, SnipeDetailsState } from "../hooks/useSnipeDetails"
+import { TouchableOpacity } from "react-native-gesture-handler"
+import { SnipeDetailsState } from "../hooks/useSnipeDetails"
 
 interface Props {
   bankAccount: Array<BankAccountCr>
@@ -14,7 +15,7 @@ interface Props {
   updateMatchingAccounts: (newSearchText: string) => void
   LL: TranslationFunctions
   state: SnipeDetailsState
-  onBankAccountSelected: (account: BankAccountDetails) => void
+  onBankAccountSelected: (account: BankAccountCr) => void
   toggleBankModal: () => void
   colors: Colors
   reset: () => void
@@ -39,7 +40,7 @@ const BankAccounts = ({
       color={colors.black}
     />
 
-    {bankAccount?.length && (
+    {bankAccount?.length > 0 && (
       <SearchBar
         {...testProps(LL.common.search())}
         placeholder={LL.common.search()}
@@ -61,7 +62,7 @@ const BankAccounts = ({
     )}
     <ScrollView>
       {state.matchingAccounts?.map((account, index) => (
-        <Pressable
+        <TouchableOpacity
           key={index}
           onPress={() => onBankAccountSelected(account)}
           style={styles.cardContainer}
@@ -75,7 +76,7 @@ const BankAccounts = ({
               {account?.data?.currency}
             </Text>
           </View>
-        </Pressable>
+        </TouchableOpacity>
       ))}
     </ScrollView>
   </View>

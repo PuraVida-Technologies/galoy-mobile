@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import React, { useEffect, useState, forwardRef } from "react"
 import { View } from "react-native"
 import useStyles from "./styles"
 import RadioInput, { Option } from "./radio-input"
@@ -6,24 +6,25 @@ import RadioInput, { Option } from "./radio-input"
 interface Props {
   group: Option[]
   value: string
-  onChange?: (value: string) => void
+  onChange?: (value?: string) => void
 }
 
-const RadioGroup = ({ group, value, onChange }: Props) => {
-  const [checked, setChecked] = useState('')
+// eslint-disable-next-line react/display-name
+const RadioGroup = forwardRef<View, Props>(({ group, value, onChange }, ref) => {
+  const [checked, setChecked] = useState<string | undefined>("")
   const styles = useStyles()
 
   useEffect(() => {
     setChecked(value)
   }, [value])
 
-  const handleChange = (value) => {
+  const handleChange = (value?: string) => {
     setChecked(value)
     onChange?.(value)
   }
 
   return (
-    <View style={styles.container}>
+    <View ref={ref} style={styles.container}>
       {group?.map((radio, index) => {
         return (
           <RadioInput
@@ -36,6 +37,6 @@ const RadioGroup = ({ group, value, onChange }: Props) => {
       })}
     </View>
   )
-}
+})
 
 export default RadioGroup

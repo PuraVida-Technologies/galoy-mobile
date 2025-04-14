@@ -6,6 +6,7 @@ const light = {
   _lightGrey: "#CFD9E2",
   _lighterGrey: "#E6EBEf",
   _lightBlue: "#3553FF",
+  _lightWhite: "rgba(255, 255, 255, 0.8)",
   _darkGrey: "#1d1d1d",
   _blue: "#3050C4",
   _orange: "#FF7e1c",
@@ -44,6 +45,9 @@ const light = {
   red: "#DC2626",
 
   warning: "#F59E0B",
+
+  // New property for text color
+  text: "#000000", // Default text color for light mode
 }
 
 const dark = {
@@ -53,6 +57,7 @@ const dark = {
   _black: "#000000",
   _lightGrey: "#CFD9E2",
   _lighterGrey: "#E6EBEf",
+  _lightWhite: "rgba(255, 255, 255, 0.8)",
   _lightBlue: "#3553FF",
   _darkGrey: "#1d1d1d",
   _blue: "#3050C4",
@@ -92,6 +97,9 @@ const dark = {
   red: "#DC2626",
 
   warning: "#F59E0B",
+
+  // New property for text color
+  text: "#FFFFFF", // Default text color for dark mode
 }
 
 export { light, dark }

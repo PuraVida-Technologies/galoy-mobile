@@ -1281,7 +1281,7 @@ PODS:
     - Firebase/RemoteConfig (= 10.24.0)
     - React-Core
     - RNFBApp
-  - RNGestureHandler (2.24.0):
+  - RNGestureHandler (2.18.1):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1754,12 +1754,12 @@ SPEC CHECKSUMS:
   RNFBCrashlytics: c39e903af97cb426f36a10d3268fb0623a1ccddf
   RNFBMessaging: 74754ed198239360950f54f3e3de365fe85db451
   RNFBRemoteConfig: ae7080ed8bc072751999f615879096ab616eeb83
-  RNGestureHandler: a83edbc2de807c2f1329e7001cfe49fa3d879319
+  RNGestureHandler: 1155b1898ceddefeebf77792927360d44fe11e77
   RNImageCropPicker: e7ab6fb43d2fc3e84651e786ef4a080d63b0ed3d
   RNInAppBrowser: e36d6935517101ccba0e875bac8ad7b0cb655364
   RNKeychain: bfe3d12bf4620fe488771c414530bf16e88f3678
   RNLocalize: e8694475db034bf601e17bd3dfa8986565e769eb
-  RNPermissions: 107a3106f541d738b80450cdf2dd9fbd134646eb
+  RNPermissions: 4089103e1455380776641bb64a18b356eb54e03c
   RNQrGenerator: 1676221c08bfabec978242989c733810dad20959
   RNReactNativeHapticFeedback: ec56a5f81c3941206fd85625fa669ffc7b4545f9
   RNReanimated: 8a4d86eb951a4a99d8e86266dc71d7735c0c30a9
@@ -1774,6 +1774,6 @@ SPEC CHECKSUMS:
   Yoga: d17d2cc8105eed528474683b42e2ea310e1daf61
   ZXingObjC: 8898711ab495761b2dbbdec76d90164a6d7e14c5
 
-PODFILE CHECKSUM: dea6f2263b546dfc336d48f971be793dc6af27b9
+PODFILE CHECKSUM: a7d1bd4920979a71cb63550e03bec7509661714f
 
 COCOAPODS: 1.15.2

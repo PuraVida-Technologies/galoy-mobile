@@ -2531,11 +2531,29 @@ const en: BaseTranslation = {
     iban: "IBAN",
     bankName: "Bank Name",
     swiftCode: "SWIFT Code",
-    sinpeCode: "SINP Code",
+    sinpeCode: "SINPE Code",
     nationalId: "National ID",
     removeBankAccount: "Remove Bank Account",
     confirmRemoveBankAccountTitle: "Are you sure you want to remove this bank account?",
     confirmRemoveBankAccountContent: "This action cannot be undone.",
+    validation: {
+			ibanLength: "IBAN must be exactly 22 characters long.",
+			ibanStart: "IBAN must start with 'CR'.",
+			ibanMod97: "IBAN must pass the mod-97 check.",
+			ibanRequired: "IBAN is required.",
+			swiftFormat: 'SWIFT must be in format: 4 letters, "CR", 2 alphanumerics, optional 3 more.',
+			swiftRequired: "SWIFT is required.",
+			sinpeRequired: "SINPE is required.",
+      sinpeFormat: "SNIP must be exactly 17 digits.",
+			nationalIdRequired: "National ID is required.",
+			nationalIdFormat: "National ID must contain digits only.",
+			accountHolderNameRequired: "Account Holder Name is required.",
+			accountHolderNameLength: "Account Holder Name must not exceed 50 digits.",
+			bankNameRequired: "Bank Name is required.",
+			bankNameLength: "Bank Name must not exceed 50 digits.",
+			currencyRequired: "Currency is required.",
+			currencyFormat: "Currency must be a 3-letter ISO code (e.g., USD)"
+		}
   },
   NotificationSettingsScreen: {
     title: "Notification Settings",
@@ -2838,6 +2856,7 @@ const en: BaseTranslation = {
     bank: "Bank",
     addBankAccount: "Add Bank Account",
     bankAccount: "Bank Account",
+    kycIsPending: "KYC is pending",
     toBankAccount: "To Bank Account",
     bankAccounts: "Bank Accounts",
     bankAdvice: "{bankName: string} Advice",
@@ -3191,6 +3210,14 @@ const en: BaseTranslation = {
 		uploadIDBack: "ID Back",
 		userDetails: "User Details",
 		confirmDisclosures: "Confirm Disclosures",
+    uploadingIdError: "Error uploading document {uploadingId: string}. Please try again.",
+    validations: {
+			emailRequired: "Email is required",
+			emailInvalid: "Please enter a valid email address",
+			phoneRequired: "Phone number is required",
+			phoneInvalid: "Please enter a valid phone number",
+			genderRequired: "gender is required",
+		},
     labels: {
       PEP: `Have you or your spouse held a government position, or are considered a Politically Exposed Person ("PEP")?`,
       MoneyTransfers: `Do you perform any of the activities described in Article 15 of Law 8204? This includes systematic operations involving money exchange or wire transfers in large amounts.`

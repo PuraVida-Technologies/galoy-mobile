@@ -167,7 +167,8 @@ export const SnipeDetailsScreen = () => {
 
             <Input
               value={state.amount}
-              showSoftInputOnFocus={false}
+              showSoftInputOnFocus={true}
+              keyboardType="decimal-pad"
               onChangeText={(e) => {
                 // remove commas for ease of calculation later on
                 const val = e.replaceAll(",", "")

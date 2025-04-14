@@ -3,14 +3,34 @@ import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { SettingsRow } from "../row"
-import { useSettingsScreenQuery, Status } from "@app/graphql/generated"
+import { useKycDetailsQuery, Status } from "@app/graphql/generated"
 import { useMemo } from "react"
 import { color } from "@app/modules/market-place/theme"
+import { makeStyles } from "@rneui/themed"
 
 export const KYC: React.FC = () => {
   const { LL } = useI18nContext()
   const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>()
-  const { data, loading } = useSettingsScreenQuery()
+  const { data, loading } = useKycDetailsQuery({ fetchPolicy: "network-only" })
+
+  const awaitingApproval = useMemo(() => {
+    const kyc = data?.me?.kyc
+    if (!loading) {
+      return (
+        Boolean(
+          kyc?.primaryIdentification?.type &&
+            kyc?.primaryIdentification?.files &&
+            kyc?.primaryIdentification?.files?.length > 0 &&
+            kyc?.phoneNumber &&
+            kyc?.email &&
+            kyc?.gender &&
+            kyc?.isPoliticallyExposed?.toString() &&
+            kyc?.isHighRisk?.toString(),
+        ) && kyc?.status !== Status.Approved
+      )
+    }
+    return false
+  }, [data?.me?.kyc, loading])
 
   const subtitleColor = useMemo(() => {
     switch (data?.me?.kyc?.status) {
@@ -26,16 +46,27 @@ export const KYC: React.FC = () => {
     }
   }, [data?.me?.kyc?.status])
 
+  const styles = useStyles({ subtitleColor })
+
   return (
     <SettingsRow
       shorter
       title={LL.common.KYC()}
       leftIcon="verified-user"
-      subtitle={data?.me?.kyc?.status}
-      subtitleStyles={{ textTransform: "capitalize", color: subtitleColor }}
+      subtitle={awaitingApproval ? "Awaiting Approval" : data?.me?.kyc?.status}
+      subtitleStyles={styles.subtitleStyles}
       iconType="material"
       action={() => navigate("KYCScreen")}
-      disabled={["APPROVED", "PENDING"].includes(data?.me?.kyc?.status || "")}
+      disabled={
+        loading || awaitingApproval || ["APPROVED"].includes(data?.me?.kyc?.status || "")
+      }
     />
   )
 }
+
+const useStyles = makeStyles((theme, { subtitleColor }: { subtitleColor?: string }) => ({
+  subtitleStyles: {
+    textTransform: "capitalize",
+    color: subtitleColor,
+  },
+}))

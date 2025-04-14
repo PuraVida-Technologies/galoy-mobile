@@ -15,6 +15,7 @@ import Swipeable, {
 } from "react-native-gesture-handler/ReanimatedSwipeable"
 import { SharedValue } from "react-native-reanimated"
 import RightAction from "@app/modules/bank-account/components/right-action"
+import { BankAccountCr } from "@app/graphql/generated"
 
 const BackAccountsScreen = () => {
   const [hovering, setHovering] = useState(false)
@@ -28,10 +29,9 @@ const BackAccountsScreen = () => {
   } = useBankAccounts({ LL })
 
   const renderRightActions = (
-    progress: SharedValue<number>,
     translation: SharedValue<number>,
     swipeableMethods: SwipeableMethods,
-    account: any,
+    account: BankAccountCr,
   ) => (
     <>
       <RightAction
@@ -76,7 +76,7 @@ const BackAccountsScreen = () => {
                   progress: SharedValue<number>,
                   translation: SharedValue<number>,
                   swipeableMethods: SwipeableMethods,
-                ) => renderRightActions(progress, translation, swipeableMethods, account)}
+                ) => renderRightActions(translation, swipeableMethods, account)}
               >
                 <Pressable
                   key={index}
@@ -119,61 +119,59 @@ const BackAccountsScreen = () => {
   )
 }
 
-const useStyles = makeStyles(
-  ({ colors }, { hovering, shorter }: { hovering: boolean; shorter?: boolean }) => ({
-    screenStyle: {
-      padding: 20,
-    },
-    loadingContainer: {
-      zIndex: 10,
-      backgroundColor: "rgba(255,255,255, 0.5)",
-    },
-    container: {
-      backgroundColor: colors.grey5,
-      borderRadius: 12,
-      overflow: "hidden",
-      marginVertical: 8,
-    },
-    disabled: {
-      opacity: 0.5,
-      backgroundColor: colors.grey4,
-    },
-    spacing: {
-      paddingHorizontal: 16,
-      paddingRight: 12,
-      paddingVertical: 12,
-    },
-    center: {
-      justifyContent: "space-around",
-    },
-    rightActionTouchArea: {
-      padding: 12,
-      backgroundColor: colors.red,
-      position: "relative",
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    rightActionText: {
-      color: colors.white,
-      fontWeight: "bold",
-    },
-    sidetoside: {
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-    },
-    internalContainer: {
-      flex: 2,
-      justifyContent: "space-between",
-      alignItems: "center",
-      flexDirection: "row",
-      paddingRight: 16,
-    },
-    borderBottom: {
-      borderBottomWidth: 1,
-      borderBottomColor: colors.grey4,
-    },
-  }),
-)
+const useStyles = makeStyles(({ colors }) => ({
+  screenStyle: {
+    padding: 20,
+  },
+  loadingContainer: {
+    zIndex: 10,
+    backgroundColor: "rgba(255,255,255, 0.5)",
+  },
+  container: {
+    backgroundColor: colors.grey5,
+    borderRadius: 12,
+    overflow: "hidden",
+    marginVertical: 8,
+  },
+  disabled: {
+    opacity: 0.5,
+    backgroundColor: colors.grey4,
+  },
+  spacing: {
+    paddingHorizontal: 16,
+    paddingRight: 12,
+    paddingVertical: 12,
+  },
+  center: {
+    justifyContent: "space-around",
+  },
+  rightActionTouchArea: {
+    padding: 12,
+    backgroundColor: colors.red,
+    position: "relative",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  rightActionText: {
+    color: colors.white,
+    fontWeight: "bold",
+  },
+  sidetoside: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  internalContainer: {
+    flex: 2,
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
+    paddingRight: 16,
+  },
+  borderBottom: {
+    borderBottomWidth: 1,
+    borderBottomColor: colors.grey4,
+  },
+}))
 
 export default BackAccountsScreen

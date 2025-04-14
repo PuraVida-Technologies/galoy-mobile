@@ -18,8 +18,8 @@ export const LoadingComponent = ({ isLoading, styles, color }: Props) => {
               justifyContent: "center",
               alignItems: "center",
             },
-            styles,
             StyleSheet.absoluteFill,
+            styles,
           ]}
         >
           <ActivityIndicator size={"large"} color={color || "white"} />
