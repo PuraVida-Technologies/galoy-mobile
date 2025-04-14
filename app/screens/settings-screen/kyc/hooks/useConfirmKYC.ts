@@ -29,11 +29,15 @@ const useConfirmKYC = ({ KYCDetails, setKYCDetails }: Props) => {
   const navigation = useNavigation()
   const stateRef = useRef(KYCDetails)
 
+  // Update stateRef whenever KYCDetails changes
+  useEffect(() => {
+    stateRef.current = KYCDetails
+  }, [KYCDetails])
+
   useEffect(() => {
     setPoliticallyExposed(KYCDetails?.idDetails?.isPoliticallyExposed)
     setIsHighRisk(KYCDetails?.idDetails?.isHighRisk)
-    stateRef.current = KYCDetails
-  }, [])
+  }, [KYCDetails])
 
   const onPepChange = (value?: string) => {
     setPoliticallyExposed(value || "no")
@@ -66,7 +70,7 @@ const useConfirmKYC = ({ KYCDetails, setKYCDetails }: Props) => {
 
     setLoading(false)
     navigation.goBack()
-  }, [KYCDetails, updateKYCDetails])
+  }, [navigation, updateKYCDetails])
 
   return {
     state: { isPoliticallyExposed, isHighRisk, loading },
