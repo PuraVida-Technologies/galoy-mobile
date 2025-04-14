@@ -9330,6 +9330,10 @@ type RootTranslation = {
 		 */
 		register_store: string
 		/**
+		 * Y​o​u​r​ ​p​o​s​t​ ​h​a​s​ ​b​e​e​n​ ​s​u​b​m​i​t​t​e​d​ ​f​o​r​ ​r​e​v​i​e​w
+		 */
+		your_post_is_submitted_to_review: string
+		/**
 		 * N​e​x​t
 		 */
 		next: string
@@ -9503,6 +9507,11 @@ type RootTranslation = {
 		 * C​o​n​f​i​r​m​ ​D​i​s​c​l​o​s​u​r​e​s
 		 */
 		confirmDisclosures: string
+		/**
+		 * E​r​r​o​r​ ​u​p​l​o​a​d​i​n​g​ ​d​o​c​u​m​e​n​t​ ​{​u​p​l​o​a​d​i​n​g​I​d​}​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+		 * @param {string} uploadingId
+		 */
+		uploadingIdError: RequiredParams<'uploadingId'>
 		labels: {
 			/**
 			 * H​a​v​e​ ​y​o​u​ ​o​r​ ​y​o​u​r​ ​s​p​o​u​s​e​ ​h​e​l​d​ ​a​ ​g​o​v​e​r​n​m​e​n​t​ ​p​o​s​i​t​i​o​n​,​ ​o​r​ ​a​r​e​ ​c​o​n​s​i​d​e​r​e​d​ ​a​ ​P​o​l​i​t​i​c​a​l​l​y​ ​E​x​p​o​s​e​d​ ​P​e​r​s​o​n​ ​(​"​P​E​P​"​)​?
@@ -18726,6 +18735,10 @@ export type TranslationFunctions = {
 		 */
 		register_store: () => LocalizedString
 		/**
+		 * Your post has been submitted for review
+		 */
+		your_post_is_submitted_to_review: () => LocalizedString
+		/**
 		 * Next
 		 */
 		next: () => LocalizedString
@@ -18899,6 +18912,10 @@ export type TranslationFunctions = {
 		 * Confirm Disclosures
 		 */
 		confirmDisclosures: () => LocalizedString
+		/**
+		 * Error uploading document {uploadingId}. Please try again.
+		 */
+		uploadingIdError: (arg: { uploadingId: string }) => LocalizedString
 		labels: {
 			/**
 			 * Have you or your spouse held a government position, or are considered a Politically Exposed Person ("PEP")?

@@ -2880,6 +2880,7 @@
         "uploadIDBack": "ID Back",
         "userDetails": "User Details",
         "confirmDisclosures": "Confirm Disclosures",
+        "uploadingIdError": "Error uploading document {uploadingId: string}. Please try again.",
         "labels": {
             "PEP": "Have you or your spouse held a government position, or are considered a Politically Exposed Person (\"PEP\")?",
             "MoneyTransfers": "Do you perform any of the activities described in Article 15 of Law 8204? This includes systematic operations involving money exchange or wire transfers in large amounts."

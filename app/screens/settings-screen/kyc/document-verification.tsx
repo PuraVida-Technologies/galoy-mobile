@@ -13,7 +13,7 @@ import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons"
 import ActionSheet from "@alessiocancian/react-native-actionsheet"
 import { IDType } from "./types"
 import { Route } from "./hooks/useKYCState"
-import useDocumentVerification from "./hooks/useDocumentVerification"
+import useDocumentVerification, { UploadingId } from "./hooks/useDocumentVerification"
 import { LoadingComponent } from "@app/modules/market-place/components/loading-component"
 
 interface Props {
@@ -63,11 +63,10 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
   const { state, actions } = useDocumentVerification({
+    LL,
     state: route.state,
     setState: route.setState,
   })
-
-  console.log("DocumentVerification state", state)
 
   return (
     <>
@@ -78,11 +77,11 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
         </View>
         <DocumentUpload
           label={LL.KYCScreen.uploadIDFront()}
-          loading={state.uploadingFront}
+          loading={state.isUploadingFront && state.uploading}
           file={state.idFront}
           icon="card-account-details-outline"
           onPress={() => {
-            actions?.setUploadingFront(true)
+            actions?.setUploadingId(UploadingId.UploadingFront)
             actions?.handlePreviewPress()
           }}
           styles={styles.pickerContainer}
@@ -91,16 +90,20 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
         {route?.state?.idDetails?.type === IDType.DriverLicense ? (
           <DocumentUpload
             label={LL.KYCScreen.uploadIDBack()}
-            loading={state.uploadingBack}
+            loading={state.isUploadingBack && state.uploading}
             file={state.idBack}
             icon="card-bulleted-outline"
             onPress={() => {
-              actions?.setUploadingBack(true)
+              actions?.setUploadingId(UploadingId.UploadingBack)
               actions?.handlePreviewPress()
             }}
             styles={styles.pickerContainer}
             imageStyles={styles.image}
-            disabled={!state.idFront || state.uploadingFront}
+            disabled={
+              !state.idFront ||
+              state.uploading ||
+              (state.isUploadingBack && state.uploading)
+            }
           />
         ) : (
           <></>
@@ -114,10 +117,9 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
         disableNext={
           Boolean(!state.idFront) ||
           (route?.state?.idDetails?.type === IDType.DriverLicense && !state.idBack) ||
-          state.uploadingFront ||
-          state.uploadingBack
+          state.uploading
         }
-        loading={state.uploadingFront || state.uploadingBack}
+        loading={state.uploading}
         previousPage={"docType"}
       />
       <ActionSheet
@@ -125,6 +127,7 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
         title={LL.KYCScreen.uploadID()}
         options={["Camera", "Gallery", "Cancel"]}
         cancelButtonIndex={2}
+        id={state.uploadingId}
         onPress={actions?.onMenuPress}
       />
     </>

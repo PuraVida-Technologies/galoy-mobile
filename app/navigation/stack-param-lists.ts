@@ -1,4 +1,10 @@
-import { PhoneCodeChannelType, UserContact, WalletCurrency } from "@app/graphql/generated"
+import {
+  BankAccountCr,
+  BankAccountDataCr,
+  PhoneCodeChannelType,
+  UserContact,
+  WalletCurrency,
+} from "@app/graphql/generated"
 import { EarnSectionType } from "@app/screens/earns-screen/sections"
 import { PhoneLoginInitiateType } from "@app/screens/phone-auth-screen"
 import {
@@ -15,6 +21,7 @@ import { AuthenticationScreenPurpose, PinScreenPurpose } from "../utils/enum"
 
 // Puravida Stack
 import { PostAttributes } from "@app/modules/market-place/redux/reducers/store-reducer"
+import { WalletBalance } from "@app/graphql/wallets-utils"
 
 export type RootStackParamList = {
   getStarted: undefined
@@ -22,13 +29,13 @@ export type RootStackParamList = {
     appCheckToken: string
   }
   developerScreen: undefined
+  bankAccounts: undefined
   authenticationCheck: undefined
   authentication: {
     screenPurpose: AuthenticationScreenPurpose
     isPinEnabled: boolean
   }
   pin: { screenPurpose: PinScreenPurpose }
-  Primary: undefined
   earnsSection: { section: EarnSectionType }
   earnsQuiz: { id: string }
   scanningQRCode: undefined
@@ -54,15 +61,15 @@ export type RootStackParamList = {
   }
   conversionSuccess: undefined
   snipeDetails: undefined
+  bankAccount: undefined
   snipeConfirmation: {
     fromWalletCurrency: WalletCurrency
     moneyAmount: MoneyAmount<WalletOrDisplayCurrency>
     fromAccountBalance: string
-    bankAccount: {
-      accountHolderName: string
-      iban: string
-    }
+    bankAccount: Partial<BankAccountDataCr> & { id?: string }
+    wallet?: WalletBalance
   }
+  Primary: undefined
   sendBitcoinCompleted: {
     arrivalAtMempoolEstimate?: number
     status: PaymentSendCompletedStatus
@@ -102,8 +109,7 @@ export type RootStackParamList = {
   notificationSettingsScreen: undefined
   transactionLimitsScreen: undefined
   KYCScreen: undefined
-  addBankAccount: undefined
-  bankAccounts: undefined
+  addBankAccount?: { account?: Omit<Partial<BankAccountCr>, "__typename"> }
   emailRegistrationInitiate: undefined
   emailRegistrationValidate: { email: string; emailRegistrationId: string }
   emailLoginInitiate: undefined

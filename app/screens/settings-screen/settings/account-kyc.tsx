@@ -6,6 +6,7 @@ import { SettingsRow } from "../row"
 import { useKycDetailsQuery, Status } from "@app/graphql/generated"
 import { useMemo } from "react"
 import { color } from "@app/modules/market-place/theme"
+import { makeStyles } from "@rneui/themed"
 
 export const KYC: React.FC = () => {
   const { LL } = useI18nContext()
@@ -45,13 +46,15 @@ export const KYC: React.FC = () => {
     }
   }, [data?.me?.kyc?.status])
 
+  const styles = useStyles({ subtitleColor })
+
   return (
     <SettingsRow
       shorter
       title={LL.common.KYC()}
       leftIcon="verified-user"
       subtitle={awaitingApproval ? "Awaiting Approval" : data?.me?.kyc?.status}
-      subtitleStyles={{ textTransform: "capitalize", color: subtitleColor }}
+      subtitleStyles={styles.subtitleStyles}
       iconType="material"
       action={() => navigate("KYCScreen")}
       disabled={
@@ -60,3 +63,10 @@ export const KYC: React.FC = () => {
     />
   )
 }
+
+const useStyles = makeStyles((theme, { subtitleColor }: { subtitleColor?: string }) => ({
+  subtitleStyles: {
+    textTransform: "capitalize",
+    color: subtitleColor,
+  },
+}))

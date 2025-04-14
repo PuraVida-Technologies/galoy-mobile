@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client"
 import {
   BankAccountCurrencies,
+  Currencies,
   HomeAuthedDocument,
   useExecuteWithdrawalContractMutation,
   useGetWithdrawalContractLazyQuery,
@@ -12,7 +13,7 @@ import useWallet from "@app/hooks/use-wallet"
 import { useI18nContext } from "@app/i18n/i18n-react"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { DisplayCurrency, toUsdMoneyAmount } from "@app/types/amounts"
-import { RouteProp, useNavigation } from "@react-navigation/native"
+import { NavigationProp, RouteProp, useNavigation } from "@react-navigation/native"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 gql`
@@ -130,16 +131,15 @@ const useSnipeConfirmation = ({ route }: Props) => {
   const { LL } = useI18nContext()
 
   // Navigation and params
-  const navigation = useNavigation()
+  const navigation = useNavigation<NavigationProp<RootStackParamList, "Primary">>()
   const { fromWalletCurrency, moneyAmount, fromAccountBalance, wallet, bankAccount } =
     route.params
 
-  const { data, isAuthed, btcWallet, usdWallet } = useWallet()
+  const { data, btcWallet, usdWallet } = useWallet()
 
   const {
     formatMoneyAmount,
     moneyAmountToMajorUnitOrSats,
-    fiatSymbol,
     displayCurrency,
     displayCurrencyDictionary,
   } = useDisplayCurrency()
@@ -151,14 +151,13 @@ const useSnipeConfirmation = ({ route }: Props) => {
       variables: {
         input: {
           amount: (moneyAmount?.amount * 100).toString(),
-          bankAccountId: bankAccount?.id,
-          // targetCurrency: bankAccount?.currency,
-          sourceCurrency: displayCurrency,
-          walletId: wallet.id,
+          bankAccountId: bankAccount?.id || "",
+          sourceCurrency: (displayCurrency as Currencies) || "",
+          walletId: wallet?.id || "",
         },
       },
     })
-  const [executeWithdrawalContract, { data: withdrawal, loading: withdrawing }] =
+  const [executeWithdrawalContract, { loading: withdrawing }] =
     useExecuteWithdrawalContractMutation({
       refetchQueries: [HomeAuthedDocument],
     })
@@ -187,8 +186,6 @@ const useSnipeConfirmation = ({ route }: Props) => {
     }
   }, [success, interval.current])
 
-  const [errorMessage, setErrorMessage] = useState<string | undefined>()
-
   const btcPriceInAmount = convertMoneyAmount?.(
     {
       amount:
@@ -196,24 +193,26 @@ const useSnipeConfirmation = ({ route }: Props) => {
         1000000,
       currency:
         contract?.getWithdrawalContract?.amounts?.target?.currency ||
-        bankAccount?.currency,
+        bankAccount?.currency ||
+        WalletCurrency.Usd, // Provide a default value
       currencyCode:
         contract?.getWithdrawalContract?.amounts?.target?.currency ||
-        bankAccount?.currency,
+        bankAccount?.currency ||
+        WalletCurrency.Usd,
     },
-    bankAccount?.currency,
+    bankAccount?.currency || WalletCurrency.Usd,
   )
 
   const sellAmount = moneyAmountToMajorUnitOrSats({
     amount: parseFloat(contract?.getWithdrawalContract.amounts.target.amount || "0"),
-    currency: bankAccount?.currency,
-    currencyCode: bankAccount?.currency,
+    currency: bankAccount?.currency || WalletCurrency.Usd,
+    currencyCode: bankAccount?.currency || WalletCurrency.Usd,
   })
 
   const feesAmount = moneyAmountToMajorUnitOrSats({
     amount: parseFloat(contract?.getWithdrawalContract.amounts.fee.amount || "0"),
-    currency: bankAccount?.currency,
-    currencyCode: bankAccount?.currency,
+    currency: bankAccount?.currency || WalletCurrency.Usd,
+    currencyCode: bankAccount?.currency || WalletCurrency.Usd,
   })
 
   const totalAmount = Number(sellAmount) + Number(feesAmount)
@@ -264,7 +263,6 @@ const useSnipeConfirmation = ({ route }: Props) => {
       fromAccountBalance,
       bankAccount,
       fromWalletCurrency,
-      errorMessage,
       isLoading: loading || withdrawing,
       moneyAmount,
       btcPrice:
@@ -280,7 +278,9 @@ const useSnipeConfirmation = ({ route }: Props) => {
           : totalAmount.toFixed(2),
       remainingLimit: remainingLimitText,
       canWithdraw: contract?.getWithdrawalContract?.limits?.[0]?.canExecute,
-      fiatSymbol: displayCurrencyDictionary[bankAccount?.currency].symbol,
+      fiatSymbol:
+        displayCurrencyDictionary[bankAccount?.currency || WalletCurrency.Usd]?.symbol ||
+        "",
     },
     actions: {
       onWithdraw,

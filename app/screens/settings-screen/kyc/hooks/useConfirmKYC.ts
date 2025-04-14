@@ -38,14 +38,14 @@ const useConfirmKYC = ({ state, setState }: Props) => {
   const onPepChange = (value: string) => {
     setPoliticallyExposed(value)
     setState({
-      idDetails: { ...state?.idDetails, isPoliticallyExposed: value === "yes" },
+      idDetails: { ...state?.idDetails, isPoliticallyExposed: value },
     })
   }
 
   const onHighRiskChange = (value: string) => {
     setIsHighRisk(value)
     setState({
-      idDetails: { ...state?.idDetails, isHighRisk: value === "yes" },
+      idDetails: { ...state?.idDetails, isHighRisk },
     })
   }
 

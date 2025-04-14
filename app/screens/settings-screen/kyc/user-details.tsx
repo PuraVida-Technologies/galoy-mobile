@@ -77,6 +77,7 @@ const UserDetails = ({ jumpTo, route }: Route) => {
         jumpTo={jumpTo}
         allowNext={state.allowed && !state.loading}
         disableNext={!state.allowed && state.loading}
+        isStepOneAndTwoCompleted={route.isStepOneAndTwoCompleted}
         previous
         previousPage={"docProof"}
         nextPage={"confirm"}

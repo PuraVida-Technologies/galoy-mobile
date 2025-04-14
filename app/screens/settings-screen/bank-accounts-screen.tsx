@@ -15,7 +15,7 @@ import Swipeable, {
 } from "react-native-gesture-handler/ReanimatedSwipeable"
 import { SharedValue } from "react-native-reanimated"
 import RightAction from "@app/modules/bank-account/components/right-action"
-import { BankAccountCr } from '@app/graphql/generated'
+import { BankAccountCr } from "@app/graphql/generated"
 
 const BackAccountsScreen = () => {
   const [hovering, setHovering] = useState(false)
