@@ -90,7 +90,7 @@ android {
         applicationId "io.puravidabitcoin.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 23110808
+        versionCode 250414002
         versionName "2.0.5"
         testBuildType System.getProperty('testBuildType', 'debug')
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
