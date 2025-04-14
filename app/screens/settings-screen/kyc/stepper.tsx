@@ -7,7 +7,7 @@ import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { useNavigation } from "@react-navigation/native"
 
 interface Props {
-  jumpTo: (x: number) => void
+  jumpTo?: (x: number) => void
   nextPage?: number
   nextTitle?: string
   previousTitle?: string
@@ -54,7 +54,6 @@ const Stepper = ({
 }: Props) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
-  const navigation = useNavigation()
 
   const onPreviousPage = useCallback(async () => {
     try {
@@ -72,7 +71,7 @@ const Stepper = ({
     try {
       await dismissKeyboard() // Dismiss keyboard before navigating to avoid layout issues
       if (nextPage && allowNext) {
-        jumpTo(nextPage as number)
+        jumpTo?.(nextPage as number)
       }
       onNext?.()
     } catch (error) {

@@ -16,6 +16,7 @@ export const getPermissionMessage = (
         message: LL.common.confirmationDialog.cameraPermission(),
       }
 
+    case PERMISSIONS.ANDROID.READ_MEDIA_IMAGES:
     case PERMISSIONS.IOS.PHOTO_LIBRARY:
       return {
         title: LL.common.confirmationDialog.mediaPermissionTitle(),
@@ -81,4 +82,4 @@ export const prepareUserDetails = (state: {
   }
 }
 
-export const stepWidth = Dimensions.get("window").width - 40
+export const stepWidth = Dimensions.get("window").width

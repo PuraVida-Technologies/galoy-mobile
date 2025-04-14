@@ -16,6 +16,7 @@ import { TabProps } from "./hooks/useKYCState"
 import useDocumentVerification, { UploadingId } from "./hooks/useDocumentVerification"
 import { LoadingComponent } from "@app/modules/market-place/components/loading-component"
 import { stepWidth } from "./hooks/utils"
+import { Screen } from "@app/components/screen"
 
 interface Props {
   label: string
@@ -71,45 +72,51 @@ const DocumentVerification = ({ jumpTo, KYCDetails, setKYCDetails }: TabProps) =
 
   return (
     <View style={{ width: stepWidth }}>
-      <View style={styles.container}>
-        <View>
-          <Text type={"h2"}>{LL.KYCScreen.documentVerification()}</Text>
-          <Divider style={styles.titleContainer} />
-        </View>
-        <DocumentUpload
-          label={LL.KYCScreen.uploadIDFront()}
-          loading={state.isUploadingFront && state.uploading}
-          file={state.idFront}
-          icon="card-account-details-outline"
-          onPress={() => {
-            actions?.setUploadingId(UploadingId.UploadingFront)
-            actions?.handlePreviewPress()
-          }}
-          styles={styles.pickerContainer}
-          imageStyles={styles.image}
-        />
-        {KYCDetails?.idDetails?.type === IDType.DriverLicense ? (
+      <Screen
+        preset="scroll"
+        keyboardOffset="navigationHeader"
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.container}>
+          <View>
+            <Text type={"h2"}>{LL.KYCScreen.documentVerification()}</Text>
+            <Divider style={styles.titleContainer} />
+          </View>
           <DocumentUpload
-            label={LL.KYCScreen.uploadIDBack()}
-            loading={state.isUploadingBack && state.uploading}
-            file={state.idBack}
-            icon="card-bulleted-outline"
+            label={LL.KYCScreen.uploadIDFront()}
+            loading={state.isUploadingFront && state.uploading}
+            file={state.idFront}
+            icon="card-account-details-outline"
             onPress={() => {
-              actions?.setUploadingId(UploadingId.UploadingBack)
+              actions?.setUploadingId(UploadingId.UploadingFront)
               actions?.handlePreviewPress()
             }}
             styles={styles.pickerContainer}
             imageStyles={styles.image}
-            disabled={
-              !state.idFront ||
-              state.uploading ||
-              (state.isUploadingBack && state.uploading)
-            }
           />
-        ) : (
-          <></>
-        )}
-      </View>
+          {KYCDetails?.idDetails?.type === IDType.DriverLicense ? (
+            <DocumentUpload
+              label={LL.KYCScreen.uploadIDBack()}
+              loading={state.isUploadingBack && state.uploading}
+              file={state.idBack}
+              icon="card-bulleted-outline"
+              onPress={() => {
+                actions?.setUploadingId(UploadingId.UploadingBack)
+                actions?.handlePreviewPress()
+              }}
+              styles={styles.pickerContainer}
+              imageStyles={styles.image}
+              disabled={
+                !state.idFront ||
+                state.uploading ||
+                (state.isUploadingBack && state.uploading)
+              }
+            />
+          ) : (
+            <></>
+          )}
+        </View>
+      </Screen>
       <Stepper
         jumpTo={jumpTo}
         allowNext={Boolean(state.idFront)}

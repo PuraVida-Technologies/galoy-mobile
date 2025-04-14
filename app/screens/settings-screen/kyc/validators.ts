@@ -29,7 +29,7 @@ export const validatePhoneNumber = ({
   if (!value) {
     return LL.KYCScreen.validations.phoneRequired()
   }
-  const phoneRegex = /^[+]*[0-9]{1,4}[-\s]?[0-9]{1,15}$/
+  const phoneRegex = /^\+[1-9][0-9]{0,3}[-\s]?[0-9]+$/
 
   if (!phoneRegex.test(value)) {
     return LL.KYCScreen.validations.phoneInvalid()

@@ -202,7 +202,7 @@ const useDocumentVerification = ({ KYCDetails, setKYCDetails, LL }: Props) => {
       } else if (type === "library") {
         const permission =
           Platform.OS === "android"
-            ? PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
+            ? PERMISSIONS.ANDROID.READ_MEDIA_IMAGES
             : PERMISSIONS.IOS.PHOTO_LIBRARY
         checkPermission(permission).then((res) => {
           if ([PermissionStatus.GRANTED, PermissionStatus.LIMITED].includes(res!)) {
