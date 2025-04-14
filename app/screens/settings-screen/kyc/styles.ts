@@ -1,6 +1,10 @@
 import { makeStyles } from "@rneui/themed"
 
 const useStyles = makeStyles(({ colors }) => ({
+  loadingContainer: {
+    zIndex: 10,
+    backgroundColor: colors.backdropWhiter,
+  },
   displayNone: {
     display: "none",
   },
@@ -9,7 +13,6 @@ const useStyles = makeStyles(({ colors }) => ({
     alignItems: "center",
   },
   screenStyle: {
-    padding: 20,
     flex: 1,
   },
   safeArea: {
@@ -17,6 +20,7 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.white,
   },
   container: {
+    padding: 20,
     flex: 1,
   },
   titleContainer: {
@@ -31,6 +35,7 @@ const useStyles = makeStyles(({ colors }) => ({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingTop: 20,
+    paddingHorizontal: 20,
     backgroundColor: colors.white,
   },
   buttonContainerStyle: {
@@ -90,6 +95,9 @@ const useStyles = makeStyles(({ colors }) => ({
   image: { width: "100%", height: 200 },
   disclosuresText: {
     marginBottom: 10,
+  },
+  errorText: {
+    color: colors.error,
   },
 }))
 

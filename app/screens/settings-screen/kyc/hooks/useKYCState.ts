@@ -1,10 +1,10 @@
-import { SceneMap, SceneRendererProps } from "react-native-tab-view"
+import { SceneMap } from "react-native-tab-view"
 import DocumentType from "../document-type"
 import DocumentProof from "../document-verification"
 import UserDetails from "../user-details"
 import ConfirmDisclosures from "../confirm-disclosures"
-import { useWindowDimensions } from "react-native"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useWindowDimensions, ScrollView } from "react-native"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { gql } from "@apollo/client"
 import {
   useKycDetailsQuery,
@@ -16,7 +16,8 @@ import {
   InputMaybe,
   MaritalStatus,
 } from "@app/graphql/generated"
-import { useNavigation } from "@react-navigation/native"
+import { useIsFocused, useNavigation } from "@react-navigation/native"
+import { stepWidth } from "./utils"
 
 gql`
   query KycDetails {
@@ -42,19 +43,16 @@ gql`
   }
 `
 
-export type TabRoute = {
+export type TabProps = {
   key: string
   title: string
-  setState: (next: Partial<KYCState>) => void
-  state: KYCState
+  setKYCDetails: (next: Partial<KYCDetails>) => void
+  KYCDetails: KYCDetails
   isStepOneAndTwoCompleted?: boolean
+  jumpTo: (key: number) => void
 }
 
-export interface Route extends Omit<SceneRendererProps, "layout"> {
-  route: TabRoute
-}
-
-export interface KYCState {
+export interface KYCDetails {
   pep?: string
   moneyTransfers?: string
   IDType?: string
@@ -78,7 +76,7 @@ export interface KYCState {
   }
 }
 
-const initialKycState: KYCState = {
+const initialKycDetails: KYCDetails = {
   pep: "yes",
   moneyTransfers: "yes",
   IDType: "",
@@ -104,13 +102,16 @@ const renderScene = SceneMap({
 })
 
 const useKYCState = () => {
-  const [state, _setState] = useState<KYCState>(initialKycState)
+  const [KYCDetails, _setKYCDetails] = useState<KYCDetails>(initialKycDetails)
   const [index, setIndex] = useState(0)
   const layout = useWindowDimensions()
   const navigation = useNavigation()
+  const isFocused = useIsFocused()
+  const scrollRef = useRef<ScrollView>(null)
+
   const { data, loading } = useKycDetailsQuery({ fetchPolicy: "network-only" })
-  const setState = useCallback((next: Partial<KYCState>) => {
-    _setState((prev) => ({ ...prev, ...next }))
+  const setKYCDetails = useCallback((next: Partial<KYCDetails>) => {
+    _setKYCDetails((prev) => ({ ...prev, ...next }))
   }, [])
 
   const { kyc, primaryIdentification, isDrivingLicense } = useMemo(() => {
@@ -127,7 +128,7 @@ const useKYCState = () => {
     if (!loading) {
       const isFrontSide = primaryIdentification?.files?.[0]
       const isBackSide = primaryIdentification?.files?.[1]
-      setState({
+      setKYCDetails({
         idDetails: {
           type: primaryIdentification?.type,
           front:
@@ -154,7 +155,7 @@ const useKYCState = () => {
   }, [
     loading,
     data,
-    setState,
+    setKYCDetails,
     primaryIdentification?.files,
     primaryIdentification?.type,
     isDrivingLicense,
@@ -166,79 +167,65 @@ const useKYCState = () => {
     kyc?.isHighRisk,
   ])
 
+  const jumpTo = (targetIndex: number) => {
+    scrollRef.current?.scrollTo({
+      x: stepWidth * targetIndex,
+    })
+    setIndex(targetIndex)
+  }
+
   useEffect(() => {
-    if (kyc?.status === Status.Pending) {
+    if (kyc?.status === Status.Pending && !loading) {
       const isFrontSide = primaryIdentification?.files?.[0]
       const isBackSide = primaryIdentification?.files?.[1]
       if (
-        state?.idDetails?.type &&
+        KYCDetails?.idDetails?.type &&
         ((isDrivingLicense && isFrontSide && isBackSide) ||
           (!isDrivingLicense && isFrontSide))
       ) {
-        setIndex(2)
+        jumpTo(2)
         if (
-          state?.idDetails?.email &&
-          state?.idDetails?.phoneNumber &&
-          state?.idDetails?.gender
+          KYCDetails?.idDetails?.email &&
+          KYCDetails?.idDetails?.phoneNumber &&
+          KYCDetails?.idDetails?.gender
         ) {
-          setIndex(3)
+          jumpTo(3)
         }
       }
     }
-  }, [state, kyc, primaryIdentification?.files, isDrivingLicense])
+  }, [loading, kyc?.status, isFocused, KYCDetails?.idDetails?.type])
 
   const isStepOneAndTwoCompleted = useMemo(() => {
     return (
       Boolean(primaryIdentification?.type) &&
       Boolean(primaryIdentification?.files) &&
       Boolean(
-        (state?.idDetails?.type === IdentificationType.DrivingLicense &&
-          state?.idDetails?.front &&
-          state?.idDetails?.back) ||
-          (state?.idDetails?.type !== IdentificationType.DrivingLicense &&
-            state?.idDetails?.front),
+        (KYCDetails?.idDetails?.type === IdentificationType.DrivingLicense &&
+          KYCDetails?.idDetails?.front &&
+          KYCDetails?.idDetails?.back) ||
+          (KYCDetails?.idDetails?.type !== IdentificationType.DrivingLicense &&
+            KYCDetails?.idDetails?.front),
       )
     )
   }, [
     primaryIdentification?.type,
     primaryIdentification?.files,
-    state?.idDetails?.type,
-    state?.idDetails?.front,
-    state?.idDetails?.back,
+    KYCDetails?.idDetails?.type,
+    KYCDetails?.idDetails?.front,
+    KYCDetails?.idDetails?.back,
   ])
 
   const onBack = useCallback(() => {
-    if (isStepOneAndTwoCompleted) {
-      navigation.goBack()
-    } else if (index === 0) {
+    if (index === 0) {
       navigation.goBack()
     } else {
-      setIndex(index - 1)
+      jumpTo(index - 1)
     }
   }, [index, navigation, isStepOneAndTwoCompleted])
 
-  const routes = [
-    { key: "docType", title: "Document Type", setState, state, isStepOneAndTwoCompleted },
-    {
-      key: "docProof",
-      title: "Document Proof",
-      setState,
-      state,
-      isStepOneAndTwoCompleted,
-    },
-    { key: "user", title: "User", setState, state, isStepOneAndTwoCompleted },
-    {
-      key: "confirm",
-      title: "Confirm Disclosures",
-      setState,
-      state,
-      isStepOneAndTwoCompleted,
-    },
-  ]
-
   return {
-    state: { state, routes, layout, index, isStepOneAndTwoCompleted },
-    actions: { setIndex, setState, renderScene, onBack },
+    state: { KYCDetails, loading, layout, index, isStepOneAndTwoCompleted, scrollRef },
+    actions: { setIndex, setKYCDetails, renderScene, onBack, jumpTo },
   }
 }
 

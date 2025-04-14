@@ -12,9 +12,11 @@ import { Text, Divider, useTheme } from "@rneui/themed"
 import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons"
 import ActionSheet from "@alessiocancian/react-native-actionsheet"
 import { IDType } from "./types"
-import { Route } from "./hooks/useKYCState"
+import { TabProps } from "./hooks/useKYCState"
 import useDocumentVerification, { UploadingId } from "./hooks/useDocumentVerification"
 import { LoadingComponent } from "@app/modules/market-place/components/loading-component"
+import { stepWidth } from "./hooks/utils"
+import { Screen } from "@app/components/screen"
 
 interface Props {
   label: string
@@ -59,68 +61,74 @@ const DocumentUpload = ({
   )
 }
 
-const DocumentVerification = ({ jumpTo, route }: Route) => {
+const DocumentVerification = ({ jumpTo, KYCDetails, setKYCDetails }: TabProps) => {
   const styles = useStyles()
   const { LL } = useI18nContext()
   const { state, actions } = useDocumentVerification({
     LL,
-    state: route.state,
-    setState: route.setState,
+    KYCDetails,
+    setKYCDetails,
   })
 
   return (
-    <>
-      <View style={styles.container}>
-        <View>
-          <Text type={"h2"}>{LL.KYCScreen.documentVerification()}</Text>
-          <Divider style={styles.titleContainer} />
-        </View>
-        <DocumentUpload
-          label={LL.KYCScreen.uploadIDFront()}
-          loading={state.isUploadingFront && state.uploading}
-          file={state.idFront}
-          icon="card-account-details-outline"
-          onPress={() => {
-            actions?.setUploadingId(UploadingId.UploadingFront)
-            actions?.handlePreviewPress()
-          }}
-          styles={styles.pickerContainer}
-          imageStyles={styles.image}
-        />
-        {route?.state?.idDetails?.type === IDType.DriverLicense ? (
+    <View style={{ width: stepWidth }}>
+      <Screen
+        preset="scroll"
+        keyboardOffset="navigationHeader"
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.container}>
+          <View>
+            <Text type={"h2"}>{LL.KYCScreen.documentVerification()}</Text>
+            <Divider style={styles.titleContainer} />
+          </View>
           <DocumentUpload
-            label={LL.KYCScreen.uploadIDBack()}
-            loading={state.isUploadingBack && state.uploading}
-            file={state.idBack}
-            icon="card-bulleted-outline"
+            label={LL.KYCScreen.uploadIDFront()}
+            loading={state.isUploadingFront && state.uploading}
+            file={state.idFront}
+            icon="card-account-details-outline"
             onPress={() => {
-              actions?.setUploadingId(UploadingId.UploadingBack)
+              actions?.setUploadingId(UploadingId.UploadingFront)
               actions?.handlePreviewPress()
             }}
             styles={styles.pickerContainer}
             imageStyles={styles.image}
-            disabled={
-              !state.idFront ||
-              state.uploading ||
-              (state.isUploadingBack && state.uploading)
-            }
           />
-        ) : (
-          <></>
-        )}
-      </View>
+          {KYCDetails?.idDetails?.type === IDType.DriverLicense ? (
+            <DocumentUpload
+              label={LL.KYCScreen.uploadIDBack()}
+              loading={state.isUploadingBack && state.uploading}
+              file={state.idBack}
+              icon="card-bulleted-outline"
+              onPress={() => {
+                actions?.setUploadingId(UploadingId.UploadingBack)
+                actions?.handlePreviewPress()
+              }}
+              styles={styles.pickerContainer}
+              imageStyles={styles.image}
+              disabled={
+                !state.idFront ||
+                state.uploading ||
+                (state.isUploadingBack && state.uploading)
+              }
+            />
+          ) : (
+            <></>
+          )}
+        </View>
+      </Screen>
       <Stepper
         jumpTo={jumpTo}
         allowNext={Boolean(state.idFront)}
         previous
-        nextPage={"user"}
+        nextPage={2}
         disableNext={
           Boolean(!state.idFront) ||
-          (route?.state?.idDetails?.type === IDType.DriverLicense && !state.idBack) ||
+          (KYCDetails?.idDetails?.type === IDType.DriverLicense && !state.idBack) ||
           state.uploading
         }
         loading={state.uploading}
-        previousPage={"docType"}
+        previousPage={0}
       />
       <ActionSheet
         ref={state.actionSheetRef}
@@ -130,7 +138,7 @@ const DocumentVerification = ({ jumpTo, route }: Route) => {
         id={state.uploadingId}
         onPress={actions?.onMenuPress}
       />
-    </>
+    </View>
   )
 }
 

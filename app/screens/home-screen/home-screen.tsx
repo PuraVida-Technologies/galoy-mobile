@@ -123,7 +123,9 @@ export const HomeScreen: React.FC = () => {
             kyc?.phoneNumber &&
             kyc?.email &&
             kyc?.gender &&
+            kyc?.isPoliticallyExposed !== null &&
             kyc?.isPoliticallyExposed?.toString() &&
+            kyc?.isHighRisk !== null &&
             kyc?.isHighRisk?.toString(),
         ) && kyc?.status !== Status.Approved
       )
@@ -142,7 +144,7 @@ export const HomeScreen: React.FC = () => {
       Alert.alert(LL.TransferActions.sinpeIBANTransfers(), message, [
         {
           text: LL.common.confirm(),
-          onPress: () => (awaitingApproval ? navigation.navigate("KYCScreen") : ""),
+          onPress: () => (awaitingApproval ? "" : navigation.navigate("KYCScreen")),
         },
         {
           text: LL.common.cancel(),
