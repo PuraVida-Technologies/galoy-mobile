@@ -46,10 +46,10 @@ type BankAccountForm = {
   swiftCode: string
 }
 
-const defaultValues = {
+const defaultValues: BankAccountForm = {
   accountHolderName: "",
   bankName: "",
-  currency: "",
+  currency: BankAccountCurrencies.Usd,
   swiftCode: "",
   iban: "",
   sinpeCode: "",
@@ -64,7 +64,7 @@ const useAddBankAccount = ({ account }: Props) => {
   const [updateBankAccountCr, { loading: updatingAccount }] =
     useUpdateBankAccountCrMutation({ refetchQueries: ["bankAccounts"] })
 
-  const { reset, getValues, handleSubmit, control } = useForm({
+  const { reset, getValues, handleSubmit, control } = useForm<BankAccountForm>({
     defaultValues: { ...defaultValues },
   })
 

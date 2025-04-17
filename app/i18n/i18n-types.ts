@@ -7390,7 +7390,7 @@ type RootTranslation = {
 		 */
 		iban: string
 		/**
-		 * B​a​n​k​ ​N​a​m​e
+		 * A​c​c​o​u​n​t​ ​A​l​i​a​s
 		 */
 		bankName: string
 		/**
@@ -8654,6 +8654,10 @@ type RootTranslation = {
 		 * S​u​b​m​i​t
 		 */
 		submit: string
+		/**
+		 * S​a​v​e
+		 */
+		save: string
 		/**
 		 * S​u​c​c​e​s​s​!
 		 */
@@ -16925,7 +16929,7 @@ export type TranslationFunctions = {
 		 */
 		iban: () => LocalizedString
 		/**
-		 * Bank Name
+		 * Account Alias
 		 */
 		bankName: () => LocalizedString
 		/**
@@ -16948,6 +16952,10 @@ export type TranslationFunctions = {
 		 * Are you sure you want to remove this bank account?
 		 */
 		confirmRemoveBankAccountTitle: () => LocalizedString
+    /**
+		 * Remove Bank Account Error
+		 */
+    removeAccountError: () => LocalizedString
 		/**
 		 * This action cannot be undone.
 		 */
@@ -18167,6 +18175,10 @@ export type TranslationFunctions = {
 		 * Submit
 		 */
 		submit: () => LocalizedString
+		/**
+		 * Save
+		 */
+		save: () => LocalizedString
 		/**
 		 * Success!
 		 */

@@ -42,6 +42,16 @@ const useStyles = makeStyles(({ colors }) => ({
   buttonInActiveText: {
     color: colors.grey1,
   },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 4,
+  },
+  headerIconContainer: {
+    marginRight: 16,
+    alignItems: "flex-end",
+    justifyContent: "center",
+  },
 }))
 
 export default useStyles

@@ -1,14 +1,14 @@
-import { SafeAreaView, View } from "react-native"
+import { SafeAreaView, View, Alert, Text } from "react-native"
 import useStyles from "@app/modules/bank-account/styles"
 import { Screen } from "@app/components/screen"
 import { testProps } from "@app/utils/testProps"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { Button } from "@rneui/themed"
+import { Button, Icon } from "@rneui/themed"
 import Input from "@app/components/form-input/form-input"
 import { Controller } from "react-hook-form"
 import useBankAccount from "@app/modules/bank-account/hooks/useAddBankAccount"
-import { useRoute, RouteProp } from "@react-navigation/native"
-import { BankAccountCr } from "@app/graphql/generated"
+import { useRoute, RouteProp, useNavigation } from "@react-navigation/native"
+import { BankAccountCr, useRemoveMyBankAccountMutation } from "@app/graphql/generated"
 import {
   validateAccountHolderName,
   validateBankName,
@@ -18,14 +18,49 @@ import {
   validateSnip,
   validateSwift,
 } from "@app/modules/bank-account/validators"
+import FormContainer from "@app/components/form-input/form-container"
+import Dropdown from "@app/components/dropdown/dropdown"
+import { StackNavigationProp } from "@react-navigation/stack"
+import { RootStackParamList } from "@app/navigation/stack-param-lists"
 
 const AddBankAccountScreen = () => {
   const styles = useStyles()
   const { LL } = useI18nContext()
+  const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>()
   const { params } =
     useRoute<RouteProp<{ params: { account: BankAccountCr } }, "params">>()
   const { state, actions } = useBankAccount({ account: params?.account, LL })
   const { control, loading } = state
+
+  const [removeMyBankAccount] = useRemoveMyBankAccountMutation()
+
+  const handleRemoveBankAccount = async () => {
+    Alert.alert(
+      LL.common.confirm(),
+      LL.BankAccountScreen.confirmRemoveBankAccountTitle(),
+      [
+        {
+          text: LL.common.cancel(),
+          style: "cancel",
+        },
+        {
+          text: LL.common.remove(),
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await removeMyBankAccount({
+                variables: { bankAccountId: params?.account?.id },
+              })
+              navigate("bankAccounts")
+            } catch (error) {
+              console.error("Error removing bank account:", error)
+              Alert.alert(LL.common.error(), LL.BankAccountScreen.removeAccountError())
+            }
+          },
+        },
+      ],
+    )
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -35,6 +70,15 @@ const AddBankAccountScreen = () => {
         keyboardOffset="navigationHeader"
         keyboardShouldPersistTaps="handled"
       >
+        {params?.account && (
+          <Icon
+            name="trash"
+            type="ionicon"
+            color="red"
+            onPress={handleRemoveBankAccount}
+            containerStyle={styles.headerIconContainer}
+          />
+        )}
         <View style={styles.container}>
           <Controller
             name="accountHolderName"
@@ -82,16 +126,21 @@ const AddBankAccountScreen = () => {
               validate: (value) => validateCurrency(value, LL),
             }}
             render={({ field, fieldState }) => (
-              <Input
-                {...testProps(LL.BankAccountScreen.currency())}
-                label={LL.BankAccountScreen.currency()}
-                placeholder={LL.BankAccountScreen.currency()}
-                autoCapitalize="characters"
-                maxLength={3}
-                errorMessage={fieldState.error?.message}
-                {...field}
-                onChangeText={(text) => field.onChange(text)}
-              />
+              <FormContainer label={LL.BankAccountScreen.currency()}>
+                <Dropdown
+                  {...testProps(LL.BankAccountScreen.currency())}
+                  data={[
+                    { label: "USD", value: "USD" },
+                    { label: "CRC", value: "CRC" },
+                  ]}
+                  placeholder={LL.BankAccountScreen.currency()}
+                  value={field.value}
+                  onChange={(item) => field.onChange(item.value)}
+                />
+                {fieldState.error?.message ? (
+                  <Text style={styles.errorText}>{fieldState.error.message}</Text>
+                ) : null}
+              </FormContainer>
             )}
           />
           <Controller
@@ -109,7 +158,13 @@ const AddBankAccountScreen = () => {
                 maxLength={22}
                 errorMessage={fieldState.error?.message}
                 {...field}
-                onChangeText={(text) => field.onChange(text)}
+                value={
+                  field.value?.startsWith("CR") ? field.value : `CR${field.value || ""}`
+                }
+                onChangeText={(text) => {
+                  const updatedValue = text.startsWith("CR") ? text : `CR${text}`
+                  field.onChange(updatedValue)
+                }}
               />
             )}
           />
@@ -174,7 +229,7 @@ const AddBankAccountScreen = () => {
 
           <Button
             {...testProps(LL.common.submit())}
-            title={LL.common.submit()}
+            title={params?.account ? LL.common.save() : LL.common.submit()}
             containerStyle={styles.buttonContainerStyle}
             buttonStyle={[styles.buttonStyle]}
             titleProps={{

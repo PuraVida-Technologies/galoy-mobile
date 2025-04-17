@@ -60,46 +60,26 @@ const BackAccountsScreen = () => {
         <View style={styles.container}>
           {data?.getMyBankAccounts?.map((account, index) => (
             <>
-              <Swipeable
+              <Pressable
                 key={index}
-                friction={2}
-                rightThreshold={40}
-                overshootRight={false}
-                dragOffsetFromRightEdge={50}
-                onSwipeableOpen={() => {
-                  setHovering(true)
+                onPress={() => {
+                  navigate("addBankAccount", { account })
                 }}
-                onSwipeableClose={() => {
-                  setHovering(false)
-                }}
-                renderRightActions={(
-                  progress: SharedValue<number>,
-                  translation: SharedValue<number>,
-                  swipeableMethods: SwipeableMethods,
-                ) => renderRightActions(translation, swipeableMethods, account)}
               >
-                <Pressable
-                  key={index}
-                  onPress={() => {
-                    navigate("addBankAccount", { account })
-                  }}
-                  // {...testProps(title)}
-                >
-                  <View style={[styles.spacing, styles.internalContainer]}>
-                    <View>
-                      <View style={styles.sidetoside}>
-                        <Text type="p2">{account.data.accountHolderName}</Text>
-                      </View>
-                      <Text>{account.data.iban}</Text>
-
-                      <Text type={"p4"} ellipsizeMode="tail" numberOfLines={1}>
-                        {account.data.currency}
-                      </Text>
+                <View style={[styles.spacing, styles.internalContainer]}>
+                  <View>
+                    <View style={styles.sidetoside}>
+                      <Text type="p2">{account.data.accountHolderName}</Text>
                     </View>
-                    <Icon name={"chevron-forward"} type="ionicon" />
+                    <Text>{account.data.iban}</Text>
+
+                    <Text type={"p4"} ellipsizeMode="tail" numberOfLines={1}>
+                      {account.data.currency}
+                    </Text>
                   </View>
-                </Pressable>
-              </Swipeable>
+                  <Icon name={"chevron-forward"} type="ionicon" />
+                </View>
+              </Pressable>
               {index !== data?.getMyBankAccounts?.length - 1 && (
                 <View style={styles.borderBottom}></View>
               )}

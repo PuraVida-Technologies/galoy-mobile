@@ -70,7 +70,12 @@ export const SettingsScreen: React.FC = () => {
 
   const items = useMemo(
     () => ({
-      account: [AccountLevelSetting, TxLimits, KYC, BankAccount],
+      account: [
+        AccountLevelSetting,
+        TxLimits,
+        isAtLeastLevelOne ? KYC : () => null,
+        isAtLeastLevelOne ? BankAccount : () => null,
+      ],
       loginMethods: [EmailSetting, PhoneSetting],
       waysToGetPaid: [AccountLNAddress, AccountPOS, AccountStaticQR],
       preferences: [
