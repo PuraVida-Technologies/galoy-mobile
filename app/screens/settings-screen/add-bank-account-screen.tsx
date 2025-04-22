@@ -129,6 +129,7 @@ const AddBankAccountScreen = () => {
                 placeholder={LL.BankAccountScreen.iban()}
                 autoCapitalize="characters"
                 maxLength={22}
+                keyboardType="numeric"
                 errorMessage={fieldState.error?.message}
                 {...field}
                 value={
