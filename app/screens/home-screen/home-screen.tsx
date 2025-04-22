@@ -547,7 +547,7 @@ export const HomeScreen: React.FC = () => {
                   style={[
                     l.titleStyle,
                     styles.titleStyle,
-                    l.disabled && styles.listItemSubtitle,
+                    l.disabled && { color: colors.grey3 },
                   ]}
                 >
                   {l.title}
@@ -655,6 +655,7 @@ const useStyles = makeStyles(({ colors }, { theme }: { theme?: string }) => ({
   },
   listItemSubtitle: {
     color: colors.grey3,
+    fontSize: 12,
   },
   titleStyle: {
     textAlign: "center",
