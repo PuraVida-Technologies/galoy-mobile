@@ -1,20 +1,42 @@
 import { gql } from "@apollo/client"
 import {
   BankAccountCr,
-  BankAccountCurrencies,
   useAddBankAccountCrMutation,
-  useUpdateBankAccountCrMutation,
+  useVerifyIbanAccountLazyQuery,
 } from "@app/graphql/generated"
-import { useCallback, useEffect } from "react"
+import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { useNavigation } from "@react-navigation/native"
 import { TranslationFunctions } from "@app/i18n/i18n-types"
 
 gql`
+  query VerifyIbanAccount($iban: String!) {
+    verifyIbanAccount(iban: $iban) {
+      success
+      iban
+      bankName
+      alias
+      currencyCode
+      errorCode
+      message
+    }
+  }
+`
+
+gql`
   mutation addBankAccountCR($input: AddBankAccountCRDTO!) {
     addBankAccountCR(input: $input) {
       id
+      galoyUserId
+      type
+      countryCode
+      accountAlias
+      data {
+        bankName
+        iban
+        currency
+      }
     }
   }
 `
@@ -36,72 +58,85 @@ interface Props {
 }
 
 type BankAccountForm = {
-  id?: string
-  accountHolderName: string
-  bankName: string
-  currency: BankAccountCurrencies
   iban: string
-  nationalId: string
-  sinpeCode: string
-  swiftCode: string
+  accountAlias: string
 }
 
 const defaultValues: BankAccountForm = {
-  accountHolderName: "",
-  bankName: "",
-  currency: BankAccountCurrencies.Usd,
-  swiftCode: "",
   iban: "",
-  sinpeCode: "",
-  nationalId: "",
+  accountAlias: "",
 }
 
-const useAddBankAccount = ({ account }: Props) => {
+const useAddBankAccount = ({ LL }: Props) => {
   const navigation = useNavigation()
+  const [verifyIbanAccount, { loading: verifying }] = useVerifyIbanAccountLazyQuery()
   const [addBankAccountCr, { loading: addingAccount }] = useAddBankAccountCrMutation({
     refetchQueries: ["bankAccounts"],
   })
-  const [updateBankAccountCr, { loading: updatingAccount }] =
-    useUpdateBankAccountCrMutation({ refetchQueries: ["bankAccounts"] })
 
-  const { reset, getValues, handleSubmit, control } = useForm<BankAccountForm>({
+  const { reset, handleSubmit, control, setValue, getValues } = useForm<BankAccountForm>({
     defaultValues: { ...defaultValues },
   })
 
-  useEffect(() => {
-    if (account?.id) {
-      const _defaultValues = {
-        accountHolderName: account.data.accountHolderName,
-        bankName: account.data.bankName,
-        currency: account.data.currency,
-        swiftCode: account.data.swiftCode,
-        iban: "",
-        sinpeCode: account.data.sinpeCode,
-        nationalId: "",
-        id: account.id,
+  const [bankDetails, setBankDetails] = useState<{
+    bankName?: string
+    iban?: string
+    currencyCode?: string
+  } | null>(null)
+
+  const verifyIban = useCallback(async (iban: string) => {
+    try {
+      const { data } = await verifyIbanAccount({ variables: { iban } })
+      const result = data?.verifyIbanAccount
+      if (result?.success) {
+        setBankDetails({
+          bankName: result?.bankName ?? undefined,
+          iban: result?.iban ?? undefined,
+          currencyCode: result?.currencyCode ?? undefined,
+        })
+        setValue(
+          "accountAlias",
+          `${result.currencyCode}-${(result.iban ?? "").slice(-4)}`,
+        )
+      } else {
+        throw new Error(result?.message || LL.BankAccountScreen.verifyIbanError())
       }
-      reset({ ...getValues(), ..._defaultValues })
+    } catch (error) {
+      if (error instanceof Error) {
+        crashlytics().recordError(error)
+      }
+      throw error
     }
-  }, [account, getValues, reset])
+  }, [])
+
+  const addBankAccount = useCallback(
+    async (data: BankAccountForm) => {
+      try {
+        const input = {
+          accountAlias: data.accountAlias,
+          bankName: bankDetails?.bankName || "",
+          currency: bankDetails?.currencyCode,
+          iban: bankDetails?.iban,
+        }
+        await addBankAccountCr({ variables: { input } })
+        navigation.goBack()
+        reset({ ...defaultValues })
+      } catch (err) {
+        crashlytics().recordError(err)
+        throw err
+      }
+    },
+    [bankDetails],
+  )
 
   const onSubmit = useCallback(async (data: BankAccountForm) => {
     try {
-      if (data.id) {
-        const _data = { ...data }
-        delete _data.id
-        await updateBankAccountCr({
-          variables: {
-            updateBankAccountCrId: data.id,
-            input: { ..._data },
-          },
-        })
-      } else {
-        await addBankAccountCr({
-          variables: {
-            input: { ...data },
-          },
-        })
-      }
+      await addBankAccountCr({
+        variables: {
+          input: { ...data },
+        },
+      })
+
       navigation.goBack()
       reset({ ...defaultValues })
     } catch (err) {
@@ -114,10 +149,15 @@ const useAddBankAccount = ({ account }: Props) => {
   return {
     state: {
       control,
-      loading: addingAccount || updatingAccount,
+      loading: verifying || addingAccount,
+      bankDetails,
+      getValues,
+      setValue,
     },
     actions: {
       handleSubmit,
+      verifyIban,
+      addBankAccount,
       onSubmit,
     },
   }

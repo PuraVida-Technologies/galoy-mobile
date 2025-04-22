@@ -231,6 +231,7 @@ export type AccountUpdateNotificationSettingsPayload = {
 };
 
 export type AddBankAccountCrdto = {
+  readonly accountAlias: Scalars['String']['input'];
   readonly accountHolderName: Scalars['String']['input'];
   readonly bankName: Scalars['String']['input'];
   readonly currency: BankAccountCurrencies;
@@ -410,6 +411,7 @@ export type BankAccount = BankAccountCr;
 
 export type BankAccountCr = ExternalAccount & {
   readonly __typename: 'BankAccountCR';
+  readonly accountAlias: Scalars['String']['output'];
   readonly countryCode: ExternalAccountCountries;
   readonly data: BankAccountDataCr;
   readonly galoyUserId: Scalars['String']['output'];
@@ -433,6 +435,17 @@ export type BankAccountDataCr = {
   readonly nationalId: Scalars['String']['output'];
   readonly sinpeCode: Scalars['String']['output'];
   readonly swiftCode: Scalars['String']['output'];
+};
+
+export type BankAccountVerification = {
+  readonly __typename: 'BankAccountVerification';
+  readonly alias?: Maybe<Scalars['String']['output']>;
+  readonly bankName?: Maybe<Scalars['String']['output']>;
+  readonly currencyCode: Scalars['String']['output'];
+  readonly errorCode?: Maybe<Scalars['Float']['output']>;
+  readonly iban?: Maybe<Scalars['String']['output']>;
+  readonly message?: Maybe<Scalars['String']['output']>;
+  readonly success: Scalars['Boolean']['output'];
 };
 
 export type BuildInformation = {
@@ -830,7 +843,7 @@ export type Identification = {
   readonly files: ReadonlyArray<Scalars['String']['output']>;
   readonly filesSignedUrls: ReadonlyArray<Scalars['String']['output']>;
   readonly id: Scalars['ID']['output'];
-  readonly identifier: Scalars['String']['output'];
+  readonly identifier?: Maybe<Scalars['String']['output']>;
   readonly primaryKycId: Scalars['ID']['output'];
   readonly secondaryKycId?: Maybe<Scalars['ID']['output']>;
   readonly type: IdentificationType;
@@ -2044,6 +2057,7 @@ export type Query = {
   readonly lnInvoicePaymentStatusByPaymentRequest: LnInvoicePaymentStatus;
   readonly me?: Maybe<User>;
   readonly mobileVersions?: Maybe<ReadonlyArray<Maybe<MobileVersions>>>;
+  readonly myBankAccountDetails: BankAccountVerification;
   readonly onChainTxFee: OnChainTxFee;
   readonly onChainUsdTxFee: OnChainUsdTxFee;
   readonly onChainUsdTxFeeAsBtcDenominated: OnChainUsdTxFee;
@@ -2057,6 +2071,7 @@ export type Query = {
   /** @deprecated will be migrated to AccountDefaultWalletId */
   readonly userDefaultWalletId: Scalars['WalletId']['output'];
   readonly usernameAvailable?: Maybe<Scalars['Boolean']['output']>;
+  readonly verifyIbanAccount: BankAccountVerification;
 };
 
 
@@ -2117,6 +2132,11 @@ export type QueryLnInvoicePaymentStatusByPaymentRequestArgs = {
 };
 
 
+export type QueryMyBankAccountDetailsArgs = {
+  bankAccountId: Scalars['String']['input'];
+};
+
+
 export type QueryOnChainTxFeeArgs = {
   address: Scalars['OnChainAddress']['input'];
   amount: Scalars['SatAmount']['input'];
@@ -2158,6 +2178,11 @@ export type QueryUserDefaultWalletIdArgs = {
 
 export type QueryUsernameAvailableArgs = {
   username: Scalars['Username']['input'];
+};
+
+
+export type QueryVerifyIbanAccountArgs = {
+  iban: Scalars['String']['input'];
 };
 
 export type Quiz = {
@@ -2502,6 +2527,7 @@ export const TxStatus = {
 
 export type TxStatus = typeof TxStatus[keyof typeof TxStatus];
 export type UpdateBankAccountCrdto = {
+  readonly accountAlias?: InputMaybe<Scalars['String']['input']>;
   readonly accountHolderName?: InputMaybe<Scalars['String']['input']>;
   readonly bankName?: InputMaybe<Scalars['String']['input']>;
   readonly currency?: InputMaybe<BankAccountCurrencies>;
@@ -3129,12 +3155,19 @@ export type UserLogoutMutationVariables = Exact<{
 
 export type UserLogoutMutation = { readonly __typename: 'Mutation', readonly userLogout: { readonly __typename: 'SuccessPayload', readonly success?: boolean | null } };
 
+export type VerifyIbanAccountQueryVariables = Exact<{
+  iban: Scalars['String']['input'];
+}>;
+
+
+export type VerifyIbanAccountQuery = { readonly __typename: 'Query', readonly verifyIbanAccount: { readonly __typename: 'BankAccountVerification', readonly success: boolean, readonly iban?: string | null, readonly bankName?: string | null, readonly alias?: string | null, readonly currencyCode: string, readonly errorCode?: number | null, readonly message?: string | null } };
+
 export type AddBankAccountCrMutationVariables = Exact<{
   input: AddBankAccountCrdto;
 }>;
 
 
-export type AddBankAccountCrMutation = { readonly __typename: 'Mutation', readonly addBankAccountCR: { readonly __typename: 'BankAccountCR', readonly id: string } };
+export type AddBankAccountCrMutation = { readonly __typename: 'Mutation', readonly addBankAccountCR: { readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly accountAlias: string, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly iban: string, readonly currency: BankAccountCurrencies } } };
 
 export type UpdateBankAccountCrMutationVariables = Exact<{
   updateBankAccountCrId: Scalars['String']['input'];
@@ -4862,10 +4895,65 @@ export function useUserLogoutMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UserLogoutMutationHookResult = ReturnType<typeof useUserLogoutMutation>;
 export type UserLogoutMutationResult = Apollo.MutationResult<UserLogoutMutation>;
 export type UserLogoutMutationOptions = Apollo.BaseMutationOptions<UserLogoutMutation, UserLogoutMutationVariables>;
+export const VerifyIbanAccountDocument = gql`
+    query VerifyIbanAccount($iban: String!) {
+  verifyIbanAccount(iban: $iban) {
+    success
+    iban
+    bankName
+    alias
+    currencyCode
+    errorCode
+    message
+  }
+}
+    `;
+
+/**
+ * __useVerifyIbanAccountQuery__
+ *
+ * To run a query within a React component, call `useVerifyIbanAccountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVerifyIbanAccountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVerifyIbanAccountQuery({
+ *   variables: {
+ *      iban: // value for 'iban'
+ *   },
+ * });
+ */
+export function useVerifyIbanAccountQuery(baseOptions: Apollo.QueryHookOptions<VerifyIbanAccountQuery, VerifyIbanAccountQueryVariables> & ({ variables: VerifyIbanAccountQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<VerifyIbanAccountQuery, VerifyIbanAccountQueryVariables>(VerifyIbanAccountDocument, options);
+      }
+export function useVerifyIbanAccountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<VerifyIbanAccountQuery, VerifyIbanAccountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<VerifyIbanAccountQuery, VerifyIbanAccountQueryVariables>(VerifyIbanAccountDocument, options);
+        }
+export function useVerifyIbanAccountSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<VerifyIbanAccountQuery, VerifyIbanAccountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<VerifyIbanAccountQuery, VerifyIbanAccountQueryVariables>(VerifyIbanAccountDocument, options);
+        }
+export type VerifyIbanAccountQueryHookResult = ReturnType<typeof useVerifyIbanAccountQuery>;
+export type VerifyIbanAccountLazyQueryHookResult = ReturnType<typeof useVerifyIbanAccountLazyQuery>;
+export type VerifyIbanAccountSuspenseQueryHookResult = ReturnType<typeof useVerifyIbanAccountSuspenseQuery>;
+export type VerifyIbanAccountQueryResult = Apollo.QueryResult<VerifyIbanAccountQuery, VerifyIbanAccountQueryVariables>;
 export const AddBankAccountCrDocument = gql`
     mutation addBankAccountCR($input: AddBankAccountCRDTO!) {
   addBankAccountCR(input: $input) {
     id
+    galoyUserId
+    type
+    countryCode
+    accountAlias
+    data {
+      bankName
+      iban
+      currency
+    }
   }
 }
     `;
@@ -9157,6 +9245,8 @@ export type ResolversTypes = {
   BankAccountCR: ResolverTypeWrapper<BankAccountCr>;
   BankAccountCurrencies: BankAccountCurrencies;
   BankAccountDataCR: ResolverTypeWrapper<BankAccountDataCr>;
+  BankAccountVerification: ResolverTypeWrapper<BankAccountVerification>;
+  Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   BigDecimal: ResolverTypeWrapper<Scalars['BigDecimal']['output']>;
   BuildInformation: ResolverTypeWrapper<BuildInformation>;
   CallbackEndpoint: ResolverTypeWrapper<CallbackEndpoint>;
@@ -9172,7 +9262,6 @@ export type ResolversTypes = {
   Contact: ResolverTypeWrapper<Contact>;
   ContactAlias: ResolverTypeWrapper<Scalars['ContactAlias']['output']>;
   Coordinates: ResolverTypeWrapper<Coordinates>;
-  Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   Country: ResolverTypeWrapper<Country>;
   CountryCode: ResolverTypeWrapper<Scalars['CountryCode']['output']>;
   CreateStoreInput: CreateStoreInput;
@@ -9433,6 +9522,8 @@ export type ResolversParentTypes = {
   BankAccount: ResolversUnionTypes<ResolversParentTypes>['BankAccount'];
   BankAccountCR: BankAccountCr;
   BankAccountDataCR: BankAccountDataCr;
+  BankAccountVerification: BankAccountVerification;
+  Float: Scalars['Float']['output'];
   BigDecimal: Scalars['BigDecimal']['output'];
   BuildInformation: BuildInformation;
   CallbackEndpoint: CallbackEndpoint;
@@ -9448,7 +9539,6 @@ export type ResolversParentTypes = {
   Contact: Contact;
   ContactAlias: Scalars['ContactAlias']['output'];
   Coordinates: Coordinates;
-  Float: Scalars['Float']['output'];
   Country: Country;
   CountryCode: Scalars['CountryCode']['output'];
   CreateStoreInput: CreateStoreInput;
@@ -9800,6 +9890,7 @@ export type BankAccountResolvers<ContextType = any, ParentType extends Resolvers
 };
 
 export type BankAccountCrResolvers<ContextType = any, ParentType extends ResolversParentTypes['BankAccountCR'] = ResolversParentTypes['BankAccountCR']> = {
+  accountAlias?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   countryCode?: Resolver<ResolversTypes['ExternalAccountCountries'], ParentType, ContextType>;
   data?: Resolver<ResolversTypes['BankAccountDataCR'], ParentType, ContextType>;
   galoyUserId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -9816,6 +9907,17 @@ export type BankAccountDataCrResolvers<ContextType = any, ParentType extends Res
   nationalId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   sinpeCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   swiftCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BankAccountVerificationResolvers<ContextType = any, ParentType extends ResolversParentTypes['BankAccountVerification'] = ResolversParentTypes['BankAccountVerification']> = {
+  alias?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  bankName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  currencyCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  errorCode?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  iban?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -10053,7 +10155,7 @@ export type IdentificationResolvers<ContextType = any, ParentType extends Resolv
   files?: Resolver<ReadonlyArray<ResolversTypes['String']>, ParentType, ContextType>;
   filesSignedUrls?: Resolver<ReadonlyArray<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  identifier?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  identifier?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   primaryKycId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   secondaryKycId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['IdentificationType'], ParentType, ContextType>;
@@ -10519,6 +10621,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   lnInvoicePaymentStatusByPaymentRequest?: Resolver<ResolversTypes['LnInvoicePaymentStatus'], ParentType, ContextType, RequireFields<QueryLnInvoicePaymentStatusByPaymentRequestArgs, 'input'>>;
   me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   mobileVersions?: Resolver<Maybe<ReadonlyArray<Maybe<ResolversTypes['MobileVersions']>>>, ParentType, ContextType>;
+  myBankAccountDetails?: Resolver<ResolversTypes['BankAccountVerification'], ParentType, ContextType, RequireFields<QueryMyBankAccountDetailsArgs, 'bankAccountId'>>;
   onChainTxFee?: Resolver<ResolversTypes['OnChainTxFee'], ParentType, ContextType, RequireFields<QueryOnChainTxFeeArgs, 'address' | 'amount' | 'speed' | 'walletId'>>;
   onChainUsdTxFee?: Resolver<ResolversTypes['OnChainUsdTxFee'], ParentType, ContextType, RequireFields<QueryOnChainUsdTxFeeArgs, 'address' | 'amount' | 'speed' | 'walletId'>>;
   onChainUsdTxFeeAsBtcDenominated?: Resolver<ResolversTypes['OnChainUsdTxFee'], ParentType, ContextType, RequireFields<QueryOnChainUsdTxFeeAsBtcDenominatedArgs, 'address' | 'amount' | 'speed' | 'walletId'>>;
@@ -10530,6 +10633,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   stores?: Resolver<ReadonlyArray<ResolversTypes['StoreResponse']>, ParentType, ContextType>;
   userDefaultWalletId?: Resolver<ResolversTypes['WalletId'], ParentType, ContextType, RequireFields<QueryUserDefaultWalletIdArgs, 'username'>>;
   usernameAvailable?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<QueryUsernameAvailableArgs, 'username'>>;
+  verifyIbanAccount?: Resolver<ResolversTypes['BankAccountVerification'], ParentType, ContextType, RequireFields<QueryVerifyIbanAccountArgs, 'iban'>>;
 };
 
 export type QuizResolvers<ContextType = any, ParentType extends ResolversParentTypes['Quiz'] = ResolversParentTypes['Quiz']> = {
@@ -10987,6 +11091,7 @@ export type Resolvers<ContextType = any> = {
   BankAccount?: BankAccountResolvers<ContextType>;
   BankAccountCR?: BankAccountCrResolvers<ContextType>;
   BankAccountDataCR?: BankAccountDataCrResolvers<ContextType>;
+  BankAccountVerification?: BankAccountVerificationResolvers<ContextType>;
   BigDecimal?: GraphQLScalarType;
   BuildInformation?: BuildInformationResolvers<ContextType>;
   CallbackEndpoint?: CallbackEndpointResolvers<ContextType>;

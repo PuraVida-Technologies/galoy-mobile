@@ -58,10 +58,9 @@ const BackAccountsScreen = () => {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.container}>
-          {data?.getMyBankAccounts?.map((account, index) => (
-            <>
+          {data?.getMyBankAccounts?.map((account) => (
+            <React.Fragment key={account.id}>
               <Pressable
-                key={index}
                 onPress={() => {
                   navigate("addBankAccount", { account })
                 }}
@@ -80,10 +79,10 @@ const BackAccountsScreen = () => {
                   <Icon name={"chevron-forward"} type="ionicon" />
                 </View>
               </Pressable>
-              {index !== data?.getMyBankAccounts?.length - 1 && (
+              {account.id !== data?.getMyBankAccounts?.[data.getMyBankAccounts.length - 1]?.id && (
                 <View style={styles.borderBottom}></View>
               )}
-            </>
+            </React.Fragment>
           ))}
         </View>
         <View style={styles.container}>

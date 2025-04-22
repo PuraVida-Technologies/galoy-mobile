@@ -52,6 +52,13 @@ const useStyles = makeStyles(({ colors }) => ({
     alignItems: "flex-end",
     justifyContent: "center",
   },
+  infoText: {
+    fontSize: 16,
+    marginVertical: 4,
+  },
+  infoLabel: {
+    fontWeight: "bold",
+  },
 }))
 
 export default useStyles

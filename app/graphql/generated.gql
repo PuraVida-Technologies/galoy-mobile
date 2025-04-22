@@ -230,6 +230,16 @@ mutation accountUpdateDisplayCurrency($input: AccountUpdateDisplayCurrencyInput!
 mutation addBankAccountCR($input: AddBankAccountCRDTO!) {
   addBankAccountCR(input: $input) {
     id
+    galoyUserId
+    type
+    countryCode
+    accountAlias
+    data {
+      bankName
+      iban
+      currency
+      __typename
+    }
     __typename
   }
 }
@@ -961,6 +971,19 @@ query SettingsScreen {
       verified
       __typename
     }
+    __typename
+  }
+}
+
+query VerifyIbanAccount($iban: String!) {
+  verifyIbanAccount(iban: $iban) {
+    success
+    iban
+    bankName
+    alias
+    currencyCode
+    errorCode
+    message
     __typename
   }
 }
