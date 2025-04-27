@@ -7,12 +7,11 @@ import Icon from "react-native-vector-icons/Ionicons"
 import { UseSnipDetailsStyles } from "../styles/snipe-deatils"
 import { TranslationFunctions } from "@app/i18n/i18n-types"
 import { TouchableOpacity } from "react-native-gesture-handler"
-import { SnipeDetailsState } from "../hooks/useSnipeDetails"
+import { SnipeDetailsState } from "../hooks/useSinpeDetails"
 
 interface Props {
   bankAccount: Array<BankAccountCr>
   styles: UseSnipDetailsStyles
-  updateMatchingAccounts: (newSearchText: string) => void
   LL: TranslationFunctions
   state: SnipeDetailsState
   onBankAccountSelected: (account: BankAccountCr) => void
@@ -24,7 +23,6 @@ interface Props {
 const BankAccounts = ({
   bankAccount,
   styles,
-  updateMatchingAccounts,
   LL,
   state,
   onBankAccountSelected,
@@ -45,7 +43,6 @@ const BankAccounts = ({
         {...testProps(LL.common.search())}
         placeholder={LL.common.search()}
         value={state.searchText}
-        onChangeText={updateMatchingAccounts}
         platform="default"
         round
         autoFocus
@@ -69,7 +66,7 @@ const BankAccounts = ({
           // {...testProps(title)}
         >
           <View style={styles.spacing}>
-            <Text type="p2">{account?.data?.accountHolderName}</Text>
+            <Text type="p2">{account?.data?.accountAlias}</Text>
             <Text>{account?.data?.iban}</Text>
 
             <Text type={"p4"} ellipsizeMode="tail" numberOfLines={1}>

@@ -41,17 +41,6 @@ gql`
   }
 `
 
-gql`
-  mutation UpdateBankAccountCR(
-    $updateBankAccountCrId: String!
-    $input: UpdateBankAccountCRDTO!
-  ) {
-    updateBankAccountCR(id: $updateBankAccountCrId, input: $input) {
-      id
-    }
-  }
-`
-
 interface Props {
   account?: BankAccountCr
   LL: TranslationFunctions

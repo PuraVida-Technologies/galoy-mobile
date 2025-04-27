@@ -77,12 +77,9 @@ gql`
           countryCode
           data {
             bankName
-            accountHolderName
-            nationalId
             iban
-            sinpeCode
-            swiftCode
             currency
+            accountAlias
           }
         }
       }
@@ -116,11 +113,7 @@ export interface BankAccountDetails {
   countryCode: string
   data: {
     bankName: string
-    accountHolderName: string
-    nationalId: string
     iban: string
-    sinpeCode: string
-    swiftCode: string
     currency: string
   }
 }

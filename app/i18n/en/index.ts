@@ -2527,7 +2527,6 @@ const en: BaseTranslation = {
   },
   BankAccountScreen: {
     verify: "Verify",
-    accountHolderName: "Account Holder Name",
     currency: "Currency",
     iban: "IBAN",
     bankName: "Bank Name",

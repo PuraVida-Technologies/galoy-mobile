@@ -232,28 +232,9 @@ export type AccountUpdateNotificationSettingsPayload = {
 
 export type AddBankAccountCrdto = {
   readonly accountAlias: Scalars['String']['input'];
-  readonly accountHolderName: Scalars['String']['input'];
   readonly bankName: Scalars['String']['input'];
-  readonly currency: BankAccountCurrencies;
-  /**
-   * Must follow rules enforced by CR for ibans:
-   *     - length must be 22
-   *     - must start with CR
-   *     - converting letters to numbers mod 97 should equal to 1
-   */
+  readonly currency: Currencies;
   readonly iban: Scalars['String']['input'];
-  /** Must be digits only */
-  readonly nationalId: Scalars['String']['input'];
-  /** Must be a 17 length string of digits only */
-  readonly sinpeCode: Scalars['String']['input'];
-  /**
-   * a valid swift code is must follow these rules:
-   *     - starts with 4 letters from the set [A-Z]
-   *     - followed by CR
-   *     - two chars from the set [A-Z0-9]
-   *     - optional 3 chars from the set [A-Z0-9]
-   */
-  readonly swiftCode: Scalars['String']['input'];
 };
 
 export type ApiKey = {
@@ -428,13 +409,10 @@ export const BankAccountCurrencies = {
 export type BankAccountCurrencies = typeof BankAccountCurrencies[keyof typeof BankAccountCurrencies];
 export type BankAccountDataCr = {
   readonly __typename: 'BankAccountDataCR';
-  readonly accountHolderName: Scalars['String']['output'];
+  readonly accountAlias: Scalars['String']['output'];
   readonly bankName: Scalars['String']['output'];
   readonly currency: BankAccountCurrencies;
   readonly iban: Scalars['String']['output'];
-  readonly nationalId: Scalars['String']['output'];
-  readonly sinpeCode: Scalars['String']['output'];
-  readonly swiftCode: Scalars['String']['output'];
 };
 
 export type BankAccountVerification = {
@@ -1399,11 +1377,6 @@ export type Mutation = {
   readonly statefulNotificationAcknowledge: StatefulNotificationAcknowledgePayload;
   readonly supportChatMessageAdd: SupportChatMessageAddPayload;
   readonly supportChatReset: SuccessPayload;
-  /**
-   * Update bank account details, notes:
-   *     -must pass the KYC process
-   */
-  readonly updateBankAccountCR: BankAccountCr;
   readonly updateKyc: Kyc;
   readonly updateSettings: SettingsResponse;
   /** @deprecated will be moved to AccountContact */
@@ -1673,12 +1646,6 @@ export type MutationStatefulNotificationAcknowledgeArgs = {
 
 export type MutationSupportChatMessageAddArgs = {
   input: SupportChatMessageAddInput;
-};
-
-
-export type MutationUpdateBankAccountCrArgs = {
-  id: Scalars['String']['input'];
-  input: UpdateBankAccountCrdto;
 };
 
 
@@ -2526,32 +2493,6 @@ export const TxStatus = {
 } as const;
 
 export type TxStatus = typeof TxStatus[keyof typeof TxStatus];
-export type UpdateBankAccountCrdto = {
-  readonly accountAlias?: InputMaybe<Scalars['String']['input']>;
-  readonly accountHolderName?: InputMaybe<Scalars['String']['input']>;
-  readonly bankName?: InputMaybe<Scalars['String']['input']>;
-  readonly currency?: InputMaybe<BankAccountCurrencies>;
-  /**
-   * Must follow rules enforced by CR for ibans:
-   *     - length must be 22
-   *     - must start with CR
-   *     - converting letters to numbers mod 97 should equal to 1
-   */
-  readonly iban?: InputMaybe<Scalars['String']['input']>;
-  /** Must be digits only */
-  readonly nationalId?: InputMaybe<Scalars['String']['input']>;
-  /** Must be a 17 length string of digits only */
-  readonly sinpeCode?: InputMaybe<Scalars['String']['input']>;
-  /**
-   * a valid swift code is must follow these rules:
-   *     - starts with 4 letters from the set [A-Z]
-   *     - followed by CR
-   *     - two chars from the set [A-Z0-9]
-   *     - optional 3 chars from the set [A-Z0-9]
-   */
-  readonly swiftCode?: InputMaybe<Scalars['String']['input']>;
-};
-
 export type UpdateSettingsInput = {
   readonly id: Scalars['String']['input'];
   readonly value: Scalars['String']['input'];
@@ -3169,14 +3110,6 @@ export type AddBankAccountCrMutationVariables = Exact<{
 
 export type AddBankAccountCrMutation = { readonly __typename: 'Mutation', readonly addBankAccountCR: { readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly accountAlias: string, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly iban: string, readonly currency: BankAccountCurrencies } } };
 
-export type UpdateBankAccountCrMutationVariables = Exact<{
-  updateBankAccountCrId: Scalars['String']['input'];
-  input: UpdateBankAccountCrdto;
-}>;
-
-
-export type UpdateBankAccountCrMutation = { readonly __typename: 'Mutation', readonly updateBankAccountCR: { readonly __typename: 'BankAccountCR', readonly id: string } };
-
 export type RemoveMyBankAccountMutationVariables = Exact<{
   bankAccountId: Scalars['String']['input'];
 }>;
@@ -3187,7 +3120,7 @@ export type RemoveMyBankAccountMutation = { readonly __typename: 'Mutation', rea
 export type BankAccountsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type BankAccountsQuery = { readonly __typename: 'Query', readonly getMyBankAccounts: ReadonlyArray<{ readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly accountHolderName: string, readonly nationalId: string, readonly iban: string, readonly sinpeCode: string, readonly swiftCode: string, readonly currency: BankAccountCurrencies } }> };
+export type BankAccountsQuery = { readonly __typename: 'Query', readonly getMyBankAccounts: ReadonlyArray<{ readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly iban: string, readonly currency: BankAccountCurrencies } }> };
 
 export type SupportChatQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3721,7 +3654,7 @@ export type GetWithdrawalContractQueryVariables = Exact<{
 }>;
 
 
-export type GetWithdrawalContractQuery = { readonly __typename: 'Query', readonly getWithdrawalContract: { readonly __typename: 'WithdrawalContract', readonly feeExplanation: string, readonly id: string, readonly amounts: { readonly __typename: 'WithdrawalContractAmounts', readonly bankAccountCredit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly fee: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly target: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly walletDebit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string } }, readonly limits: ReadonlyArray<{ readonly __typename: 'WithdrawalLimits', readonly totalAmount: string, readonly canExecute: boolean, readonly currency: Currencies, readonly limitPeriodUnit: string, readonly limitPeriodValue: number, readonly limitValue: string }>, readonly bankAccount: { readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly accountHolderName: string, readonly nationalId: string, readonly iban: string, readonly sinpeCode: string, readonly swiftCode: string, readonly currency: BankAccountCurrencies } }, readonly exchangeWallet: { readonly __typename: 'PublicKycWallet', readonly id: string, readonly currency: Currencies }, readonly sourceWallet: { readonly __typename: 'PublicKycWallet', readonly currency: Currencies, readonly id: string }, readonly tokenDetails: { readonly __typename: 'WithdrawalContractTokenDetails', readonly body: string, readonly createdAt: string, readonly executedAt?: string | null, readonly expiresAt: string } } };
+export type GetWithdrawalContractQuery = { readonly __typename: 'Query', readonly getWithdrawalContract: { readonly __typename: 'WithdrawalContract', readonly feeExplanation: string, readonly id: string, readonly amounts: { readonly __typename: 'WithdrawalContractAmounts', readonly bankAccountCredit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly fee: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly target: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly walletDebit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string } }, readonly limits: ReadonlyArray<{ readonly __typename: 'WithdrawalLimits', readonly totalAmount: string, readonly canExecute: boolean, readonly currency: Currencies, readonly limitPeriodUnit: string, readonly limitPeriodValue: number, readonly limitValue: string }>, readonly bankAccount: { readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly iban: string, readonly currency: BankAccountCurrencies, readonly accountAlias: string } }, readonly exchangeWallet: { readonly __typename: 'PublicKycWallet', readonly id: string, readonly currency: Currencies }, readonly sourceWallet: { readonly __typename: 'PublicKycWallet', readonly currency: Currencies, readonly id: string }, readonly tokenDetails: { readonly __typename: 'WithdrawalContractTokenDetails', readonly body: string, readonly createdAt: string, readonly executedAt?: string | null, readonly expiresAt: string } } };
 
 export type GetWithdrawalLimitsQueryVariables = Exact<{
   input: GetWithdrawalLimitsInputDto;
@@ -4983,40 +4916,6 @@ export function useAddBankAccountCrMutation(baseOptions?: Apollo.MutationHookOpt
 export type AddBankAccountCrMutationHookResult = ReturnType<typeof useAddBankAccountCrMutation>;
 export type AddBankAccountCrMutationResult = Apollo.MutationResult<AddBankAccountCrMutation>;
 export type AddBankAccountCrMutationOptions = Apollo.BaseMutationOptions<AddBankAccountCrMutation, AddBankAccountCrMutationVariables>;
-export const UpdateBankAccountCrDocument = gql`
-    mutation UpdateBankAccountCR($updateBankAccountCrId: String!, $input: UpdateBankAccountCRDTO!) {
-  updateBankAccountCR(id: $updateBankAccountCrId, input: $input) {
-    id
-  }
-}
-    `;
-export type UpdateBankAccountCrMutationFn = Apollo.MutationFunction<UpdateBankAccountCrMutation, UpdateBankAccountCrMutationVariables>;
-
-/**
- * __useUpdateBankAccountCrMutation__
- *
- * To run a mutation, you first call `useUpdateBankAccountCrMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateBankAccountCrMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateBankAccountCrMutation, { data, loading, error }] = useUpdateBankAccountCrMutation({
- *   variables: {
- *      updateBankAccountCrId: // value for 'updateBankAccountCrId'
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateBankAccountCrMutation(baseOptions?: Apollo.MutationHookOptions<UpdateBankAccountCrMutation, UpdateBankAccountCrMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateBankAccountCrMutation, UpdateBankAccountCrMutationVariables>(UpdateBankAccountCrDocument, options);
-      }
-export type UpdateBankAccountCrMutationHookResult = ReturnType<typeof useUpdateBankAccountCrMutation>;
-export type UpdateBankAccountCrMutationResult = Apollo.MutationResult<UpdateBankAccountCrMutation>;
-export type UpdateBankAccountCrMutationOptions = Apollo.BaseMutationOptions<UpdateBankAccountCrMutation, UpdateBankAccountCrMutationVariables>;
 export const RemoveMyBankAccountDocument = gql`
     mutation RemoveMyBankAccount($bankAccountId: String!) {
   removeMyBankAccount(bankAccountId: $bankAccountId) {
@@ -5062,11 +4961,7 @@ export const BankAccountsDocument = gql`
       countryCode
       data {
         bankName
-        accountHolderName
-        nationalId
         iban
-        sinpeCode
-        swiftCode
         currency
       }
     }
@@ -8759,12 +8654,9 @@ export const GetWithdrawalContractDocument = gql`
         countryCode
         data {
           bankName
-          accountHolderName
-          nationalId
           iban
-          sinpeCode
-          swiftCode
           currency
+          accountAlias
         }
       }
     }
@@ -9447,7 +9339,6 @@ export type ResolversTypes = {
   TxExternalId: ResolverTypeWrapper<Scalars['TxExternalId']['output']>;
   TxNotificationType: TxNotificationType;
   TxStatus: TxStatus;
-  UpdateBankAccountCRDTO: UpdateBankAccountCrdto;
   UpdateSettingsInput: UpdateSettingsInput;
   UpgradePayload: ResolverTypeWrapper<UpgradePayload>;
   UsdWallet: ResolverTypeWrapper<UsdWallet>;
@@ -9698,7 +9589,6 @@ export type ResolversParentTypes = {
   TransactionEdge: TransactionEdge;
   TransactionMetadata: TransactionMetadata;
   TxExternalId: Scalars['TxExternalId']['output'];
-  UpdateBankAccountCRDTO: UpdateBankAccountCrdto;
   UpdateSettingsInput: UpdateSettingsInput;
   UpgradePayload: UpgradePayload;
   UsdWallet: UsdWallet;
@@ -9900,13 +9790,10 @@ export type BankAccountCrResolvers<ContextType = any, ParentType extends Resolve
 };
 
 export type BankAccountDataCrResolvers<ContextType = any, ParentType extends ResolversParentTypes['BankAccountDataCR'] = ResolversParentTypes['BankAccountDataCR']> = {
-  accountHolderName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  accountAlias?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   bankName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   currency?: Resolver<ResolversTypes['BankAccountCurrencies'], ParentType, ContextType>;
   iban?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  nationalId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  sinpeCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  swiftCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -10402,7 +10289,6 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   statefulNotificationAcknowledge?: Resolver<ResolversTypes['StatefulNotificationAcknowledgePayload'], ParentType, ContextType, RequireFields<MutationStatefulNotificationAcknowledgeArgs, 'input'>>;
   supportChatMessageAdd?: Resolver<ResolversTypes['SupportChatMessageAddPayload'], ParentType, ContextType, RequireFields<MutationSupportChatMessageAddArgs, 'input'>>;
   supportChatReset?: Resolver<ResolversTypes['SuccessPayload'], ParentType, ContextType>;
-  updateBankAccountCR?: Resolver<ResolversTypes['BankAccountCR'], ParentType, ContextType, RequireFields<MutationUpdateBankAccountCrArgs, 'id' | 'input'>>;
   updateKyc?: Resolver<ResolversTypes['Kyc'], ParentType, ContextType, RequireFields<MutationUpdateKycArgs, 'input'>>;
   updateSettings?: Resolver<ResolversTypes['SettingsResponse'], ParentType, ContextType, RequireFields<MutationUpdateSettingsArgs, 'input'>>;
   userContactUpdateAlias?: Resolver<ResolversTypes['UserContactUpdateAliasPayload'], ParentType, ContextType, RequireFields<MutationUserContactUpdateAliasArgs, 'input'>>;

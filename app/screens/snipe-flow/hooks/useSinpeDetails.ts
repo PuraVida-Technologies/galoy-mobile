@@ -44,11 +44,8 @@ export interface BankAccountDetails {
   data: {
     id: string
     bankName: string
-    accountHolderName: string
-    nationalId: string
+    accountAlias: string
     iban: string
-    sinpeCode: string
-    swiftCode: string
     currency: BankAccountCurrencies
   }
 }
@@ -171,26 +168,6 @@ const useSnipeDetails = () => {
     setOpenBankSelection(false)
   }
 
-  const updateMatchingAccounts = useCallback(
-    (newSearchText: string) => {
-      setSearchText(newSearchText)
-      if (newSearchText.length > 0) {
-        const matchingAccounts = bankAccounts.filter(
-          (account) =>
-            account?.data?.bankName.toLowerCase().includes(newSearchText.toLowerCase()) ||
-            account?.data?.iban.toLowerCase().includes(newSearchText.toLowerCase()) ||
-            account?.data?.accountHolderName
-              .toLowerCase()
-              .includes(newSearchText.toLowerCase()),
-        )
-        setMatchingAccounts(matchingAccounts)
-      } else {
-        setMatchingAccounts(bankAccounts)
-      }
-    },
-    [bankAccounts, searchText],
-  )
-
   const chooseWallet = (wallet: WalletCurrency) => {
     setFrom(wallet)
     toggleModal()
@@ -293,7 +270,6 @@ const useSnipeDetails = () => {
       setMatchingAccounts,
       setAmount,
       reset,
-      updateMatchingAccounts,
       chooseWallet,
       toggleBankModal,
       toggleModal,

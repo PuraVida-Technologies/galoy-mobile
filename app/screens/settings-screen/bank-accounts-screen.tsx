@@ -68,7 +68,7 @@ const BackAccountsScreen = () => {
                 <View style={[styles.spacing, styles.internalContainer]}>
                   <View>
                     <View style={styles.sidetoside}>
-                      <Text type="p2">{account.data.accountHolderName}</Text>
+                      <Text type="p2">{account.data.accountAlias}</Text>
                     </View>
                     <Text>{account.data.iban}</Text>
 

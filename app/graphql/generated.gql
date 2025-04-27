@@ -91,13 +91,6 @@ mutation RemoveMyBankAccount($bankAccountId: String!) {
   }
 }
 
-mutation UpdateBankAccountCR($updateBankAccountCrId: String!, $input: UpdateBankAccountCRDTO!) {
-  updateBankAccountCR(id: $updateBankAccountCrId, input: $input) {
-    id
-    __typename
-  }
-}
-
 mutation accountDelete {
   accountDelete {
     errors {
@@ -1098,11 +1091,7 @@ query bankAccounts {
       countryCode
       data {
         bankName
-        accountHolderName
-        nationalId
         iban
-        sinpeCode
-        swiftCode
         currency
         __typename
       }
@@ -1280,12 +1269,9 @@ query getWithdrawalContract($input: GetWithDrawalContractInput!) {
         countryCode
         data {
           bankName
-          accountHolderName
-          nationalId
           iban
-          sinpeCode
-          swiftCode
           currency
+          accountAlias
           __typename
         }
         __typename

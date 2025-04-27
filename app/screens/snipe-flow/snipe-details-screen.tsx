@@ -7,7 +7,7 @@ import { Screen } from "@app/components/screen"
 import { WalletCurrency } from "@app/graphql/generated"
 import { testProps } from "@app/utils/testProps"
 import { Input, Text, useTheme } from "@rneui/themed"
-import useSnipeDetails from "./hooks/useSnipeDetails"
+import useSnipeDetails from "./hooks/useSinpeDetails"
 import Icon from "react-native-vector-icons/Ionicons"
 import ReactNativeModal from "react-native-modal"
 import useStyles from "./styles/snipe-deatils"
@@ -123,7 +123,7 @@ export const SnipeDetailsScreen = () => {
                 <View style={styles.walletSelectorInfoContainer}>
                   <View style={styles.walletSelectorTypeTextContainer}>
                     <Text style={styles.walletCurrencyText}>
-                      {state?.selectedBank?.data?.accountHolderName}
+                      {state?.selectedBank?.data?.accountAlias}
                     </Text>
                   </View>
                   <View style={styles.walletSelectorBalanceContainer}>
@@ -149,7 +149,6 @@ export const SnipeDetailsScreen = () => {
               <BankAccounts
                 bankAccount={state.bankAccounts}
                 styles={styles}
-                updateMatchingAccounts={actions.updateMatchingAccounts}
                 LL={LL}
                 state={state}
                 onBankAccountSelected={actions.onBankAccountSelection}
