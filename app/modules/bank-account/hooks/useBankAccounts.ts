@@ -34,6 +34,7 @@ gql`
           bankName
           iban
           currency
+          accountAlias
         }
       }
     }

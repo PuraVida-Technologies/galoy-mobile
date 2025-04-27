@@ -2540,6 +2540,7 @@ const en: BaseTranslation = {
     verifyIbanError: "Unable to verify IBAN",
     invalidIban: "Invalid IBAN",
     accountAlias: "Account Alias",
+    accountRemovedSuccessfully: "Bank account removed successfully",
     validation: {
 			ibanLength: "IBAN must be exactly 22 characters long.",
 			ibanStart: "IBAN must start with 'CR'.",

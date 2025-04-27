@@ -2290,7 +2290,6 @@
     },
     "BankAccountScreen": {
         "verify": "Verify",
-        "accountHolderName": "Account Holder Name",
         "currency": "Currency",
         "iban": "IBAN",
         "bankName": "Bank Name",
@@ -2304,6 +2303,7 @@
         "verifyIbanError": "Unable to verify IBAN",
         "invalidIban": "Invalid IBAN",
         "accountAlias": "Account Alias",
+        "accountRemovedSuccessfully": "Bank account removed successfully",
         "validation": {
             "ibanLength": "IBAN must be exactly 22 characters long.",
             "ibanStart": "IBAN must start with 'CR'.",

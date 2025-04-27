@@ -3120,7 +3120,7 @@ export type RemoveMyBankAccountMutation = { readonly __typename: 'Mutation', rea
 export type BankAccountsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type BankAccountsQuery = { readonly __typename: 'Query', readonly getMyBankAccounts: ReadonlyArray<{ readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly iban: string, readonly currency: BankAccountCurrencies } }> };
+export type BankAccountsQuery = { readonly __typename: 'Query', readonly getMyBankAccounts: ReadonlyArray<{ readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly iban: string, readonly currency: BankAccountCurrencies, readonly accountAlias: string } }> };
 
 export type SupportChatQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4963,6 +4963,7 @@ export const BankAccountsDocument = gql`
         bankName
         iban
         currency
+        accountAlias
       }
     }
   }

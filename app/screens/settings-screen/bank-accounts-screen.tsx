@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Icon, makeStyles, Text } from "@rneui/themed"
 import useBankAccounts from "@app/modules/bank-account/hooks/useBankAccounts"
-import { Pressable, View } from "react-native"
+import { Pressable, View, Alert } from "react-native"
 import { LoadingComponent } from "@app/modules/market-place/components/loading-component"
 import { Screen } from "@app/components/screen"
 import { SettingsRow } from "./row"
@@ -10,12 +10,7 @@ import { useNavigation } from "@react-navigation/native"
 import { StackNavigationProp } from "@react-navigation/stack"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { palette } from "@app/theme/palette"
-import Swipeable, {
-  SwipeableMethods,
-} from "react-native-gesture-handler/ReanimatedSwipeable"
-import { SharedValue } from "react-native-reanimated"
-import RightAction from "@app/modules/bank-account/components/right-action"
-import { BankAccountCr } from "@app/graphql/generated"
+import { useRemoveMyBankAccountMutation } from "@app/graphql/generated"
 
 const BackAccountsScreen = () => {
   const [hovering, setHovering] = useState(false)
@@ -28,19 +23,40 @@ const BackAccountsScreen = () => {
     actions: { confirmRemoveBankAccount },
   } = useBankAccounts({ LL })
 
-  const renderRightActions = (
-    translation: SharedValue<number>,
-    swipeableMethods: SwipeableMethods,
-    account: BankAccountCr,
-  ) => (
-    <>
-      <RightAction
-        progress={translation}
-        onPress={() => confirmRemoveBankAccount(account, swipeableMethods.reset)}
-        LL={LL}
-      />
-    </>
-  )
+  const [removeMyBankAccount] = useRemoveMyBankAccountMutation()
+
+  const handleRemoveBankAccount = async (accountId: string) => {
+    Alert.alert(
+      LL.common.confirm(),
+      LL.BankAccountScreen.confirmRemoveBankAccountTitle(),
+      [
+        {
+          text: LL.common.cancel(),
+          style: "cancel",
+        },
+        {
+          text: LL.common.remove(),
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await removeMyBankAccount({
+                variables: { bankAccountId: accountId },
+                // Refetch the "bankAccounts" query after the mutation
+                refetchQueries: ["bankAccounts"],
+              })
+              Alert.alert(
+                LL.common.success(),
+                LL.BankAccountScreen.accountRemovedSuccessfully(),
+              )
+            } catch (error) {
+              console.error("Error removing bank account:", error)
+              Alert.alert(LL.common.error(), LL.BankAccountScreen.removeAccountError())
+            }
+          },
+        },
+      ],
+    )
+  }
 
   return (
     <>
@@ -70,16 +86,21 @@ const BackAccountsScreen = () => {
                     <View style={styles.sidetoside}>
                       <Text type="p2">{account.data.accountAlias}</Text>
                     </View>
-                    <Text>{account.data.iban}</Text>
 
                     <Text type={"p4"} ellipsizeMode="tail" numberOfLines={1}>
                       {account.data.currency}
                     </Text>
                   </View>
-                  <Icon name={"chevron-forward"} type="ionicon" />
+                  <Icon
+                    name="trash"
+                    type="ionicon"
+                    color="red"
+                    onPress={() => handleRemoveBankAccount(account.id)}
+                  />
                 </View>
               </Pressable>
-              {account.id !== data?.getMyBankAccounts?.[data.getMyBankAccounts.length - 1]?.id && (
+              {account.id !==
+                data?.getMyBankAccounts?.[data.getMyBankAccounts.length - 1]?.id && (
                 <View style={styles.borderBottom}></View>
               )}
             </React.Fragment>

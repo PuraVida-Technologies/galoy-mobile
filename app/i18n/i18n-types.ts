@@ -7382,10 +7382,6 @@ type RootTranslation = {
 		 */
 		verify: string
 		/**
-		 * A​c​c​o​u​n​t​ ​H​o​l​d​e​r​ ​N​a​m​e
-		 */
-		accountHolderName: string
-		/**
 		 * C​u​r​r​e​n​c​y
 		 */
 		currency: string
@@ -7437,6 +7433,10 @@ type RootTranslation = {
 		 * A​c​c​o​u​n​t​ ​A​l​i​a​s
 		 */
 		accountAlias: string
+		/**
+		 * B​a​n​k​ ​a​c​c​o​u​n​t​ ​r​e​m​o​v​e​d​ ​s​u​c​c​e​s​s​f​u​l​l​y
+		 */
+		accountRemovedSuccessfully: string
 		validation: {
 			/**
 			 * I​B​A​N​ ​m​u​s​t​ ​b​e​ ​e​x​a​c​t​l​y​ ​2​2​ ​c​h​a​r​a​c​t​e​r​s​ ​l​o​n​g​.
@@ -16941,10 +16941,6 @@ export type TranslationFunctions = {
 		 */
 		verify: () => LocalizedString
 		/**
-		 * Account Holder Name
-		 */
-		accountHolderName: () => LocalizedString
-		/**
 		 * Currency
 		 */
 		currency: () => LocalizedString
@@ -16996,6 +16992,10 @@ export type TranslationFunctions = {
 		 * Account Alias
 		 */
 		accountAlias: () => LocalizedString
+		/**
+		 * Bank account removed successfully
+		 */
+		accountRemovedSuccessfully: () => LocalizedString
 		validation: {
 			/**
 			 * IBAN must be exactly 22 characters long.

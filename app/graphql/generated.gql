@@ -1093,6 +1093,7 @@ query bankAccounts {
         bankName
         iban
         currency
+        accountAlias
         __typename
       }
       __typename
