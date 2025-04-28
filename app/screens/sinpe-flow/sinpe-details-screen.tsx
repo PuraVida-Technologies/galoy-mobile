@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React from "react"
+import React, { useMemo, useState } from "react"
 import { View, TouchableWithoutFeedback } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
@@ -13,8 +13,9 @@ import ReactNativeModal from "react-native-modal"
 import useStyles from "./styles/snipe-deatils"
 import WalletsModal from "./components/wallet-card"
 import BankAccounts from "./components/bank-account"
+import { useDisplayCurrency } from "@app/hooks/use-display-currency"
 
-export const SnipeDetailsScreen = () => {
+export const SinpeDetailsScreen = () => {
   const {
     theme: { colors },
   } = useTheme()
@@ -23,6 +24,26 @@ export const SnipeDetailsScreen = () => {
 
   const { state, actions } = useSnipeDetails()
   const { LL } = state
+
+  const { displayCurrencyDictionary } = useDisplayCurrency()
+
+  // Local state to track raw input value
+  const [rawInputValue, setRawInputValue] = useState("")
+
+  // Format the amount with the correct number of fractional digits
+  const formattedAmount = useMemo(() => {
+    const fractionDigits =
+      displayCurrencyDictionary[state.from]?.fractionDigits ?? 2 // Default to 2 if not found
+
+    if (!rawInputValue) {
+      return "" // Return empty if no input is set
+    }
+
+    return new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: fractionDigits,
+      maximumFractionDigits: fractionDigits,
+    }).format(Number(rawInputValue))
+  }, [rawInputValue, state.from, displayCurrencyDictionary])
 
   if (!state.data?.me?.defaultAccount || !state.from) {
     // TODO: proper error handling. non possible event?
@@ -160,25 +181,49 @@ export const SnipeDetailsScreen = () => {
           </View>
         </View>
         <View style={[styles.fieldContainer, styles.amountContainer]}>
-          <Text style={styles.fieldTitleText}>{LL.SnipeDetailsScreen.amount()}</Text>
+          <Text style={styles.fieldTitleText}>{LL.SinpeDetailsScreen.amount()}</Text>
           <View style={styles.amountInputContainer}>
             <Text style={styles.primaryCurrencySymbol}>{state?.fiatSymbol}</Text>
 
             <Input
-              value={state.amount}
+              value={rawInputValue} // Use raw input value while typing
               showSoftInputOnFocus={true}
               keyboardType="decimal-pad"
               onChangeText={(e) => {
-                // remove commas for ease of calculation later on
+                // Remove commas for ease of calculation later on
                 const val = e.replaceAll(",", "")
-                // TODO adjust for currencies that use commas instead of decimals
 
-                // test for string input that can be either numerical or float
-                if (/^\d*\.?\d*$/.test(val.trim())) {
-                  const num = Number(val)
-                  actions.setAmount(num.toString())
-                } else {
-                  actions.setAmount("")
+                const fractionDigits =
+                  displayCurrencyDictionary[state.from]?.fractionDigits ?? 2 // Default to 2 if not found
+
+                if (fractionDigits === 0) {
+                  // Do not allow decimals for currencies with 0 fraction digits
+                  if (/^\d*$/.test(val.trim())) {
+                    setRawInputValue(val) // Update raw input value
+                    actions.setAmount(val) // Update state amount
+                  }
+                  return // Ignore invalid input
+                }
+
+                // Allow up to `fractionDigits` decimal places for other currencies
+                const regex = new RegExp(`^\\d*\\.?\\d{0,${fractionDigits}}$`)
+                if (regex.test(val.trim())) {
+                  setRawInputValue(val) // Update raw input value
+                  actions.setAmount(val) // Update state amount
+                }
+                // Ignore invalid input (do not reset the value)
+              }}
+              onBlur={() => {
+                // Format the value when the user finishes editing
+                const fractionDigits =
+                  displayCurrencyDictionary[state.from]?.fractionDigits ?? 2 // Default to 2 if not found
+
+                if (rawInputValue) {
+                  const formatted = new Intl.NumberFormat("en-US", {
+                    minimumFractionDigits: fractionDigits,
+                    maximumFractionDigits: fractionDigits,
+                  }).format(Number(rawInputValue))
+                  setRawInputValue(formatted) // Update raw input value with formatted value
                 }
               }}
               containerStyle={styles.numberContainer}

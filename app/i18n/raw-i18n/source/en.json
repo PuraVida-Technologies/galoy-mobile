@@ -81,13 +81,13 @@
         "title": "Conversion Success",
         "message": "Conversion successful"
     },
-    "SnipeDetailsScreen": {
-        "title": "Snipe IBAN transfer",
+    "SinpeDetailsScreen": {
+        "title": "Sinpe IBAN transfer",
         "percentageToConvert": "% to convert",
         "amount": "Amount"
     },
-    "SnipeConfirmationScreen": {
-        "title": "Review Snipe IBAN transfer",
+    "SinpeConfirmationScreen": {
+        "title": "Review Sinpe IBAN transfer",
         "amount": "Amount"
     },
     "EarnScreen": {

@@ -307,9 +307,9 @@ type RootTranslation = {
 		 */
 		message: string
 	}
-	SnipeDetailsScreen: {
+	SinpeDetailsScreen: {
 		/**
-		 * S​n​i​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
+		 * S​i​n​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
 		 */
 		title: string
 		/**
@@ -321,9 +321,9 @@ type RootTranslation = {
 		 */
 		amount: string
 	}
-	SnipeConfirmationScreen: {
+	SinpeConfirmationScreen: {
 		/**
-		 * R​e​v​i​e​w​ ​S​n​i​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
+		 * R​e​v​i​e​w​ ​S​i​n​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
 		 */
 		title: string
 		/**
@@ -9904,9 +9904,9 @@ export type TranslationFunctions = {
 		 */
 		message: () => LocalizedString
 	}
-	SnipeDetailsScreen: {
+	SinpeDetailsScreen: {
 		/**
-		 * Snipe IBAN transfer
+		 * Sinpe IBAN transfer
 		 */
 		title: () => LocalizedString
 		/**
@@ -9918,9 +9918,9 @@ export type TranslationFunctions = {
 		 */
 		amount: () => LocalizedString
 	}
-	SnipeConfirmationScreen: {
+	SinpeConfirmationScreen: {
 		/**
-		 * Review Snipe IBAN transfer
+		 * Review Sinpe IBAN transfer
 		 */
 		title: () => LocalizedString
 		/**
