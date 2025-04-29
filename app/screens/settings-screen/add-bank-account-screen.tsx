@@ -89,9 +89,7 @@ const AddBankAccountScreen = () => {
 
   const handleSaveBankAccount = async (data: { accountAlias: string }) => {
     try {
-      console.log("ibanValue is: ", ibanValue)
       const bankAccountData = { ...data, iban: ibanValue }
-      console.log("bankAccountData is: ", bankAccountData)
       await addBankAccount(bankAccountData)
       Alert.alert(LL.common.success(), LL.BankAccountScreen.accountAddedSuccessfully())
     } catch (error) {
