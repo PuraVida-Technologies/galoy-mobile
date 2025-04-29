@@ -138,10 +138,8 @@ const useKYCState = () => {
 
       // Only update if there are actual changes
       if (isEqual(prevDetails, updatedDetails)) {
-        console.log("setKYCDetails: No changes detected, skipping update")
         return prevDetails // Return the previous state to avoid unnecessary updates
       }
-      console.log("setKYCDetails: Updating KYCDetails", updatedDetails)
       return updatedDetails
     })
   }, [])
