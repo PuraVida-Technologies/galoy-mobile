@@ -105,7 +105,7 @@ const useAddBankAccount = ({ LL }: Props) => {
           accountAlias: data.accountAlias,
           bankName: bankDetails?.bankName || "",
           currency: bankDetails?.currencyCode,
-          iban: bankDetails?.iban,
+          iban: data.iban,
         }
         await addBankAccountCr({ variables: { input } })
         navigation.goBack()
