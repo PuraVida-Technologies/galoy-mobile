@@ -98,6 +98,7 @@
     "libphonenumber-js": "^1.10.60",
     "lnurl-pay": "^3.0.1",
     "lodash.debounce": "^4.0.8",
+    "lodash.isequal": "^4.5.0",
     "lodash.merge": "^4.6.2",
     "node-libs-react-native": "^1.2.1",
     "react": "18.2.0",
