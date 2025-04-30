@@ -218,22 +218,39 @@ const useKYCState = () => {
     if (kyc?.status === Status.Pending && !loading) {
       const isFrontSide = primaryIdentification?.files?.[0]
       const isBackSide = primaryIdentification?.files?.[1]
+
+      // Determine the target index based on the current state
+      let targetIndex = 0
       if (
         KYCDetails?.idDetails?.type &&
         ((isDrivingLicense && isFrontSide && isBackSide) ||
           (!isDrivingLicense && isFrontSide))
       ) {
-        jumpTo(2)
+        targetIndex = 2
         if (
           KYCDetails?.idDetails?.email &&
           KYCDetails?.idDetails?.phoneNumber &&
           KYCDetails?.idDetails?.gender
         ) {
-          jumpTo(3)
+          targetIndex = 3
         }
       }
+
+      // Only navigate if the target index is different from the current index
+      if (index !== targetIndex) {
+        jumpTo(targetIndex)
+      }
     }
-  }, [loading, kyc?.status, isFocused, KYCDetails?.idDetails?.type])
+  }, [
+    loading,
+    kyc?.status,
+    isFocused,
+    KYCDetails?.idDetails?.type,
+    KYCDetails?.idDetails?.email,
+    KYCDetails?.idDetails?.phoneNumber,
+    KYCDetails?.idDetails?.gender,
+    index, // Add `index` to dependencies
+  ])
 
   const isStepOneAndTwoCompleted = useMemo(() => {
     return (
