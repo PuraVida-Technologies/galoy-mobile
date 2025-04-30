@@ -89,7 +89,7 @@ import KYCScreen from "@app/screens/settings-screen/kyc-screen"
 import { SinpeDetailsScreen } from "@app/screens/sinpe-flow/sinpe-details-screen"
 import AddBankAccountScreen from "@app/screens/settings-screen/add-bank-account-screen"
 import BankAccountsScreen from "@app/screens/settings-screen/bank-accounts-screen"
-import { SnipeConfirmationScreen } from "@app/screens/sinpe-flow/sinpe-confirmation-screen"
+import { SinpeConfirmationScreen } from "@app/screens/sinpe-flow/sinpe-confirmation-screen"
 
 const RootNavigator = createStackNavigator<RootStackParamList>()
 
@@ -224,10 +224,10 @@ export const RootStack = () => {
         }}
       />
       <RootNavigator.Screen
-        name="snipeConfirmation"
-        component={SnipeConfirmationScreen}
+        name="sinpeConfirmation"
+        component={SinpeConfirmationScreen}
         options={{
-          title: LL.SnipeConfirmationScreen.title(),
+          title: LL.SinpeConfirmationScreen.title(),
         }}
       />
       <RootNavigator.Screen

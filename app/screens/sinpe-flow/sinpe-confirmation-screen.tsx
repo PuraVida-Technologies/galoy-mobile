@@ -8,7 +8,7 @@ import { WalletCurrency } from "@app/graphql/generated"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { RouteProp } from "@react-navigation/native"
 import useStyles from "./styles/snipe-confirmation"
-import useSnipeConfirmation from "./hooks/useSinpeConfirmation"
+import useSinpeConfirmation from "./hooks/useSinpeConfirmation"
 import { AnimatedRollingNumber } from "react-native-animated-rolling-numbers"
 import {
   CompletedTextAnimation,
@@ -19,13 +19,13 @@ import { testProps } from "@app/utils/testProps"
 import { Text } from "@rneui/themed"
 
 type Props = {
-  route: RouteProp<RootStackParamList, "snipeConfirmation">
+  route: RouteProp<RootStackParamList, "sinpeConfirmation">
 }
 
-export const SnipeConfirmationScreen: React.FC<Props> = ({ route }) => {
+export const SinpeConfirmationScreen: React.FC<Props> = ({ route }) => {
   const styles = useStyles()
 
-  const { state, actions } = useSnipeConfirmation({ route })
+  const { state, actions } = useSinpeConfirmation({ route })
 
   const {
     LL,

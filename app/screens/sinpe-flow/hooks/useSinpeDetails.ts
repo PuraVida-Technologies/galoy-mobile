@@ -50,7 +50,7 @@ export interface BankAccountDetails {
   }
 }
 
-const useSnipeDetails = () => {
+const useSinpeDetails = () => {
   const [from, setFrom] = useState<WalletCurrency>(WalletCurrency.Btc)
   const [openFromSelection, setFromSelection] = useState<boolean>(false)
   const [paymentDetail, setPaymentDetail] = useState(null)
@@ -59,6 +59,9 @@ const useSnipeDetails = () => {
   const [searchText, setSearchText] = useState<string>("")
   const [matchingAccounts, setMatchingAccounts] = useState<BankAccountCr[]>([])
   const [amount, setAmount] = useState<string>("")
+  const [fiatSymbol, setFiatSymbol] = useState<string>("$") // Default to USD symbol
+  const [fractionDigits, setFractionDigits] = useState<number>(2) // Default to 2 for USD
+  const [rawInputValue, setRawInputValue] = useState<string>("") // Track raw input value
 
   const navigation = useNavigation<NavigationProp<RootStackParamList, "snipeDetails">>()
   const { LL } = useI18nContext()
@@ -85,7 +88,7 @@ const useSnipeDetails = () => {
     returnPartialData: true,
   })
 
-  const { formatDisplayAndWalletAmount, displayCurrency, formatMoneyAmount, fiatSymbol } =
+  const { formatDisplayAndWalletAmount, displayCurrency, formatMoneyAmount } =
     useDisplayCurrency()
 
   const btcWallet = getBtcWallet(data?.me?.defaultAccount?.wallets)
@@ -126,22 +129,65 @@ const useSnipeDetails = () => {
     walletAmount: usdWalletBalance,
   })
 
-  const formattedAmount = formatMoneyAmount({
-    moneyAmount: convertMoneyAmount?.(fromWalletBalance, DisplayCurrency) || {
-      amount: 0,
-      currency: DisplayCurrency,
-      currencyCode: "BTC",
-    },
-    noSymbol: true,
-  })
+  const formattedAmount = useMemo(() => {
+    const fractionDigitsToUse = fractionDigits ?? 2 // Default to 2 if not found
+
+    if (!rawInputValue) {
+      return "" // Return empty if no input is set
+    }
+
+    return new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: fractionDigitsToUse,
+      maximumFractionDigits: fractionDigitsToUse,
+    }).format(Number(rawInputValue))
+  }, [rawInputValue, fractionDigits])
+
+  const handleAmountChange = (value: string) => {
+    // Remove commas for ease of calculation later on
+    const val = value.replaceAll(",", "")
+
+    const fractionDigitsToUse = fractionDigits ?? 2 // Default to 2 if not found
+
+    if (fractionDigitsToUse === 0) {
+      // Do not allow decimals for currencies with 0 fraction digits
+      if (/^\d*$/.test(val.trim())) {
+        setRawInputValue(val) // Update raw input value
+        setAmount(val) // Update state amount
+      }
+      return // Ignore invalid input
+    }
+
+    // Allow up to `fractionDigitsToUse` decimal places for other currencies
+    const regex = new RegExp(`^\\d*\\.?\\d{0,${fractionDigitsToUse}}$`)
+    if (regex.test(val.trim())) {
+      setRawInputValue(val) // Update raw input value
+      setAmount(val) // Update state amount
+    }
+    // Ignore invalid input (do not reset the value)
+  }
+
+  const handleAmountBlur = () => {
+    // Format the value when the user finishes editing
+    const fractionDigitsToUse = fractionDigits ?? 2 // Default to 2 if not found
+
+    if (rawInputValue) {
+      const formatted = new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: fractionDigitsToUse,
+        maximumFractionDigits: fractionDigitsToUse,
+      }).format(Number(rawInputValue))
+      setRawInputValue(formatted) // Update raw input value with formatted value
+    }
+  }
 
   const moveToNextScreen = () => {
-    navigation.navigate("snipeConfirmation", {
+    const sourceCurrency = selectedBank?.data?.currency || BankAccountCurrencies.Usd // Use the selected bank's currency
+
+    navigation.navigate("sinpeConfirmation", {
       fromWalletCurrency: from,
       moneyAmount: {
         amount: Number(amount),
-        currency: displayCurrency as WalletOrDisplayCurrency,
-        currencyCode: displayCurrency,
+        currency: sourceCurrency as WalletOrDisplayCurrency, // Use sourceCurrency here
+        currencyCode: sourceCurrency, // Use sourceCurrency here
       },
       bankAccount: {
         ...selectedBank?.data,
@@ -181,6 +227,16 @@ const useSnipeDetails = () => {
   const onBankAccountSelection = useCallback((account: BankAccountCr) => {
     setOpenBankSelection(false)
     setSelectedBank(account)
+
+    // Update fiatSymbol and fractionDigits based on the selected bank account's currency
+    const currency = account.data.currency
+    setFiatSymbol(currency === BankAccountCurrencies.Usd ? "$" : "₡")
+    setFractionDigits(currency === BankAccountCurrencies.Usd ? 2 : 0)
+
+    // Reset the amount and raw input value
+    setAmount("")
+    setRawInputValue("") // Ensure this is passed to the component where rawInputValue is managed
+
     refetch()
   }, [])
 
@@ -205,33 +261,46 @@ const useSnipeDetails = () => {
       : "0"
 
   const minimumWithdrawal = useMemo(() => {
-    return displayCurrency === BankAccountCurrencies.Crc ? 500000 : 1000
-  }, [displayCurrency])
+    const currency = selectedBank?.data?.currency || BankAccountCurrencies.Usd
+    return currency === BankAccountCurrencies.Crc ? 500000 : 1000 // CRC has a higher minimum
+  }, [selectedBank])
 
-  const minimumAmountText = formatMoneyAmount({
-    moneyAmount: {
-      amount: minimumWithdrawal,
-      currency: displayCurrency as WalletOrDisplayCurrency,
-      currencyCode: displayCurrency,
-    },
-  })
+  const minimumAmountText = useMemo(() => {
+    const currency = selectedBank?.data?.currency || BankAccountCurrencies.Usd
+    return formatMoneyAmount({
+      moneyAmount: {
+        amount: minimumWithdrawal,
+        currency,
+        currencyCode: currency,
+      },
+    })
+  }, [minimumWithdrawal, selectedBank])
 
   const amountFieldError = useMemo(() => {
-    if (parseFloat(amount) < minimumWithdrawal / 100) {
+    const parsedAmount = parseFloat(amount || "0")
+    const minimumAmount = minimumWithdrawal / 100 // Adjust for fractional digits if needed
+
+    if (parsedAmount < minimumAmount) {
       return LL.SendBitcoinScreen.amountMinimumLimit({
         limit: minimumAmountText,
       })
-    } else if (parseFloat(formattedAmount?.replace(/,/g, "")) < parseFloat(amount)) {
+    } else if (parseFloat(formattedAmount?.replace(/,/g, "")) < parsedAmount) {
       return LL.SendBitcoinScreen.amountExceed({
         balance: fromWalletBalanceFormatted,
       })
-    } else if (parseFloat(amount) > remainingLimit) {
+    } else if (parsedAmount > remainingLimit) {
       return LL.SendBitcoinScreen.amountExceedsLimit({
         limit: remainingLimitText,
       })
     }
     return null
-  }, [formattedAmount, amount, minimumWithdrawal, fromWalletBalanceFormatted])
+  }, [
+    formattedAmount,
+    amount,
+    minimumWithdrawal,
+    fromWalletBalanceFormatted,
+    remainingLimit,
+  ])
 
   const isValidAmount = useMemo(() => {
     return amount?.length && parseFloat(amount || "") > 0 && !amountFieldError?.length
@@ -257,7 +326,9 @@ const useSnipeDetails = () => {
       amountFieldError,
       bankAccounts,
       fiatSymbol,
+      fractionDigits,
       remainingLimit: remainingLimitText,
+      rawInputValue,
     },
     actions: {
       moveToNextScreen,
@@ -274,9 +345,11 @@ const useSnipeDetails = () => {
       toggleBankModal,
       toggleModal,
       onBankAccountSelection,
+      handleAmountChange, // Add handleAmountChange to actions
+      handleAmountBlur, // Add handleAmountBlur to actions
     },
   }
 }
 
-export type SnipeDetailsState = ReturnType<typeof useSnipeDetails>["state"]
-export default useSnipeDetails
+export type SnipeDetailsState = ReturnType<typeof useSinpeDetails>["state"]
+export default useSinpeDetails

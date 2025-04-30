@@ -103,7 +103,7 @@ gql`
   }
 `
 type Props = {
-  route: RouteProp<RootStackParamList, "snipeConfirmation">
+  route: RouteProp<RootStackParamList, "sinpeConfirmation">
 }
 
 export interface BankAccountDetails {
@@ -118,7 +118,7 @@ export interface BankAccountDetails {
   }
 }
 
-const useSnipeConfirmation = ({ route }: Props) => {
+const useSinpeConfirmation = ({ route }: Props) => {
   const [success, setSuccess] = useState(false)
   const interval = useRef<NodeJS.Timeout>()
   const { LL } = useI18nContext()
@@ -145,7 +145,7 @@ const useSnipeConfirmation = ({ route }: Props) => {
         input: {
           amount: (moneyAmount?.amount * 100).toString(),
           bankAccountId: bankAccount?.id || "",
-          sourceCurrency: (displayCurrency as Currencies) || "",
+          sourceCurrency: (bankAccount?.currency as Currencies) || WalletCurrency.Usd, // Use bankAccount's currency
           walletId: wallet?.id || "",
         },
       },
@@ -284,4 +284,4 @@ const useSnipeConfirmation = ({ route }: Props) => {
     },
   }
 }
-export default useSnipeConfirmation
+export default useSinpeConfirmation
