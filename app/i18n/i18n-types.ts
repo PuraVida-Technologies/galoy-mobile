@@ -307,9 +307,9 @@ type RootTranslation = {
 		 */
 		message: string
 	}
-	SnipeDetailsScreen: {
+	SinpeDetailsScreen: {
 		/**
-		 * S​n​i​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
+		 * S​i​n​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
 		 */
 		title: string
 		/**
@@ -321,9 +321,9 @@ type RootTranslation = {
 		 */
 		amount: string
 	}
-	SnipeConfirmationScreen: {
+	SinpeConfirmationScreen: {
 		/**
-		 * R​e​v​i​e​w​ ​S​n​i​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
+		 * R​e​v​i​e​w​ ​S​i​n​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
 		 */
 		title: string
 		/**
@@ -7378,9 +7378,9 @@ type RootTranslation = {
 	}
 	BankAccountScreen: {
 		/**
-		 * A​c​c​o​u​n​t​ ​H​o​l​d​e​r​ ​N​a​m​e
+		 * V​e​r​i​f​y
 		 */
-		accountHolderName: string
+		verify: string
 		/**
 		 * C​u​r​r​e​n​c​y
 		 */
@@ -7394,21 +7394,13 @@ type RootTranslation = {
 		 */
 		bankName: string
 		/**
-		 * S​W​I​F​T​ ​C​o​d​e
-		 */
-		swiftCode: string
-		/**
-		 * S​I​N​P​E​ ​C​o​d​e
-		 */
-		sinpeCode: string
-		/**
-		 * N​a​t​i​o​n​a​l​ ​I​D
-		 */
-		nationalId: string
-		/**
 		 * R​e​m​o​v​e​ ​B​a​n​k​ ​A​c​c​o​u​n​t
 		 */
 		removeBankAccount: string
+		/**
+		 * U​n​a​b​l​e​ ​t​o​ ​r​e​m​o​v​e​ ​b​a​n​k​ ​a​c​c​o​u​n​t
+		 */
+		removeAccountError: string
 		/**
 		 * A​r​e​ ​y​o​u​ ​s​u​r​e​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​r​e​m​o​v​e​ ​t​h​i​s​ ​b​a​n​k​ ​a​c​c​o​u​n​t​?
 		 */
@@ -7417,6 +7409,34 @@ type RootTranslation = {
 		 * T​h​i​s​ ​a​c​t​i​o​n​ ​c​a​n​n​o​t​ ​b​e​ ​u​n​d​o​n​e​.
 		 */
 		confirmRemoveBankAccountContent: string
+		/**
+		 * U​n​k​n​o​w​n​ ​E​r​r​o​r
+		 */
+		unknownError: string
+		/**
+		 * B​a​n​k​ ​a​c​c​o​u​n​t​ ​a​d​d​e​d​ ​s​u​c​c​e​s​s​f​u​l​l​y
+		 */
+		accountAddedSuccessfully: string
+		/**
+		 * U​n​a​b​l​e​ ​t​o​ ​a​d​d​ ​b​a​n​k​ ​a​c​c​o​u​n​t
+		 */
+		addAccountError: string
+		/**
+		 * U​n​a​b​l​e​ ​t​o​ ​v​e​r​i​f​y​ ​I​B​A​N
+		 */
+		verifyIbanError: string
+		/**
+		 * I​n​v​a​l​i​d​ ​I​B​A​N
+		 */
+		invalidIban: string
+		/**
+		 * A​c​c​o​u​n​t​ ​A​l​i​a​s
+		 */
+		accountAlias: string
+		/**
+		 * B​a​n​k​ ​a​c​c​o​u​n​t​ ​r​e​m​o​v​e​d​ ​s​u​c​c​e​s​s​f​u​l​l​y
+		 */
+		accountRemovedSuccessfully: string
 		validation: {
 			/**
 			 * I​B​A​N​ ​m​u​s​t​ ​b​e​ ​e​x​a​c​t​l​y​ ​2​2​ ​c​h​a​r​a​c​t​e​r​s​ ​l​o​n​g​.
@@ -8655,6 +8675,10 @@ type RootTranslation = {
 		 */
 		submit: string
 		/**
+		 * S​a​v​e
+		 */
+		save: string
+		/**
 		 * S​u​c​c​e​s​s​!
 		 */
 		success: string
@@ -9880,9 +9904,9 @@ export type TranslationFunctions = {
 		 */
 		message: () => LocalizedString
 	}
-	SnipeDetailsScreen: {
+	SinpeDetailsScreen: {
 		/**
-		 * Snipe IBAN transfer
+		 * Sinpe IBAN transfer
 		 */
 		title: () => LocalizedString
 		/**
@@ -9894,9 +9918,9 @@ export type TranslationFunctions = {
 		 */
 		amount: () => LocalizedString
 	}
-	SnipeConfirmationScreen: {
+	SinpeConfirmationScreen: {
 		/**
-		 * Review Snipe IBAN transfer
+		 * Review Sinpe IBAN transfer
 		 */
 		title: () => LocalizedString
 		/**
@@ -16913,9 +16937,9 @@ export type TranslationFunctions = {
 	}
 	BankAccountScreen: {
 		/**
-		 * Account Holder Name
+		 * Verify
 		 */
-		accountHolderName: () => LocalizedString
+		verify: () => LocalizedString
 		/**
 		 * Currency
 		 */
@@ -16929,21 +16953,13 @@ export type TranslationFunctions = {
 		 */
 		bankName: () => LocalizedString
 		/**
-		 * SWIFT Code
-		 */
-		swiftCode: () => LocalizedString
-		/**
-		 * SINPE Code
-		 */
-		sinpeCode: () => LocalizedString
-		/**
-		 * National ID
-		 */
-		nationalId: () => LocalizedString
-		/**
 		 * Remove Bank Account
 		 */
 		removeBankAccount: () => LocalizedString
+		/**
+		 * Unable to remove bank account
+		 */
+		removeAccountError: () => LocalizedString
 		/**
 		 * Are you sure you want to remove this bank account?
 		 */
@@ -16952,6 +16968,34 @@ export type TranslationFunctions = {
 		 * This action cannot be undone.
 		 */
 		confirmRemoveBankAccountContent: () => LocalizedString
+		/**
+		 * Unknown Error
+		 */
+		unknownError: () => LocalizedString
+		/**
+		 * Bank account added successfully
+		 */
+		accountAddedSuccessfully: () => LocalizedString
+		/**
+		 * Unable to add bank account
+		 */
+		addAccountError: () => LocalizedString
+		/**
+		 * Unable to verify IBAN
+		 */
+		verifyIbanError: () => LocalizedString
+		/**
+		 * Invalid IBAN
+		 */
+		invalidIban: () => LocalizedString
+		/**
+		 * Account Alias
+		 */
+		accountAlias: () => LocalizedString
+		/**
+		 * Bank account removed successfully
+		 */
+		accountRemovedSuccessfully: () => LocalizedString
 		validation: {
 			/**
 			 * IBAN must be exactly 22 characters long.
@@ -18167,6 +18211,10 @@ export type TranslationFunctions = {
 		 * Submit
 		 */
 		submit: () => LocalizedString
+		/**
+		 * Save
+		 */
+		save: () => LocalizedString
 		/**
 		 * Success!
 		 */

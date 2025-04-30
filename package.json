@@ -55,7 +55,9 @@
     "splash": "yarn react-native generate-bootsplash --background \"#000\" --logo-width 288 app/assets/logo/app-logo-dark.svg",
     "e2e:build": "detox build --configuration",
     "e2e:test": "detox test --configuration",
-    "find-unused-ll-keys": "yarn node utils/find-unused-ll-keys.js"
+    "find-unused-ll-keys": "yarn node utils/find-unused-ll-keys.js",
+    "pods:debug": "cd ios && ENABLE_FLIPPER=1 bundle exec pod install --repo-update",
+    "pods:release": "cd ios && ENABLE_FLIPPER=0 bundle exec pod install --repo-update"
   },
   "dependencies": {
     "@alessiocancian/react-native-actionsheet": "^3.2.0",
@@ -98,6 +100,7 @@
     "libphonenumber-js": "^1.10.60",
     "lnurl-pay": "^3.0.1",
     "lodash.debounce": "^4.0.8",
+    "lodash.isequal": "^4.5.0",
     "lodash.merge": "^4.6.2",
     "node-libs-react-native": "^1.2.1",
     "react": "18.2.0",

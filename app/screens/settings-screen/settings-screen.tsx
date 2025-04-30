@@ -66,13 +66,16 @@ export const SettingsScreen: React.FC = () => {
   const styles = useStyles()
   const { LL } = useI18nContext()
 
-  const { currentLevel, isAtLeastLevelOne, isAtLeastLevelTwo } = useLevel()
+  const { currentLevel, isAtLeastLevelOne } = useLevel()
 
   const items = useMemo(
     () => ({
-      account: isAtLeastLevelTwo
-        ? [AccountLevelSetting, TxLimits, KYC, BankAccount]
-        : [AccountLevelSetting, TxLimits],
+      account: [
+        AccountLevelSetting,
+        TxLimits,
+        isAtLeastLevelOne ? KYC : () => null,
+        isAtLeastLevelOne ? BankAccount : () => null,
+      ],
       loginMethods: [EmailSetting, PhoneSetting],
       waysToGetPaid: [AccountLNAddress, AccountPOS, AccountStaticQR],
       preferences: [
@@ -89,7 +92,7 @@ export const SettingsScreen: React.FC = () => {
       ],
       community: [NeedHelpSetting, JoinCommunitySetting],
     }),
-    [isAtLeastLevelTwo],
+    [],
   )
 
   return (

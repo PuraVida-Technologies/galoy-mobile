@@ -91,13 +91,6 @@ mutation RemoveMyBankAccount($bankAccountId: String!) {
   }
 }
 
-mutation UpdateBankAccountCR($updateBankAccountCrId: String!, $input: UpdateBankAccountCRDTO!) {
-  updateBankAccountCR(id: $updateBankAccountCrId, input: $input) {
-    id
-    __typename
-  }
-}
-
 mutation accountDelete {
   accountDelete {
     errors {
@@ -230,6 +223,16 @@ mutation accountUpdateDisplayCurrency($input: AccountUpdateDisplayCurrencyInput!
 mutation addBankAccountCR($input: AddBankAccountCRDTO!) {
   addBankAccountCR(input: $input) {
     id
+    galoyUserId
+    type
+    countryCode
+    accountAlias
+    data {
+      bankName
+      iban
+      currency
+      __typename
+    }
     __typename
   }
 }
@@ -965,6 +968,19 @@ query SettingsScreen {
   }
 }
 
+query VerifyIbanAccount($iban: String!) {
+  verifyIbanAccount(iban: $iban) {
+    success
+    iban
+    bankName
+    alias
+    currencyCode
+    errorCode
+    message
+    __typename
+  }
+}
+
 query accountDefaultWallet($walletCurrency: WalletCurrency, $username: Username!) {
   accountDefaultWallet(walletCurrency: $walletCurrency, username: $username) {
     id
@@ -1075,12 +1091,9 @@ query bankAccounts {
       countryCode
       data {
         bankName
-        accountHolderName
-        nationalId
         iban
-        sinpeCode
-        swiftCode
         currency
+        accountAlias
         __typename
       }
       __typename
@@ -1257,12 +1270,9 @@ query getWithdrawalContract($input: GetWithDrawalContractInput!) {
         countryCode
         data {
           bankName
-          accountHolderName
-          nationalId
           iban
-          sinpeCode
-          swiftCode
           currency
+          accountAlias
           __typename
         }
         __typename

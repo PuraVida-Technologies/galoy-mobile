@@ -93,13 +93,13 @@ const en: BaseTranslation = {
     title: "Conversion Success",
     message: "Conversion successful",
   },
-  SnipeDetailsScreen: {
-      title: "Snipe IBAN transfer",
+  SinpeDetailsScreen: {
+      title: "Sinpe IBAN transfer",
       percentageToConvert: "% to convert",
       amount: "Amount",
     },
-  SnipeConfirmationScreen: {
-    title: "Review Snipe IBAN transfer",
+  SinpeConfirmationScreen: {
+    title: "Review Sinpe IBAN transfer",
     amount: "Amount",
   },
   EarnScreen: {
@@ -2526,16 +2526,21 @@ const en: BaseTranslation = {
     logInOrCreateAccount: "Log in or create account",
   },
   BankAccountScreen: {
-    accountHolderName: "Account Holder Name",
+    verify: "Verify",
     currency: "Currency",
     iban: "IBAN",
     bankName: "Bank Name",
-    swiftCode: "SWIFT Code",
-    sinpeCode: "SINPE Code",
-    nationalId: "National ID",
     removeBankAccount: "Remove Bank Account",
+    removeAccountError: "Unable to remove bank account",
     confirmRemoveBankAccountTitle: "Are you sure you want to remove this bank account?",
     confirmRemoveBankAccountContent: "This action cannot be undone.",
+    unknownError: "Unknown Error",
+    accountAddedSuccessfully: "Bank account added successfully",
+    addAccountError: "Unable to add bank account",
+    verifyIbanError: "Unable to verify IBAN",
+    invalidIban: "Invalid IBAN",
+    accountAlias: "Account Alias",
+    accountRemovedSuccessfully: "Bank account removed successfully",
     validation: {
 			ibanLength: "IBAN must be exactly 22 characters long.",
 			ibanStart: "IBAN must start with 'CR'.",
@@ -2927,6 +2932,7 @@ const en: BaseTranslation = {
     shareLightning: "Share Lightning Invoice",
     soon: "Coming soon!",
     submit: "Submit",
+    save: "Save",
     success: "Success!",
     stablesatsUsd: "Stablesats USD",
     to: "To",

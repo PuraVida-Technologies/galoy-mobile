@@ -18,6 +18,7 @@ import {
 } from "@app/graphql/generated"
 import { useIsFocused, useNavigation } from "@react-navigation/native"
 import { stepWidth } from "./utils"
+import isEqual from "lodash.isequal"
 
 gql`
   query KycDetails {
@@ -111,7 +112,36 @@ const useKYCState = () => {
 
   const { data, loading } = useKycDetailsQuery({ fetchPolicy: "network-only" })
   const setKYCDetails = useCallback((next: Partial<KYCDetails>) => {
-    _setKYCDetails((prev) => ({ ...prev, ...next }))
+    _setKYCDetails((prevDetails) => {
+      // Filter out undefined properties from `next`
+      const filteredNext = {
+        ...next,
+        idDetails: Object.fromEntries(
+          Object.entries(next.idDetails || {}).filter(
+            ([_, value]) => value !== undefined,
+          ),
+        ),
+      }
+
+      const updatedDetails = {
+        ...prevDetails,
+        ...filteredNext,
+        idDetails: {
+          ...prevDetails.idDetails,
+          ...filteredNext.idDetails,
+          id:
+            filteredNext.idDetails?.id === "" || filteredNext.idDetails?.id === undefined
+              ? prevDetails.idDetails?.id // Preserve existing id if new value is invalid
+              : filteredNext.idDetails?.id,
+        },
+      }
+
+      // Only update if there are actual changes
+      if (isEqual(prevDetails, updatedDetails)) {
+        return prevDetails // Return the previous state to avoid unnecessary updates
+      }
+      return updatedDetails
+    })
   }, [])
 
   const { kyc, primaryIdentification, isDrivingLicense } = useMemo(() => {
@@ -128,7 +158,7 @@ const useKYCState = () => {
     if (!loading) {
       const isFrontSide = primaryIdentification?.files?.[0]
       const isBackSide = primaryIdentification?.files?.[1]
-      setKYCDetails({
+      const updatedDetails = {
         idDetails: {
           type: primaryIdentification?.type,
           front:
@@ -145,17 +175,26 @@ const useKYCState = () => {
                 : isBackSide,
           email: kyc?.email,
           phoneNumber: kyc?.phoneNumber,
-          id: kyc?.id,
+          id:
+            kyc?.id === "" || kyc?.id === undefined
+              ? KYCDetails.idDetails?.id // Preserve existing id if new value is invalid
+              : kyc?.id,
           gender: kyc?.gender,
           isPoliticallyExposed: kyc?.isPoliticallyExposed ? "yes" : "no",
           isHighRisk: kyc?.isHighRisk ? "yes" : "no",
         },
-      })
+      }
+
+      // Only update if there are actual changes
+      if (isEqual(KYCDetails.idDetails, updatedDetails.idDetails)) {
+        console.log("useEffect: No changes detected, skipping update")
+      } else {
+        console.log("useEffect: Updating KYCDetails", updatedDetails)
+        setKYCDetails(updatedDetails)
+      }
     }
   }, [
     loading,
-    data,
-    setKYCDetails,
     primaryIdentification?.files,
     primaryIdentification?.type,
     isDrivingLicense,
@@ -165,6 +204,7 @@ const useKYCState = () => {
     kyc?.gender,
     kyc?.isPoliticallyExposed,
     kyc?.isHighRisk,
+    setKYCDetails, // Dependency to track changes
   ])
 
   const jumpTo = (targetIndex: number) => {
@@ -178,22 +218,39 @@ const useKYCState = () => {
     if (kyc?.status === Status.Pending && !loading) {
       const isFrontSide = primaryIdentification?.files?.[0]
       const isBackSide = primaryIdentification?.files?.[1]
+
+      // Determine the target index based on the current state
+      let targetIndex = 0
       if (
         KYCDetails?.idDetails?.type &&
         ((isDrivingLicense && isFrontSide && isBackSide) ||
           (!isDrivingLicense && isFrontSide))
       ) {
-        jumpTo(2)
+        targetIndex = 2
         if (
           KYCDetails?.idDetails?.email &&
           KYCDetails?.idDetails?.phoneNumber &&
           KYCDetails?.idDetails?.gender
         ) {
-          jumpTo(3)
+          targetIndex = 3
         }
       }
+
+      // Only navigate if the target index is different from the current index
+      if (index !== targetIndex) {
+        jumpTo(targetIndex)
+      }
     }
-  }, [loading, kyc?.status, isFocused, KYCDetails?.idDetails?.type])
+  }, [
+    loading,
+    kyc?.status,
+    isFocused,
+    KYCDetails?.idDetails?.type,
+    KYCDetails?.idDetails?.email,
+    KYCDetails?.idDetails?.phoneNumber,
+    KYCDetails?.idDetails?.gender,
+    index, // Add `index` to dependencies
+  ])
 
   const isStepOneAndTwoCompleted = useMemo(() => {
     return (

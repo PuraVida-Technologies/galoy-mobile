@@ -32,12 +32,9 @@ gql`
         countryCode
         data {
           bankName
-          accountHolderName
-          nationalId
           iban
-          sinpeCode
-          swiftCode
           currency
+          accountAlias
         }
       }
     }

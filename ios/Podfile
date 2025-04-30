@@ -1,5 +1,4 @@
 def node_require(script)
-  # Resolve script with node to allow for hoisting
   require Pod::Executable.execute_command('node', ['-p',
     "require.resolve(
       '#{script}',
@@ -10,7 +9,15 @@ end
 node_require('react-native/scripts/react_native_pods.rb')
 node_require('react-native-permissions/scripts/setup.rb')
 
-use_modular_headers!
+# Dynamically toggle modular headers based on environment variable
+if ENV['ENABLE_FLIPPER'] == "1"
+  Pod::UI.puts "Flipper is enabled".green
+  flipper_config = FlipperConfiguration.enabled
+else
+  Pod::UI.puts "Flipper is disabled".yellow
+  flipper_config = FlipperConfiguration.disabled
+  use_modular_headers!
+end
 
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
@@ -23,50 +30,34 @@ setup_permissions([
   'PhotoLibraryAdditions',
 ])
 
-# If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
-# because `react-native-flipper` depends on (FlipperKit,...) that will be excluded
-#
-# To fix this you can also exclude `react-native-flipper` using a `react-native.config.js`
-# ```js
-# module.exports = {
-#   dependencies: {
-#     ...(process.env.NO_FLIPPER ? { 'react-native-flipper': { platforms: { ios: null } } } : {}),
-# ```
-flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
   use_frameworks! :linkage => linkage.to_sym
 end
 
-$RNFirebaseAnalyticsWithoutAdIdSupport=true
+$RNFirebaseAnalyticsWithoutAdIdSupport = true
 
 target 'GaloyApp' do
   config = use_native_modules!
 
   use_react_native!(
     :path => config[:reactNativePath],
-    # Enables Flipper.
-    #
-    # Note that if you have use_frameworks! enabled, Flipper will not work and
-    # you should disable the next line.
-    # :flipper_configuration => flipper_config,
-    # An absolute path to your application root.
+    :flipper_configuration => flipper_config, # Ensure this is passed correctly
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
-  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => false
 
+  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => false
 
   post_install do |installer|
     installer.pods_project.targets.each do |target|
       if target.respond_to?(:product_type) and target.product_type == "com.apple.product-type.bundle"
         target.build_configurations.each do |config|
-            config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+          config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
         end
       end
     end
 
-    # from https://github.com/software-mansion/react-native-reanimated/issues/4522
     installer.generated_projects.each do |project|
       project.targets.each do |target|
         target.build_configurations.each do |config|
@@ -77,7 +68,6 @@ target 'GaloyApp' do
       end
     end
 
-    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(
       installer,
       config[:reactNativePath],
@@ -88,10 +78,4 @@ target 'GaloyApp' do
       config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
     end
   end
-
-  # pod 'Firebase', :modular_headers => true
-  # pod 'FirebaseCore', :modular_headers => true
-  # pod 'GoogleUtilities', :modular_headers => true
-
-
 end
