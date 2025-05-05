@@ -1040,7 +1040,7 @@ PODS:
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - react-native-image-picker (7.1.2):
+  - react-native-image-picker (8.2.1):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1711,7 +1711,7 @@ SPEC CHECKSUMS:
   react-native-fingerprint-scanner: ac6656f18c8e45a7459302b84da41a44ad96dbbe
   react-native-geetest-module: ed6a20774a7975640b79a2f639327c674a488cb5
   react-native-geolocation: ed9e1d132f576b9a4a503af46f9704413ea0dec1
-  react-native-image-picker: d3db110a3ded6e48c93aef7e8e51afdde8b16ed0
+  react-native-image-picker: 12963c597a56ac0a5459e2a649143142ef15ce40
   react-native-in-app-review: db8bb167a5f238e7ceca5c242d6b36ce8c4404a4
   react-native-maps: cbf2f03bfeebfd7ec45966b066db13a075fd2af3
   react-native-mmkv: 1fdc81aa70c1aba09370718e6a63a09cbbbac8d2
@@ -1776,4 +1776,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: ebd8f22b48f1fbe96f14f213cf8e914a84b06d69
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.16.2
