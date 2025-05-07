@@ -2,7 +2,7 @@ import { WalletCurrency } from "@app/graphql/generated"
 import { testProps } from "@app/utils/testProps"
 import { Text } from "@rneui/themed"
 import { View, TouchableWithoutFeedback } from "react-native"
-import { UseSnipDetailsStyles } from "../styles/snipe-deatils"
+import { UseSnipDetailsStyles } from "../styles/sinpe-details"
 import { TranslationFunctions } from "@app/i18n/i18n-types"
 
 interface Props {

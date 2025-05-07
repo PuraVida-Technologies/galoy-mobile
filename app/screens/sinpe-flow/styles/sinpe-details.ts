@@ -243,6 +243,21 @@ const useStyles = makeStyles(({ colors }) => ({
     color: colors.grey1,
     marginLeft: 4,
   },
+  toggleButtonContainer: {
+    position: "absolute",
+    right: 16, // Keep it aligned to the right
+    zIndex: 1, // Ensure it appears above other elements
+  },
+  toggleButton: {
+    backgroundColor: "#f0f0f0",
+    borderRadius: 24,
+    padding: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
 }))
 export type UseSnipDetailsStyles = ReturnType<typeof useStyles>
 export default useStyles
