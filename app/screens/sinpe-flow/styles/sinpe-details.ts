@@ -245,7 +245,8 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   toggleButtonContainer: {
     position: "absolute",
-    right: 40, // Keep it aligned to the right
+    top: "25%", // Place it halfway between the two components
+    left: "80%", // Center it horizontally
     zIndex: 1, // Ensure it appears above other elements
   },
   toggleButton: {
@@ -263,10 +264,10 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   toggleButtonContainerInline: {
     position: "absolute", // Position the button absolutely
-    top: "30%", // Place it halfway between the two containers
-    left: "80%", // Center it horizontally
-    transform: [{ translateX: -25 }, { translateY: -25 }], // Adjust for the button's size
-    zIndex: 2, // Ensure it appears above the wallet selector containers
+    top: "10%", // Place it halfway between the two components
+    left: "50%", // Center it horizontally
+    transform: [{ translateX: -25 }, { translateY: -25 }], // Adjust for the button's size (50x50)
+    zIndex: 2, // Ensure it appears above the account selector components
   },
 }))
 export type UseSnipDetailsStyles = ReturnType<typeof useStyles>

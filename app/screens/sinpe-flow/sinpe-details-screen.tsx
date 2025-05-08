@@ -14,7 +14,7 @@ import useStyles from "./styles/sinpe-details"
 import WalletsModal from "./components/wallet-card"
 import BankAccounts from "./components/bank-account"
 import PuraVidaWalletSelector from "./components/pura-vida-wallet-selector"
-import IBANAccountSelector from './components/iban-account-selector'
+import IBANAccountSelector from "./components/iban-account-selector"
 // import { useDisplayCurrency } from "@app/hooks/use-display-currency"
 
 export const SinpeDetailsScreen = () => {
@@ -27,48 +27,67 @@ export const SinpeDetailsScreen = () => {
   const { state, actions } = useSinpeDetails()
   const { LL } = state
 
-  // const { displayCurrencyDictionary } = useDisplayCurrency()
-
-  // Local state to track raw input value
-  // const [rawInputValue, setRawInputValue] = useState("")
-
-  // Format the amount with the correct number of fractional digits
-  // const formattedAmount = useMemo(() => {
-  //   const fractionDigits =
-  //     displayCurrencyDictionary[state.from]?.fractionDigits ?? 2 // Default to 2 if not found
-
-  //   if (!rawInputValue) {
-  //     return "" // Return empty if no input is set
-  //   }
-
-  //   return new Intl.NumberFormat("en-US", {
-  //     minimumFractionDigits: fractionDigits,
-  //     maximumFractionDigits: fractionDigits,
-  //   }).format(Number(rawInputValue))
-  // }, [rawInputValue, state.from, displayCurrencyDictionary])
+  // State to track whether it's a BTC sell or not
+  const [isBTCSell, setIsBTCSell] = useState(true)
 
   if (!state.data?.me?.defaultAccount || !state.from) {
     // TODO: proper error handling. non possible event?
     return <></>
   }
+
   return (
     <Screen preset="fixed">
       <ScrollView style={styles.scrollViewContainer}>
-        <PuraVidaWalletSelector
-          styles={styles}
-          state={state}
-          actions={actions}
-          LL={LL}
-          colors={colors}
-        />
-
-        <IBANAccountSelector
-          styles={styles}
-          state={state}
-          actions={actions}
-          LL={LL}
-          colors={colors}
-        />
+        {/* Conditionally render the components based on isBTCSell */}
+        {isBTCSell ? (
+          <>
+            <PuraVidaWalletSelector
+              styles={styles}
+              state={state}
+              actions={actions}
+              LL={LL}
+              colors={colors}
+            />
+            <View style={styles.toggleButtonContainer}>
+              <TouchableWithoutFeedback onPress={() => setIsBTCSell(!isBTCSell)}>
+                <View style={styles.toggleButton}>
+                  <Icon name="swap-vertical" size={24} color={colors.primary} />
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+            <IBANAccountSelector
+              styles={styles}
+              state={state}
+              actions={actions}
+              LL={LL}
+              colors={colors}
+            />
+          </>
+        ) : (
+          <>
+            <IBANAccountSelector
+              styles={styles}
+              state={state}
+              actions={actions}
+              LL={LL}
+              colors={colors}
+            />
+            <View style={styles.toggleButtonContainer}>
+              <TouchableWithoutFeedback onPress={() => setIsBTCSell(!isBTCSell)}>
+                <View style={styles.toggleButton}>
+                  <Icon name="swap-vertical" size={24} color={colors.primary} />
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+            <PuraVidaWalletSelector
+              styles={styles}
+              state={state}
+              actions={actions}
+              LL={LL}
+              colors={colors}
+            />
+          </>
+        )}
         <View style={[styles.fieldContainer, styles.amountContainer]}>
           <Text style={styles.fieldTitleText}>{LL.SinpeDetailsScreen.amount()}</Text>
           <View style={styles.amountInputContainer}>
