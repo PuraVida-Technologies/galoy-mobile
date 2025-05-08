@@ -34,6 +34,9 @@ export const SinpeDetailsScreen = () => {
     // TODO: proper error handling. non possible event?
     return <></>
   }
+  const topPosition = state.puraVidaWalletLayout
+    ? state.puraVidaWalletLayout.y + state.puraVidaWalletLayout.height - 20
+    : 0
 
   return (
     <Screen preset="fixed">
@@ -48,7 +51,15 @@ export const SinpeDetailsScreen = () => {
               LL={LL}
               colors={colors}
             />
-            <View style={styles.toggleButtonContainer}>
+            <View
+              style={[
+                styles.toggleButtonContainer,
+                // eslint-disable-next-line react-native/no-inline-styles
+                {
+                  top: topPosition,
+                },
+              ]}
+            >
               <TouchableWithoutFeedback onPress={() => setIsBTCSell(!isBTCSell)}>
                 <View style={styles.toggleButton}>
                   <Icon name="swap-vertical" size={24} color={colors.primary} />

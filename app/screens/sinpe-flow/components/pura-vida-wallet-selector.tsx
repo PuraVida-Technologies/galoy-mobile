@@ -13,6 +13,7 @@ type PuraVidaWalletSelectorProps = {
   colors: any
   state: any
   actions: any
+  onLayout?: (event: any) => void
 }
 
 const PuraVidaWalletSelector: React.FC<PuraVidaWalletSelectorProps> = ({
@@ -23,7 +24,13 @@ const PuraVidaWalletSelector: React.FC<PuraVidaWalletSelectorProps> = ({
   actions,
 }) => {
   return (
-    <View style={styles.walletSelectorContainer}>
+    <View
+      style={styles.walletSelectorContainer}
+      onLayout={(event) => {
+        const { y, height } = event.nativeEvent.layout
+        actions.updatePuraVidaWalletLayout({ y, height }) // Update layout in state
+      }}
+    >
       <View style={styles.walletsContainer}>
         <Text style={styles.fieldTitleText}>{LL.common.from()}</Text>
         <TouchableWithoutFeedback

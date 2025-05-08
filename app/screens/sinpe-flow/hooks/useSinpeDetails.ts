@@ -62,6 +62,10 @@ const useSinpeDetails = () => {
   const [fiatSymbol, setFiatSymbol] = useState<string>("$") // Default to USD symbol
   const [fractionDigits, setFractionDigits] = useState<number>(2) // Default to 2 for USD
   const [rawInputValue, setRawInputValue] = useState<string>("") // Track raw input value
+  const [puraVidaWalletLayout, setPuraVidaWalletLayout] = useState<{
+    y: number
+    height: number
+  } | null>(null)
 
   const navigation = useNavigation<NavigationProp<RootStackParamList, "sinpeDetails">>()
   const { LL } = useI18nContext()
@@ -307,6 +311,10 @@ const useSinpeDetails = () => {
     return amount?.length && parseFloat(amount || "") > 0 && !amountFieldError?.length
   }, [amount, amountFieldError])
 
+  const updatePuraVidaWalletLayout = (layout: { y: number; height: number }) => {
+    setPuraVidaWalletLayout(layout)
+  }
+
   return {
     state: {
       LL,
@@ -330,6 +338,7 @@ const useSinpeDetails = () => {
       fractionDigits,
       remainingLimit: remainingLimitText,
       rawInputValue,
+      puraVidaWalletLayout, // Add layout to state
     },
     actions: {
       moveToNextScreen,
@@ -348,6 +357,7 @@ const useSinpeDetails = () => {
       onBankAccountSelection,
       handleAmountChange, // Add handleAmountChange to actions
       handleAmountBlur, // Add handleAmountBlur to actions
+      updatePuraVidaWalletLayout, // Add action to update layout
     },
   }
 }

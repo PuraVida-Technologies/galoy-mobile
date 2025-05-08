@@ -245,22 +245,21 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   toggleButtonContainer: {
     position: "absolute",
-    top: "25%", // Place it halfway between the two components
-    left: "80%", // Center it horizontally
+    left: "75%", // Keep it horizontally aligned
     zIndex: 1, // Ensure it appears above other elements
   },
   toggleButton: {
-    width: 50, // Set a fixed width
-    height: 50, // Set a fixed height to make it circular
-    borderRadius: 25, // Half of the width/height for a perfect circle
-    backgroundColor: "#f0f0f0", // Background color
-    justifyContent: "center", // Center the icon vertically
-    alignItems: "center", // Center the icon horizontally
-    shadowColor: "#000", // Add shadow for better visibility
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#f0f0f0",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    elevation: 3, // Shadow for Android
+    elevation: 3,
   },
   toggleButtonContainerInline: {
     position: "absolute", // Position the button absolutely
