@@ -60,7 +60,7 @@ export type RootStackParamList = {
     moneyAmount: MoneyAmount<WalletOrDisplayCurrency>
   }
   conversionSuccess: undefined
-  snipeDetails: undefined
+  sinpeDetails: { screenTitle?: string }
   bankAccount: undefined
   sinpeConfirmation: {
     fromWalletCurrency: WalletCurrency

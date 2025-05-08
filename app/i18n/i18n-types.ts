@@ -320,6 +320,14 @@ type RootTranslation = {
 		 * A​m​o​u​n​t
 		 */
 		amount: string
+		/**
+		 * S​e​l​l​ ​B​T​C
+		 */
+		sellBTC: string
+		/**
+		 * B​u​y​ ​B​T​C
+		 */
+		buyBTC: string
 	}
 	SinpeConfirmationScreen: {
 		/**
@@ -9917,6 +9925,14 @@ export type TranslationFunctions = {
 		 * Amount
 		 */
 		amount: () => LocalizedString
+		/**
+		 * Sell BTC
+		 */
+		sellBTC: () => LocalizedString
+		/**
+		 * Buy BTC
+		 */
+		buyBTC: () => LocalizedString
 	}
 	SinpeConfirmationScreen: {
 		/**

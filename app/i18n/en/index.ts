@@ -97,6 +97,8 @@ const en: BaseTranslation = {
       title: "Sinpe IBAN transfer",
       percentageToConvert: "% to convert",
       amount: "Amount",
+      sellBTC: "Sell BTC",
+      buyBTC: "Buy BTC",
     },
   SinpeConfirmationScreen: {
     title: "Review Sinpe IBAN transfer",

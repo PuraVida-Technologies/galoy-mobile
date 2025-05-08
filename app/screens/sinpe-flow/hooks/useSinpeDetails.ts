@@ -63,7 +63,7 @@ const useSinpeDetails = () => {
   const [fractionDigits, setFractionDigits] = useState<number>(2) // Default to 2 for USD
   const [rawInputValue, setRawInputValue] = useState<string>("") // Track raw input value
 
-  const navigation = useNavigation<NavigationProp<RootStackParamList, "snipeDetails">>()
+  const navigation = useNavigation<NavigationProp<RootStackParamList, "sinpeDetails">>()
   const { LL } = useI18nContext()
 
   // forcing price refresh

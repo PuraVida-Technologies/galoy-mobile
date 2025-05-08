@@ -14,6 +14,11 @@ export interface ScreenProps {
   style?: ViewStyle
 
   /**
+   * An optional title override if you want to dynamically provide the title to the screen.
+   */
+  title?: string
+
+  /**
    * One of the different types of presets.
    */
   preset?: ScreenPresets

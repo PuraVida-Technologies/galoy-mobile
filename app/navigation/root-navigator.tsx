@@ -217,11 +217,11 @@ export const RootStack = () => {
         }}
       />
       <RootNavigator.Screen
-        name="snipeDetails"
+        name="sinpeDetails"
         component={SinpeDetailsScreen}
-        options={{
-          title: LL.SinpeDetailsScreen.title(),
-        }}
+        options={({ route }) => ({
+          title: route.params?.screenTitle || LL.SinpeDetailsScreen.title(), // Use dynamic title if provided
+        })}
       />
       <RootNavigator.Screen
         name="sinpeConfirmation"

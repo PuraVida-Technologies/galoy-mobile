@@ -13,6 +13,8 @@ import ReactNativeModal from "react-native-modal"
 import useStyles from "./styles/sinpe-details"
 import WalletsModal from "./components/wallet-card"
 import BankAccounts from "./components/bank-account"
+import PuraVidaWalletSelector from "./components/pura-vida-wallet-selector"
+import IBANAccountSelector from './components/iban-account-selector'
 // import { useDisplayCurrency } from "@app/hooks/use-display-currency"
 
 export const SinpeDetailsScreen = () => {
@@ -25,13 +27,25 @@ export const SinpeDetailsScreen = () => {
   const { state, actions } = useSinpeDetails()
   const { LL } = state
 
-  const [isToggled, setIsToggled] = useState(false) // State to track toggle
-  const [topDropdownPosition, setTopDropdownPosition] = useState(0)
+  // const { displayCurrencyDictionary } = useDisplayCurrency()
 
-  const handleTopDropdownLayout = (event) => {
-    const { y, height } = event.nativeEvent.layout
-    setTopDropdownPosition(y + height) // Store the bottom position of the top dropdown
-  }
+  // Local state to track raw input value
+  // const [rawInputValue, setRawInputValue] = useState("")
+
+  // Format the amount with the correct number of fractional digits
+  // const formattedAmount = useMemo(() => {
+  //   const fractionDigits =
+  //     displayCurrencyDictionary[state.from]?.fractionDigits ?? 2 // Default to 2 if not found
+
+  //   if (!rawInputValue) {
+  //     return "" // Return empty if no input is set
+  //   }
+
+  //   return new Intl.NumberFormat("en-US", {
+  //     minimumFractionDigits: fractionDigits,
+  //     maximumFractionDigits: fractionDigits,
+  //   }).format(Number(rawInputValue))
+  // }, [rawInputValue, state.from, displayCurrencyDictionary])
 
   if (!state.data?.me?.defaultAccount || !state.from) {
     // TODO: proper error handling. non possible event?
@@ -41,117 +55,21 @@ export const SinpeDetailsScreen = () => {
   return (
     <Screen preset="fixed">
       <ScrollView style={styles.scrollViewContainer}>
-        {/* From Dropdown */}
-        <View
-          style={styles.walletSelectorContainer}
-          onLayout={handleTopDropdownLayout} // Measure the layout of the top dropdown
-        >
-          <View style={styles.walletsContainer}>
-            <Text style={styles.fieldTitleText}>{LL.common.from()}</Text>
-            <TouchableWithoutFeedback
-              {...testProps("choose-wallet-to-send-from")}
-              onPress={() => actions.setFromSelection(true)}
-              accessible={false}
-            >
-              <View style={styles.fieldBackground}>
-                <View style={styles.walletSelectorInfoContainer}>
-                  <View style={styles.walletSelectorTypeTextContainer}>
-                    <Text style={styles.walletCurrencyText}>
-                      {isToggled
-                        ? state?.selectedBank?.data?.accountAlias // Show IBAN accounts when toggled
-                        : state.from === WalletCurrency.Btc
-                        ? LL.common.btcAccount()
-                        : LL.common.usdAccount()}
-                    </Text>
-                  </View>
-                  <View style={styles.walletSelectorBalanceContainer}>
-                    <Text {...testProps(`${state.from} Wallet Balance`)}>
-                      {isToggled
-                        ? state?.selectedBank?.data?.iban // Show IBAN details when toggled
-                        : state.fromWalletBalanceFormatted}
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.pickWalletIcon}>
-                  <Icon name={"chevron-down"} size={24} color={colors.black} />
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-        </View>
+        <PuraVidaWalletSelector
+          styles={styles}
+          state={state}
+          actions={actions}
+          LL={LL}
+          colors={colors}
+        />
 
-        {/* Toggle Button */}
-        {topDropdownPosition > 0 && (
-          <View
-            style={[
-              styles.toggleButtonContainer,
-              { top: topDropdownPosition - 20 }, // Dynamically position the button
-            ]}
-          >
-            <TouchableWithoutFeedback
-              onPress={() => setIsToggled((prev) => !prev)} // Toggle the state
-            >
-              <View style={styles.toggleButton}>
-                <Icon name="swap-vertical" size={24} color={colors.primary} />
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-        )}
-
-        {/* To Dropdown */}
-        <View style={styles.walletSelectorContainer}>
-          <View style={styles.walletsContainer}>
-            <Text style={styles.fieldTitleText}>{LL.common.toBankAccount()}</Text>
-            <TouchableWithoutFeedback
-              {...testProps("choose-wallet-to-send-from")}
-              onPress={() => actions.setOpenBankSelection(true)}
-              accessible={false}
-            >
-              <View style={styles.fieldBackground}>
-                <View style={styles.walletSelectorInfoContainer}>
-                  <View style={styles.walletSelectorTypeTextContainer}>
-                    <Text style={styles.walletCurrencyText}>
-                      {isToggled
-                        ? state.from === WalletCurrency.Btc
-                          ? LL.common.btcAccount()
-                          : LL.common.usdAccount() // Show wallets when toggled
-                        : state?.selectedBank?.data?.accountAlias}
-                    </Text>
-                  </View>
-                  <View style={styles.walletSelectorBalanceContainer}>
-                    <Text {...testProps(`${state.from} Wallet Balance`)}>
-                      {isToggled
-                        ? state.fromWalletBalanceFormatted // Show wallet balance when toggled
-                        : state?.selectedBank?.data?.iban}
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.pickWalletIcon}>
-                  <Icon name={"chevron-down"} size={24} color={colors.black} />
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
-            <ReactNativeModal
-              style={styles.bankModal}
-              animationIn="fadeInDown"
-              animationOut="fadeOutUp"
-              isVisible={state.openBankSelection}
-              onBackButtonPress={actions.toggleBankModal}
-              onBackdropPress={actions.toggleBankModal}
-            >
-              <BankAccounts
-                bankAccount={state.bankAccounts}
-                styles={styles}
-                LL={LL}
-                state={state}
-                onBankAccountSelected={actions.onBankAccountSelection}
-                toggleBankModal={actions.toggleBankModal}
-                colors={colors}
-                reset={actions.reset}
-              />
-            </ReactNativeModal>
-          </View>
-        </View>
+        <IBANAccountSelector
+          styles={styles}
+          state={state}
+          actions={actions}
+          LL={LL}
+          colors={colors}
+        />
         <View style={[styles.fieldContainer, styles.amountContainer]}>
           <Text style={styles.fieldTitleText}>{LL.SinpeDetailsScreen.amount()}</Text>
           <View style={styles.amountInputContainer}>

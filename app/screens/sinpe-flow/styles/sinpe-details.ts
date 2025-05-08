@@ -20,7 +20,7 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.grey5,
     borderRadius: 10,
     padding: 15,
-    marginBottom: 15,
+    marginBottom: 5, // Reduce the spacing between the containers
   },
   walletsContainer: {
     flex: 1,
@@ -245,18 +245,29 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   toggleButtonContainer: {
     position: "absolute",
-    right: 16, // Keep it aligned to the right
+    right: 40, // Keep it aligned to the right
     zIndex: 1, // Ensure it appears above other elements
+    pointerEvents: "box-none", // Allow touch events to pass through to underlying elements
   },
   toggleButton: {
-    backgroundColor: "#f0f0f0",
-    borderRadius: 24,
-    padding: 12,
-    shadowColor: "#000",
+    width: 50, // Set a fixed width
+    height: 50, // Set a fixed height to make it circular
+    borderRadius: 25, // Half of the width/height for a perfect circle
+    backgroundColor: "#f0f0f0", // Background color
+    justifyContent: "center", // Center the icon vertically
+    alignItems: "center", // Center the icon horizontally
+    shadowColor: "#000", // Add shadow for better visibility
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 3, // Shadow for Android
+  },
+  toggleButtonContainerInline: {
+    position: "absolute", // Position the button absolutely
+    top: "30%", // Place it halfway between the two containers
+    left: "80%", // Center it horizontally
+    transform: [{ translateX: -25 }, { translateY: -25 }], // Adjust for the button's size
+    zIndex: 2, // Ensure it appears above the wallet selector containers
   },
 }))
 export type UseSnipDetailsStyles = ReturnType<typeof useStyles>

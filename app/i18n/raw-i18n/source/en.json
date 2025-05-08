@@ -84,7 +84,9 @@
     "SinpeDetailsScreen": {
         "title": "Sinpe IBAN transfer",
         "percentageToConvert": "% to convert",
-        "amount": "Amount"
+        "amount": "Amount",
+        "sellBTC": "Sell BTC",
+        "buyBTC": "Buy BTC"
     },
     "SinpeConfirmationScreen": {
         "title": "Review Sinpe IBAN transfer",
