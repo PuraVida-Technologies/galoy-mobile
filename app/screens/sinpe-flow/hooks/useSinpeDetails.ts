@@ -225,6 +225,7 @@ const useSinpeDetails = () => {
   }, [bankAccounts])
 
   const onBankAccountSelection = useCallback((account: BankAccountCr) => {
+    console.log("Selected bank account:", account)
     setOpenBankSelection(false)
     setSelectedBank(account)
 

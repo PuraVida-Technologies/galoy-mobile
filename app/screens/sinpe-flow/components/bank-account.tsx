@@ -6,7 +6,7 @@ import { View, ScrollView } from "react-native"
 import Icon from "react-native-vector-icons/Ionicons"
 import { UseSnipDetailsStyles } from "../styles/sinpe-details"
 import { TranslationFunctions } from "@app/i18n/i18n-types"
-import { TouchableOpacity } from "react-native-gesture-handler"
+import { TouchableOpacity } from "react-native"
 import { SnipeDetailsState } from "../hooks/useSinpeDetails"
 
 interface Props {
@@ -61,14 +61,14 @@ const BankAccounts = ({
       {state.matchingAccounts?.map((account, index) => (
         <TouchableOpacity
           key={index}
-          onPress={() => onBankAccountSelected(account)}
+          onPress={() => {
+            onBankAccountSelected(account)
+          }}
           style={styles.cardContainer}
-          // {...testProps(title)}
         >
           <View style={styles.spacing}>
             <Text type="p2">{account?.data?.accountAlias}</Text>
             <Text>{account?.data?.iban}</Text>
-
             <Text type={"p4"} ellipsizeMode="tail" numberOfLines={1}>
               {account?.data?.currency}
             </Text>

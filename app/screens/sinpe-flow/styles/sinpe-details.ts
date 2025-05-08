@@ -247,7 +247,6 @@ const useStyles = makeStyles(({ colors }) => ({
     position: "absolute",
     right: 40, // Keep it aligned to the right
     zIndex: 1, // Ensure it appears above other elements
-    pointerEvents: "box-none", // Allow touch events to pass through to underlying elements
   },
   toggleButton: {
     width: 50, // Set a fixed width

@@ -51,7 +51,6 @@ export const SinpeDetailsScreen = () => {
     // TODO: proper error handling. non possible event?
     return <></>
   }
-
   return (
     <Screen preset="fixed">
       <ScrollView style={styles.scrollViewContainer}>
