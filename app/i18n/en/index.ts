@@ -2893,6 +2893,7 @@ const en: BaseTranslation = {
     includes: "Includes",
     firstName: "First Name",
     from: "From",
+    fromBankAccount: "From Bank Account",
     hour: "hour",
     hours: "hours",
     invoice: "Invoice",

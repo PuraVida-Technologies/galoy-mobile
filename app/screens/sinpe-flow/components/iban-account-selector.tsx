@@ -22,10 +22,19 @@ const IBANAccountSelector: React.FC<IBANAccountSelectorProps> = ({
   actions,
   state,
 }) => {
+  console.log("IBANAccountSelector: ", state.isBTCSell)
   return (
-    <View style={styles.walletSelectorContainer}>
+    <View
+      style={styles.walletSelectorContainer}
+      onLayout={(event) => {
+        const { y, height } = event.nativeEvent.layout
+        actions.updateIBANAccountLayout({ y, height })
+      }}
+    >
       <View style={styles.walletsContainer}>
-        <Text style={styles.fieldTitleText}>{LL.common.toBankAccount()}</Text>
+        <Text style={styles.fieldTitleText}>
+          {state.isBTCSell ? LL.common.toBankAccount() : LL.common.fromBankAccount()}
+        </Text>
         <TouchableWithoutFeedback
           {...testProps("choose-wallet-to-send-from")}
           onPress={() => actions.setOpenBankSelection(true)}

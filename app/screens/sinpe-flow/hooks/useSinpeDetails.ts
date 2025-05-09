@@ -66,6 +66,11 @@ const useSinpeDetails = () => {
     y: number
     height: number
   } | null>(null)
+  const [IBANAccountLayout, updateIBANAccountLayout] = useState<{
+    y: number
+    height: number
+  } | null>(null)
+  const [isBTCSell, setIsBTCSell] = useState(true)
 
   const navigation = useNavigation<NavigationProp<RootStackParamList, "sinpeDetails">>()
   const { LL } = useI18nContext()
@@ -315,6 +320,10 @@ const useSinpeDetails = () => {
     setPuraVidaWalletLayout(layout)
   }
 
+  const toggleIsBTCSell = () => {
+    setIsBTCSell((prev) => !prev)
+  }
+
   return {
     state: {
       LL,
@@ -339,6 +348,8 @@ const useSinpeDetails = () => {
       remainingLimit: remainingLimitText,
       rawInputValue,
       puraVidaWalletLayout, // Add layout to state
+      IBANAccountLayout,
+      isBTCSell, // Add isBTCSell to state
     },
     actions: {
       moveToNextScreen,
@@ -358,6 +369,8 @@ const useSinpeDetails = () => {
       handleAmountChange, // Add handleAmountChange to actions
       handleAmountBlur, // Add handleAmountBlur to actions
       updatePuraVidaWalletLayout, // Add action to update layout
+      updateIBANAccountLayout,
+      toggleIsBTCSell, // Add action to toggle isBTCSell
     },
   }
 }

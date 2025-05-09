@@ -8519,6 +8519,10 @@ type RootTranslation = {
 		 */
 		from: string
 		/**
+		 * F​r​o​m​ ​B​a​n​k​ ​A​c​c​o​u​n​t
+		 */
+		fromBankAccount: string
+		/**
 		 * h​o​u​r
 		 */
 		hour: string
@@ -18063,6 +18067,10 @@ export type TranslationFunctions = {
 		 * From
 		 */
 		from: () => LocalizedString
+		/**
+		 * From Bank Account
+		 */
+		fromBankAccount: () => LocalizedString
 		/**
 		 * hour
 		 */

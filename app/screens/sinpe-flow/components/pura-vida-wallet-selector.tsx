@@ -13,7 +13,6 @@ type PuraVidaWalletSelectorProps = {
   colors: any
   state: any
   actions: any
-  onLayout?: (event: any) => void
 }
 
 const PuraVidaWalletSelector: React.FC<PuraVidaWalletSelectorProps> = ({
@@ -32,7 +31,9 @@ const PuraVidaWalletSelector: React.FC<PuraVidaWalletSelectorProps> = ({
       }}
     >
       <View style={styles.walletsContainer}>
-        <Text style={styles.fieldTitleText}>{LL.common.from()}</Text>
+        <Text style={styles.fieldTitleText}>
+          {state.isBTCSell ? LL.common.from() : LL.common.to()}
+        </Text>
         <TouchableWithoutFeedback
           {...testProps("choose-wallet-to-send-from")}
           onPress={() => actions.setFromSelection(true)}

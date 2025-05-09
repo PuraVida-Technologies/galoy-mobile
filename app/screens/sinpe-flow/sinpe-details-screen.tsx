@@ -27,22 +27,23 @@ export const SinpeDetailsScreen = () => {
   const { state, actions } = useSinpeDetails()
   const { LL } = state
 
-  // State to track whether it's a BTC sell or not
-  const [isBTCSell, setIsBTCSell] = useState(true)
-
   if (!state.data?.me?.defaultAccount || !state.from) {
     // TODO: proper error handling. non possible event?
     return <></>
   }
-  const topPosition = state.puraVidaWalletLayout
-    ? state.puraVidaWalletLayout.y + state.puraVidaWalletLayout.height - 20
-    : 0
+  const topPosition = state.isBTCSell
+    ? state.puraVidaWalletLayout
+      ? state.puraVidaWalletLayout.y + state.puraVidaWalletLayout.height - 20
+      : 0
+    : state.IBANAccountLayout
+      ? state.IBANAccountLayout.y + state.IBANAccountLayout.height - 20
+      : 0
 
   return (
     <Screen preset="fixed">
       <ScrollView style={styles.scrollViewContainer}>
         {/* Conditionally render the components based on isBTCSell */}
-        {isBTCSell ? (
+        {state.isBTCSell ? (
           <>
             <PuraVidaWalletSelector
               styles={styles}
@@ -60,7 +61,7 @@ export const SinpeDetailsScreen = () => {
                 },
               ]}
             >
-              <TouchableWithoutFeedback onPress={() => setIsBTCSell(!isBTCSell)}>
+              <TouchableWithoutFeedback onPress={() => actions.toggleIsBTCSell()}>
                 <View style={styles.toggleButton}>
                   <Icon name="swap-vertical" size={24} color={colors.primary} />
                 </View>
@@ -83,8 +84,16 @@ export const SinpeDetailsScreen = () => {
               LL={LL}
               colors={colors}
             />
-            <View style={styles.toggleButtonContainer}>
-              <TouchableWithoutFeedback onPress={() => setIsBTCSell(!isBTCSell)}>
+            <View
+              style={[
+                styles.toggleButtonContainer,
+                // eslint-disable-next-line react-native/no-inline-styles
+                {
+                  top: topPosition,
+                },
+              ]}
+            >
+              <TouchableWithoutFeedback onPress={() => actions.toggleIsBTCSell()}>
                 <View style={styles.toggleButton}>
                   <Icon name="swap-vertical" size={24} color={colors.primary} />
                 </View>
