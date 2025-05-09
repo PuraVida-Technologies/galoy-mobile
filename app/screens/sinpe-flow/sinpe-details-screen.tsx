@@ -1,21 +1,21 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useMemo, useState } from "react"
+import React, { useEffect } from "react"
 import { View, TouchableWithoutFeedback } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 import { GaloyPrimaryButton } from "@app/components/atomic/galoy-primary-button"
 import { Screen } from "@app/components/screen"
-import { WalletCurrency } from "@app/graphql/generated"
-import { testProps } from "@app/utils/testProps"
 import { Input, Text, useTheme } from "@rneui/themed"
 import useSinpeDetails from "./hooks/useSinpeDetails"
 import Icon from "react-native-vector-icons/Ionicons"
-import ReactNativeModal from "react-native-modal"
 import useStyles from "./styles/sinpe-details"
-import WalletsModal from "./components/wallet-card"
-import BankAccounts from "./components/bank-account"
 import PuraVidaWalletSelector from "./components/pura-vida-wallet-selector"
 import IBANAccountSelector from "./components/iban-account-selector"
-// import { useDisplayCurrency } from "@app/hooks/use-display-currency"
+import { useNavigation } from "@react-navigation/native"
+
+
+export type SinpeDetailsParams = {
+  screenTitle: string
+}
 
 export const SinpeDetailsScreen = () => {
   const {
@@ -26,6 +26,16 @@ export const SinpeDetailsScreen = () => {
 
   const { state, actions } = useSinpeDetails()
   const { LL } = state
+  const navigation = useNavigation()
+
+  useEffect(() => {
+    // Update the screen title dynamically when isBTCSell changes
+    navigation.setParams({
+      screenTitle: state.isBTCSell
+        ? LL.SinpeDetailsScreen.sellBTC()
+        : LL.SinpeDetailsScreen.buyBTC(),
+    })
+  }, [state.isBTCSell, LL, navigation])
 
   if (!state.data?.me?.defaultAccount || !state.from) {
     // TODO: proper error handling. non possible event?
@@ -40,7 +50,13 @@ export const SinpeDetailsScreen = () => {
       : 0
 
   return (
-    <Screen preset="fixed">
+    <Screen
+      key={state.isBTCSell ? "sellBTC" : "buyBTC"} // Force re-render when isBTCSell changes to allow fo a change in the title
+      preset="fixed"
+      title={
+        state.isBTCSell ? LL.SinpeDetailsScreen.sellBTC() : LL.SinpeDetailsScreen.buyBTC()
+      }
+    >
       <ScrollView style={styles.scrollViewContainer}>
         {/* Conditionally render the components based on isBTCSell */}
         {state.isBTCSell ? (

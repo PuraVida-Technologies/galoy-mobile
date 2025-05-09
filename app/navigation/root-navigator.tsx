@@ -220,7 +220,7 @@ export const RootStack = () => {
         name="sinpeDetails"
         component={SinpeDetailsScreen}
         options={({ route }) => ({
-          title: route.params?.screenTitle || LL.SinpeDetailsScreen.title(), // Use dynamic title if provided
+          title: route.params?.screenTitle || LL.SinpeDetailsScreen.title(),
         })}
       />
       <RootNavigator.Screen

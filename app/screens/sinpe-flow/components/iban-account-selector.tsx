@@ -22,7 +22,6 @@ const IBANAccountSelector: React.FC<IBANAccountSelectorProps> = ({
   actions,
   state,
 }) => {
-  console.log("IBANAccountSelector: ", state.isBTCSell)
   return (
     <View
       style={styles.walletSelectorContainer}
