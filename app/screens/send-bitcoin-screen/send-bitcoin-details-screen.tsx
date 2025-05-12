@@ -734,32 +734,36 @@ const useOnchainFeeAlert = (
   walletId: string,
   network: Network | undefined,
 ) => {
-  const dummyAddress =
-    network === "mainnet"
-      ? "bc1qk2cpytjea36ry6vga8wwr7297sl3tdkzwzy2cw"
-      : "tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx"
-
-  // we need to have an approximate value for the onchain fees
-  // by the time the user tap on the next button
-  // so we are fetching some fees when the screen loads
-  // the fees are approximate but that doesn't matter for the use case
-  // of warning the user if the fees are high compared to the amount sent
-
-  // TODO: check if the BTC wallet is empty, and only USD wallet is used, if the query works
   const [getOnChainTxFee] = useOnChainTxFeeLazyQuery({
     fetchPolicy: "cache-and-network",
-    variables: {
-      walletId,
-      amount: 1000,
-      address: dummyAddress,
-    },
   })
 
   const [onChainTxFee, setOnChainTxFee] = useState(0)
 
   useEffect(() => {
+    if (
+      !walletId ||
+      !paymentDetail ||
+      paymentDetail.paymentType !== "onchain" ||
+      !paymentDetail.settlementAmount ||
+      paymentDetail.settlementAmount.amount <= 0
+    ) {
+      return
+    }
+
+    const dummyAddress =
+      network === "mainnet"
+        ? "bc1qk2cpytjea36ry6vga8wwr7297sl3tdkzwzy2cw"
+        : "tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx"
+
     ;(async () => {
-      const result = await getOnChainTxFee()
+      const result = await getOnChainTxFee({
+        variables: {
+          walletId,
+          amount: paymentDetail.settlementAmount.amount,
+          address: dummyAddress,
+        },
+      })
       const fees = result.data?.onChainTxFee.amount
 
       if (fees) {
@@ -768,15 +772,15 @@ const useOnchainFeeAlert = (
         console.error("failed to get onchain fees")
       }
     })()
-  }, [getOnChainTxFee])
+  }, [walletId, paymentDetail, network, getOnChainTxFee])
 
-  if (!walletId || !paymentDetail || paymentDetail.paymentType !== "onchain") {
+  if (!paymentDetail || paymentDetail.paymentType !== "onchain") {
     return false
   }
 
   const { convertMoneyAmount } = paymentDetail
 
-  // alert will shows if amount is less than fees * ratioFeesToAmount
+  // alert will show if amount is less than fees * ratioFeesToAmount
   const ratioFeesToAmount = 2
   const ratioedFees = toBtcMoneyAmount(onChainTxFee * ratioFeesToAmount)
 
