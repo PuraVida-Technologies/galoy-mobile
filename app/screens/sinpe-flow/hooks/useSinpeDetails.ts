@@ -5,6 +5,7 @@ import {
   PaymentSystem,
   useBankAccountsQuery,
   useConversionScreenQuery,
+  useGetDepositLimitsQuery,
   useGetWithdrawalLimitsQuery,
   useRealtimePriceQuery,
   WalletCurrency,
@@ -26,6 +27,19 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 gql`
   query getWithdrawalLimits($input: GetWithdrawalLimitsInputDTO!) {
     getWithdrawalLimits(input: $input) {
+      totalAmount
+      limitValue
+      currency
+      limitPeriodUnit
+      limitPeriodValue
+      canExecute
+    }
+  }
+`
+
+gql`
+  query getDepositLimits($input: DepositLimitsInput!) {
+    getDepositLimits(input: $input) {
       totalAmount
       limitValue
       currency
@@ -84,6 +98,15 @@ const useSinpeDetails = () => {
   })
 
   const { data: withdrawalLimit, refetch } = useGetWithdrawalLimitsQuery({
+    variables: {
+      input: {
+        currency: selectedBank?.data?.currency || BankAccountCurrencies.Usd,
+        paymentSystemType: PaymentSystem.Iban,
+      },
+    },
+  })
+
+  const { data: depositLimit, refetch: refetchDepositLimit } = useGetDepositLimitsQuery({
     variables: {
       input: {
         currency: selectedBank?.data?.currency || BankAccountCurrencies.Usd,
@@ -248,11 +271,16 @@ const useSinpeDetails = () => {
     setRawInputValue("") // Ensure this is passed to the component where rawInputValue is managed
 
     refetch()
+    refetchDepositLimit()
   }, [])
 
   const remainingLimit = useMemo(() => {
     return parseFloat(withdrawalLimit?.getWithdrawalLimits?.[0]?.limitValue || "0")
   }, [withdrawalLimit?.getWithdrawalLimits?.[0]?.limitValue])
+
+  const remainingDepositLimit = useMemo(() => {
+    return parseFloat(depositLimit?.getDepositLimits?.[0]?.limitValue || "0")
+  }, [depositLimit?.getDepositLimits?.[0]?.limitValue])
 
   const usdRemainingLimitMoneyAmount = convertMoneyAmount?.(
     {
@@ -263,10 +291,26 @@ const useSinpeDetails = () => {
     selectedBank?.data?.currency || BankAccountCurrencies.Usd,
   )
 
+  const remainingDepositLimitMoneyAmount = convertMoneyAmount?.(
+    {
+      amount: remainingDepositLimit || 0,
+      currency: selectedBank?.data?.currency || BankAccountCurrencies.Usd,
+      currencyCode: selectedBank?.data?.currency || BankAccountCurrencies.Usd,
+    },
+    selectedBank?.data?.currency || BankAccountCurrencies.Usd,
+  )
+
   const remainingLimitText =
     usdRemainingLimitMoneyAmount && !loading
       ? `${formatMoneyAmount({
           moneyAmount: usdRemainingLimitMoneyAmount,
+        })}`
+      : "0"
+
+  const depositLimitText =
+    remainingDepositLimitMoneyAmount && !loading
+      ? `${formatMoneyAmount({
+          moneyAmount: remainingDepositLimitMoneyAmount,
         })}`
       : "0"
 
@@ -346,6 +390,7 @@ const useSinpeDetails = () => {
       fiatSymbol,
       fractionDigits,
       remainingLimit: remainingLimitText,
+      remainingDepositLimit: depositLimitText,
       rawInputValue,
       puraVidaWalletLayout, // Add layout to state
       IBANAccountLayout,

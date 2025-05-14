@@ -82,6 +82,10 @@ gql`
           walletCurrency
         }
       }
+      kyc {
+        id
+        status
+      }
     }
   }
 

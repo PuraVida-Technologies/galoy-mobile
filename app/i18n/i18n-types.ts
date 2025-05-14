@@ -329,7 +329,7 @@ type RootTranslation = {
 		 */
 		buyBTC: string
 	}
-	SinpeConfirmationScreen: {
+	SinpeIBANWithdrawConfirmationScreen: {
 		/**
 		 * R​e​v​i​e​w​ ​S​i​n​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
 		 */
@@ -9938,7 +9938,7 @@ export type TranslationFunctions = {
 		 */
 		buyBTC: () => LocalizedString
 	}
-	SinpeConfirmationScreen: {
+	SinpeIBANWithdrawConfirmationScreen: {
 		/**
 		 * Review Sinpe IBAN transfer
 		 */

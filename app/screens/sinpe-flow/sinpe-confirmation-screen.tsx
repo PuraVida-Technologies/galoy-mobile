@@ -22,7 +22,7 @@ type Props = {
   route: RouteProp<RootStackParamList, "sinpeConfirmation">
 }
 
-export const SinpeConfirmationScreen: React.FC<Props> = ({ route }) => {
+export const SinpeIBANWithdrawConfirmationScreen: React.FC<Props> = ({ route }) => {
   const styles = useStyles()
 
   const { state, actions } = useSinpeConfirmation({ route })

@@ -100,7 +100,7 @@ const en: BaseTranslation = {
       sellBTC: "Sell BTC",
       buyBTC: "Buy BTC",
     },
-  SinpeConfirmationScreen: {
+  SinpeIBANWithdrawConfirmationScreen: {
     title: "Review Sinpe IBAN transfer",
     amount: "Amount",
   },

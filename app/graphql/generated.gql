@@ -1212,6 +1212,18 @@ query feedbackModalShown {
   feedbackModalShown @client
 }
 
+query getDepositLimits($input: DepositLimitsInput!) {
+  getDepositLimits(input: $input) {
+    totalAmount
+    limitValue
+    currency
+    limitPeriodUnit
+    limitPeriodValue
+    canExecute
+    __typename
+  }
+}
+
 query getWithdrawalContract($input: GetWithDrawalContractInput!) {
   getWithdrawalContract(input: $input) {
     amounts {
@@ -1355,6 +1367,11 @@ query homeAuthed {
         walletCurrency
         __typename
       }
+      __typename
+    }
+    kyc {
+      id
+      status
       __typename
     }
     __typename

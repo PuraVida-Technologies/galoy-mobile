@@ -170,7 +170,9 @@ export type AccountEnableNotificationChannelInput = {
 };
 
 export const AccountLevel = {
+  Black: 'BLACK',
   One: 'ONE',
+  Three: 'THREE',
   Two: 'TWO',
   Zero: 'ZERO'
 } as const;
@@ -281,6 +283,7 @@ export type AuditedAccountOwner = {
   readonly __typename: 'AuditedAccountOwner';
   readonly email: AuditedAccountEmail;
   readonly id: Scalars['String']['output'];
+  readonly language: Scalars['String']['output'];
   readonly phone: Scalars['String']['output'];
 };
 
@@ -633,6 +636,75 @@ export const CurrencyExchangeTransactionStatus = {
 } as const;
 
 export type CurrencyExchangeTransactionStatus = typeof CurrencyExchangeTransactionStatus[keyof typeof CurrencyExchangeTransactionStatus];
+export type DepositContract = {
+  readonly __typename: 'DepositContract';
+  readonly amounts: DepositContractAmounts;
+  readonly bankAccount: BankAccount;
+  /** Our galoy wallet that was used to transfer user amounts to */
+  readonly exchangeWallet: PublicKycWallet;
+  /** A string representation of the withdrawal fees (does not include internal fees for our exchange providers) */
+  readonly feeExplanation: Scalars['String']['output'];
+  /** id that represents the whole withdrawal operation */
+  readonly id: Scalars['String']['output'];
+  readonly limits: ReadonlyArray<DepositLimits>;
+  /** Users galoy wallet that was used to withdraw  */
+  readonly sourceWallet: PublicKycWallet;
+  /**
+   * Token that represents a snapshot in time:
+   * - Used as input to execute the deposit
+   * - Expires after a certain time (which is declared in the object)
+   */
+  readonly tokenDetails: DepositContractTokenDetails;
+  readonly userId: Scalars['String']['output'];
+};
+
+export type DepositContractAmounts = {
+  readonly __typename: 'DepositContractAmounts';
+  /** the amount that will be credited to the user bank account, the currency is the same as the target currency */
+  readonly bankAccountCredit: ResolvedCurrencyExchangeAmount;
+  /** the amount that will be charged for the withdrawal from the galoy wallet, the currency is the same as the target currency */
+  readonly fee: ResolvedCurrencyExchangeAmount;
+  /** the amount that will be credited to the user bank account, the currency is the same as the target currency */
+  readonly target: ResolvedCurrencyExchangeAmount;
+  /** the amount that will be debited from the user galoy wallet, the currency is the same as the wallet currency */
+  readonly walletDebit: ResolvedCurrencyExchangeAmount;
+};
+
+export type DepositContractInput = {
+  /** Use minor units of the provided currency (SATS for BTC, cents for USD) */
+  readonly amount: Scalars['BigDecimal']['input'];
+  /** The bank account ID to deposit to */
+  readonly bankAccountId: Scalars['String']['input'];
+  /** The currency of the desired amount */
+  readonly sourceCurrency: Currencies;
+  /** The user destination wallet for Galoy that will be used */
+  readonly walletId: Scalars['String']['input'];
+};
+
+export type DepositContractNoTokenDetails = {
+  readonly __typename: 'DepositContractNoTokenDetails';
+  readonly amounts: DepositContractAmounts;
+  readonly bankAccount: BankAccount;
+  /** Our galoy wallet that was used to transfer user amounts to */
+  readonly exchangeWallet: PublicKycWallet;
+  /** A string representation of the withdrawal fees (does not include internal fees for our exchange providers) */
+  readonly feeExplanation: Scalars['String']['output'];
+  /** id that represents the whole withdrawal operation */
+  readonly id: Scalars['String']['output'];
+  readonly limits: ReadonlyArray<DepositLimits>;
+  /** Users galoy wallet that was used to withdraw  */
+  readonly sourceWallet: PublicKycWallet;
+  readonly userId: Scalars['String']['output'];
+};
+
+export type DepositContractTokenDetails = {
+  readonly __typename: 'DepositContractTokenDetails';
+  readonly body: Scalars['String']['output'];
+  readonly createdAt: Scalars['String']['output'];
+  readonly executedAt?: Maybe<Scalars['String']['output']>;
+  readonly expiresAt: Scalars['String']['output'];
+};
+
 export type DepositFeesInformation = {
   readonly __typename: 'DepositFeesInformation';
   readonly minBankFee: Scalars['String']['output'];
@@ -640,6 +712,27 @@ export type DepositFeesInformation = {
   readonly minBankFeeThreshold: Scalars['String']['output'];
   /** ratio to charge as basis points above minBankFeeThreshold amount */
   readonly ratio: Scalars['String']['output'];
+};
+
+export type DepositLimits = {
+  readonly __typename: 'DepositLimits';
+  /** defines if the current withdrawal can be executed */
+  readonly canExecute: Scalars['Boolean']['output'];
+  /** The currency used for the total amounts and limits values */
+  readonly currency: Currencies;
+  readonly limitPeriodUnit: Scalars['String']['output'];
+  readonly limitPeriodValue: Scalars['Float']['output'];
+  /** The limit of transactions amount in the given period time */
+  readonly limitValue: Scalars['BigDecimal']['output'];
+  /** The total amount summation of transactions in the past limit period */
+  readonly totalAmount: Scalars['BigDecimal']['output'];
+};
+
+export type DepositLimitsInput = {
+  /** currency to return amounts in */
+  readonly currency: Currencies;
+  /** payment system to return amounts for */
+  readonly paymentSystemType?: PaymentSystem;
 };
 
 export type DeviceNotificationTokenCreateInput = {
@@ -1272,6 +1365,7 @@ export type Mutation = {
   readonly createStore: Scalars['Boolean']['output'];
   readonly denyKyc: Kyc;
   readonly deviceNotificationTokenCreate: SuccessPayload;
+  readonly executeDepositContract: DepositContractNoTokenDetails;
   /**
    * - Executes the given token that represents the withdrawal transaction
    * - If token is not valid/expired transaction will fail
@@ -1476,6 +1570,11 @@ export type MutationDenyKycArgs = {
 
 export type MutationDeviceNotificationTokenCreateArgs = {
   input: DeviceNotificationTokenCreateInput;
+};
+
+
+export type MutationExecuteDepositContractArgs = {
+  input: DepositContractInput;
 };
 
 
@@ -2001,6 +2100,8 @@ export type Query = {
   readonly feedbackModalShown: Scalars['Boolean']['output'];
   readonly findAuditedAccount?: Maybe<AuditedAccountResponse>;
   readonly getAuditedAccount?: Maybe<AuditedAccountResponse>;
+  readonly getDepositContract: DepositContract;
+  readonly getDepositLimits: ReadonlyArray<DepositLimits>;
   readonly getMyBankAccounts: ReadonlyArray<BankAccount>;
   /**
    * - Returns contract details for performing the given transaction, exchange rates, fees, amounts
@@ -2066,6 +2167,16 @@ export type QueryFindAuditedAccountArgs = {
 
 export type QueryGetAuditedAccountArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type QueryGetDepositContractArgs = {
+  input: DepositContractInput;
+};
+
+
+export type QueryGetDepositLimitsArgs = {
+  input: DepositLimitsInput;
 };
 
 
@@ -2494,6 +2605,7 @@ export const TxStatus = {
 
 export type TxStatus = typeof TxStatus[keyof typeof TxStatus];
 export type UpdateSettingsInput = {
+  readonly description?: InputMaybe<Scalars['String']['input']>;
   readonly id: Scalars['String']['input'];
   readonly value: Scalars['String']['input'];
 };
@@ -3201,7 +3313,7 @@ export type AddressScreenQuery = { readonly __typename: 'Query', readonly me?: {
 export type HomeAuthedQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type HomeAuthedQuery = { readonly __typename: 'Query', readonly me?: { readonly __typename: 'User', readonly id: string, readonly language: string, readonly username?: string | null, readonly phone?: string | null, readonly email?: { readonly __typename: 'Email', readonly address?: string | null, readonly verified?: boolean | null } | null, readonly defaultAccount: { readonly __typename: 'ConsumerAccount', readonly id: string, readonly level: AccountLevel, readonly defaultWalletId: string, readonly pendingIncomingTransactions: ReadonlyArray<{ readonly __typename: 'Transaction', readonly id: string, readonly status: TxStatus, readonly direction: TxDirection, readonly memo?: string | null, readonly createdAt: number, readonly settlementAmount: number, readonly settlementFee: number, readonly settlementDisplayFee: string, readonly settlementCurrency: WalletCurrency, readonly settlementDisplayAmount: string, readonly settlementDisplayCurrency: string, readonly settlementPrice: { readonly __typename: 'PriceOfOneSettlementMinorUnitInDisplayMinorUnit', readonly base: number, readonly offset: number, readonly currencyUnit: string, readonly formattedAmount: string }, readonly initiationVia: { readonly __typename: 'InitiationViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null } | { readonly __typename: 'InitiationViaLn', readonly paymentHash: string, readonly paymentRequest: string } | { readonly __typename: 'InitiationViaOnChain', readonly address: string }, readonly settlementVia: { readonly __typename: 'SettlementViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null, readonly preImage?: string | null } | { readonly __typename: 'SettlementViaLn', readonly preImage?: string | null } | { readonly __typename: 'SettlementViaOnChain', readonly transactionHash?: string | null, readonly arrivalInMempoolEstimatedAt?: number | null } }>, readonly transactions?: { readonly __typename: 'TransactionConnection', readonly pageInfo: { readonly __typename: 'PageInfo', readonly hasNextPage: boolean, readonly hasPreviousPage: boolean, readonly startCursor?: string | null, readonly endCursor?: string | null }, readonly edges?: ReadonlyArray<{ readonly __typename: 'TransactionEdge', readonly cursor: string, readonly node: { readonly __typename: 'Transaction', readonly id: string, readonly status: TxStatus, readonly direction: TxDirection, readonly memo?: string | null, readonly createdAt: number, readonly settlementAmount: number, readonly settlementFee: number, readonly settlementDisplayFee: string, readonly settlementCurrency: WalletCurrency, readonly settlementDisplayAmount: string, readonly settlementDisplayCurrency: string, readonly settlementPrice: { readonly __typename: 'PriceOfOneSettlementMinorUnitInDisplayMinorUnit', readonly base: number, readonly offset: number, readonly currencyUnit: string, readonly formattedAmount: string }, readonly initiationVia: { readonly __typename: 'InitiationViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null } | { readonly __typename: 'InitiationViaLn', readonly paymentHash: string, readonly paymentRequest: string } | { readonly __typename: 'InitiationViaOnChain', readonly address: string }, readonly settlementVia: { readonly __typename: 'SettlementViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null, readonly preImage?: string | null } | { readonly __typename: 'SettlementViaLn', readonly preImage?: string | null } | { readonly __typename: 'SettlementViaOnChain', readonly transactionHash?: string | null, readonly arrivalInMempoolEstimatedAt?: number | null } } }> | null } | null, readonly wallets: ReadonlyArray<{ readonly __typename: 'BTCWallet', readonly id: string, readonly balance: number, readonly walletCurrency: WalletCurrency } | { readonly __typename: 'UsdWallet', readonly id: string, readonly balance: number, readonly walletCurrency: WalletCurrency }> } } | null };
+export type HomeAuthedQuery = { readonly __typename: 'Query', readonly me?: { readonly __typename: 'User', readonly id: string, readonly language: string, readonly username?: string | null, readonly phone?: string | null, readonly email?: { readonly __typename: 'Email', readonly address?: string | null, readonly verified?: boolean | null } | null, readonly defaultAccount: { readonly __typename: 'ConsumerAccount', readonly id: string, readonly level: AccountLevel, readonly defaultWalletId: string, readonly pendingIncomingTransactions: ReadonlyArray<{ readonly __typename: 'Transaction', readonly id: string, readonly status: TxStatus, readonly direction: TxDirection, readonly memo?: string | null, readonly createdAt: number, readonly settlementAmount: number, readonly settlementFee: number, readonly settlementDisplayFee: string, readonly settlementCurrency: WalletCurrency, readonly settlementDisplayAmount: string, readonly settlementDisplayCurrency: string, readonly settlementPrice: { readonly __typename: 'PriceOfOneSettlementMinorUnitInDisplayMinorUnit', readonly base: number, readonly offset: number, readonly currencyUnit: string, readonly formattedAmount: string }, readonly initiationVia: { readonly __typename: 'InitiationViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null } | { readonly __typename: 'InitiationViaLn', readonly paymentHash: string, readonly paymentRequest: string } | { readonly __typename: 'InitiationViaOnChain', readonly address: string }, readonly settlementVia: { readonly __typename: 'SettlementViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null, readonly preImage?: string | null } | { readonly __typename: 'SettlementViaLn', readonly preImage?: string | null } | { readonly __typename: 'SettlementViaOnChain', readonly transactionHash?: string | null, readonly arrivalInMempoolEstimatedAt?: number | null } }>, readonly transactions?: { readonly __typename: 'TransactionConnection', readonly pageInfo: { readonly __typename: 'PageInfo', readonly hasNextPage: boolean, readonly hasPreviousPage: boolean, readonly startCursor?: string | null, readonly endCursor?: string | null }, readonly edges?: ReadonlyArray<{ readonly __typename: 'TransactionEdge', readonly cursor: string, readonly node: { readonly __typename: 'Transaction', readonly id: string, readonly status: TxStatus, readonly direction: TxDirection, readonly memo?: string | null, readonly createdAt: number, readonly settlementAmount: number, readonly settlementFee: number, readonly settlementDisplayFee: string, readonly settlementCurrency: WalletCurrency, readonly settlementDisplayAmount: string, readonly settlementDisplayCurrency: string, readonly settlementPrice: { readonly __typename: 'PriceOfOneSettlementMinorUnitInDisplayMinorUnit', readonly base: number, readonly offset: number, readonly currencyUnit: string, readonly formattedAmount: string }, readonly initiationVia: { readonly __typename: 'InitiationViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null } | { readonly __typename: 'InitiationViaLn', readonly paymentHash: string, readonly paymentRequest: string } | { readonly __typename: 'InitiationViaOnChain', readonly address: string }, readonly settlementVia: { readonly __typename: 'SettlementViaIntraLedger', readonly counterPartyWalletId?: string | null, readonly counterPartyUsername?: string | null, readonly preImage?: string | null } | { readonly __typename: 'SettlementViaLn', readonly preImage?: string | null } | { readonly __typename: 'SettlementViaOnChain', readonly transactionHash?: string | null, readonly arrivalInMempoolEstimatedAt?: number | null } } }> | null } | null, readonly wallets: ReadonlyArray<{ readonly __typename: 'BTCWallet', readonly id: string, readonly balance: number, readonly walletCurrency: WalletCurrency } | { readonly __typename: 'UsdWallet', readonly id: string, readonly balance: number, readonly walletCurrency: WalletCurrency }> }, readonly kyc?: { readonly __typename: 'Kyc', readonly id: string, readonly status: Status } | null } | null };
 
 export type HomeUnauthedQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3662,6 +3774,13 @@ export type GetWithdrawalLimitsQueryVariables = Exact<{
 
 
 export type GetWithdrawalLimitsQuery = { readonly __typename: 'Query', readonly getWithdrawalLimits: ReadonlyArray<{ readonly __typename: 'WithdrawalLimits', readonly totalAmount: string, readonly limitValue: string, readonly currency: Currencies, readonly limitPeriodUnit: string, readonly limitPeriodValue: number, readonly canExecute: boolean }> };
+
+export type GetDepositLimitsQueryVariables = Exact<{
+  input: DepositLimitsInput;
+}>;
+
+
+export type GetDepositLimitsQuery = { readonly __typename: 'Query', readonly getDepositLimits: ReadonlyArray<{ readonly __typename: 'DepositLimits', readonly totalAmount: string, readonly limitValue: string, readonly currency: Currencies, readonly limitPeriodUnit: string, readonly limitPeriodValue: number, readonly canExecute: boolean }> };
 
 export type TotpRegistrationScreenQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5551,6 +5670,10 @@ export const HomeAuthedDocument = gql`
         balance
         walletCurrency
       }
+    }
+    kyc {
+      id
+      status
     }
   }
 }
@@ -8758,6 +8881,51 @@ export type GetWithdrawalLimitsQueryHookResult = ReturnType<typeof useGetWithdra
 export type GetWithdrawalLimitsLazyQueryHookResult = ReturnType<typeof useGetWithdrawalLimitsLazyQuery>;
 export type GetWithdrawalLimitsSuspenseQueryHookResult = ReturnType<typeof useGetWithdrawalLimitsSuspenseQuery>;
 export type GetWithdrawalLimitsQueryResult = Apollo.QueryResult<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>;
+export const GetDepositLimitsDocument = gql`
+    query getDepositLimits($input: DepositLimitsInput!) {
+  getDepositLimits(input: $input) {
+    totalAmount
+    limitValue
+    currency
+    limitPeriodUnit
+    limitPeriodValue
+    canExecute
+  }
+}
+    `;
+
+/**
+ * __useGetDepositLimitsQuery__
+ *
+ * To run a query within a React component, call `useGetDepositLimitsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDepositLimitsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDepositLimitsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetDepositLimitsQuery(baseOptions: Apollo.QueryHookOptions<GetDepositLimitsQuery, GetDepositLimitsQueryVariables> & ({ variables: GetDepositLimitsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>(GetDepositLimitsDocument, options);
+      }
+export function useGetDepositLimitsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>(GetDepositLimitsDocument, options);
+        }
+export function useGetDepositLimitsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>(GetDepositLimitsDocument, options);
+        }
+export type GetDepositLimitsQueryHookResult = ReturnType<typeof useGetDepositLimitsQuery>;
+export type GetDepositLimitsLazyQueryHookResult = ReturnType<typeof useGetDepositLimitsLazyQuery>;
+export type GetDepositLimitsSuspenseQueryHookResult = ReturnType<typeof useGetDepositLimitsSuspenseQuery>;
+export type GetDepositLimitsQueryResult = Apollo.QueryResult<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>;
 export const TotpRegistrationScreenDocument = gql`
     query totpRegistrationScreen {
   me {
@@ -9165,7 +9333,14 @@ export type ResolversTypes = {
   CurrencyExchangeTransactionGraphqlResponse: ResolverTypeWrapper<CurrencyExchangeTransactionGraphqlResponse>;
   CurrencyExchangeTransactionStatus: CurrencyExchangeTransactionStatus;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
+  DepositContract: ResolverTypeWrapper<Omit<DepositContract, 'bankAccount'> & { bankAccount: ResolversTypes['BankAccount'] }>;
+  DepositContractAmounts: ResolverTypeWrapper<DepositContractAmounts>;
+  DepositContractInput: DepositContractInput;
+  DepositContractNoTokenDetails: ResolverTypeWrapper<Omit<DepositContractNoTokenDetails, 'bankAccount'> & { bankAccount: ResolversTypes['BankAccount'] }>;
+  DepositContractTokenDetails: ResolverTypeWrapper<DepositContractTokenDetails>;
   DepositFeesInformation: ResolverTypeWrapper<DepositFeesInformation>;
+  DepositLimits: ResolverTypeWrapper<DepositLimits>;
+  DepositLimitsInput: DepositLimitsInput;
   DeviceNotificationTokenCreateInput: DeviceNotificationTokenCreateInput;
   DisplayCurrency: ResolverTypeWrapper<Scalars['DisplayCurrency']['output']>;
   Email: ResolverTypeWrapper<Email>;
@@ -9439,7 +9614,14 @@ export type ResolversParentTypes = {
   CurrencyExchangeInstanceTransaction: CurrencyExchangeInstanceTransaction;
   CurrencyExchangeTransactionGraphqlResponse: CurrencyExchangeTransactionGraphqlResponse;
   DateTime: Scalars['DateTime']['output'];
+  DepositContract: Omit<DepositContract, 'bankAccount'> & { bankAccount: ResolversParentTypes['BankAccount'] };
+  DepositContractAmounts: DepositContractAmounts;
+  DepositContractInput: DepositContractInput;
+  DepositContractNoTokenDetails: Omit<DepositContractNoTokenDetails, 'bankAccount'> & { bankAccount: ResolversParentTypes['BankAccount'] };
+  DepositContractTokenDetails: DepositContractTokenDetails;
   DepositFeesInformation: DepositFeesInformation;
+  DepositLimits: DepositLimits;
+  DepositLimitsInput: DepositLimitsInput;
   DeviceNotificationTokenCreateInput: DeviceNotificationTokenCreateInput;
   DisplayCurrency: Scalars['DisplayCurrency']['output'];
   Email: Email;
@@ -9727,6 +9909,7 @@ export type AuditedAccountEmailResolvers<ContextType = any, ParentType extends R
 export type AuditedAccountOwnerResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuditedAccountOwner'] = ResolversParentTypes['AuditedAccountOwner']> = {
   email?: Resolver<ResolversTypes['AuditedAccountEmail'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  language?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   phone?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -9953,10 +10136,61 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
   name: 'DateTime';
 }
 
+export type DepositContractResolvers<ContextType = any, ParentType extends ResolversParentTypes['DepositContract'] = ResolversParentTypes['DepositContract']> = {
+  amounts?: Resolver<ResolversTypes['DepositContractAmounts'], ParentType, ContextType>;
+  bankAccount?: Resolver<ResolversTypes['BankAccount'], ParentType, ContextType>;
+  exchangeWallet?: Resolver<ResolversTypes['PublicKycWallet'], ParentType, ContextType>;
+  feeExplanation?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  limits?: Resolver<ReadonlyArray<ResolversTypes['DepositLimits']>, ParentType, ContextType>;
+  sourceWallet?: Resolver<ResolversTypes['PublicKycWallet'], ParentType, ContextType>;
+  tokenDetails?: Resolver<ResolversTypes['DepositContractTokenDetails'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DepositContractAmountsResolvers<ContextType = any, ParentType extends ResolversParentTypes['DepositContractAmounts'] = ResolversParentTypes['DepositContractAmounts']> = {
+  bankAccountCredit?: Resolver<ResolversTypes['ResolvedCurrencyExchangeAmount'], ParentType, ContextType>;
+  fee?: Resolver<ResolversTypes['ResolvedCurrencyExchangeAmount'], ParentType, ContextType>;
+  target?: Resolver<ResolversTypes['ResolvedCurrencyExchangeAmount'], ParentType, ContextType>;
+  walletDebit?: Resolver<ResolversTypes['ResolvedCurrencyExchangeAmount'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DepositContractNoTokenDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['DepositContractNoTokenDetails'] = ResolversParentTypes['DepositContractNoTokenDetails']> = {
+  amounts?: Resolver<ResolversTypes['DepositContractAmounts'], ParentType, ContextType>;
+  bankAccount?: Resolver<ResolversTypes['BankAccount'], ParentType, ContextType>;
+  exchangeWallet?: Resolver<ResolversTypes['PublicKycWallet'], ParentType, ContextType>;
+  feeExplanation?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  limits?: Resolver<ReadonlyArray<ResolversTypes['DepositLimits']>, ParentType, ContextType>;
+  sourceWallet?: Resolver<ResolversTypes['PublicKycWallet'], ParentType, ContextType>;
+  userId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DepositContractTokenDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['DepositContractTokenDetails'] = ResolversParentTypes['DepositContractTokenDetails']> = {
+  body?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  executedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  expiresAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type DepositFeesInformationResolvers<ContextType = any, ParentType extends ResolversParentTypes['DepositFeesInformation'] = ResolversParentTypes['DepositFeesInformation']> = {
   minBankFee?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   minBankFeeThreshold?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   ratio?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DepositLimitsResolvers<ContextType = any, ParentType extends ResolversParentTypes['DepositLimits'] = ResolversParentTypes['DepositLimits']> = {
+  canExecute?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  currency?: Resolver<ResolversTypes['Currencies'], ParentType, ContextType>;
+  limitPeriodUnit?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  limitPeriodValue?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  limitValue?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
+  totalAmount?: Resolver<ResolversTypes['BigDecimal'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -10255,6 +10489,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createStore?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationCreateStoreArgs, 'input'>>;
   denyKyc?: Resolver<ResolversTypes['Kyc'], ParentType, ContextType, RequireFields<MutationDenyKycArgs, 'id'>>;
   deviceNotificationTokenCreate?: Resolver<ResolversTypes['SuccessPayload'], ParentType, ContextType, RequireFields<MutationDeviceNotificationTokenCreateArgs, 'input'>>;
+  executeDepositContract?: Resolver<ResolversTypes['DepositContractNoTokenDetails'], ParentType, ContextType, RequireFields<MutationExecuteDepositContractArgs, 'input'>>;
   executeWithdrawalContract?: Resolver<Maybe<ResolversTypes['WithdrawalContract']>, ParentType, ContextType, RequireFields<MutationExecuteWithdrawalContractArgs, 'input'>>;
   feedbackSubmit?: Resolver<ResolversTypes['SuccessPayload'], ParentType, ContextType, RequireFields<MutationFeedbackSubmitArgs, 'input'>>;
   grantUserPermission?: Resolver<ResolversTypes['GrantPermissionResponse'], ParentType, ContextType, RequireFields<MutationGrantUserPermissionArgs, 'input'>>;
@@ -10492,6 +10727,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   feedbackModalShown?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   findAuditedAccount?: Resolver<Maybe<ResolversTypes['AuditedAccountResponse']>, ParentType, ContextType, RequireFields<QueryFindAuditedAccountArgs, 'input'>>;
   getAuditedAccount?: Resolver<Maybe<ResolversTypes['AuditedAccountResponse']>, ParentType, ContextType, RequireFields<QueryGetAuditedAccountArgs, 'id'>>;
+  getDepositContract?: Resolver<ResolversTypes['DepositContract'], ParentType, ContextType, RequireFields<QueryGetDepositContractArgs, 'input'>>;
+  getDepositLimits?: Resolver<ReadonlyArray<ResolversTypes['DepositLimits']>, ParentType, ContextType, RequireFields<QueryGetDepositLimitsArgs, 'input'>>;
   getMyBankAccounts?: Resolver<ReadonlyArray<ResolversTypes['BankAccount']>, ParentType, ContextType>;
   getWithdrawalContract?: Resolver<ResolversTypes['WithdrawalContract'], ParentType, ContextType, RequireFields<QueryGetWithdrawalContractArgs, 'input'>>;
   getWithdrawalLimits?: Resolver<ReadonlyArray<ResolversTypes['WithdrawalLimits']>, ParentType, ContextType, RequireFields<QueryGetWithdrawalLimitsArgs, 'input'>>;
@@ -10998,7 +11235,12 @@ export type Resolvers<ContextType = any> = {
   CurrencyExchangeInstanceTransaction?: CurrencyExchangeInstanceTransactionResolvers<ContextType>;
   CurrencyExchangeTransactionGraphqlResponse?: CurrencyExchangeTransactionGraphqlResponseResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
+  DepositContract?: DepositContractResolvers<ContextType>;
+  DepositContractAmounts?: DepositContractAmountsResolvers<ContextType>;
+  DepositContractNoTokenDetails?: DepositContractNoTokenDetailsResolvers<ContextType>;
+  DepositContractTokenDetails?: DepositContractTokenDetailsResolvers<ContextType>;
   DepositFeesInformation?: DepositFeesInformationResolvers<ContextType>;
+  DepositLimits?: DepositLimitsResolvers<ContextType>;
   DisplayCurrency?: GraphQLScalarType;
   Email?: EmailResolvers<ContextType>;
   EmailAddress?: GraphQLScalarType;
