@@ -89,7 +89,8 @@ import KYCScreen from "@app/screens/settings-screen/kyc-screen"
 import { SinpeDetailsScreen } from "@app/screens/sinpe-flow/sinpe-details-screen"
 import AddBankAccountScreen from "@app/screens/settings-screen/add-bank-account-screen"
 import BankAccountsScreen from "@app/screens/settings-screen/bank-accounts-screen"
-import { SinpeIBANWithdrawConfirmationScreen } from "@app/screens/sinpe-flow/sinpe-confirmation-screen"
+import { SinpeIBANWithdrawConfirmationScreen } from "@app/screens/sinpe-flow/sinpe-withdrawal-confirmation-screen"
+import { SinpeIBANDepositConfirmationScreen } from "@app/screens/sinpe-flow/sinpe-deposit-confirmation-screen"
 
 const RootNavigator = createStackNavigator<RootStackParamList>()
 
@@ -224,8 +225,16 @@ export const RootStack = () => {
         })}
       />
       <RootNavigator.Screen
-        name="sinpeConfirmation"
+        name="sinpeWithdrawalConfirmation"
         component={SinpeIBANWithdrawConfirmationScreen}
+        options={({ route }) => ({
+          title:
+            route.params?.screenTitle || LL.SinpeIBANWithdrawConfirmationScreen.title(),
+        })}
+      />
+      <RootNavigator.Screen
+        name="sinpeDepositConfirmation"
+        component={SinpeIBANDepositConfirmationScreen}
         options={({ route }) => ({
           title:
             route.params?.screenTitle || LL.SinpeIBANWithdrawConfirmationScreen.title(),

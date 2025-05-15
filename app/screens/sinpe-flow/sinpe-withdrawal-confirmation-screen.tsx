@@ -20,7 +20,7 @@ import { Text } from "@rneui/themed"
 import SinpeInfoFieldPVAccount from "./components/sinpe-info-field-pv-account"
 
 type Props = {
-  route: RouteProp<RootStackParamList, "sinpeConfirmation">
+  route: RouteProp<RootStackParamList, "sinpeWithdrawalConfirmation">
 }
 
 export const SinpeIBANWithdrawConfirmationScreen: React.FC<Props> = ({ route }) => {

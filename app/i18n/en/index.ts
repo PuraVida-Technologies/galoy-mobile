@@ -102,6 +102,12 @@ const en: BaseTranslation = {
     },
   SinpeIBANWithdrawConfirmationScreen: {
     title: "Review Sinpe IBAN transfer",
+    screenTitle: "Confirm IBAN transfer",
+    amount: "Amount",
+  },
+  SinpeIBANDepositConfirmationScreen: {
+    title: "Review Sinpe IBAN transfer",
+    screenTitle: "Confirm IBAN transfer",
     amount: "Amount",
   },
   EarnScreen: {

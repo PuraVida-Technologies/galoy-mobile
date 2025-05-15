@@ -103,7 +103,7 @@ gql`
   }
 `
 type Props = {
-  route: RouteProp<RootStackParamList, "sinpeConfirmation">
+  route: RouteProp<RootStackParamList, "sinpeDepositConfirmation">
 }
 
 export interface BankAccountDetails {

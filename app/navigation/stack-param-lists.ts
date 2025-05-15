@@ -62,7 +62,15 @@ export type RootStackParamList = {
   conversionSuccess: undefined
   sinpeDetails: { screenTitle?: string }
   bankAccount: undefined
-  sinpeConfirmation: {
+  sinpeWithdrawalConfirmation: {
+    fromWalletCurrency: WalletCurrency
+    moneyAmount: MoneyAmount<WalletOrDisplayCurrency>
+    fromAccountBalance: string
+    bankAccount: Partial<BankAccountDataCr> & { id?: string }
+    wallet?: WalletBalance
+    screenTitle?: string
+  }
+  sinpeDepositConfirmation: {
     fromWalletCurrency: WalletCurrency
     moneyAmount: MoneyAmount<WalletOrDisplayCurrency>
     fromAccountBalance: string

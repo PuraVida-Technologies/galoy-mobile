@@ -9949,6 +9949,17 @@ export type TranslationFunctions = {
 		 */
 		amount: () => LocalizedString
 	}
+  SinpeIBANDepositConfirmationScreen: {
+		/**
+		 * Review Sinpe IBAN transfer
+		 */
+		title: () => LocalizedString
+    screenTitle: () => LocalizedString
+		/**
+		 * Amount
+		 */
+		amount: () => LocalizedString
+	}
 	EarnScreen: {
 		/**
 		 * Earn {formattedNumber|sats}

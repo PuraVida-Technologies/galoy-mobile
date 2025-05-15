@@ -214,7 +214,11 @@ const useSinpeDetails = () => {
   const moveToNextScreen = () => {
     const sourceCurrency = selectedBank?.data?.currency || BankAccountCurrencies.Usd // Use the selected bank's currency
 
-    navigation.navigate("sinpeConfirmation", {
+    const targetScreen = isBTCSell
+      ? "sinpeWithdrawalConfirmation"
+      : "sinpeDepositConfirmation"
+
+    navigation.navigate(targetScreen, {
       fromWalletCurrency: from,
       moneyAmount: {
         amount: Number(amount),
@@ -227,7 +231,9 @@ const useSinpeDetails = () => {
       },
       fromAccountBalance: fromWalletBalanceFormatted,
       wallet: from === WalletCurrency.Btc ? btcWallet : usdWallet,
-      screenTitle: LL.SinpeIBANWithdrawConfirmationScreen.screenTitle(),
+      screenTitle: isBTCSell
+        ? LL.SinpeIBANWithdrawConfirmationScreen.screenTitle()
+        : LL.SinpeIBANDepositConfirmationScreen.screenTitle(),
     })
   }
 
