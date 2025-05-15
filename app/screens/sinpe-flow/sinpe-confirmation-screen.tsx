@@ -8,7 +8,7 @@ import { WalletCurrency } from "@app/graphql/generated"
 import { RootStackParamList } from "@app/navigation/stack-param-lists"
 import { RouteProp } from "@react-navigation/native"
 import useStyles from "./styles/snipe-confirmation"
-import useSinpeConfirmation from "./hooks/useSinpeConfirmation"
+import useSinpeConfirmation from "./hooks/useSinpeWithdrawalConfirmation"
 import { AnimatedRollingNumber } from "react-native-animated-rolling-numbers"
 import {
   CompletedTextAnimation,
@@ -17,6 +17,7 @@ import {
 import { GaloyIcon } from "@app/components/atomic/galoy-icon"
 import { testProps } from "@app/utils/testProps"
 import { Text } from "@rneui/themed"
+import SinpeInfoFieldPVAccount from "./components/sinpe-info-field-pv-account"
 
 type Props = {
   route: RouteProp<RootStackParamList, "sinpeConfirmation">
@@ -51,15 +52,11 @@ export const SinpeIBANWithdrawConfirmationScreen: React.FC<Props> = ({ route }) 
     <Screen>
       <ScrollView style={styles.scrollViewContainer}>
         <View style={styles.snipeInfoCard}>
-          <View style={styles.snipeInfoField}>
-            <Text style={styles.snipeInfoFieldTitle}>{LL.common.from()}</Text>
-            <Text style={styles.snipeInfoFieldValue}>
-              {fromWalletCurrency === WalletCurrency.Btc
-                ? LL.common.btcAccount()
-                : LL.common.usdAccount()}
-            </Text>
-            <Text style={styles.snipeInfoSubFieldValue}>{fromAccountBalance}</Text>
-          </View>
+          <SinpeInfoFieldPVAccount
+            sinpeInfoFieldTitle={LL.common.from()}
+            fromWalletCurrency={fromWalletCurrency}
+            fromAccountBalance={fromAccountBalance}
+          />
           <View style={styles.snipeInfoField}>
             <Text style={styles.snipeInfoFieldTitle}>{LL.common.toBankAccount()}</Text>
             <Text style={styles.snipeInfoFieldValue}>{bankAccount.accountAlias}</Text>

@@ -2850,7 +2850,7 @@ const en: BaseTranslation = {
     securityAndPrivacy: "Security and Privacy",
     advanced: "Advanced",
     community: "Community",
-    withdraw: "Withdraw",
+    withdraw: "Confirm",
     account: "Account",
     trialAccount: "Trial Account",
     blinkUser: "Blink User",

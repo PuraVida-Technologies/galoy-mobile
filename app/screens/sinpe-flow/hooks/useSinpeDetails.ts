@@ -227,6 +227,7 @@ const useSinpeDetails = () => {
       },
       fromAccountBalance: fromWalletBalanceFormatted,
       wallet: from === WalletCurrency.Btc ? btcWallet : usdWallet,
+      screenTitle: LL.SinpeIBANWithdrawConfirmationScreen.screenTitle(),
     })
   }
 
@@ -300,12 +301,26 @@ const useSinpeDetails = () => {
     selectedBank?.data?.currency || BankAccountCurrencies.Usd,
   )
 
-  const remainingLimitText =
-    usdRemainingLimitMoneyAmount && !loading
+  const remainingLimitText = useMemo(() => {
+    if (isBTCSell) {
+      return usdRemainingLimitMoneyAmount && !loading
+        ? `${formatMoneyAmount({
+            moneyAmount: usdRemainingLimitMoneyAmount,
+          })}`
+        : "0"
+    }
+    return remainingDepositLimitMoneyAmount && !loading
       ? `${formatMoneyAmount({
-          moneyAmount: usdRemainingLimitMoneyAmount,
+          moneyAmount: remainingDepositLimitMoneyAmount,
         })}`
       : "0"
+  }, [
+    isBTCSell,
+    usdRemainingLimitMoneyAmount,
+    remainingDepositLimitMoneyAmount,
+    loading,
+    formatMoneyAmount,
+  ])
 
   const depositLimitText =
     remainingDepositLimitMoneyAmount && !loading

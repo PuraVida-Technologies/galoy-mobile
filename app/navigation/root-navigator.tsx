@@ -226,9 +226,10 @@ export const RootStack = () => {
       <RootNavigator.Screen
         name="sinpeConfirmation"
         component={SinpeIBANWithdrawConfirmationScreen}
-        options={{
-          title: LL.SinpeIBANWithdrawConfirmationScreen.title(),
-        }}
+        options={({ route }) => ({
+          title:
+            route.params?.screenTitle || LL.SinpeIBANWithdrawConfirmationScreen.title(),
+        })}
       />
       <RootNavigator.Screen
         name="earnsSection"

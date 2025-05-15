@@ -9943,6 +9943,7 @@ export type TranslationFunctions = {
 		 * Review Sinpe IBAN transfer
 		 */
 		title: () => LocalizedString
+    screenTitle: () => LocalizedString
 		/**
 		 * Amount
 		 */
@@ -17899,8 +17900,8 @@ export type TranslationFunctions = {
 		 * Withdraw
 		 */
 		withdraw: () => LocalizedString
-		/**
-		 * Account
+    /**
+		 * Withdraw
 		 */
 		account: () => LocalizedString
 		/**

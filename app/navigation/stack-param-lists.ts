@@ -68,6 +68,7 @@ export type RootStackParamList = {
     fromAccountBalance: string
     bankAccount: Partial<BankAccountDataCr> & { id?: string }
     wallet?: WalletBalance
+    screenTitle?: string
   }
   Primary: undefined
   sendBitcoinCompleted: {
