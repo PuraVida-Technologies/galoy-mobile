@@ -3754,19 +3754,12 @@ export type AccountLimitsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AccountLimitsQuery = { readonly __typename: 'Query', readonly me?: { readonly __typename: 'User', readonly id: string, readonly defaultAccount: { readonly __typename: 'ConsumerAccount', readonly id: string, readonly limits: { readonly __typename: 'AccountLimits', readonly withdrawal: ReadonlyArray<{ readonly __typename: 'OneDayAccountLimit', readonly totalLimit: number, readonly remainingLimit?: number | null, readonly interval?: number | null }>, readonly internalSend: ReadonlyArray<{ readonly __typename: 'OneDayAccountLimit', readonly totalLimit: number, readonly remainingLimit?: number | null, readonly interval?: number | null }>, readonly convert: ReadonlyArray<{ readonly __typename: 'OneDayAccountLimit', readonly totalLimit: number, readonly remainingLimit?: number | null, readonly interval?: number | null }> } } } | null };
 
-export type ExecuteWithdrawalContractMutationVariables = Exact<{
-  input: ExecuteWithdrawalContract;
+export type GetDepositContractQueryVariables = Exact<{
+  input: DepositContractInput;
 }>;
 
 
-export type ExecuteWithdrawalContractMutation = { readonly __typename: 'Mutation', readonly executeWithdrawalContract?: { readonly __typename: 'WithdrawalContract', readonly id: string } | null };
-
-export type GetWithdrawalContractQueryVariables = Exact<{
-  input: GetWithDrawalContractInput;
-}>;
-
-
-export type GetWithdrawalContractQuery = { readonly __typename: 'Query', readonly getWithdrawalContract: { readonly __typename: 'WithdrawalContract', readonly feeExplanation: string, readonly id: string, readonly amounts: { readonly __typename: 'WithdrawalContractAmounts', readonly bankAccountCredit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly fee: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly target: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly walletDebit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string } }, readonly limits: ReadonlyArray<{ readonly __typename: 'WithdrawalLimits', readonly totalAmount: string, readonly canExecute: boolean, readonly currency: Currencies, readonly limitPeriodUnit: string, readonly limitPeriodValue: number, readonly limitValue: string }>, readonly bankAccount: { readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly iban: string, readonly currency: BankAccountCurrencies, readonly accountAlias: string } }, readonly exchangeWallet: { readonly __typename: 'PublicKycWallet', readonly id: string, readonly currency: Currencies }, readonly sourceWallet: { readonly __typename: 'PublicKycWallet', readonly currency: Currencies, readonly id: string }, readonly tokenDetails: { readonly __typename: 'WithdrawalContractTokenDetails', readonly body: string, readonly createdAt: string, readonly executedAt?: string | null, readonly expiresAt: string } } };
+export type GetDepositContractQuery = { readonly __typename: 'Query', readonly getDepositContract: { readonly __typename: 'DepositContract', readonly feeExplanation: string, readonly id: string, readonly amounts: { readonly __typename: 'DepositContractAmounts', readonly bankAccountCredit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly fee: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly target: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly walletDebit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string } }, readonly limits: ReadonlyArray<{ readonly __typename: 'DepositLimits', readonly totalAmount: string, readonly canExecute: boolean, readonly currency: Currencies, readonly limitPeriodUnit: string, readonly limitPeriodValue: number, readonly limitValue: string }>, readonly bankAccount: { readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly iban: string, readonly currency: BankAccountCurrencies, readonly accountAlias: string } }, readonly exchangeWallet: { readonly __typename: 'PublicKycWallet', readonly id: string, readonly currency: Currencies }, readonly sourceWallet: { readonly __typename: 'PublicKycWallet', readonly currency: Currencies, readonly id: string }, readonly tokenDetails: { readonly __typename: 'DepositContractTokenDetails', readonly body: string, readonly createdAt: string, readonly executedAt?: string | null, readonly expiresAt: string } } };
 
 export type GetWithdrawalLimitsQueryVariables = Exact<{
   input: GetWithdrawalLimitsInputDto;
@@ -3781,6 +3774,20 @@ export type GetDepositLimitsQueryVariables = Exact<{
 
 
 export type GetDepositLimitsQuery = { readonly __typename: 'Query', readonly getDepositLimits: ReadonlyArray<{ readonly __typename: 'DepositLimits', readonly totalAmount: string, readonly limitValue: string, readonly currency: Currencies, readonly limitPeriodUnit: string, readonly limitPeriodValue: number, readonly canExecute: boolean }> };
+
+export type ExecuteWithdrawalContractMutationVariables = Exact<{
+  input: ExecuteWithdrawalContract;
+}>;
+
+
+export type ExecuteWithdrawalContractMutation = { readonly __typename: 'Mutation', readonly executeWithdrawalContract?: { readonly __typename: 'WithdrawalContract', readonly id: string } | null };
+
+export type GetWithdrawalContractQueryVariables = Exact<{
+  input: GetWithDrawalContractInput;
+}>;
+
+
+export type GetWithdrawalContractQuery = { readonly __typename: 'Query', readonly getWithdrawalContract: { readonly __typename: 'WithdrawalContract', readonly feeExplanation: string, readonly id: string, readonly amounts: { readonly __typename: 'WithdrawalContractAmounts', readonly bankAccountCredit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly fee: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly target: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly walletDebit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string } }, readonly limits: ReadonlyArray<{ readonly __typename: 'WithdrawalLimits', readonly totalAmount: string, readonly canExecute: boolean, readonly currency: Currencies, readonly limitPeriodUnit: string, readonly limitPeriodValue: number, readonly limitValue: string }>, readonly bankAccount: { readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly iban: string, readonly currency: BankAccountCurrencies, readonly accountAlias: string } }, readonly exchangeWallet: { readonly __typename: 'PublicKycWallet', readonly id: string, readonly currency: Currencies }, readonly sourceWallet: { readonly __typename: 'PublicKycWallet', readonly currency: Currencies, readonly id: string }, readonly tokenDetails: { readonly __typename: 'WithdrawalContractTokenDetails', readonly body: string, readonly createdAt: string, readonly executedAt?: string | null, readonly expiresAt: string } } };
 
 export type TotpRegistrationScreenQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -8692,6 +8699,207 @@ export type AccountLimitsQueryHookResult = ReturnType<typeof useAccountLimitsQue
 export type AccountLimitsLazyQueryHookResult = ReturnType<typeof useAccountLimitsLazyQuery>;
 export type AccountLimitsSuspenseQueryHookResult = ReturnType<typeof useAccountLimitsSuspenseQuery>;
 export type AccountLimitsQueryResult = Apollo.QueryResult<AccountLimitsQuery, AccountLimitsQueryVariables>;
+export const GetDepositContractDocument = gql`
+    query getDepositContract($input: DepositContractInput!) {
+  getDepositContract(input: $input) {
+    amounts {
+      bankAccountCredit {
+        amount
+        amountInSats
+        amountInSourceCurrency
+        btcSatPrice
+        currency
+        resolvedAt
+      }
+      fee {
+        amount
+        amountInSats
+        btcSatPrice
+        amountInSourceCurrency
+        currency
+        resolvedAt
+      }
+      target {
+        amount
+        amountInSats
+        amountInSourceCurrency
+        btcSatPrice
+        currency
+        resolvedAt
+      }
+      walletDebit {
+        amount
+        amountInSats
+        btcSatPrice
+        amountInSourceCurrency
+        currency
+        resolvedAt
+      }
+    }
+    limits {
+      totalAmount
+      canExecute
+      currency
+      limitPeriodUnit
+      limitPeriodValue
+      limitValue
+    }
+    bankAccount {
+      ... on BankAccountCR {
+        id
+        galoyUserId
+        type
+        countryCode
+        data {
+          bankName
+          iban
+          currency
+          accountAlias
+        }
+      }
+    }
+    exchangeWallet {
+      id
+      currency
+    }
+    feeExplanation
+    id
+    sourceWallet {
+      currency
+      id
+    }
+    tokenDetails {
+      body
+      createdAt
+      executedAt
+      expiresAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDepositContractQuery__
+ *
+ * To run a query within a React component, call `useGetDepositContractQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDepositContractQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDepositContractQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetDepositContractQuery(baseOptions: Apollo.QueryHookOptions<GetDepositContractQuery, GetDepositContractQueryVariables> & ({ variables: GetDepositContractQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDepositContractQuery, GetDepositContractQueryVariables>(GetDepositContractDocument, options);
+      }
+export function useGetDepositContractLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDepositContractQuery, GetDepositContractQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDepositContractQuery, GetDepositContractQueryVariables>(GetDepositContractDocument, options);
+        }
+export function useGetDepositContractSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetDepositContractQuery, GetDepositContractQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetDepositContractQuery, GetDepositContractQueryVariables>(GetDepositContractDocument, options);
+        }
+export type GetDepositContractQueryHookResult = ReturnType<typeof useGetDepositContractQuery>;
+export type GetDepositContractLazyQueryHookResult = ReturnType<typeof useGetDepositContractLazyQuery>;
+export type GetDepositContractSuspenseQueryHookResult = ReturnType<typeof useGetDepositContractSuspenseQuery>;
+export type GetDepositContractQueryResult = Apollo.QueryResult<GetDepositContractQuery, GetDepositContractQueryVariables>;
+export const GetWithdrawalLimitsDocument = gql`
+    query getWithdrawalLimits($input: GetWithdrawalLimitsInputDTO!) {
+  getWithdrawalLimits(input: $input) {
+    totalAmount
+    limitValue
+    currency
+    limitPeriodUnit
+    limitPeriodValue
+    canExecute
+  }
+}
+    `;
+
+/**
+ * __useGetWithdrawalLimitsQuery__
+ *
+ * To run a query within a React component, call `useGetWithdrawalLimitsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWithdrawalLimitsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWithdrawalLimitsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetWithdrawalLimitsQuery(baseOptions: Apollo.QueryHookOptions<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables> & ({ variables: GetWithdrawalLimitsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>(GetWithdrawalLimitsDocument, options);
+      }
+export function useGetWithdrawalLimitsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>(GetWithdrawalLimitsDocument, options);
+        }
+export function useGetWithdrawalLimitsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>(GetWithdrawalLimitsDocument, options);
+        }
+export type GetWithdrawalLimitsQueryHookResult = ReturnType<typeof useGetWithdrawalLimitsQuery>;
+export type GetWithdrawalLimitsLazyQueryHookResult = ReturnType<typeof useGetWithdrawalLimitsLazyQuery>;
+export type GetWithdrawalLimitsSuspenseQueryHookResult = ReturnType<typeof useGetWithdrawalLimitsSuspenseQuery>;
+export type GetWithdrawalLimitsQueryResult = Apollo.QueryResult<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>;
+export const GetDepositLimitsDocument = gql`
+    query getDepositLimits($input: DepositLimitsInput!) {
+  getDepositLimits(input: $input) {
+    totalAmount
+    limitValue
+    currency
+    limitPeriodUnit
+    limitPeriodValue
+    canExecute
+  }
+}
+    `;
+
+/**
+ * __useGetDepositLimitsQuery__
+ *
+ * To run a query within a React component, call `useGetDepositLimitsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDepositLimitsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDepositLimitsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetDepositLimitsQuery(baseOptions: Apollo.QueryHookOptions<GetDepositLimitsQuery, GetDepositLimitsQueryVariables> & ({ variables: GetDepositLimitsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>(GetDepositLimitsDocument, options);
+      }
+export function useGetDepositLimitsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>(GetDepositLimitsDocument, options);
+        }
+export function useGetDepositLimitsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>(GetDepositLimitsDocument, options);
+        }
+export type GetDepositLimitsQueryHookResult = ReturnType<typeof useGetDepositLimitsQuery>;
+export type GetDepositLimitsLazyQueryHookResult = ReturnType<typeof useGetDepositLimitsLazyQuery>;
+export type GetDepositLimitsSuspenseQueryHookResult = ReturnType<typeof useGetDepositLimitsSuspenseQuery>;
+export type GetDepositLimitsQueryResult = Apollo.QueryResult<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>;
 export const ExecuteWithdrawalContractDocument = gql`
     mutation ExecuteWithdrawalContract($input: ExecuteWithdrawalContract!) {
   executeWithdrawalContract(input: $input) {
@@ -8836,96 +9044,6 @@ export type GetWithdrawalContractQueryHookResult = ReturnType<typeof useGetWithd
 export type GetWithdrawalContractLazyQueryHookResult = ReturnType<typeof useGetWithdrawalContractLazyQuery>;
 export type GetWithdrawalContractSuspenseQueryHookResult = ReturnType<typeof useGetWithdrawalContractSuspenseQuery>;
 export type GetWithdrawalContractQueryResult = Apollo.QueryResult<GetWithdrawalContractQuery, GetWithdrawalContractQueryVariables>;
-export const GetWithdrawalLimitsDocument = gql`
-    query getWithdrawalLimits($input: GetWithdrawalLimitsInputDTO!) {
-  getWithdrawalLimits(input: $input) {
-    totalAmount
-    limitValue
-    currency
-    limitPeriodUnit
-    limitPeriodValue
-    canExecute
-  }
-}
-    `;
-
-/**
- * __useGetWithdrawalLimitsQuery__
- *
- * To run a query within a React component, call `useGetWithdrawalLimitsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetWithdrawalLimitsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetWithdrawalLimitsQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetWithdrawalLimitsQuery(baseOptions: Apollo.QueryHookOptions<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables> & ({ variables: GetWithdrawalLimitsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>(GetWithdrawalLimitsDocument, options);
-      }
-export function useGetWithdrawalLimitsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>(GetWithdrawalLimitsDocument, options);
-        }
-export function useGetWithdrawalLimitsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>(GetWithdrawalLimitsDocument, options);
-        }
-export type GetWithdrawalLimitsQueryHookResult = ReturnType<typeof useGetWithdrawalLimitsQuery>;
-export type GetWithdrawalLimitsLazyQueryHookResult = ReturnType<typeof useGetWithdrawalLimitsLazyQuery>;
-export type GetWithdrawalLimitsSuspenseQueryHookResult = ReturnType<typeof useGetWithdrawalLimitsSuspenseQuery>;
-export type GetWithdrawalLimitsQueryResult = Apollo.QueryResult<GetWithdrawalLimitsQuery, GetWithdrawalLimitsQueryVariables>;
-export const GetDepositLimitsDocument = gql`
-    query getDepositLimits($input: DepositLimitsInput!) {
-  getDepositLimits(input: $input) {
-    totalAmount
-    limitValue
-    currency
-    limitPeriodUnit
-    limitPeriodValue
-    canExecute
-  }
-}
-    `;
-
-/**
- * __useGetDepositLimitsQuery__
- *
- * To run a query within a React component, call `useGetDepositLimitsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetDepositLimitsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetDepositLimitsQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetDepositLimitsQuery(baseOptions: Apollo.QueryHookOptions<GetDepositLimitsQuery, GetDepositLimitsQueryVariables> & ({ variables: GetDepositLimitsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>(GetDepositLimitsDocument, options);
-      }
-export function useGetDepositLimitsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>(GetDepositLimitsDocument, options);
-        }
-export function useGetDepositLimitsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>(GetDepositLimitsDocument, options);
-        }
-export type GetDepositLimitsQueryHookResult = ReturnType<typeof useGetDepositLimitsQuery>;
-export type GetDepositLimitsLazyQueryHookResult = ReturnType<typeof useGetDepositLimitsLazyQuery>;
-export type GetDepositLimitsSuspenseQueryHookResult = ReturnType<typeof useGetDepositLimitsSuspenseQuery>;
-export type GetDepositLimitsQueryResult = Apollo.QueryResult<GetDepositLimitsQuery, GetDepositLimitsQueryVariables>;
 export const TotpRegistrationScreenDocument = gql`
     query totpRegistrationScreen {
   me {

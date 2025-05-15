@@ -1212,6 +1212,96 @@ query feedbackModalShown {
   feedbackModalShown @client
 }
 
+query getDepositContract($input: DepositContractInput!) {
+  getDepositContract(input: $input) {
+    amounts {
+      bankAccountCredit {
+        amount
+        amountInSats
+        amountInSourceCurrency
+        btcSatPrice
+        currency
+        resolvedAt
+        __typename
+      }
+      fee {
+        amount
+        amountInSats
+        btcSatPrice
+        amountInSourceCurrency
+        currency
+        resolvedAt
+        __typename
+      }
+      target {
+        amount
+        amountInSats
+        amountInSourceCurrency
+        btcSatPrice
+        currency
+        resolvedAt
+        __typename
+      }
+      walletDebit {
+        amount
+        amountInSats
+        btcSatPrice
+        amountInSourceCurrency
+        currency
+        resolvedAt
+        __typename
+      }
+      __typename
+    }
+    limits {
+      totalAmount
+      canExecute
+      currency
+      limitPeriodUnit
+      limitPeriodValue
+      limitValue
+      __typename
+    }
+    bankAccount {
+      ... on BankAccountCR {
+        id
+        galoyUserId
+        type
+        countryCode
+        data {
+          bankName
+          iban
+          currency
+          accountAlias
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    exchangeWallet {
+      id
+      currency
+      __typename
+    }
+    feeExplanation
+    id
+    sourceWallet {
+      currency
+      id
+      __typename
+    }
+    tokenDetails {
+      body
+      createdAt
+      executedAt
+      expiresAt
+      __typename
+    }
+    __typename
+  }
+}
+
 query getDepositLimits($input: DepositLimitsInput!) {
   getDepositLimits(input: $input) {
     totalAmount
