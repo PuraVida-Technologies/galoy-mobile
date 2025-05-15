@@ -12,7 +12,6 @@ import PuraVidaWalletSelector from "./components/pura-vida-wallet-selector"
 import IBANAccountSelector from "./components/iban-account-selector"
 import { useNavigation } from "@react-navigation/native"
 
-
 export type SinpeDetailsParams = {
   screenTitle: string
 }
@@ -58,6 +57,36 @@ export const SinpeDetailsScreen = () => {
       }
     >
       <ScrollView style={styles.scrollViewContainer}>
+        <View style={styles.tabContainer}>
+          <TouchableWithoutFeedback onPress={() => actions.setIsBTCSell(true)}>
+            <View
+              style={[
+                styles.tabButton,
+                state.isBTCSell ? styles.activeTab : styles.inactiveTab,
+              ]}
+            >
+              <Text
+                style={state.isBTCSell ? styles.activeTabText : styles.inactiveTabText}
+              >
+                {LL.SinpeDetailsScreen.sell()}
+              </Text>
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => actions.setIsBTCSell(false)}>
+            <View
+              style={[
+                styles.tabButton,
+                state.isBTCSell ? styles.inactiveTab : styles.activeTab,
+              ]}
+            >
+              <Text
+                style={state.isBTCSell ? styles.inactiveTabText : styles.activeTabText}
+              >
+                {LL.SinpeDetailsScreen.buy()}
+              </Text>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
         {/* Conditionally render the components based on isBTCSell */}
         {state.isBTCSell ? (
           <>

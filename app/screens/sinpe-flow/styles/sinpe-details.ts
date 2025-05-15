@@ -268,6 +268,32 @@ const useStyles = makeStyles(({ colors }) => ({
     transform: [{ translateX: -25 }, { translateY: -25 }], // Adjust for the button's size (50x50)
     zIndex: 2, // Ensure it appears above the account selector components
   },
+  tabContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginVertical: 10,
+  },
+  tabButton: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomWidth: 2,
+  },
+  activeTab: {
+    borderBottomColor: colors.primary,
+  },
+  inactiveTab: {
+    borderBottomColor: colors.grey3,
+  },
+  activeTabText: {
+    color: colors.primary,
+    fontWeight: "bold",
+    fontSize: 18,
+  },
+  inactiveTabText: {
+    color: colors.grey3,
+  },
 }))
 export type UseSnipDetailsStyles = ReturnType<typeof useStyles>
 export default useStyles

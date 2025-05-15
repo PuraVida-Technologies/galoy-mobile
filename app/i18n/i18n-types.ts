@@ -328,12 +328,38 @@ type RootTranslation = {
 		 * B​u​y​ ​B​T​C
 		 */
 		buyBTC: string
+		/**
+		 * S​e​l​l
+		 */
+		sell: string
+		/**
+		 * B​u​y
+		 */
+		buy: string
 	}
 	SinpeIBANWithdrawConfirmationScreen: {
 		/**
 		 * R​e​v​i​e​w​ ​S​i​n​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
 		 */
 		title: string
+		/**
+		 * C​o​n​f​i​r​m​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
+		 */
+		screenTitle: string
+		/**
+		 * A​m​o​u​n​t
+		 */
+		amount: string
+	}
+	SinpeIBANDepositConfirmationScreen: {
+		/**
+		 * R​e​v​i​e​w​ ​S​i​n​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
+		 */
+		title: string
+		/**
+		 * C​o​n​f​i​r​m​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
+		 */
+		screenTitle: string
 		/**
 		 * A​m​o​u​n​t
 		 */
@@ -8345,7 +8371,7 @@ type RootTranslation = {
 		 */
 		community: string
 		/**
-		 * W​i​t​h​d​r​a​w
+		 * C​o​n​f​i​r​m
 		 */
 		withdraw: string
 		/**
@@ -9937,24 +9963,38 @@ export type TranslationFunctions = {
 		 * Buy BTC
 		 */
 		buyBTC: () => LocalizedString
+		/**
+		 * Sell
+		 */
+		sell: () => LocalizedString
+		/**
+		 * Buy
+		 */
+		buy: () => LocalizedString
 	}
 	SinpeIBANWithdrawConfirmationScreen: {
 		/**
 		 * Review Sinpe IBAN transfer
 		 */
 		title: () => LocalizedString
-    screenTitle: () => LocalizedString
+		/**
+		 * Confirm IBAN transfer
+		 */
+		screenTitle: () => LocalizedString
 		/**
 		 * Amount
 		 */
 		amount: () => LocalizedString
 	}
-  SinpeIBANDepositConfirmationScreen: {
+	SinpeIBANDepositConfirmationScreen: {
 		/**
 		 * Review Sinpe IBAN transfer
 		 */
 		title: () => LocalizedString
-    screenTitle: () => LocalizedString
+		/**
+		 * Confirm IBAN transfer
+		 */
+		screenTitle: () => LocalizedString
 		/**
 		 * Amount
 		 */
@@ -17908,11 +17948,11 @@ export type TranslationFunctions = {
 		 */
 		community: () => LocalizedString
 		/**
-		 * Withdraw
+		 * Confirm
 		 */
 		withdraw: () => LocalizedString
-    /**
-		 * Withdraw
+		/**
+		 * Account
 		 */
 		account: () => LocalizedString
 		/**

@@ -437,6 +437,7 @@ const useSinpeDetails = () => {
       updatePuraVidaWalletLayout, // Add action to update layout
       updateIBANAccountLayout,
       toggleIsBTCSell, // Add action to toggle isBTCSell
+      setIsBTCSell,
     },
   }
 }

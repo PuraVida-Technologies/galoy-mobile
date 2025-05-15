@@ -99,6 +99,8 @@ const en: BaseTranslation = {
       amount: "Amount",
       sellBTC: "Sell BTC",
       buyBTC: "Buy BTC",
+      sell: "Sell",
+      buy: "Buy",
     },
   SinpeIBANWithdrawConfirmationScreen: {
     title: "Review Sinpe IBAN transfer",
