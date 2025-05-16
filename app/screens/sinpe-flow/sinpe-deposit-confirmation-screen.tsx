@@ -34,7 +34,7 @@ export const SinpeIBANDepositConfirmationScreen: React.FC<Props> = ({ route }) =
     bankAccount,
     fromAccountBalance,
     isLoading,
-    canWithdraw,
+    canDeposit,
     fiatSymbol,
   } = state
 
@@ -119,10 +119,10 @@ export const SinpeIBANDepositConfirmationScreen: React.FC<Props> = ({ route }) =
         </View>
       </View>
       <GaloyPrimaryButton
-        title={LL.common.withdraw()}
+        title={LL.common.deposit()}
         containerStyle={styles.buttonContainer}
-        disabled={isLoading || !canWithdraw}
-        // onPress={actions?.onWithdraw}
+        disabled={isLoading || !canDeposit}
+        onPress={actions?.onDeposit}
         loading={isLoading}
       />
       <Modal visible={state.success}>
@@ -133,7 +133,7 @@ export const SinpeIBANDepositConfirmationScreen: React.FC<Props> = ({ route }) =
 
           <CompletedTextAnimation>
             <Text {...testProps("Success Text")} style={styles.completedText}>
-              {LL.SendBitcoinScreen.success()}
+              {LL.ConversionIBANDepositSuccessScreen.message()}
             </Text>
           </CompletedTextAnimation>
           <GaloyPrimaryButton

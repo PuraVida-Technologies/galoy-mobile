@@ -307,6 +307,18 @@ type RootTranslation = {
 		 */
 		message: string
 	}
+	ConversionIBANWithdrawalSuccessScreen: {
+		/**
+		 * T​r​a​n​s​f​e​r​ ​t​o​ ​I​B​A​N​ ​a​c​c​o​u​n​t​ ​s​u​c​c​e​s​s​f​u​l
+		 */
+		message: string
+	}
+	ConversionIBANDepositSuccessScreen: {
+		/**
+		 * T​r​a​n​s​f​e​r​ ​f​r​o​m​ ​I​B​A​N​ ​a​c​c​o​u​n​t​ ​s​u​c​c​e​s​s​f​u​l
+		 */
+		message: string
+	}
 	SinpeDetailsScreen: {
 		/**
 		 * S​i​n​p​e​ ​I​B​A​N​ ​t​r​a​n​s​f​e​r
@@ -8375,6 +8387,10 @@ type RootTranslation = {
 		 */
 		withdraw: string
 		/**
+		 * D​e​p​o​s​i​t
+		 */
+		deposit: string
+		/**
 		 * A​c​c​o​u​n​t
 		 */
 		account: string
@@ -9939,6 +9955,18 @@ export type TranslationFunctions = {
 		title: () => LocalizedString
 		/**
 		 * Conversion successful
+		 */
+		message: () => LocalizedString
+	}
+	ConversionIBANWithdrawalSuccessScreen: {
+		/**
+		 * Transfer to IBAN account successful
+		 */
+		message: () => LocalizedString
+	}
+	ConversionIBANDepositSuccessScreen: {
+		/**
+		 * Transfer from IBAN account successful
 		 */
 		message: () => LocalizedString
 	}
@@ -17951,6 +17979,10 @@ export type TranslationFunctions = {
 		 * Confirm
 		 */
 		withdraw: () => LocalizedString
+		/**
+		 * Deposit
+		 */
+		deposit: () => LocalizedString
 		/**
 		 * Account
 		 */

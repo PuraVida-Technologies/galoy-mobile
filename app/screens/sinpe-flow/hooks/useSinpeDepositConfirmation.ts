@@ -3,7 +3,7 @@ import {
   BankAccountCurrencies,
   Currencies,
   HomeAuthedDocument,
-  // useExecuteDepositContractMutation as useExecuteDepositContractMutation,
+  useExecuteDepositContractMutation,
   useGetDepositContractLazyQuery,
   WalletCurrency,
 } from "@app/graphql/generated"
@@ -16,19 +16,19 @@ import { DisplayCurrency, toUsdMoneyAmount } from "@app/types/amounts"
 import { NavigationProp, RouteProp, useNavigation } from "@react-navigation/native"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
-// gql`
-//   mutation ExecuteDepositContract($input: DepositContractInput!) {
-//     executeDepositContract(input: $input) {
-//       id
-//     }
-//   }
-// `
+gql`
+  mutation ExecuteDepositContract($input: ExecuteContractInput!) {
+    executeDepositContract(input: $input) {
+      id
+    }
+  }
+`
 
 gql`
   query getDepositContract($input: DepositContractInput!) {
     getDepositContract(input: $input) {
       amounts {
-        bankAccountCredit {
+        bankAccountDebit {
           amount
           amountInSats
           amountInSourceCurrency
@@ -52,7 +52,7 @@ gql`
           currency
           resolvedAt
         }
-        walletDebit {
+        walletCredit {
           amount
           amountInSats
           btcSatPrice
@@ -150,14 +150,14 @@ const useSinpeDepositConfirmation = ({ route }: Props) => {
         },
       },
     })
-  // const [executeDepositContract, { loading: depositing }] =
-  //   useExecuteDepositContractMutation({
-  //     refetchQueries: [HomeAuthedDocument],
-  //   })
+  const [executeDepositContract, { loading: depositing }] =
+    useExecuteDepositContractMutation({
+      refetchQueries: [HomeAuthedDocument],
+    })
 
-  // useEffect(() => {
-  //   accountDefaultWalletQuery({ fetchPolicy: "network-only" })
-  // }, [])
+  useEffect(() => {
+    accountDefaultWalletQuery({ fetchPolicy: "network-only" })
+  }, [])
 
   useEffect(() => {
     if (error) {
@@ -225,22 +225,22 @@ const useSinpeDepositConfirmation = ({ route }: Props) => {
       })}`
     : ""
 
-  // const onWithdraw = useCallback(async () => {
-  //   try {
-  //     if (contract?.getWithdrawalContract?.tokenDetails?.body) {
-  //       const res = await executeWithdrawalContract({
-  //         variables: {
-  //           input: { token: contract?.getWithdrawalContract?.tokenDetails?.body || "" },
-  //         },
-  //       })
-  //       if (res?.data?.executeWithdrawalContract?.id) {
-  //         setSuccess(true)
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // }, [contract?.getWithdrawalContract?.tokenDetails?.body])
+  const onDeposit = useCallback(async () => {
+    try {
+      if (contract?.getDepositContract?.tokenDetails?.body) {
+        const res = await executeDepositContract({
+          variables: {
+            input: { token: contract?.getDepositContract?.tokenDetails?.body || "" },
+          },
+        })
+        if (res?.data?.executeDepositContract?.id) {
+          setSuccess(true)
+        }
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }, [contract?.getDepositContract?.tokenDetails?.body])
 
   const navigateToHomeScreen = () => {
     navigation.navigate("Primary")
@@ -256,7 +256,7 @@ const useSinpeDepositConfirmation = ({ route }: Props) => {
       fromAccountBalance,
       bankAccount,
       fromWalletCurrency,
-      isLoading: loading, // || depositing,
+      isLoading: loading || depositing,
       moneyAmount,
       btcPrice:
         bankAccount?.currency === BankAccountCurrencies.Crc
@@ -270,13 +270,13 @@ const useSinpeDepositConfirmation = ({ route }: Props) => {
           ? totalAmount.toFixed(2)
           : totalAmount.toFixed(2),
       remainingLimit: remainingDepositLimitText,
-      canWithdraw: contract?.getDepositContract?.limits?.[0]?.canExecute,
+      canDeposit: contract?.getDepositContract?.limits?.[0]?.canExecute,
       fiatSymbol:
         displayCurrencyDictionary[bankAccount?.currency || WalletCurrency.Usd]?.symbol ||
         "",
     },
     actions: {
-      // onWithdraw,
+      onDeposit,
       convertMoneyAmount,
       formatMoneyAmount,
       navigateToHomeScreen,

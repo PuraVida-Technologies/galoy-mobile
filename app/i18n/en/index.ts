@@ -93,6 +93,12 @@ const en: BaseTranslation = {
     title: "Conversion Success",
     message: "Conversion successful",
   },
+  ConversionIBANWithdrawalSuccessScreen: {
+    message: "Transfer to IBAN account successful",
+  },
+  ConversionIBANDepositSuccessScreen: {
+    message: "Transfer from IBAN account successful",
+  },
   SinpeDetailsScreen: {
       title: "Sinpe IBAN transfer",
       percentageToConvert: "% to convert",
@@ -2859,6 +2865,7 @@ const en: BaseTranslation = {
     advanced: "Advanced",
     community: "Community",
     withdraw: "Confirm",
+    deposit: "Deposit",
     account: "Account",
     trialAccount: "Trial Account",
     blinkUser: "Blink User",

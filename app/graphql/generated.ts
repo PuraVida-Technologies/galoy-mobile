@@ -660,14 +660,14 @@ export type DepositContract = {
 
 export type DepositContractAmounts = {
   readonly __typename: 'DepositContractAmounts';
-  /** the amount that will be credited to the user bank account, the currency is the same as the target currency */
-  readonly bankAccountCredit: ResolvedCurrencyExchangeAmount;
-  /** the amount that will be charged for the withdrawal from the galoy wallet, the currency is the same as the target currency */
+  /** The amount that will be credited to the user bank account, the currency is the same as the target currency */
+  readonly bankAccountDebit: ResolvedCurrencyExchangeAmount;
+  /** The amount that will be charged for the withdrawal from the galoy wallet, the currency is the same as the target currency */
   readonly fee: ResolvedCurrencyExchangeAmount;
-  /** the amount that will be credited to the user bank account, the currency is the same as the target currency */
+  /** The amount that will be credited to the user bank account, the currency is the same as the target currency */
   readonly target: ResolvedCurrencyExchangeAmount;
-  /** the amount that will be debited from the user galoy wallet, the currency is the same as the wallet currency */
-  readonly walletDebit: ResolvedCurrencyExchangeAmount;
+  /** The amount that will be debited from the user galoy wallet, the currency is the same as the wallet currency */
+  readonly walletCredit: ResolvedCurrencyExchangeAmount;
 };
 
 export type DepositContractInput = {
@@ -757,6 +757,10 @@ export const ExchangeCurrencyUnit = {
 } as const;
 
 export type ExchangeCurrencyUnit = typeof ExchangeCurrencyUnit[keyof typeof ExchangeCurrencyUnit];
+export type ExecuteContractInput = {
+  readonly token: Scalars['String']['input'];
+};
+
 export type ExecuteWithdrawalContract = {
   readonly token: Scalars['String']['input'];
 };
@@ -1574,7 +1578,7 @@ export type MutationDeviceNotificationTokenCreateArgs = {
 
 
 export type MutationExecuteDepositContractArgs = {
-  input: DepositContractInput;
+  input: ExecuteContractInput;
 };
 
 
@@ -3754,12 +3758,19 @@ export type AccountLimitsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type AccountLimitsQuery = { readonly __typename: 'Query', readonly me?: { readonly __typename: 'User', readonly id: string, readonly defaultAccount: { readonly __typename: 'ConsumerAccount', readonly id: string, readonly limits: { readonly __typename: 'AccountLimits', readonly withdrawal: ReadonlyArray<{ readonly __typename: 'OneDayAccountLimit', readonly totalLimit: number, readonly remainingLimit?: number | null, readonly interval?: number | null }>, readonly internalSend: ReadonlyArray<{ readonly __typename: 'OneDayAccountLimit', readonly totalLimit: number, readonly remainingLimit?: number | null, readonly interval?: number | null }>, readonly convert: ReadonlyArray<{ readonly __typename: 'OneDayAccountLimit', readonly totalLimit: number, readonly remainingLimit?: number | null, readonly interval?: number | null }> } } } | null };
 
+export type ExecuteDepositContractMutationVariables = Exact<{
+  input: ExecuteContractInput;
+}>;
+
+
+export type ExecuteDepositContractMutation = { readonly __typename: 'Mutation', readonly executeDepositContract: { readonly __typename: 'DepositContractNoTokenDetails', readonly id: string } };
+
 export type GetDepositContractQueryVariables = Exact<{
   input: DepositContractInput;
 }>;
 
 
-export type GetDepositContractQuery = { readonly __typename: 'Query', readonly getDepositContract: { readonly __typename: 'DepositContract', readonly feeExplanation: string, readonly id: string, readonly amounts: { readonly __typename: 'DepositContractAmounts', readonly bankAccountCredit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly fee: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly target: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly walletDebit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string } }, readonly limits: ReadonlyArray<{ readonly __typename: 'DepositLimits', readonly totalAmount: string, readonly canExecute: boolean, readonly currency: Currencies, readonly limitPeriodUnit: string, readonly limitPeriodValue: number, readonly limitValue: string }>, readonly bankAccount: { readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly iban: string, readonly currency: BankAccountCurrencies, readonly accountAlias: string } }, readonly exchangeWallet: { readonly __typename: 'PublicKycWallet', readonly id: string, readonly currency: Currencies }, readonly sourceWallet: { readonly __typename: 'PublicKycWallet', readonly currency: Currencies, readonly id: string }, readonly tokenDetails: { readonly __typename: 'DepositContractTokenDetails', readonly body: string, readonly createdAt: string, readonly executedAt?: string | null, readonly expiresAt: string } } };
+export type GetDepositContractQuery = { readonly __typename: 'Query', readonly getDepositContract: { readonly __typename: 'DepositContract', readonly feeExplanation: string, readonly id: string, readonly amounts: { readonly __typename: 'DepositContractAmounts', readonly bankAccountDebit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly fee: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly target: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly amountInSourceCurrency: string, readonly btcSatPrice: string, readonly currency: Currencies, readonly resolvedAt: string }, readonly walletCredit: { readonly __typename: 'ResolvedCurrencyExchangeAmount', readonly amount: string, readonly amountInSats: string, readonly btcSatPrice: string, readonly amountInSourceCurrency: string, readonly currency: Currencies, readonly resolvedAt: string } }, readonly limits: ReadonlyArray<{ readonly __typename: 'DepositLimits', readonly totalAmount: string, readonly canExecute: boolean, readonly currency: Currencies, readonly limitPeriodUnit: string, readonly limitPeriodValue: number, readonly limitValue: string }>, readonly bankAccount: { readonly __typename: 'BankAccountCR', readonly id: string, readonly galoyUserId: string, readonly type: ExternalAccountTypes, readonly countryCode: ExternalAccountCountries, readonly data: { readonly __typename: 'BankAccountDataCR', readonly bankName: string, readonly iban: string, readonly currency: BankAccountCurrencies, readonly accountAlias: string } }, readonly exchangeWallet: { readonly __typename: 'PublicKycWallet', readonly id: string, readonly currency: Currencies }, readonly sourceWallet: { readonly __typename: 'PublicKycWallet', readonly currency: Currencies, readonly id: string }, readonly tokenDetails: { readonly __typename: 'DepositContractTokenDetails', readonly body: string, readonly createdAt: string, readonly executedAt?: string | null, readonly expiresAt: string } } };
 
 export type GetWithdrawalLimitsQueryVariables = Exact<{
   input: GetWithdrawalLimitsInputDto;
@@ -8699,11 +8710,44 @@ export type AccountLimitsQueryHookResult = ReturnType<typeof useAccountLimitsQue
 export type AccountLimitsLazyQueryHookResult = ReturnType<typeof useAccountLimitsLazyQuery>;
 export type AccountLimitsSuspenseQueryHookResult = ReturnType<typeof useAccountLimitsSuspenseQuery>;
 export type AccountLimitsQueryResult = Apollo.QueryResult<AccountLimitsQuery, AccountLimitsQueryVariables>;
+export const ExecuteDepositContractDocument = gql`
+    mutation ExecuteDepositContract($input: ExecuteContractInput!) {
+  executeDepositContract(input: $input) {
+    id
+  }
+}
+    `;
+export type ExecuteDepositContractMutationFn = Apollo.MutationFunction<ExecuteDepositContractMutation, ExecuteDepositContractMutationVariables>;
+
+/**
+ * __useExecuteDepositContractMutation__
+ *
+ * To run a mutation, you first call `useExecuteDepositContractMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useExecuteDepositContractMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [executeDepositContractMutation, { data, loading, error }] = useExecuteDepositContractMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useExecuteDepositContractMutation(baseOptions?: Apollo.MutationHookOptions<ExecuteDepositContractMutation, ExecuteDepositContractMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ExecuteDepositContractMutation, ExecuteDepositContractMutationVariables>(ExecuteDepositContractDocument, options);
+      }
+export type ExecuteDepositContractMutationHookResult = ReturnType<typeof useExecuteDepositContractMutation>;
+export type ExecuteDepositContractMutationResult = Apollo.MutationResult<ExecuteDepositContractMutation>;
+export type ExecuteDepositContractMutationOptions = Apollo.BaseMutationOptions<ExecuteDepositContractMutation, ExecuteDepositContractMutationVariables>;
 export const GetDepositContractDocument = gql`
     query getDepositContract($input: DepositContractInput!) {
   getDepositContract(input: $input) {
     amounts {
-      bankAccountCredit {
+      bankAccountDebit {
         amount
         amountInSats
         amountInSourceCurrency
@@ -8727,7 +8771,7 @@ export const GetDepositContractDocument = gql`
         currency
         resolvedAt
       }
-      walletDebit {
+      walletCredit {
         amount
         amountInSats
         btcSatPrice
@@ -9468,6 +9512,7 @@ export type ResolversTypes = {
   EndpointUrl: ResolverTypeWrapper<Scalars['EndpointUrl']['output']>;
   Error: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Error']>;
   ExchangeCurrencyUnit: ExchangeCurrencyUnit;
+  ExecuteContractInput: ExecuteContractInput;
   ExecuteWithdrawalContract: ExecuteWithdrawalContract;
   ExternalAccount: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['ExternalAccount']>;
   ExternalAccountCountries: ExternalAccountCountries;
@@ -9748,6 +9793,7 @@ export type ResolversParentTypes = {
   EndpointId: Scalars['EndpointId']['output'];
   EndpointUrl: Scalars['EndpointUrl']['output'];
   Error: ResolversInterfaceTypes<ResolversParentTypes>['Error'];
+  ExecuteContractInput: ExecuteContractInput;
   ExecuteWithdrawalContract: ExecuteWithdrawalContract;
   ExternalAccount: ResolversInterfaceTypes<ResolversParentTypes>['ExternalAccount'];
   Feedback: Scalars['Feedback']['output'];
@@ -10268,10 +10314,10 @@ export type DepositContractResolvers<ContextType = any, ParentType extends Resol
 };
 
 export type DepositContractAmountsResolvers<ContextType = any, ParentType extends ResolversParentTypes['DepositContractAmounts'] = ResolversParentTypes['DepositContractAmounts']> = {
-  bankAccountCredit?: Resolver<ResolversTypes['ResolvedCurrencyExchangeAmount'], ParentType, ContextType>;
+  bankAccountDebit?: Resolver<ResolversTypes['ResolvedCurrencyExchangeAmount'], ParentType, ContextType>;
   fee?: Resolver<ResolversTypes['ResolvedCurrencyExchangeAmount'], ParentType, ContextType>;
   target?: Resolver<ResolversTypes['ResolvedCurrencyExchangeAmount'], ParentType, ContextType>;
-  walletDebit?: Resolver<ResolversTypes['ResolvedCurrencyExchangeAmount'], ParentType, ContextType>;
+  walletCredit?: Resolver<ResolversTypes['ResolvedCurrencyExchangeAmount'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

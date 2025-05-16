@@ -74,6 +74,13 @@ fragment TransactionList on TransactionConnection {
   __typename
 }
 
+mutation ExecuteDepositContract($input: ExecuteContractInput!) {
+  executeDepositContract(input: $input) {
+    id
+    __typename
+  }
+}
+
 mutation ExecuteWithdrawalContract($input: ExecuteWithdrawalContract!) {
   executeWithdrawalContract(input: $input) {
     id
@@ -1215,7 +1222,7 @@ query feedbackModalShown {
 query getDepositContract($input: DepositContractInput!) {
   getDepositContract(input: $input) {
     amounts {
-      bankAccountCredit {
+      bankAccountDebit {
         amount
         amountInSats
         amountInSourceCurrency
@@ -1242,7 +1249,7 @@ query getDepositContract($input: DepositContractInput!) {
         resolvedAt
         __typename
       }
-      walletDebit {
+      walletCredit {
         amount
         amountInSats
         btcSatPrice
