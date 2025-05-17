@@ -145,6 +145,32 @@ export const SinpeIBANDepositConfirmationScreen: React.FC<Props> = ({ route }) =
           />
         </View>
       </Modal>
+      <Modal visible={Boolean(state.errorMessage)}>
+        <View style={styles.container}>
+          <SuccessIconAnimation>
+            <GaloyIcon name={"payment-error"} size={128} />
+          </SuccessIconAnimation>
+
+          <CompletedTextAnimation>
+            <Text {...testProps("Error Text")} style={styles.completedText}>
+              {state.errorMessage}
+            </Text>
+            {state.errorDetails && (
+              <Text {...testProps("Error Details")} style={styles.errorDetailsText}>
+                {state.errorDetails}
+              </Text>
+            )}
+          </CompletedTextAnimation>
+
+          <GaloyPrimaryButton
+            title={LL.common.backHome()}
+            containerStyle={styles.paymentSuccessBtn}
+            disabled={state.isLoading}
+            onPress={actions?.navigateToHomeScreen}
+            loading={state.isLoading}
+          />
+        </View>
+      </Modal>
     </Screen>
   )
 }

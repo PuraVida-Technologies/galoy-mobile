@@ -120,6 +120,8 @@ export interface BankAccountDetails {
 
 const useSinpeDepositConfirmation = ({ route }: Props) => {
   const [success, setSuccess] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null) // User-friendly error message
+  const [errorDetails, setErrorDetails] = useState<string | null>(null) // Technical error details
   const interval = useRef<NodeJS.Timeout>()
   const { LL } = useI18nContext()
 
@@ -235,16 +237,24 @@ const useSinpeDepositConfirmation = ({ route }: Props) => {
         })
         if (res?.data?.executeDepositContract?.id) {
           setSuccess(true)
+        } else if (res?.errors?.length) {
+          // Capture both user-friendly and technical error messages
+          setErrorMessage(LL.SinpeIBANDepositConfirmationScreen.errorMessage())
+          setErrorDetails(res.errors[0]?.message || null)
         }
       }
     } catch (error) {
       console.error(error)
+      setErrorMessage(LL.SinpeIBANDepositConfirmationScreen.errorMessage()) // Fallback user-friendly error message
+      setErrorDetails(null) // No technical details available for unexpected errors
     }
-  }, [contract?.getDepositContract?.tokenDetails?.body])
+  }, [contract?.getDepositContract?.tokenDetails?.body, LL])
 
   const navigateToHomeScreen = () => {
     navigation.navigate("Primary")
     setSuccess(false)
+    setErrorMessage(null) // Reset error message when navigating back
+    setErrorDetails(null) // Reset error details when navigating back
   }
 
   return {
@@ -274,6 +284,8 @@ const useSinpeDepositConfirmation = ({ route }: Props) => {
       fiatSymbol:
         displayCurrencyDictionary[bankAccount?.currency || WalletCurrency.Usd]?.symbol ||
         "",
+      errorMessage, // User-friendly error message
+      errorDetails, // Technical error details
     },
     actions: {
       onDeposit,
