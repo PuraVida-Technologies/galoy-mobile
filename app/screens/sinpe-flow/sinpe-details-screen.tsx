@@ -112,7 +112,7 @@ export const SinpeDetailsScreen = () => {
               LL={LL}
               colors={colors}
             />
-            <View
+            {/* <View
               style={[
                 styles.toggleButtonContainer,
                 // eslint-disable-next-line react-native/no-inline-styles
@@ -126,7 +126,7 @@ export const SinpeDetailsScreen = () => {
                   <Icon name="swap-vertical" size={24} color={colors.primary} />
                 </View>
               </TouchableWithoutFeedback>
-            </View>
+            </View> */}
             <IBANAccountSelector
               styles={styles}
               state={state}
