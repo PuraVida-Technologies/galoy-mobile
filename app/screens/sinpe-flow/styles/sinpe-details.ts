@@ -294,6 +294,12 @@ const useStyles = makeStyles(({ colors }) => ({
   inactiveTabText: {
     color: colors.grey3,
   },
+  comingSoonText: {
+    fontSize: 12,
+    color: "#6c757d",
+    marginTop: 4,
+    textAlign: "center",
+  },
 }))
 export type UseSnipDetailsStyles = ReturnType<typeof useStyles>
 export default useStyles

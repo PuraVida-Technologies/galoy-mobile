@@ -72,7 +72,7 @@ export const SinpeDetailsScreen = () => {
               </Text>
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => actions.setIsBTCSell(false)}>
+          {/* <TouchableWithoutFeedback onPress={() => actions.setIsBTCSell(false)}>
             <View
               style={[
                 styles.tabButton,
@@ -83,6 +83,21 @@ export const SinpeDetailsScreen = () => {
                 style={state.isBTCSell ? styles.inactiveTabText : styles.activeTabText}
               >
                 {LL.SinpeDetailsScreen.buy()}
+              </Text>
+            </View>
+          </TouchableWithoutFeedback> */}
+          <TouchableWithoutFeedback disabled={true}>
+            <View
+              style={[
+                styles.tabButton,
+                styles.inactiveTab, // Keep the "Buy" tab visually inactive
+              ]}
+            >
+              <Text style={styles.inactiveTabText}>{LL.SinpeDetailsScreen.buy()}</Text>
+              <Text style={styles.comingSoonText}>
+                {" "}
+                {/* Add "Coming soon" text */}
+                {LL.common.comingSoon()}
               </Text>
             </View>
           </TouchableWithoutFeedback>
