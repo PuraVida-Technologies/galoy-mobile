@@ -120,6 +120,8 @@ export interface BankAccountDetails {
 
 const useSinpeConfirmation = ({ route }: Props) => {
   const [success, setSuccess] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [errorDetails, setErrorDetails] = useState<string | null>(null)
   const interval = useRef<NodeJS.Timeout>()
   const { LL } = useI18nContext()
 
@@ -235,16 +237,23 @@ const useSinpeConfirmation = ({ route }: Props) => {
         })
         if (res?.data?.executeWithdrawalContract?.id) {
           setSuccess(true)
+        } else if (res?.errors?.length) {
+          setErrorMessage(LL.SinpeIBANWithdrawConfirmationScreen.errorMessage())
+          setErrorDetails(res.errors[0]?.message || null)
         }
       }
     } catch (error) {
       console.error(error)
+      setErrorMessage(LL.SinpeIBANWithdrawConfirmationScreen.errorMessage())
+      setErrorDetails(null)
     }
-  }, [contract?.getWithdrawalContract?.tokenDetails?.body])
+  }, [contract?.getWithdrawalContract?.tokenDetails?.body, LL])
 
   const navigateToHomeScreen = () => {
     navigation.navigate("Primary")
     setSuccess(false)
+    setErrorMessage(null)
+    setErrorDetails(null)
   }
 
   return {
@@ -274,6 +283,8 @@ const useSinpeConfirmation = ({ route }: Props) => {
       fiatSymbol:
         displayCurrencyDictionary[bankAccount?.currency || WalletCurrency.Usd]?.symbol ||
         "",
+      errorMessage,
+      errorDetails,
     },
     actions: {
       onWithdraw,

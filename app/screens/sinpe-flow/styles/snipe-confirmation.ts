@@ -39,6 +39,13 @@ const useStyles = makeStyles(({ colors }) => ({
     color: colors.error,
     textAlign: "center",
   },
+  errorDetailsText: {
+    fontSize: 14,
+    color: "#6c757d",
+    marginTop: 8,
+    textAlign: "center",
+    lineHeight: 20,
+  },
   sellAmountContainer: {
     marginTop: 8,
     flexDirection: "row",

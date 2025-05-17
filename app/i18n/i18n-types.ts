@@ -362,6 +362,10 @@ type RootTranslation = {
 		 * A​m​o​u​n​t
 		 */
 		amount: string
+		/**
+		 * T​h​e​r​e​ ​w​a​s​ ​a​n​ ​e​r​r​o​r​ ​w​i​t​h​ ​t​h​e​ ​W​i​t​h​d​r​a​w​a​l​ ​t​o​ ​I​B​A​N​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r​.
+		 */
+		errorMessage: string
 	}
 	SinpeIBANDepositConfirmationScreen: {
 		/**
@@ -376,6 +380,10 @@ type RootTranslation = {
 		 * A​m​o​u​n​t
 		 */
 		amount: string
+		/**
+		 * T​h​e​r​e​ ​w​a​s​ ​a​n​ ​e​r​r​o​r​ ​w​i​t​h​ ​t​h​e​ ​D​e​p​o​s​i​t​ ​f​r​o​m​ ​I​B​A​N​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r​.
+		 */
+		errorMessage: string
 	}
 	EarnScreen: {
 		/**
@@ -10013,6 +10021,10 @@ export type TranslationFunctions = {
 		 * Amount
 		 */
 		amount: () => LocalizedString
+		/**
+		 * There was an error with the Withdrawal to IBAN. Please try again later.
+		 */
+		errorMessage: () => LocalizedString
 	}
 	SinpeIBANDepositConfirmationScreen: {
 		/**
@@ -10027,6 +10039,10 @@ export type TranslationFunctions = {
 		 * Amount
 		 */
 		amount: () => LocalizedString
+		/**
+		 * There was an error with the Deposit from IBAN. Please try again later.
+		 */
+		errorMessage: () => LocalizedString
 	}
 	EarnScreen: {
 		/**

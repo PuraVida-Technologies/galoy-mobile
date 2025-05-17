@@ -1,5 +1,6 @@
 // prettier-ignore
 
+import { err } from 'react-native-svg';
 import { BaseTranslation } from "../i18n-types";
 
 const en: BaseTranslation = {
@@ -112,11 +113,13 @@ const en: BaseTranslation = {
     title: "Review Sinpe IBAN transfer",
     screenTitle: "Confirm IBAN transfer",
     amount: "Amount",
+    errorMessage: "There was an error with the Withdrawal to IBAN. Please try again later.",
   },
   SinpeIBANDepositConfirmationScreen: {
     title: "Review Sinpe IBAN transfer",
     screenTitle: "Confirm IBAN transfer",
     amount: "Amount",
+    errorMessage: "There was an error with the Deposit from IBAN. Please try again later.",
   },
   EarnScreen: {
     earnSats: "Earn {formattedNumber|sats}",

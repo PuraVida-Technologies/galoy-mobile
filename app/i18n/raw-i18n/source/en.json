@@ -99,12 +99,14 @@
     "SinpeIBANWithdrawConfirmationScreen": {
         "title": "Review Sinpe IBAN transfer",
         "screenTitle": "Confirm IBAN transfer",
-        "amount": "Amount"
+        "amount": "Amount",
+        "errorMessage": "There was an error with the Withdrawal to IBAN. Please try again later."
     },
     "SinpeIBANDepositConfirmationScreen": {
         "title": "Review Sinpe IBAN transfer",
         "screenTitle": "Confirm IBAN transfer",
-        "amount": "Amount"
+        "amount": "Amount",
+        "errorMessage": "There was an error with the Deposit from IBAN. Please try again later."
     },
     "EarnScreen": {
         "earnSats": "Earn {formattedNumber|sats}",

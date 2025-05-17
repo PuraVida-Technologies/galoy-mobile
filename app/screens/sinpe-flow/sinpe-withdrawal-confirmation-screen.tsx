@@ -36,6 +36,7 @@ export const SinpeIBANWithdrawConfirmationScreen: React.FC<Props> = ({ route }) 
     isLoading,
     canWithdraw,
     fiatSymbol,
+    errorMessage, // Add error message from state
   } = state
 
   if (
@@ -64,7 +65,7 @@ export const SinpeIBANWithdrawConfirmationScreen: React.FC<Props> = ({ route }) 
           </View>
           <View>
             <Text style={styles.snipeInfoFieldTitle}>
-              {LL.SnipeConfirmationScreen.amount()}
+              {LL.SinpeIBANWithdrawConfirmationScreen.amount()}
             </Text>
             <View style={styles.flexRow}>
               <Text style={styles.snipeInfoFieldValue}>{fiatSymbol} </Text>
@@ -136,6 +137,32 @@ export const SinpeIBANWithdrawConfirmationScreen: React.FC<Props> = ({ route }) 
               {LL.SendBitcoinScreen.success()}
             </Text>
           </CompletedTextAnimation>
+          <GaloyPrimaryButton
+            title={LL.common.backHome()}
+            containerStyle={styles.paymentSuccessBtn}
+            disabled={isLoading}
+            onPress={actions?.navigateToHomeScreen}
+            loading={isLoading}
+          />
+        </View>
+      </Modal>
+      <Modal visible={Boolean(errorMessage)}>
+        <View style={styles.container}>
+          <SuccessIconAnimation>
+            <GaloyIcon name={"payment-error"} size={128} />
+          </SuccessIconAnimation>
+
+          <CompletedTextAnimation>
+            <Text {...testProps("Error Text")} style={styles.completedText}>
+              {errorMessage}
+            </Text>
+            {state.errorDetails && (
+              <Text {...testProps("Error Details")} style={styles.errorDetailsText}>
+                {state.errorDetails}
+              </Text>
+            )}
+          </CompletedTextAnimation>
+
           <GaloyPrimaryButton
             title={LL.common.backHome()}
             containerStyle={styles.paymentSuccessBtn}
