@@ -72,7 +72,7 @@ export const SinpeDetailsScreen = () => {
               </Text>
             </View>
           </TouchableWithoutFeedback>
-          {/* <TouchableWithoutFeedback onPress={() => actions.setIsBTCSell(false)}>
+          <TouchableWithoutFeedback onPress={() => actions.setIsBTCSell(false)}>
             <View
               style={[
                 styles.tabButton,
@@ -83,21 +83,6 @@ export const SinpeDetailsScreen = () => {
                 style={state.isBTCSell ? styles.inactiveTabText : styles.activeTabText}
               >
                 {LL.SinpeDetailsScreen.buy()}
-              </Text>
-            </View>
-          </TouchableWithoutFeedback> */}
-          <TouchableWithoutFeedback disabled={true}>
-            <View
-              style={[
-                styles.tabButton,
-                styles.inactiveTab, // Keep the "Buy" tab visually inactive
-              ]}
-            >
-              <Text style={styles.inactiveTabText}>{LL.SinpeDetailsScreen.buy()}</Text>
-              <Text style={styles.comingSoonText}>
-                {" "}
-                {/* Add "Coming soon" text */}
-                {LL.common.comingSoon()}
               </Text>
             </View>
           </TouchableWithoutFeedback>
@@ -144,7 +129,7 @@ export const SinpeDetailsScreen = () => {
               LL={LL}
               colors={colors}
             />
-            <View
+            {/* <View
               style={[
                 styles.toggleButtonContainer,
                 // eslint-disable-next-line react-native/no-inline-styles
@@ -158,7 +143,7 @@ export const SinpeDetailsScreen = () => {
                   <Icon name="swap-vertical" size={24} color={colors.primary} />
                 </View>
               </TouchableWithoutFeedback>
-            </View>
+            </View> */}
             <PuraVidaWalletSelector
               styles={styles}
               state={state}

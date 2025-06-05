@@ -108,14 +108,26 @@ export const SinpeIBANDepositConfirmationScreen: React.FC<Props> = ({ route }) =
             <Text style={styles.snipeInfoFieldTitle}> {LL.common.fee()}</Text>
           </View>
         </View>
-        <View style={styles.sellAmount}>
-          <Text style={styles.snipeInfoFieldValue}> {fiatSymbol}</Text>
-          <AnimatedRollingNumber
-            value={Number(state.totalAmount)}
-            useGrouping
-            compactToFixed={2}
-            textStyle={styles.snipeInfoFieldValue}
-          />
+        <View style={styles.sellAmountColumn}>
+
+          <View style={styles.sellAmountRow}>
+            <Text style={styles.snipeInfoFieldValue}>{fiatSymbol}</Text>
+            <AnimatedRollingNumber
+              value={Number(state.totalAmount)}
+              useGrouping
+              compactToFixed={2}
+              textStyle={styles.snipeInfoFieldValue}
+            />
+          </View>
+          <View style={styles.satsRow}>
+            <AnimatedRollingNumber
+              value={Number(state.totalAmountInSats)}
+              useGrouping
+              compactToFixed={2}
+              textStyle={styles.snipeInfoFieldTitle}
+            />
+            <Text style={styles.snipeInfoFieldTitle}> {LL.common.sats()}</Text>
+          </View>
         </View>
       </View>
       <GaloyPrimaryButton

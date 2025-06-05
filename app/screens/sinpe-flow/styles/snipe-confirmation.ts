@@ -89,6 +89,19 @@ const useStyles = makeStyles(({ colors }) => ({
   primaryCurrencySymbol: {
     color: colors.grey1,
   },
+  sellAmountColumn: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
+  sellAmountRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  satsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 2,
+  },
 }))
 export type UseSnipeConfirmationStyles = ReturnType<typeof useStyles>
 export default useStyles

@@ -184,8 +184,9 @@ const useSinpeDepositConfirmation = ({ route }: Props) => {
   const btcPriceInAmount = convertMoneyAmount?.(
     {
       amount:
-        parseFloat(contract?.getDepositContract?.amounts?.target?.btcSatPrice || "0") *
-        1000000,
+        parseFloat(
+          contract?.getDepositContract?.amounts?.walletCredit?.btcSatPrice || "0",
+        ) * 1000000,
       currency:
         contract?.getDepositContract?.amounts?.target?.currency ||
         bankAccount?.currency ||
@@ -210,7 +211,7 @@ const useSinpeDepositConfirmation = ({ route }: Props) => {
     currencyCode: bankAccount?.currency || WalletCurrency.Usd,
   })
 
-  const totalAmount = Number(sellAmount) + Number(feesAmount)
+  const totalAmount = Number(sellAmount) - Number(feesAmount)
 
   const remainingDepositLimit = useMemo(() => {
     return parseFloat(contract?.getDepositContract?.limits?.[0]?.limitValue || "0")
@@ -279,6 +280,8 @@ const useSinpeDepositConfirmation = ({ route }: Props) => {
         bankAccount?.currency === BankAccountCurrencies.Crc
           ? totalAmount.toFixed(2)
           : totalAmount.toFixed(2),
+      totalAmountInSats:
+        Number(contract?.getDepositContract?.amounts?.walletCredit?.amountInSats) || 0,
       remainingLimit: remainingDepositLimitText,
       canDeposit: contract?.getDepositContract?.limits?.[0]?.canExecute,
       fiatSymbol:
