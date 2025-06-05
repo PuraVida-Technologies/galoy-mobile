@@ -109,7 +109,6 @@ export const SinpeIBANDepositConfirmationScreen: React.FC<Props> = ({ route }) =
           </View>
         </View>
         <View style={styles.sellAmountColumn}>
-
           <View style={styles.sellAmountRow}>
             <Text style={styles.snipeInfoFieldValue}>{fiatSymbol}</Text>
             <AnimatedRollingNumber
@@ -119,15 +118,17 @@ export const SinpeIBANDepositConfirmationScreen: React.FC<Props> = ({ route }) =
               textStyle={styles.snipeInfoFieldValue}
             />
           </View>
-          <View style={styles.satsRow}>
-            <AnimatedRollingNumber
-              value={Number(state.totalAmountInSats)}
-              useGrouping
-              compactToFixed={2}
-              textStyle={styles.snipeInfoFieldTitle}
-            />
-            <Text style={styles.snipeInfoFieldTitle}> {LL.common.sats()}</Text>
-          </View>
+          {state.fromWalletCurrency === WalletCurrency.Btc && (
+            <View style={styles.satsRow}>
+              <AnimatedRollingNumber
+                value={Number(state.totalAmountInSats)}
+                useGrouping
+                compactToFixed={2}
+                textStyle={styles.snipeInfoFieldTitle}
+              />
+              <Text style={styles.snipeInfoFieldTitle}> {LL.common.sats()}</Text>
+            </View>
+          )}
         </View>
       </View>
       <GaloyPrimaryButton
