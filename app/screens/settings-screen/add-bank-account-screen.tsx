@@ -1,10 +1,20 @@
-import React, { useEffect } from "react"
-import { SafeAreaView, View, Alert, Text } from "react-native"
+import React, { useEffect, useState } from "react"
+import {
+  SafeAreaView,
+  View,
+  Alert,
+  Text,
+  Linking,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from "react-native"
 import useStyles from "@app/modules/bank-account/styles"
 import { Screen } from "@app/components/screen"
 import { testProps } from "@app/utils/testProps"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { Button, Icon } from "@rneui/themed"
+import { Button, Icon, CheckBox } from "@rneui/themed"
 import Input from "@app/components/form-input/form-input"
 import { Controller, useWatch } from "react-hook-form"
 import useAddBankAccount from "@app/modules/bank-account/hooks/useAddBankAccount"
@@ -28,10 +38,10 @@ const AddBankAccountScreen = () => {
   const { control, loading, bankDetails, getValues, setValue } = state
   const { handleSubmit, verifyIban, addBankAccount } = actions
 
-  const ibanValue = useWatch({ control, name: "iban" }) // Watch the iban field
-  const accountAliasValue = useWatch({ control, name: "accountAlias" }) // Watch the accountAlias field
+  const ibanValue = useWatch({ control, name: "iban" })
+  const accountAliasValue = useWatch({ control, name: "accountAlias" })
 
-  const isIbanValid = ibanValue?.startsWith("CR") && ibanValue?.length === 22 // Validate IBAN
+  const isIbanValid = ibanValue?.startsWith("CR") && ibanValue?.length === 22
 
   // Set default value for accountAlias when bankDetails changes
   useEffect(() => {
@@ -97,93 +107,134 @@ const AddBankAccountScreen = () => {
     }
   }
 
+  const [isChecked, setIsChecked] = useState(false)
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <Screen
-        preset="scroll"
-        style={styles.screenStyle}
-        keyboardOffset="navigationHeader"
-        keyboardShouldPersistTaps="handled"
-      >
-        {params?.account && (
-          <Icon
-            name="trash"
-            type="ionicon"
-            color="red"
-            onPress={handleRemoveBankAccount}
-            containerStyle={styles.headerIconContainer}
-          />
-        )}
-        <View style={styles.container}>
-          <Controller
-            name="iban"
-            control={control}
-            rules={{
-              validate: (value) =>
-                value.startsWith("CR") || LL.BankAccountScreen.invalidIban(),
-            }}
-            render={({ field, fieldState }) => (
-              <Input
-                {...testProps(LL.BankAccountScreen.iban())}
-                label={LL.BankAccountScreen.iban()}
-                placeholder={LL.BankAccountScreen.iban()}
-                autoCapitalize="characters"
-                maxLength={22}
-                keyboardType="numeric"
-                errorMessage={fieldState.error?.message}
-                {...field}
-                value={
-                  field.value.startsWith("CR") ? field.value : `CR${field.value || ""}`
-                }
-                onChangeText={(text) => {
-                  const updatedValue = text.startsWith("CR") ? text : `CR${text}`
-                  field.onChange(updatedValue)
-                }}
-                editable={!bankDetails} // Disable input if IBAN is verified
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={70}
+    >
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
+          <ScrollView
+            style={[styles.screenStyle, { flex: 1 }]}
+            contentContainerStyle={{ padding: 16 }}
+          >
+            {params?.account && (
+              <Icon
+                name="trash"
+                type="ionicon"
+                color="red"
+                onPress={handleRemoveBankAccount}
+                containerStyle={styles.headerIconContainer}
               />
             )}
-          />
-          {!bankDetails && ( // Remove Verify button if IBAN is verified
-            <Button
-              {...testProps(LL.BankAccountScreen.verify())}
-              title={LL.BankAccountScreen.verify()}
-              containerStyle={styles.buttonContainerStyle}
-              buttonStyle={[styles.buttonStyle]}
-              titleProps={{ style: [styles.buttonText] }}
-              color={"primary"}
-              onPress={handleSubmit(handleVerifyIban)}
-              disabled={!isIbanValid || loading} // Disable button if IBAN is invalid or loading
-              loading={loading}
-            />
-          )}
-
-          {bankDetails && (
-            <View style={styles.spacingBelowCurrencyLabel}>
-              <Text style={styles.infoText}>
-                <Text style={styles.infoLabel}>{LL.BankAccountScreen.bankName()}:</Text>{" "}
-                {bankDetails?.bankName}
-              </Text>
-              <View style={styles.spacingBelowCurrencyLabel}>
-                <Text style={styles.infoText}>
-                  <Text style={styles.infoLabel}>{LL.BankAccountScreen.currency()}:</Text>{" "}
-                  {bankDetails?.currencyCode}
-                </Text>
-              </View>
+            <View style={styles.container}>
               <Controller
-                name="accountAlias"
+                name="iban"
                 control={control}
-                render={({ field }) => (
+                rules={{
+                  validate: (value) =>
+                    value.startsWith("CR") || LL.BankAccountScreen.invalidIban(),
+                }}
+                render={({ field, fieldState }) => (
                   <Input
-                    {...testProps(LL.BankAccountScreen.accountAlias())}
-                    label={LL.BankAccountScreen.accountAlias()}
-                    placeholder={LL.BankAccountScreen.accountAlias()}
-                    autoCapitalize="none"
-                    maxLength={50}
+                    {...testProps(LL.BankAccountScreen.iban())}
+                    label={LL.BankAccountScreen.iban()}
+                    placeholder={LL.BankAccountScreen.iban()}
+                    autoCapitalize="characters"
+                    maxLength={22}
+                    keyboardType="numeric"
+                    errorMessage={fieldState.error?.message}
                     {...field}
-                    onChangeText={(text) => field.onChange(text)}
+                    value={
+                      field.value.startsWith("CR") ? field.value : `CR${field.value || ""}`
+                    }
+                    onChangeText={(text) => {
+                      const updatedValue = text.startsWith("CR") ? text : `CR${text}`
+                      field.onChange(updatedValue)
+                    }}
+                    editable={!bankDetails} // Disable input if IBAN is verified
                   />
                 )}
               />
+              {!bankDetails && ( // Remove Verify button if IBAN is verified
+                <Button
+                  {...testProps(LL.BankAccountScreen.verify())}
+                  title={LL.BankAccountScreen.verify()}
+                  containerStyle={styles.buttonContainerStyle}
+                  buttonStyle={[styles.buttonStyle]}
+                  titleProps={{ style: [styles.buttonText] }}
+                  color={"primary"}
+                  onPress={handleSubmit(handleVerifyIban)}
+                  disabled={!isIbanValid || loading} // Disable button if IBAN is invalid or loading
+                  loading={loading}
+                />
+              )}
+
+              {bankDetails && (
+                <View style={styles.spacingBelowCurrencyLabel}>
+                  <Text style={styles.infoText}>
+                    <Text style={styles.infoLabel}>{LL.BankAccountScreen.bankName()}:</Text>{" "}
+                    {bankDetails?.bankName}
+                  </Text>
+                  <View style={styles.spacingBelowCurrencyLabel}>
+                    <Text style={styles.infoText}>
+                      <Text style={styles.infoLabel}>{LL.BankAccountScreen.currency()}:</Text>{" "}
+                      {bankDetails?.currencyCode}
+                    </Text>
+                  </View>
+                  <Controller
+                    name="accountAlias"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...testProps(LL.BankAccountScreen.accountAlias())}
+                        label={LL.BankAccountScreen.accountAlias()}
+                        placeholder={LL.BankAccountScreen.accountAlias()}
+                        autoCapitalize="none"
+                        maxLength={50}
+                        {...field}
+                        onChangeText={(text) => field.onChange(text)}
+                      />
+                    )}
+                  />
+                </View>
+              )}
+            </View>
+          </ScrollView>
+          {bankDetails && (
+            <View
+              style={{
+                padding: 16,
+                backgroundColor: "#fff",
+                borderTopWidth: 1,
+                borderColor: "#eee",
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
+                <CheckBox
+                  checked={isChecked}
+                  onPress={() => setIsChecked((prev) => !prev)}
+                  containerStyle={{ padding: 0, margin: 0 }}
+                />
+                <Text style={{ flex: 1 }}>
+                  I agree to the Pura Vida Technologies Direct Debit and Credit Authorization and to allow Pura Vida Technologies to debit and credit my account.
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() =>
+                  Linking.openURL(
+                    "https://storage.googleapis.com/ridivi_util/ridivi_legal/REGLAMENTOS%20Y%20CONDICIONES%20PARA%20LOS%20SERVICIOS%20DE%20RIDIVI.pdf",
+                  )
+                }
+                style={{ marginBottom: 16 }}
+              >
+                <Text style={{ color: "#007AFF", textDecorationLine: "underline" }}>
+                  Direct Debit and Credit Authorization
+                </Text>
+              </TouchableOpacity>
               <Button
                 {...testProps(LL.common.save())}
                 title={LL.common.save()}
@@ -192,14 +243,14 @@ const AddBankAccountScreen = () => {
                 titleProps={{ style: [styles.buttonText] }}
                 color={"primary"}
                 onPress={handleSubmit(handleSaveBankAccount)}
-                disabled={loading || !accountAliasValue} // Disable if loading or accountAlias is empty
+                disabled={loading || !accountAliasValue || !isChecked}
                 loading={loading}
               />
             </View>
           )}
         </View>
-      </Screen>
-    </SafeAreaView>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   )
 }
 
