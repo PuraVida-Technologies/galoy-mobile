@@ -7492,7 +7492,7 @@ type RootTranslation = {
 		 */
 		ACHAuthorizationText: string
 		/**
-		 * A​C​H​ ​A​u​t​h​o​r​i​z​a​t​i​o​n
+		 * D​i​r​e​c​t​ ​D​e​b​i​t​ ​a​n​d​ ​C​r​e​d​i​t​ ​A​u​t​h​o​r​i​z​a​t​i​o​n
 		 */
 		ACHAuthorizationLinkText: string
 		/**
@@ -17121,7 +17121,7 @@ export type TranslationFunctions = {
 		 */
 		ACHAuthorizationText: () => LocalizedString
 		/**
-		 * ACH Authorization
+		 * Direct Debit and Credit Authorization
 		 */
 		ACHAuthorizationLinkText: () => LocalizedString
 		/**
