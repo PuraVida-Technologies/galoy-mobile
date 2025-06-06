@@ -14,7 +14,6 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   buttonContainerStyle: {
     paddingBottom: 0,
-    // flex: 1, // Remove flex: 1 if you don't want the button to stretch
   },
   removeButtonContainerStyle: {
     marginTop: 16,
@@ -71,14 +70,30 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   checkboxRow: {
     flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 12,
+    paddingVertical: 4,
+  },
+  checkbox: {
+    padding: 0,
+    margin: 0,
+    marginRight: 12,
+    backgroundColor: "transparent",
+    borderWidth: 0,
+    width: 24,
+    height: 24,
+    justifyContent: "center",
     alignItems: "center",
-    marginBottom: 8,
   },
   checkboxText: {
     flex: 1,
+    fontSize: 15,
+    color: "#333",
+    lineHeight: 22,
   },
   link: {
     marginBottom: 16,
+    marginLeft: 46,
   },
   linkText: {
     color: "#007AFF",

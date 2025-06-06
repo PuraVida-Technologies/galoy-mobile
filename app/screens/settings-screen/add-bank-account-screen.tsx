@@ -206,28 +206,36 @@ const AddBankAccountScreen = () => {
           </ScrollView>
           {bankDetails && (
             <View style={styles.bottomView}>
-              <View style={styles.checkboxRow}>
-                <CheckBox
-                  checked={isChecked}
-                  onPress={() => setIsChecked((prev) => !prev)}
-                  containerStyle={{ padding: 0, margin: 0 }}
-                />
-                <Text style={styles.checkboxText}>
-                  I agree to the Pura Vida Technologies Direct Debit and Credit Authorization and to allow Pura Vida Technologies to debit and credit my account.
-                </Text>
+              <View style={styles.checkboxSection}>
+                <View style={styles.checkboxRow}>
+                  <CheckBox
+                    checked={isChecked}
+                    onPress={() => setIsChecked((prev) => !prev)}
+                    containerStyle={styles.checkbox}
+                    checkedColor="#111"
+                    uncheckedColor="#ccc"
+                    size={24}
+                    iconType="material"
+                    checkedIcon="check-box"
+                    uncheckedIcon="check-box-outline-blank"
+                  />
+                  <Text style={styles.checkboxText}>
+                    I agree to the Pura Vida Technologies Direct Debit and Credit Authorization and to allow Pura Vida Technologies to debit and credit my account.
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      "https://storage.googleapis.com/ridivi_util/ridivi_legal/REGLAMENTOS%20Y%20CONDICIONES%20PARA%20LOS%20SERVICIOS%20DE%20RIDIVI.pdf",
+                    )
+                  }
+                  style={styles.link}
+                >
+                  <Text style={styles.linkText}>
+                    Direct Debit and Credit Authorization
+                  </Text>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                onPress={() =>
-                  Linking.openURL(
-                    "https://storage.googleapis.com/ridivi_util/ridivi_legal/REGLAMENTOS%20Y%20CONDICIONES%20PARA%20LOS%20SERVICIOS%20DE%20RIDIVI.pdf",
-                  )
-                }
-                style={styles.link}
-              >
-                <Text style={styles.linkText}>
-                  Direct Debit and Credit Authorization
-                </Text>
-              </TouchableOpacity>
               <Button
                 {...testProps(LL.common.save())}
                 title={LL.common.save()}
