@@ -99,6 +99,9 @@ const useStyles = makeStyles(({ colors }) => ({
     color: "#007AFF",
     textDecorationLine: "underline",
   },
+  checkboxSection: {
+    marginBottom: 0,
+  },
 }))
 
 export default useStyles

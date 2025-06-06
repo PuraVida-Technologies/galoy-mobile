@@ -220,7 +220,7 @@ const AddBankAccountScreen = () => {
                     uncheckedIcon="check-box-outline-blank"
                   />
                   <Text style={styles.checkboxText}>
-                    I agree to the Pura Vida Technologies Direct Debit and Credit Authorization and to allow Pura Vida Technologies to debit and credit my account.
+                    {LL.BankAccountScreen.ACHAuthorizationText()}
                   </Text>
                 </View>
                 <TouchableOpacity
@@ -232,7 +232,7 @@ const AddBankAccountScreen = () => {
                   style={styles.link}
                 >
                   <Text style={styles.linkText}>
-                    Direct Debit and Credit Authorization
+                    {LL.BankAccountScreen.ACHAuthorizationLinkText()}
                   </Text>
                 </TouchableOpacity>
               </View>

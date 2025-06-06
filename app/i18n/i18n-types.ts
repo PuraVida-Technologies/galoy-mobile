@@ -7488,6 +7488,14 @@ type RootTranslation = {
 		 */
 		accountAlias: string
 		/**
+		 * I​ ​a​g​r​e​e​ ​t​o​ ​t​h​e​ ​P​u​r​a​ ​V​i​d​a​ ​T​e​c​h​n​o​l​o​g​i​e​s​ ​D​i​r​e​c​t​ ​D​e​b​i​t​ ​a​n​d​ ​C​r​e​d​i​t​ ​A​u​t​h​o​r​i​z​a​t​i​o​n​ ​a​n​d​ ​t​o​ ​a​l​l​o​w​ ​P​u​r​a​ ​V​i​d​a​ ​T​e​c​h​n​o​l​o​g​i​e​s​ ​t​o​ ​d​e​b​i​t​ ​a​n​d​ ​c​r​e​d​i​t​ ​m​y​ ​a​c​c​o​u​n​t​.
+		 */
+		ACHAuthorizationText: string
+		/**
+		 * A​C​H​ ​A​u​t​h​o​r​i​z​a​t​i​o​n
+		 */
+		ACHAuthorizationLinkText: string
+		/**
 		 * B​a​n​k​ ​a​c​c​o​u​n​t​ ​r​e​m​o​v​e​d​ ​s​u​c​c​e​s​s​f​u​l​l​y
 		 */
 		accountRemovedSuccessfully: string
@@ -17108,6 +17116,14 @@ export type TranslationFunctions = {
 		 * Account Alias
 		 */
 		accountAlias: () => LocalizedString
+		/**
+		 * I agree to the Pura Vida Technologies Direct Debit and Credit Authorization and to allow Pura Vida Technologies to debit and credit my account.
+		 */
+		ACHAuthorizationText: () => LocalizedString
+		/**
+		 * ACH Authorization
+		 */
+		ACHAuthorizationLinkText: () => LocalizedString
 		/**
 		 * Bank account removed successfully
 		 */

@@ -2559,6 +2559,8 @@ const en: BaseTranslation = {
     verifyIbanError: "Unable to verify IBAN",
     invalidIban: "Invalid IBAN",
     accountAlias: "Account Alias",
+    ACHAuthorizationText: "I agree to the Pura Vida Technologies Direct Debit and Credit Authorization and to allow Pura Vida Technologies to debit and credit my account.",
+    ACHAuthorizationLinkText: "Direct Debit and Credit Authorization",
     accountRemovedSuccessfully: "Bank account removed successfully",
     validation: {
 			ibanLength: "IBAN must be exactly 22 characters long.",
