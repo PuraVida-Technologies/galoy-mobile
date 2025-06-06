@@ -14,7 +14,7 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   buttonContainerStyle: {
     paddingBottom: 0,
-    flex: 1,
+    // flex: 1, // Remove flex: 1 if you don't want the button to stretch
   },
   removeButtonContainerStyle: {
     marginTop: 16,
@@ -58,6 +58,31 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   infoLabel: {
     fontWeight: "bold",
+  },
+  spacingBelowCurrencyLabel: {
+    marginBottom: 16,
+  },
+  bottomView: {
+    padding: 16,
+    backgroundColor: "#fff",
+    borderTopWidth: 1,
+    borderColor: "#eee",
+    flex: 1,
+  },
+  checkboxRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  checkboxText: {
+    flex: 1,
+  },
+  link: {
+    marginBottom: 16,
+  },
+  linkText: {
+    color: "#007AFF",
+    textDecorationLine: "underline",
   },
 }))
 
