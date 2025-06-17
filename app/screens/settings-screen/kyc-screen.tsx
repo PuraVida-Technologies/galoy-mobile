@@ -13,6 +13,7 @@ import { useI18nContext } from "@app/i18n/i18n-react"
 import { Icon, Text } from "@rneui/themed"
 import { LoadingComponent } from "@app/modules/market-place/components/loading-component"
 import { palette } from "@app/theme/palette"
+import PlaceOfBirth from "./kyc/place-of-birth"
 
 const KYCScreen = () => {
   const { state, actions } = useKYCState()
@@ -72,6 +73,14 @@ const KYCScreen = () => {
           <UserDetails
             key={"user"}
             title={"User"}
+            setKYCDetails={actions.setKYCDetails}
+            KYCDetails={state.KYCDetails}
+            jumpTo={jumpTo}
+            isStepOneAndTwoCompleted={state.isStepOneAndTwoCompleted}
+          />
+          <PlaceOfBirth
+            key={"placeOfBirth"}
+            title={"Place of Birth"}
             setKYCDetails={actions.setKYCDetails}
             KYCDetails={state.KYCDetails}
             jumpTo={jumpTo}

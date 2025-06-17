@@ -62,7 +62,7 @@ export interface KYCDetails {
     front?: string | null | undefined
     back?: string | null | undefined
     address?: string | null | undefined
-    martialStatus?: InputMaybe<MaritalStatus>
+    maritalStatus?: InputMaybe<MaritalStatus>
     id?: string | null | undefined
     email?: string | null | undefined
     phoneNumber?: string | null | undefined
@@ -86,7 +86,7 @@ const initialKycDetails: KYCDetails = {
     front: "",
     back: "",
     address: "",
-    martialStatus: undefined,
+    maritalStatus: undefined,
     id: "",
     email: "",
     phoneNumber: "",
@@ -232,7 +232,14 @@ const useKYCState = () => {
           KYCDetails?.idDetails?.phoneNumber &&
           KYCDetails?.idDetails?.gender
         ) {
-          targetIndex = 3
+          if (
+            !KYCDetails?.idDetails?.maritalStatus ||
+            !KYCDetails?.idDetails?.placeOfBirth
+          ) {
+            targetIndex = 4
+          } else {
+            targetIndex = 3
+          }
         }
       }
 
