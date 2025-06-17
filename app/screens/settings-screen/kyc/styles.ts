@@ -99,6 +99,40 @@ const useStyles = makeStyles(({ colors }) => ({
   errorText: {
     color: colors.error,
   },
+  inputLabel: {
+    marginBottom: 8,
+    fontWeight: "500",
+  },
+  formFieldContainer: {
+    marginBottom: 24,
+  },
+  countryPickerContainer: {
+    borderWidth: 1,
+    borderColor: colors.grey4,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: colors.white,
+    marginBottom: 4,
+  },
+  countryPickerButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    minHeight: 48,
+  },
+  countryPickerText: {
+    fontSize: 16,
+    color: colors.black,
+    flex: 1,
+    marginLeft: 8,
+  },
+  countryPickerPlaceholder: {
+    fontSize: 16,
+    color: colors.grey3,
+    flex: 1,
+    marginLeft: 8,
+  },
 }))
 
 export default useStyles

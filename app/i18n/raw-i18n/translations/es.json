@@ -2772,5 +2772,31 @@
     "ERROR": "Error",
     "PROCESSING": "Procesando",
     "REVIEW": "Revisar"
+  },
+  "KYCScreen": {
+    "idType": "Tipo de Identificación",
+    "documentType": "Tipo de Documento",
+    "documentVerification": "Verificación de Documento",
+    "uploadID": "Subir Identificación",
+    "uploadIDFront": "Frente de la Identificación",
+    "uploadIDBack": "Reverso de la Identificación",
+    "userDetails": "Detalles del Usuario",
+    "confirmDisclosures": "Confirmar Divulgaciones",
+    "placeOfBirth": "Lugar de Nacimiento",
+    "placeOfBirthLabel": "Selecciona tu lugar de nacimiento",
+    "maritalStatus": "Estado Civil",
+    "maritalStatusLabel": "Selecciona tu estado civil",
+    "uploadingIdError": "Error al subir el documento {uploadingId: string}. Por favor, inténtalo de nuevo.",
+    "validations": {
+      "emailRequired": "El email es obligatorio",
+      "emailInvalid": "Por favor, introduce una dirección de email válida",
+      "phoneRequired": "El número de teléfono es obligatorio",
+      "phoneInvalid": "Por favor, introduce un número de teléfono válido",
+      "genderRequired": "El género es obligatorio"
+    },
+    "labels": {
+      "PEP": "¿Usted o su cónyuge han ocupado un cargo gubernamental, o son considerados una Persona Políticamente Expuesta (\"PEP\")?",
+      "MoneyTransfers": "¿Realiza alguna de las actividades descritas en el Artículo 15 de la Ley 8204? Esto incluye operaciones sistemáticas que involucran cambio de dinero o transferencias bancarias en grandes cantidades."
+    }
   }
 }

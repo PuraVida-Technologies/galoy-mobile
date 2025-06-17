@@ -2926,6 +2926,8 @@
         "uploadIDBack": "ID Back",
         "userDetails": "User Details",
         "confirmDisclosures": "Confirm Disclosures",
+        "placeOfBirth": "Place of Birth",
+        "placeOfBirthLabel": "Select your place of birth",
         "uploadingIdError": "Error uploading document {uploadingId: string}. Please try again.",
         "validations": {
             "emailRequired": "Email is required",

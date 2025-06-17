@@ -962,7 +962,7 @@ export type InputKyc = {
   readonly id: Scalars['ID']['input'];
   readonly isHighRisk?: InputMaybe<Scalars['Boolean']['input']>;
   readonly isPoliticallyExposed?: InputMaybe<Scalars['Boolean']['input']>;
-  readonly martialStatus?: InputMaybe<MaritalStatus>;
+  readonly maritalStatus?: InputMaybe<MaritalStatus>;
   readonly phoneNumber?: InputMaybe<Scalars['String']['input']>;
   readonly placeOfBirth?: InputMaybe<Scalars['String']['input']>;
   readonly status?: InputMaybe<Status>;
@@ -1052,7 +1052,7 @@ export type Kyc = {
   readonly id: Scalars['ID']['output'];
   readonly isHighRisk?: Maybe<Scalars['Boolean']['output']>;
   readonly isPoliticallyExposed?: Maybe<Scalars['Boolean']['output']>;
-  readonly martialStatus?: Maybe<MaritalStatus>;
+  readonly maritalStatus?: Maybe<MaritalStatus>;
   readonly phoneNumber?: Maybe<Scalars['String']['output']>;
   readonly placeOfBirth?: Maybe<Scalars['String']['output']>;
   readonly primaryIdentification?: Maybe<Identification>;
@@ -3694,7 +3694,12 @@ export type UpdateKycMutation = { readonly __typename: 'Mutation', readonly upda
 export type KycDetailsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type KycDetailsQuery = { readonly __typename: 'Query', readonly me?: { readonly __typename: 'User', readonly username?: string | null, readonly kyc?: { readonly __typename: 'Kyc', readonly id: string, readonly status: Status, readonly fullName?: string | null, readonly citizenships?: ReadonlyArray<string> | null, readonly email?: string | null, readonly phoneNumber?: string | null, readonly gender?: Gender | null, readonly isPoliticallyExposed?: boolean | null, readonly isHighRisk?: boolean | null, readonly primaryIdentification?: { readonly __typename: 'Identification', readonly expiration?: string | null, readonly files: ReadonlyArray<string>, readonly type: IdentificationType } | null } | null } | null };
+export type KycDetailsQuery = { readonly __typename: 'Query', readonly me?: { readonly __typename: 'User', readonly username?: string | null, readonly kyc?: { readonly __typename: 'Kyc', readonly id: string, readonly status: Status, readonly fullName?: string | null, readonly citizenships?: ReadonlyArray<string> | null, readonly email?: string | null, readonly phoneNumber?: string | null, readonly gender?: Gender | null, readonly isPoliticallyExposed?: boolean | null, readonly isHighRisk?: boolean | null, readonly maritalStatus?: MaritalStatus | null, readonly placeOfBirth?: string | null, readonly primaryIdentification?: { readonly __typename: 'Identification', readonly expiration?: string | null, readonly files: ReadonlyArray<string>, readonly type: IdentificationType } | null } | null } | null };
+
+export type SupportedCountriesKycQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SupportedCountriesKycQuery = { readonly __typename: 'Query', readonly globals?: { readonly __typename: 'Globals', readonly supportedCountries: ReadonlyArray<{ readonly __typename: 'Country', readonly id: string, readonly supportedAuthChannels: ReadonlyArray<PhoneCodeChannelType> }> } | null };
 
 export type LanguageQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -8166,6 +8171,8 @@ export const KycDetailsDocument = gql`
       gender
       isPoliticallyExposed
       isHighRisk
+      maritalStatus
+      placeOfBirth
       primaryIdentification {
         expiration
         files
@@ -8207,6 +8214,48 @@ export type KycDetailsQueryHookResult = ReturnType<typeof useKycDetailsQuery>;
 export type KycDetailsLazyQueryHookResult = ReturnType<typeof useKycDetailsLazyQuery>;
 export type KycDetailsSuspenseQueryHookResult = ReturnType<typeof useKycDetailsSuspenseQuery>;
 export type KycDetailsQueryResult = Apollo.QueryResult<KycDetailsQuery, KycDetailsQueryVariables>;
+export const SupportedCountriesKycDocument = gql`
+    query SupportedCountriesKyc {
+  globals {
+    supportedCountries {
+      id
+      supportedAuthChannels
+    }
+  }
+}
+    `;
+
+/**
+ * __useSupportedCountriesKycQuery__
+ *
+ * To run a query within a React component, call `useSupportedCountriesKycQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSupportedCountriesKycQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSupportedCountriesKycQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSupportedCountriesKycQuery(baseOptions?: Apollo.QueryHookOptions<SupportedCountriesKycQuery, SupportedCountriesKycQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SupportedCountriesKycQuery, SupportedCountriesKycQueryVariables>(SupportedCountriesKycDocument, options);
+      }
+export function useSupportedCountriesKycLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SupportedCountriesKycQuery, SupportedCountriesKycQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SupportedCountriesKycQuery, SupportedCountriesKycQueryVariables>(SupportedCountriesKycDocument, options);
+        }
+export function useSupportedCountriesKycSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SupportedCountriesKycQuery, SupportedCountriesKycQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SupportedCountriesKycQuery, SupportedCountriesKycQueryVariables>(SupportedCountriesKycDocument, options);
+        }
+export type SupportedCountriesKycQueryHookResult = ReturnType<typeof useSupportedCountriesKycQuery>;
+export type SupportedCountriesKycLazyQueryHookResult = ReturnType<typeof useSupportedCountriesKycLazyQuery>;
+export type SupportedCountriesKycSuspenseQueryHookResult = ReturnType<typeof useSupportedCountriesKycSuspenseQuery>;
+export type SupportedCountriesKycQueryResult = Apollo.QueryResult<SupportedCountriesKycQuery, SupportedCountriesKycQueryVariables>;
 export const LanguageDocument = gql`
     query language {
   me {
@@ -10515,7 +10564,7 @@ export type KycResolvers<ContextType = any, ParentType extends ResolversParentTy
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   isHighRisk?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   isPoliticallyExposed?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  martialStatus?: Resolver<Maybe<ResolversTypes['MaritalStatus']>, ParentType, ContextType>;
+  maritalStatus?: Resolver<Maybe<ResolversTypes['MaritalStatus']>, ParentType, ContextType>;
   phoneNumber?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   placeOfBirth?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   primaryIdentification?: Resolver<Maybe<ResolversTypes['Identification']>, ParentType, ContextType>;

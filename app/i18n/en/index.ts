@@ -3237,8 +3237,11 @@ const en: BaseTranslation = {
 		uploadID: "Upload ID",
 		uploadIDFront: "ID Front",
 		uploadIDBack: "ID Back",
-		userDetails: "User Details",
-		confirmDisclosures: "Confirm Disclosures",
+		userDetails: "User Details",    confirmDisclosures: "Confirm Disclosures",
+    placeOfBirth: "Place of Birth",
+    placeOfBirthLabel: "Select your place of birth",
+    maritalStatus: "Marital Status",
+    maritalStatusLabel: "Select your marital status",
     uploadingIdError: "Error uploading document {uploadingId: string}. Please try again.",
     validations: {
 			emailRequired: "Email is required",

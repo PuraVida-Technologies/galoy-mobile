@@ -18,7 +18,7 @@ import {
 } from "@app/graphql/generated"
 import { useIsFocused, useNavigation } from "@react-navigation/native"
 import { stepWidth } from "./utils"
-import isEqual from "lodash.isequal"
+const isEqual = require("lodash.isequal")
 
 gql`
   query KycDetails {
@@ -34,6 +34,8 @@ gql`
         gender
         isPoliticallyExposed
         isHighRisk
+        maritalStatus
+        placeOfBirth
         primaryIdentification {
           expiration
           files
@@ -68,7 +70,7 @@ export interface KYCDetails {
     phoneNumber?: string | null | undefined
     gender?: Maybe<Gender> | undefined
     fullName?: string | null | undefined
-    citizenships?: []
+    citizenships?: string[] | null
     galoyUserId?: string | null | undefined
     placeOfBirth?: string | null | undefined
     status?: Kyc["status"]
@@ -113,26 +115,12 @@ const useKYCState = () => {
   const { data, loading } = useKycDetailsQuery({ fetchPolicy: "network-only" })
   const setKYCDetails = useCallback((next: Partial<KYCDetails>) => {
     _setKYCDetails((prevDetails) => {
-      // Filter out undefined properties from `next`
-      const filteredNext = {
-        ...next,
-        idDetails: Object.fromEntries(
-          Object.entries(next.idDetails || {}).filter(
-            ([_, value]) => value !== undefined,
-          ),
-        ),
-      }
-
-      const updatedDetails = {
+      const updatedDetails: KYCDetails = {
         ...prevDetails,
-        ...filteredNext,
+        ...next,
         idDetails: {
           ...prevDetails.idDetails,
-          ...filteredNext.idDetails,
-          id:
-            filteredNext.idDetails?.id === "" || filteredNext.idDetails?.id === undefined
-              ? prevDetails.idDetails?.id // Preserve existing id if new value is invalid
-              : filteredNext.idDetails?.id,
+          ...next.idDetails,
         },
       }
 
@@ -189,7 +177,6 @@ const useKYCState = () => {
       if (isEqual(KYCDetails.idDetails, updatedDetails.idDetails)) {
         console.log("useEffect: No changes detected, skipping update")
       } else {
-        console.log("useEffect: Updating KYCDetails", updatedDetails)
         setKYCDetails(updatedDetails)
       }
     }
@@ -236,9 +223,9 @@ const useKYCState = () => {
             !KYCDetails?.idDetails?.maritalStatus ||
             !KYCDetails?.idDetails?.placeOfBirth
           ) {
-            targetIndex = 4
+            targetIndex = 3  // PlaceOfBirth screen
           } else {
-            targetIndex = 3
+            targetIndex = 4  // ConfirmDisclosures screen
           }
         }
       }

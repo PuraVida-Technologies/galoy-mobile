@@ -62,7 +62,7 @@ export const prepareKYCDetails = (state: KYCDetails) => {
     gender: state?.idDetails?.gender,
     isHighRisk: state?.idDetails?.isHighRisk === "yes",
     isPoliticallyExposed: state?.idDetails?.isPoliticallyExposed === "yes",
-    martialStatus: state?.idDetails?.martialStatus,
+    maritalStatus: state?.idDetails?.maritalStatus,
     placeOfBirth: state?.idDetails?.placeOfBirth,
     status: state?.idDetails?.status,
   }

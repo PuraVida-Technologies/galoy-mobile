@@ -932,6 +932,8 @@ query KycDetails {
       gender
       isPoliticallyExposed
       isHighRisk
+      maritalStatus
+      placeOfBirth
       primaryIdentification {
         expiration
         files
@@ -969,6 +971,17 @@ query SettingsScreen {
     email {
       address
       verified
+      __typename
+    }
+    __typename
+  }
+}
+
+query SupportedCountriesKyc {
+  globals {
+    supportedCountries {
+      id
+      supportedAuthChannels
       __typename
     }
     __typename

@@ -9668,6 +9668,22 @@ type RootTranslation = {
 		 */
 		confirmDisclosures: string
 		/**
+		 * P​l​a​c​e​ ​o​f​ ​B​i​r​t​h
+		 */
+		placeOfBirth: string
+		/**
+		 * S​e​l​e​c​t​ ​y​o​u​r​ ​p​l​a​c​e​ ​o​f​ ​b​i​r​t​h
+		 */
+		placeOfBirthLabel: string
+		/**
+		 * M​a​r​i​t​a​l​ ​S​t​a​t​u​s
+		 */
+		maritalStatus: string
+		/**
+		 * S​e​l​e​c​t​ ​y​o​u​r​ ​m​a​r​i​t​a​l​ ​s​t​a​t​u​s
+		 */
+		maritalStatusLabel: string
+		/**
 		 * E​r​r​o​r​ ​u​p​l​o​a​d​i​n​g​ ​d​o​c​u​m​e​n​t​ ​{​u​p​l​o​a​d​i​n​g​I​d​}​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
 		 * @param {string} uploadingId
 		 */
@@ -19254,6 +19270,22 @@ export type TranslationFunctions = {
 		 * Confirm Disclosures
 		 */
 		confirmDisclosures: () => LocalizedString
+		/**
+		 * Place of Birth
+		 */
+		placeOfBirth: () => LocalizedString
+		/**
+		 * Select your place of birth
+		 */
+		placeOfBirthLabel: () => LocalizedString
+		/**
+		 * Marital Status
+		 */
+		maritalStatus: () => LocalizedString
+		/**
+		 * Select your marital status
+		 */
+		maritalStatusLabel: () => LocalizedString
 		/**
 		 * Error uploading document {uploadingId}. Please try again.
 		 */
