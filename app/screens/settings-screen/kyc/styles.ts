@@ -36,6 +36,8 @@ const useStyles = makeStyles(({ colors }) => ({
     justifyContent: "space-between",
     paddingTop: 20,
     paddingHorizontal: 20,
+    paddingBottom: 20,
+    marginBottom: 20,
     backgroundColor: colors.white,
   },
   buttonContainerStyle: {
