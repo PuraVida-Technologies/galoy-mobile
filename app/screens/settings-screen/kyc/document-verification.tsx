@@ -11,7 +11,7 @@ import Stepper from "./stepper"
 import { Text, Divider, useTheme } from "@rneui/themed"
 import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons"
 import ActionSheet from "@alessiocancian/react-native-actionsheet"
-import { IDType } from "./types"
+import { IdentificationType } from "@app/graphql/generated"
 import { TabProps } from "./hooks/useKYCState"
 import useDocumentVerification, { UploadingId } from "./hooks/useDocumentVerification"
 import { LoadingComponent } from "@app/modules/market-place/components/loading-component"
@@ -94,7 +94,9 @@ const DocumentVerification = ({ jumpTo, KYCDetails, setKYCDetails }: TabProps) =
             styles={styles.pickerContainer}
             imageStyles={styles.image}
           />
-          {KYCDetails?.idDetails?.type === IDType.DriverLicense ? (
+          {KYCDetails?.idDetails?.type === IdentificationType.Passport ? (
+            <></>
+          ) : (
             <DocumentUpload
               label={LL.KYCScreen.uploadIDBack()}
               loading={state.isUploadingBack && state.uploading}
@@ -112,8 +114,6 @@ const DocumentVerification = ({ jumpTo, KYCDetails, setKYCDetails }: TabProps) =
                 (state.isUploadingBack && state.uploading)
               }
             />
-          ) : (
-            <></>
           )}
         </View>
       </Screen>
@@ -124,7 +124,8 @@ const DocumentVerification = ({ jumpTo, KYCDetails, setKYCDetails }: TabProps) =
         nextPage={2}
         disableNext={
           Boolean(!state.idFront) ||
-          (KYCDetails?.idDetails?.type === IDType.DriverLicense && !state.idBack) ||
+          (KYCDetails?.idDetails?.type !== IdentificationType.Passport &&
+            !state.idBack) ||
           state.uploading
         }
         loading={state.uploading}

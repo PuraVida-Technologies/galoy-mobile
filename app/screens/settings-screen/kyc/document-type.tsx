@@ -2,21 +2,21 @@ import { useEffect, useState } from "react"
 import { Dropdown } from "@app/components/dropdown"
 import useStyles from "./styles"
 import { useI18nContext } from "@app/i18n/i18n-react"
-import { testProps } from "@app/utils/testProps"
 import { View } from "react-native"
 import Stepper from "./stepper"
 import FormContainer from "@app/components/form-input/form-container"
-import Input from "@app/components/form-input/form-input"
-import { Divider, Text } from "@rneui/themed" // Import useTheme
-import { IDType } from "./types"
+import { Divider, Text } from "@rneui/themed"
 import { TabProps } from "./hooks/useKYCState"
 import { stepWidth } from "./hooks/utils"
 import { Screen } from "@app/components/screen"
+import { IdentificationType } from "@app/graphql/generated"
 
 const data = [
-  { label: "Drivers License", value: IDType.DriverLicense },
-  { label: "Passport", value: IDType.Passport },
-  { label: "Other", value: IDType.Other },
+  { label: "Drivers License", value: IdentificationType.DrivingLicense },
+  { label: "Passport", value: IdentificationType.Passport },
+  { label: "National ID", value: IdentificationType.NationalId },
+  { label: "Costa Rica Residence Card", value: IdentificationType.CrResidenceCard },
+  { label: "Costa Rica ID Card", value: IdentificationType.CrLegalIdCard },
 ]
 
 const DocumentType = ({ jumpTo, KYCDetails, setKYCDetails }: TabProps) => {
@@ -57,7 +57,7 @@ const DocumentType = ({ jumpTo, KYCDetails, setKYCDetails }: TabProps) => {
               </View>
             </FormContainer>
 
-            {doc === IDType.Other ? (
+            {/* {doc === IDType.Other ? (
               <Input
                 {...testProps(LL.KYCScreen.idType())}
                 placeholder={LL.KYCScreen.idType()}
@@ -70,7 +70,7 @@ const DocumentType = ({ jumpTo, KYCDetails, setKYCDetails }: TabProps) => {
               />
             ) : (
               <></>
-            )}
+            )} */}
           </View>
         </Screen>
         <Stepper

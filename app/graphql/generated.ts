@@ -926,6 +926,8 @@ export type Identification = {
 
 /** Available types of identification documents. */
 export const IdentificationType = {
+  CrLegalIdCard: 'CR_LEGAL_ID_CARD',
+  CrResidenceCard: 'CR_RESIDENCE_CARD',
   DrivingLicense: 'DRIVING_LICENSE',
   NationalId: 'NATIONAL_ID',
   Passport: 'PASSPORT'
@@ -2435,7 +2437,8 @@ export type StatefulNotificationEdge = {
 export const Status = {
   Approved: 'APPROVED',
   Pending: 'PENDING',
-  Rejected: 'REJECTED'
+  Rejected: 'REJECTED',
+  Submitted: 'SUBMITTED'
 } as const;
 
 export type Status = typeof Status[keyof typeof Status];
@@ -2761,7 +2764,9 @@ export type UserUnacknowledgedStatefulNotificationsWithBulletinEnabledArgs = {
 };
 
 export const UserAccountLevel = {
+  Black: 'Black',
   One: 'One',
+  Three: 'Three',
   Two: 'Two',
   Zero: 'Zero'
 } as const;
