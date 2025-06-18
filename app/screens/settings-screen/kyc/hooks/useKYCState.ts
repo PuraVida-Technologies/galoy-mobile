@@ -217,7 +217,8 @@ const useKYCState = () => {
         if (
           KYCDetails?.idDetails?.email &&
           KYCDetails?.idDetails?.phoneNumber &&
-          KYCDetails?.idDetails?.gender
+          KYCDetails?.idDetails?.gender &&
+          KYCDetails?.idDetails?.gender !== Gender.Undisclosed
         ) {
           if (
             !KYCDetails?.idDetails?.maritalStatus ||

@@ -14,6 +14,7 @@ import { Icon, Text } from "@rneui/themed"
 import { LoadingComponent } from "@app/modules/market-place/components/loading-component"
 import { palette } from "@app/theme/palette"
 import PlaceOfBirth from "./kyc/place-of-birth"
+import KYCProgressBar from "./kyc/progress-bar"
 
 const KYCScreen = () => {
   const { state, actions } = useKYCState()
@@ -36,6 +37,7 @@ const KYCScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <KYCProgressBar currentStep={state.index} totalSteps={5} />
       <Screen
         preset="scroll"
         style={styles.screenStyle}
