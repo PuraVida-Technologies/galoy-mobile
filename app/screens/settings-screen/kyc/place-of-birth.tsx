@@ -134,9 +134,12 @@ const PlaceOfBirth = ({ jumpTo, KYCDetails, setKYCDetails }: TabProps) => {
       <Stepper
         jumpTo={jumpTo}
         allowNext={Boolean(country && maritalStatus)}
-        nextPage={3}
+        nextPage={4}
         previous
-        previousPage={1}
+        previousPage={2}
+        onNext={() => {
+          console.log('Next button clicked:', { country, maritalStatus, allowNext: Boolean(country && maritalStatus) })
+        }}
       />
     </View>
   )

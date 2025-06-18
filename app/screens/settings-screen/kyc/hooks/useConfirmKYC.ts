@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { prepareKYCDetails } from "./utils"
 import crashlytics from "@react-native-firebase/crashlytics"
 import { gql } from "@apollo/client"
-import { KycDetailsDocument, useUpdateKycMutation } from "@app/graphql/generated"
+import { KycDetailsDocument, useUpdateKycMutation, Status } from "@app/graphql/generated"
 import { UseKYCStateReturnType } from "./useKYCState"
 
 gql`
@@ -56,7 +56,19 @@ const useConfirmKYC = ({ KYCDetails, setKYCDetails }: Props) => {
   const onConfirm = useCallback(async () => {
     setLoading(true)
     try {
-      const input = prepareKYCDetails(stateRef.current)
+      // Update the status to SUBMITTED when confirming
+      const updatedKYCDetails = {
+        ...stateRef.current,
+        idDetails: { ...stateRef.current?.idDetails, status: Status.Submitted },
+      }
+      
+      setKYCDetails({
+        idDetails: { ...stateRef.current?.idDetails, status: Status.Submitted },
+      })
+      
+      const input = prepareKYCDetails(updatedKYCDetails)
+      console.log('KYC input payload:', JSON.stringify(input, null, 2))
+      
       await updateKYCDetails({
         variables: {
           input,
@@ -70,7 +82,7 @@ const useConfirmKYC = ({ KYCDetails, setKYCDetails }: Props) => {
 
     setLoading(false)
     navigation.goBack()
-  }, [navigation, updateKYCDetails])
+  }, [navigation, updateKYCDetails, setKYCDetails])
 
   return {
     state: { isPoliticallyExposed, isHighRisk, loading },
